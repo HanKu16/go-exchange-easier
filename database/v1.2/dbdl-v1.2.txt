@@ -1,0 +1,114 @@
+Table countries {
+  country_id SMALLSERIAL [pk]
+  english_name VARCHAR(60) [not null, unique]
+}
+
+Table cities {
+  city_id SERIAL [pk]
+  english_name VARCHAR(60) [not null]
+  country_id SMALLINT [ref: > countries.country_id, not null]
+}
+
+Table universities {
+  university_id SMALLSERIAL [pk]
+  original_name VARCHAR(500) [not null]
+  english_name VARCHAR(255)
+  link_to_website VARCHAR(2048)
+  city_id INTEGER [ref: > cities.city_id, not null]
+}
+
+Table university_majors {
+  university_major_id SMALLSERIAL [pk]
+  name VARCHAR(50) [unique, not null]
+}
+
+Table user_statuses {
+  user_status_id SMALLSERIAL [pk]
+  name VARCHAR(20) [not null]
+}
+
+Table users {
+  user_id SERIAL [pk]
+  nick VARCHAR(20) [not null]
+  created_at TIMESTAMPTZ [not null]
+  deleted_at TIMESTAMPTZ
+  country_of_origin_id SMALLINT [ref: > countries.country_id]
+  home_university_id SMALLINT [ref: > universities.university_id]
+  user_status_id SMALLINT [ref: > user_statuses.user_status_id]
+}
+
+Table roles {
+  role_id SMALLSERIAL [pk]
+  name VARCHAR(20) [not null, unique]
+  description VARCHAR(200)
+}
+
+Table user_roles {
+  user_id INTEGER [pk, ref: > users.user_id]
+  role_id SMALLINT [pk, ref: > roles.role_id]
+}
+
+Table user_credentials {
+  user_id INTEGER [pk, ref: - users.user_id]
+  username VARCHAR(20) [unique, not null]
+  password TEXT [not null]
+}
+
+Table user_descriptions {
+  user_id INTEGER [pk, ref: - users.user_id]
+  text_content VARCHAR(500) [not null]
+  updated_at TIMESTAMPTZ 
+}
+
+Table user_notifications {
+  user_id INTEGER [pk, ref: - users.user_id]
+  mail VARCHAR(254) [unique]
+  is_mail_notification_enable BOOLEAN [not null]
+}
+
+Table university_reviews {
+  university_review_id SERIAL [pk]
+  text_content VARCHAR(1000) [not null]
+  star_rating SMALLINT [not null]
+  created_at TIMESTAMPTZ [not null]
+  author_id INTEGER [ref: > users.user_id, not null]
+  university_id SMALLINT [ref: > universities.university_id, not null]
+}
+
+Table reaction_types {
+  reaction_type_id SMALLSERIAL [pk]
+  name VARCHAR(20) [unique, not null]
+}
+
+Table reactions_on_university_reviews {
+  reaction_on_university_review_id BIGSERIAL [pk]
+  reaction_type_id SMALLINT [ref: > reaction_types.reaction_type_id, not null]
+  university_review_id INTEGER [ref: > university_reviews.university_review_id, not null]
+  author_id INTEGER [ref: > users.user_id, not null]
+}
+
+Table university_reviews_reaction_counts {
+  university_review_id INTEGER [pk, ref: > university_reviews.university_review_id]
+  reaction_type_id SMALLINT [pk, ref: > reaction_types.reaction_type_id]
+  count SMALLINT [not null]
+}
+
+Table user_follows {
+  follower_id INTEGER [pk, ref: > users.user_id, not null]
+  followee_id INTEGER [pk, ref: > users.user_id, not null]
+}
+
+Table university_follows {
+  follower_id INTEGER [pk, ref: > users.user_id, not null]
+  university_id SMALLINT [pk, ref: > universities.university_id, not null]
+}
+
+Table exchanges {
+  exchange_id SERIAL [pk]
+  started_at DATE [not null]
+  end_at DATE [not null]
+  user_id INTEGER [ref: > users.user_id, not null]
+  university_id SMALLINT [ref: > universities.university_id, not null]
+  university_major_id SMALLINT [ref: > university_majors.university_major_id, not null]
+}
+

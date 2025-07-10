@@ -1,0 +1,8 @@
+1. Set 'is_mail_notification_enable' column in 'user_notifications' as not nullable
+2. Remove 'university_follow_id' from 'university_follows' table, replace it with composed key
+3. Change 'country_id' type from SMALLSERIAL to SMALLINT
+4. Rebuild reaction tables about university reviews
+- remove tables: 'likes_on_university_reviews' and 'dislikes_on_university_reviews'
+- add tables: 'reaction_types', 'reactions_on_university_reviews' and 'university_reviews_reaction_counts'
+- remove columns 'likes_count' and 'dislikes_count' from 'university_reviews'
+5. Add 'deleted_at' column in 'users' table
