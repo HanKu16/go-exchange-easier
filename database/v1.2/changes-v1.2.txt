@@ -6,3 +6,11 @@
 - add tables: 'reaction_types', 'reactions_on_university_reviews' and 'university_reviews_reaction_counts'
 - remove columns 'likes_count' and 'dislikes_count' from 'university_reviews'
 5. Add 'deleted_at' column in 'users' table
+6. Change convention for naming .sql scripts
+- each script with start with xx_ where 'x' is digit
+- script responsible for creating database scheme will be 00_ because it should be first
+- next scripts will be in particular order to does not violate FK constraints
+- reason of this change is that docker starts executing scripts in alphabetical order
+7. Remove vx.x postfix from create and drop database scheme file name
+- reason of this change is that we will have to change many things in docker files when new version of 
+database scheme comes, still we can distinct versions because of directory names
