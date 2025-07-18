@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   database:
     build:
@@ -10,10 +8,14 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5431:5432"
+    container_name: gee-database
   backend:
     build:
       context: ./backend
     ports:
       - "8080:8080"
     depends_on:
-      - database       
+      - database
+    env_file:
+      - ./.env
+    container_name: gee-backend
