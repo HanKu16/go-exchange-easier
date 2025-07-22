@@ -54,8 +54,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -83,11 +86,12 @@
 						</exclude>
 					</excludes>
 				</configuration>
-				<executions> <execution>
-					<goals>
-						<goal>repackage</goal>
-					</goals>
-				</execution>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
