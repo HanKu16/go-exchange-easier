@@ -28,6 +28,9 @@ public class User {
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
     @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     private UserDescription description;
@@ -43,11 +46,6 @@ public class User {
     @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     private UserCredentials credentials;
-
-    @ManyToMany
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_of_origin_id")

@@ -9,7 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_credentials")
@@ -29,10 +31,18 @@ public class UserCredentials implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     @MapsId
     private User user;
+
+    @ManyToMany
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

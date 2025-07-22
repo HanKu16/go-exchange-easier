@@ -21,7 +21,7 @@ public class UserNotification {
     @Column(name = "mail")
     private String mail;
 
-    @Column(name = "is_mail_notification_enable")
+    @Column(name = "is_mail_notification_enabled")
     private boolean isMailNotificationEnabled;
 
     @OneToOne
