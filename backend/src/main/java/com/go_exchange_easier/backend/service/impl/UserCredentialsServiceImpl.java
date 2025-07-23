@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.service;
+package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.repository.UserCredentialsRepository;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserCredentialsService implements UserDetailsService {
+public class UserCredentialsServiceImpl implements UserDetailsService {
 
     private final UserCredentialsRepository userCredentialsRepository;
 
@@ -21,7 +21,7 @@ public class UserCredentialsService implements UserDetailsService {
         Optional<UserCredentials> userCredentials = userCredentialsRepository
                 .findByUsername(username);
         return userCredentials.orElseThrow(() -> new UsernameNotFoundException(
-                "User of username (" + username + ") not found"));
+                "User of username (" + username + ") not found."));
     }
 
 }

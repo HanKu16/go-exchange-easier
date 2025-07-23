@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.service;
+package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.user.UserRegistrationRequest;
 import com.go_exchange_easier.backend.dto.user.UserRegistrationResponse;
@@ -11,8 +11,10 @@ import com.go_exchange_easier.backend.repository.UserCredentialsRepository;
 import com.go_exchange_easier.backend.repository.UserDescriptionRepository;
 import com.go_exchange_easier.backend.repository.UserNotificationRepository;
 import com.go_exchange_easier.backend.repository.UserRepository;
+import com.go_exchange_easier.backend.service.UserRegistrar;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 
@@ -24,6 +26,7 @@ public class UserRegistrarImpl implements UserRegistrar {
     private final UserDescriptionRepository userDescriptionRepository;
     private final UserNotificationRepository userNotificationRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -51,10 +54,11 @@ public class UserRegistrarImpl implements UserRegistrar {
 
     private UserCredentials createCredentials(
             User user, UserRegistrationRequest request) {
+        String encodedPassword = passwordEncoder.encode(request.password());
         UserCredentials credentials = new UserCredentials();
         credentials.setUser(user);
         credentials.setUsername(request.login());
-        credentials.setPassword(request.password());
+        credentials.setPassword(encodedPassword);
         credentials.setEnabled(true);
         return userCredentialsRepository.save(credentials);
     }
