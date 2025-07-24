@@ -4,6 +4,7 @@ import com.go_exchange_easier.backend.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,6 +33,16 @@ public class GlobalExceptionHandler {
                 String.join(" ", validationErrors));
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(
+            AuthenticationException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Authentication failed.");
+        return new ResponseEntity<ErrorResponse>(
+                response, HttpStatus.UNAUTHORIZED);
     }
 
 }
