@@ -10,6 +10,4 @@ public record LoginRequest(
         @NotNull(message = "Password can not be blank.")
         String password
 
-) {
-
-}
+) { }

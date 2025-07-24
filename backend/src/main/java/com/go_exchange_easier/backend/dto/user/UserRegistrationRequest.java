@@ -24,6 +24,6 @@ public record UserRegistrationRequest(
         @Size(min = 3, max = 20, message = "Nick must have between 3 and 20 characters.")
         @Pattern(regexp = "^[a-zA-Z0-9]*$", message =
                 "Nick can only contain letters and numbers.")
-        String nick) {
+        String nick
 
-}
+) { }
