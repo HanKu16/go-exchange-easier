@@ -3,32 +3,23 @@ package com.go_exchange_easier.backend.service.impl;
 import com.go_exchange_easier.backend.model.Role;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.JwtTokenGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import java.time.temporal.ChronoUnit;
-import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
-import io.jsonwebtoken.security.Keys;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
+import javax.crypto.SecretKey;
 
-@Service
+@Component
+@RequiredArgsConstructor
 public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
 
-    private final String secretKey;
-    private final Key signingKey;
-
-    @Autowired
-    public JwtTokenGeneratorImpl(@Value("${JWT_SECRET_KEY}") String secretKey) {
-        this.secretKey = secretKey;
-        this.signingKey = generateSigningKey();
-    }
+    private final SecretKey signingKey;
 
     @Override
     public String generate(UserCredentials credentials) {
@@ -60,11 +51,6 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
         Instant now = Instant.now();
         Instant expiration = now.plus(30, ChronoUnit.MINUTES);
         return new TokenLifetime(Date.from(now), Date.from(expiration));
-    }
-
-    private Key generateSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private static record TokenLifetime(Date issuedAt, Date expirationAt) { }
