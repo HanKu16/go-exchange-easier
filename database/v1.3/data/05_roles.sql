@@ -1,4 +1,4 @@
 INSERT INTO roles(name, description)
 VALUES
-	('USER', 'Casual user, no special right.'),
-	('ADMIN', 'All rights.');
+	('ROLE_USER', 'Casual user, no special right.'),
+	('ROLE_ADMIN', 'All rights.');

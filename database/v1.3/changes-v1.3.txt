@@ -1,3 +1,4 @@
 1. Remove many to many relationship between 'users' and 'roles', replace 'users' in this relationship by 'user_credentials'
 2. Add 'is_enabled' column in 'user_credentials' table
 3. Rename 'is_mail_notification_enable' column in 'user_notifications' table to 'is_mail_notification_enabled'
+4. Add 'ROLE_' prefix to each role names in 'roles' table
