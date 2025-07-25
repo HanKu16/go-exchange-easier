@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.service.impl;
 
+import com.go_exchange_easier.backend.model.Role;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.JwtTokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import io.jsonwebtoken.security.Keys;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 
@@ -46,7 +49,10 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", credentials.getId());
         claims.put("username", credentials.getUsername());
-        claims.put("roles", credentials.getRoles());
+        Set<String> roleNames = credentials.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
+        claims.put("roles", roleNames);
         return claims;
     }
 
