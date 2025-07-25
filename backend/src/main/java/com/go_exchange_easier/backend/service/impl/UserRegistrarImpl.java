@@ -2,21 +2,17 @@ package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.user.UserRegistrationRequest;
 import com.go_exchange_easier.backend.dto.user.UserRegistrationResponse;
+import com.go_exchange_easier.backend.exception.NotExistingRoleException;
 import com.go_exchange_easier.backend.exception.UsernameAlreadyExistsException;
-import com.go_exchange_easier.backend.model.User;
-import com.go_exchange_easier.backend.model.UserCredentials;
-import com.go_exchange_easier.backend.model.UserDescription;
-import com.go_exchange_easier.backend.model.UserNotification;
-import com.go_exchange_easier.backend.repository.UserCredentialsRepository;
-import com.go_exchange_easier.backend.repository.UserDescriptionRepository;
-import com.go_exchange_easier.backend.repository.UserNotificationRepository;
-import com.go_exchange_easier.backend.repository.UserRepository;
+import com.go_exchange_easier.backend.model.*;
+import com.go_exchange_easier.backend.repository.*;
 import com.go_exchange_easier.backend.service.UserRegistrar;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +22,7 @@ public class UserRegistrarImpl implements UserRegistrar {
     private final UserDescriptionRepository userDescriptionRepository;
     private final UserNotificationRepository userNotificationRepository;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -41,6 +38,7 @@ public class UserRegistrarImpl implements UserRegistrar {
         UserCredentials credentials = createCredentials(user, request);
         UserDescription description = createDescription(user);
         UserNotification notification = createNotification(user, request);
+        assignRoles(credentials);
         return new UserRegistrationResponse(user.getId(), credentials.getUsername(),
                 user.getNick(), user.getCreatedAt());
     }
@@ -77,6 +75,14 @@ public class UserRegistrarImpl implements UserRegistrar {
         notification.setMail(request.mail());
         notification.setMailNotificationEnabled(request.mail() != null);
         return userNotificationRepository.save(notification);
+    }
+
+    private void assignRoles(UserCredentials credentials) {
+        Optional<Role> role = roleRepository.findByName(RoleName.ROLE_USER.name());
+        if (role.isEmpty()) {
+            throw new NotExistingRoleException("Role of name 'USER' not found.");
+        }
+        credentials.getRoles().add(role.get());
     }
 
 }
