@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.service.impl;
 
+import com.go_exchange_easier.backend.exception.MissingJwtClaimException;
 import com.go_exchange_easier.backend.service.JwtClaimsExtractor;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,6 +11,17 @@ import java.util.function.Function;
 import java.util.List;
 import java.util.Date;
 
+/**
+ * {@code JwtClaimsExtractorImpl} is a utility class responsible for extracting
+ * various claims from a JSON Web Token (JWT).
+ * <p>
+ * Class parses and validates JWTs signature and expiration date, ensuring their
+ * integrity and authenticity using a provided secret signing key. This class
+ * provides methods to retrieve common claims such as user ID, username,
+ * roles, and expiration date. If there is no claim in the token, it
+ * throws MissingJwtClaimException.
+ * </p>
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtClaimsExtractorImpl implements JwtClaimsExtractor {
@@ -18,17 +30,35 @@ public class JwtClaimsExtractorImpl implements JwtClaimsExtractor {
 
     @Override
     public int extractUserId(String token) {
-        return extractClaim(token, claims -> (int) claims.get("userId"));
+        Integer userId = extractClaim(token,
+                claims -> (Integer) claims.get("userId"));
+        if (userId == null) {
+            throw new MissingJwtClaimException("There is " +
+                    "no claim 'userId' in the token.");
+        }
+        return userId;
     }
 
     @Override
     public String extractUsername(String token) {
-        return extractClaim(token, claims -> (String) claims.get("username"));
+        String username = extractClaim(token,
+                claims -> (String) claims.get("username"));
+        if (username == null) {
+            throw new MissingJwtClaimException("There is " +
+                    "no claim 'username' in the token.");
+        }
+        return username;
     }
 
     @Override
     public List<String> extractRoles(String token) {
-        return extractClaim(token, claims -> (List<String>) claims.get("roles"));
+        List<String> roles = extractClaim(token,
+                claims -> (List<String>) claims.get("roles"));
+        if (roles == null) {
+            throw new MissingJwtClaimException("There is " +
+                    "no claim 'roles' in the token.");
+        }
+        return roles;
     }
 
     @Override
