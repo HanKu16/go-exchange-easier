@@ -34,3 +34,6 @@ build/
 
 ### Environment Variables for app ###
 .env
+
+### Else ###
+src/main/resources/META-INF/
