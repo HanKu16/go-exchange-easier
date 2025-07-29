@@ -15,6 +15,13 @@ import java.util.stream.Collectors;
 import io.jsonwebtoken.Jwts;
 import javax.crypto.SecretKey;
 
+/**
+ * {@code JwtTokenGeneratorImpl} is a class responsible for generating
+ * JWT token used to authenticate and authorize user. It puts additional
+ * claims like userId, username and roles inside the token. Token is
+ * signed by signing key to be able later to check if he was not
+ * malformed by somebody.
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtTokenGeneratorImpl implements JwtTokenGenerator {

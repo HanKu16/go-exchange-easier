@@ -14,13 +14,8 @@ import java.util.Date;
 /**
  * {@code JwtClaimsExtractorImpl} is a utility class responsible for extracting
  * various claims from a JSON Web Token (JWT).
- * <p>
- * Class parses and validates JWTs signature and expiration date, ensuring their
- * integrity and authenticity using a provided secret signing key. This class
- * provides methods to retrieve common claims such as user ID, username,
- * roles, and expiration date. If there is no claim in the token, it
+ * If there is no claim in of given name in the token, it
  * throws MissingJwtClaimException.
- * </p>
  */
 @Component
 @RequiredArgsConstructor

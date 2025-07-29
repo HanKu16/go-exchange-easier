@@ -9,6 +9,11 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import io.jsonwebtoken.security.SignatureException;
 
+/**
+ * {@code JwtTokenValidatorImpl} is a class responsible for validating
+ * JWT token. It checks if token was not malformed, expired and other
+ * issues with token. Class logs if something was wrong with the token.
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtTokenValidatorImpl implements JwtTokenValidator {
