@@ -1,6 +1,8 @@
 package com.go_exchange_easier.backend.exception;
 
 import com.go_exchange_easier.backend.dto.ErrorResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -14,11 +16,15 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger logger = LogManager.getLogger(
+            GlobalExceptionHandler.class);
+
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUsernameAlreadyExists(
             UsernameAlreadyExistsException e) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.CONFLICT.value(), e.getMessage());
+        logger.error(e.getMessage());
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.CONFLICT);
     }
@@ -32,6 +38,7 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 String.join(" ", validationErrors));
+        logger.error(response.message());
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.BAD_REQUEST);
     }
@@ -42,6 +49,7 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
                 "Authentication failed.");
+        logger.error(e.getMessage());
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.UNAUTHORIZED);
     }
@@ -52,6 +60,7 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Server error.");
+        logger.error(e.getMessage());
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -62,6 +71,7 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
                 "Access denied.");
+        logger.error(e.getMessage());
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.UNAUTHORIZED);
     }
@@ -72,6 +82,7 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 e.getMessage());
+        logger.error(e.getMessage());
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.BAD_REQUEST);
     }
@@ -82,6 +93,7 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 e.getMessage());
+        logger.error(e.getMessage());
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.NOT_FOUND);
     }
@@ -92,6 +104,18 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 e.getMessage());
+        logger.error(e.getMessage());
+        return new ResponseEntity<ErrorResponse>(
+                response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserStatusDoesNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleUserStatusDoesNotExistException(
+            UserStatusDoesNotExistException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                e.getMessage());
+        logger.error(e.getMessage());
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.NOT_FOUND);
     }
