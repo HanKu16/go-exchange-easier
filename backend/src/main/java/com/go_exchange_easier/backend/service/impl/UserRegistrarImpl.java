@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.user.UserRegistrationRequest;
 import com.go_exchange_easier.backend.dto.user.UserRegistrationResponse;
-import com.go_exchange_easier.backend.exception.NotExistingRoleException;
+import com.go_exchange_easier.backend.exception.RoleDoesNotExistException;
 import com.go_exchange_easier.backend.exception.UsernameAlreadyExistsException;
 import com.go_exchange_easier.backend.model.*;
 import com.go_exchange_easier.backend.repository.*;
@@ -80,7 +80,7 @@ public class UserRegistrarImpl implements UserRegistrar {
     private void assignRoles(UserCredentials credentials) {
         Optional<Role> role = roleRepository.findByName(RoleName.ROLE_USER.name());
         if (role.isEmpty()) {
-            throw new NotExistingRoleException("Role of name 'USER' not found.");
+            throw new RoleDoesNotExistException("Role of name 'USER' not found.");
         }
         credentials.getRoles().add(role.get());
     }
