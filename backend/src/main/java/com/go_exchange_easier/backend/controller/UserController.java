@@ -1,9 +1,6 @@
 package com.go_exchange_easier.backend.controller;
 
-import com.go_exchange_easier.backend.dto.user.AssignHomeUniversityRequest;
-import com.go_exchange_easier.backend.dto.user.AssignHomeUniversityResponse;
-import com.go_exchange_easier.backend.dto.user.UpdateDescriptionRequest;
-import com.go_exchange_easier.backend.dto.user.UpdateUserDescriptionResponse;
+import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +34,15 @@ public class UserController {
             @RequestBody @Valid AssignHomeUniversityRequest request) {
         AssignHomeUniversityResponse response = userService.assignHomeUniversity(
                 userId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{userId}/status")
+    @PreAuthorize("#userId == authentication.principal.id")
+    public ResponseEntity<UpdateUserStatusResponse> updateStatus(
+            @PathVariable Integer userId,
+            @RequestBody @Valid UpdateUserStatusRequest request) {
+        UpdateUserStatusResponse response = userService.updateStatus(userId, request);
         return ResponseEntity.ok(response);
     }
 
