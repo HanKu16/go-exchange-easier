@@ -1,17 +1,17 @@
 package com.go_exchange_easier.backend.service.impl;
 
-import com.go_exchange_easier.backend.dto.user.AssignHomeUniversityRequest;
-import com.go_exchange_easier.backend.dto.user.AssignHomeUniversityResponse;
-import com.go_exchange_easier.backend.dto.user.UpdateDescriptionRequest;
-import com.go_exchange_easier.backend.dto.user.UpdateUserDescriptionResponse;
+import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.exception.UniversityDoesNotExistException;
 import com.go_exchange_easier.backend.exception.UserDoesNotExistException;
+import com.go_exchange_easier.backend.exception.UserStatusDoesNotExistException;
 import com.go_exchange_easier.backend.model.University;
 import com.go_exchange_easier.backend.model.User;
 import com.go_exchange_easier.backend.model.UserDescription;
+import com.go_exchange_easier.backend.model.UserStatus;
 import com.go_exchange_easier.backend.repository.UniversityRepository;
 import com.go_exchange_easier.backend.repository.UserDescriptionRepository;
 import com.go_exchange_easier.backend.repository.UserRepository;
+import com.go_exchange_easier.backend.repository.UserStatusRepository;
 import com.go_exchange_easier.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserDescriptionRepository userDescriptionRepository;
     private final UniversityRepository universityRepository;
+    private final UserStatusRepository userStatusRepository;
 
     @Override
     public UpdateUserDescriptionResponse updateDescription(
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
             int userId, AssignHomeUniversityRequest request) {
         University university = universityRepository.findById(request.universityId())
                 .orElseThrow(() -> new UniversityDoesNotExistException("University " +
-                                "of id" + request.universityId() + " does not exist."));
+                                "of id " + request.universityId() + " does not exist."));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserDoesNotExistException(
                         "User of id " + userId + " does not exist."));
@@ -53,6 +54,21 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return new AssignHomeUniversityResponse(userId, university.getId(),
                 university.getOriginalName(), university.getEnglishName());
+    }
+
+    @Override
+    public UpdateUserStatusResponse updateStatus(
+            int userId, UpdateUserStatusRequest request) {
+        UserStatus status = userStatusRepository.findById(request.statusId())
+                .orElseThrow(() -> new UserStatusDoesNotExistException("Status " +
+                        "of id " + request.statusId() + " does not exist."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserDoesNotExistException(
+                        "User of id " + userId + " does not exist."));
+        user.setStatus(status);
+        userRepository.save(user);
+        return new UpdateUserStatusResponse(userId,
+                status.getId(), status.getName());
     }
 
 }
