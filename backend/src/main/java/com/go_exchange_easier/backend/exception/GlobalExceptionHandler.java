@@ -46,9 +46,9 @@ public class GlobalExceptionHandler {
                 response, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(NotExistingRoleException.class)
+    @ExceptionHandler(RoleDoesNotExistException.class)
     public ResponseEntity<ErrorResponse> handleNotExistingRoleException(
-            NotExistingRoleException e) {
+            RoleDoesNotExistException e) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Server error.");
@@ -74,6 +74,26 @@ public class GlobalExceptionHandler {
                 e.getMessage());
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UniversityDoesNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleUniversityDoesNotExistException(
+            UniversityDoesNotExistException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                e.getMessage());
+        return new ResponseEntity<ErrorResponse>(
+                response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserDoesNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleUserDoesNotExistException(
+            UserDoesNotExistException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                e.getMessage());
+        return new ResponseEntity<ErrorResponse>(
+                response, HttpStatus.NOT_FOUND);
     }
 
 }
