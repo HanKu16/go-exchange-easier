@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserNotificationRepository extends
-        JpaRepository<UserNotification, Integer> {
-
-}
+        JpaRepository<UserNotification, Integer> { }
