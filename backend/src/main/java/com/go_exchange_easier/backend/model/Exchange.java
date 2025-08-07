@@ -26,7 +26,7 @@ public class Exchange {
     @Column(name = "end_at")
     private LocalDate endAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
