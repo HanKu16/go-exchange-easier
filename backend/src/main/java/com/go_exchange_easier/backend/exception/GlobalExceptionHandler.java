@@ -120,4 +120,38 @@ public class GlobalExceptionHandler {
                 response, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(InvalidPrincipalTypeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPrincipalTypeException(
+            InvalidPrincipalTypeException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "An error occurred.");
+        logger.error(e.getMessage(), e);
+        return new ResponseEntity<ErrorResponse>(
+                response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({UserDoesNotExistException.class,
+            UniversityDoesNotExistException.class,
+            UniversityMajorDoesNotExistException.class,
+            ExchangeDoesNotExistException.class})
+    public ResponseEntity<ErrorResponse> handleEntityDoesNotExistException(RuntimeException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                e.getMessage());
+        logger.error(e.getMessage(), e);
+        return new ResponseEntity<ErrorResponse>(
+                response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotOwnerOfResourceException.class)
+    public ResponseEntity<ErrorResponse> handleNotOwnerOfResourceException(
+            NotOwnerOfResourceException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                "You are not entitled to do this.");
+        return new ResponseEntity<ErrorResponse>(
+                response, HttpStatus.FORBIDDEN);
+    }
+
 }
