@@ -1,6 +1,9 @@
 package com.go_exchange_easier.backend.exception;
 
 import com.go_exchange_easier.backend.dto.ErrorResponse;
+import com.go_exchange_easier.backend.exception.base.InvalidPayloadException;
+import com.go_exchange_easier.backend.exception.base.ResourceNotFoundException;
+import com.go_exchange_easier.backend.exception.domain.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -54,9 +57,9 @@ public class GlobalExceptionHandler {
                 response, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(RoleDoesNotExistException.class)
+    @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotExistingRoleException(
-            RoleDoesNotExistException e) {
+            RoleNotFoundException e) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Server error.");
@@ -87,39 +90,6 @@ public class GlobalExceptionHandler {
                 response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UniversityDoesNotExistException.class)
-    public ResponseEntity<ErrorResponse> handleUniversityDoesNotExistException(
-            UniversityDoesNotExistException e) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                e.getMessage());
-        logger.error(e.getMessage());
-        return new ResponseEntity<ErrorResponse>(
-                response, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(UserDoesNotExistException.class)
-    public ResponseEntity<ErrorResponse> handleUserDoesNotExistException(
-            UserDoesNotExistException e) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                e.getMessage());
-        logger.error(e.getMessage());
-        return new ResponseEntity<ErrorResponse>(
-                response, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(UserStatusDoesNotExistException.class)
-    public ResponseEntity<ErrorResponse> handleUserStatusDoesNotExistException(
-            UserStatusDoesNotExistException e) {
-        ErrorResponse response = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                e.getMessage());
-        logger.error(e.getMessage());
-        return new ResponseEntity<ErrorResponse>(
-                response, HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(InvalidPrincipalTypeException.class)
     public ResponseEntity<ErrorResponse> handleInvalidPrincipalTypeException(
             InvalidPrincipalTypeException e) {
@@ -131,17 +101,26 @@ public class GlobalExceptionHandler {
                 response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({UserDoesNotExistException.class,
-            UniversityDoesNotExistException.class,
-            UniversityMajorDoesNotExistException.class,
-            ExchangeDoesNotExistException.class})
-    public ResponseEntity<ErrorResponse> handleEntityDoesNotExistException(RuntimeException e) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityDoesNotExistException(
+            ResourceNotFoundException e) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
-                e.getMessage());
+                "Resource was not found.");
         logger.error(e.getMessage(), e);
         return new ResponseEntity<ErrorResponse>(
                 response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleInvalidPayloadException(
+            InvalidPayloadException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                e.getMessage());
+        logger.error(e.getMessage(), e);
+        return new ResponseEntity<ErrorResponse>(
+                response, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(NotOwnerOfResourceException.class)

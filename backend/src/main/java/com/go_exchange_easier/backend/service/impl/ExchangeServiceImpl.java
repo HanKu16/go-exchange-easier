@@ -3,6 +3,10 @@ package com.go_exchange_easier.backend.service.impl;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeRequest;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeResponse;
 import com.go_exchange_easier.backend.exception.*;
+import com.go_exchange_easier.backend.exception.domain.ExchangeNotFoundException;
+import com.go_exchange_easier.backend.exception.domain.UniversityNotFoundException;
+import com.go_exchange_easier.backend.exception.domain.UniversityMajorNotFoundException;
+import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
 import com.go_exchange_easier.backend.model.*;
 import com.go_exchange_easier.backend.repository.ExchangeRepository;
 import com.go_exchange_easier.backend.repository.UniversityMajorRepository;
@@ -28,15 +32,15 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Transactional
     public CreateExchangeResponse create(CreateExchangeRequest request) {
         if (!userRepository.existsById(request.userId())) {
-            throw new UserDoesNotExistException("User of id " +
+            throw new UserNotFoundException("User of id " +
                     request.userId() + " does not exist.");
         }
         if (!universityRepository.existsById(request.universityId())) {
-            throw new UniversityDoesNotExistException("University of id " +
+            throw new UniversityNotFoundException("University of id " +
                     request.userId() + " does not exist.");
         }
         if (!universityMajorRepository.existsById(request.universityMajorId())) {
-            throw new UniversityMajorDoesNotExistException("Major of id " +
+            throw new UniversityMajorNotFoundException("Major of id " +
                     request.universityMajorId() + " does not exist.");
         }
         User user = userRepository.getReferenceById(request.userId());
@@ -53,7 +57,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Transactional
     public void delete(int exchangeId) {
         Exchange exchange = exchangeRepository.findById(exchangeId)
-                .orElseThrow(() -> new ExchangeDoesNotExistException(
+                .orElseThrow(() -> new ExchangeNotFoundException(
                         "Exchange of id " + exchangeId + " does not exist."));
         if (!resourceOwnershipChecker.isOwner(exchange)) {
             throw new NotOwnerOfResourceException("You can can not " +
