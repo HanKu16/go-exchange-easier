@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.service;
+package com.go_exchange_easier.backend.security.jwt;
 
 import com.go_exchange_easier.backend.model.UserCredentials;
 

@@ -5,7 +5,7 @@ import com.go_exchange_easier.backend.dto.auth.LoginResponse;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.repository.UserCredentialsRepository;
 import com.go_exchange_easier.backend.service.AuthService;
-import com.go_exchange_easier.backend.service.JwtTokenGenerator;
+import com.go_exchange_easier.backend.security.jwt.JwtTokenGenerator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

@@ -1,8 +1,8 @@
-package com.go_exchange_easier.backend.service.impl;
+package com.go_exchange_easier.backend.security.jwt.impl;
 
 import com.go_exchange_easier.backend.model.Role;
 import com.go_exchange_easier.backend.model.UserCredentials;
-import com.go_exchange_easier.backend.service.JwtTokenGenerator;
+import com.go_exchange_easier.backend.security.jwt.JwtTokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.time.temporal.ChronoUnit;

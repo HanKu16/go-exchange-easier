@@ -1,7 +1,7 @@
-package com.go_exchange_easier.backend.service.impl;
+package com.go_exchange_easier.backend.security.jwt.impl;
 
 import com.go_exchange_easier.backend.exception.MissingJwtClaimException;
-import com.go_exchange_easier.backend.service.JwtClaimsExtractor;
+import com.go_exchange_easier.backend.security.jwt.JwtClaimsExtractor;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;

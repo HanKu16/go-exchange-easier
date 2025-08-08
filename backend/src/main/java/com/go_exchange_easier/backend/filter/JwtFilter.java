@@ -1,8 +1,8 @@
 package com.go_exchange_easier.backend.filter;
 
 import com.go_exchange_easier.backend.exception.MissingJwtClaimException;
-import com.go_exchange_easier.backend.service.JwtClaimsExtractor;
-import com.go_exchange_easier.backend.service.JwtTokenValidator;
+import com.go_exchange_easier.backend.security.jwt.JwtClaimsExtractor;
+import com.go_exchange_easier.backend.security.jwt.JwtTokenValidator;
 import com.go_exchange_easier.backend.service.impl.UserCredentialsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
