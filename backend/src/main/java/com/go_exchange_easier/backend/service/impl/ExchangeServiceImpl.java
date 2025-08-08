@@ -3,10 +3,9 @@ package com.go_exchange_easier.backend.service.impl;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeRequest;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeResponse;
 import com.go_exchange_easier.backend.exception.*;
+import com.go_exchange_easier.backend.exception.base.InvalidPayloadException;
 import com.go_exchange_easier.backend.exception.domain.ExchangeNotFoundException;
-import com.go_exchange_easier.backend.exception.domain.UniversityNotFoundException;
-import com.go_exchange_easier.backend.exception.domain.UniversityMajorNotFoundException;
-import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
+import com.go_exchange_easier.backend.exception.domain.payload.UniversityFromPayloadNotFoundException;
 import com.go_exchange_easier.backend.model.*;
 import com.go_exchange_easier.backend.repository.ExchangeRepository;
 import com.go_exchange_easier.backend.repository.UniversityMajorRepository;
@@ -30,20 +29,16 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     @Transactional
-    public CreateExchangeResponse create(CreateExchangeRequest request) {
-        if (!userRepository.existsById(request.userId())) {
-            throw new UserNotFoundException("User of id " +
-                    request.userId() + " does not exist.");
-        }
+    public CreateExchangeResponse create(int userId, CreateExchangeRequest request) {
         if (!universityRepository.existsById(request.universityId())) {
-            throw new UniversityNotFoundException("University of id " +
-                    request.userId() + " does not exist.");
+            throw new UniversityFromPayloadNotFoundException("University of id " +
+                    request.universityId() + " does not exist.");
         }
         if (!universityMajorRepository.existsById(request.universityMajorId())) {
-            throw new UniversityMajorNotFoundException("Major of id " +
+            throw new UniversityFromPayloadNotFoundException("Major of id " +
                     request.universityMajorId() + " does not exist.");
         }
-        User user = userRepository.getReferenceById(request.userId());
+        User user = userRepository.getReferenceById(userId);
         University university = universityRepository
                 .getReferenceById(request.universityId());
         UniversityMajor major = universityMajorRepository

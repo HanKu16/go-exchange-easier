@@ -5,7 +5,7 @@ import com.go_exchange_easier.backend.dto.exchange.CreateExchangeResponse;
 
 public interface ExchangeService {
 
-    CreateExchangeResponse create(CreateExchangeRequest request);
+    CreateExchangeResponse create(int userId, CreateExchangeRequest request);
     void delete(int exchangeId);
 
 }

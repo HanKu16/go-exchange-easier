@@ -15,9 +15,6 @@ public record CreateExchangeRequest(
                 "haven't finished yet pick approximate date from the future.")
         LocalDate endAt,
 
-        @NotNull(message = "User id can not be null.")
-        Integer userId,
-
         @NotNull(message = "University id can not be null.")
         Short universityId,
 
