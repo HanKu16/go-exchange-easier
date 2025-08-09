@@ -7,6 +7,7 @@ public record ApiErrorResponse(
 
         HttpStatus status,
         String message,
-        List<ErrorDetail> errors
+        List<FieldErrorDetail> fieldErrors,
+        List<GlobalErrorDetail> globalErrors
 
 ) { }

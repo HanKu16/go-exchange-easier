@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.dto.error;
 
-public record ErrorDetail(
+public record FieldErrorDetail(
 
         String field,
         String code,
