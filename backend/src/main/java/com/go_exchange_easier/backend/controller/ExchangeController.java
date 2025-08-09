@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/exchange")
@@ -25,7 +26,9 @@ public class ExchangeController {
             @AuthenticationPrincipal UserCredentials principal) {
         CreateExchangeResponse response = exchangeService
                 .create(principal.getId(), request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.created(URI.create(
+                "/api/exchange/" + response.id()))
+                .body(response);
     }
 
     @DeleteMapping("/{exchangeId}")
