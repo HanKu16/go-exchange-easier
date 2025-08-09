@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(UniversityReviewsReactionCountId.class)
-public class UniversityReviewsReactionCount {
+public class UniversityReviewReactionCount {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

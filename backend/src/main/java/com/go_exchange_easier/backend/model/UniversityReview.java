@@ -40,6 +40,6 @@ public class UniversityReview {
     private University university;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    private Set<UniversityReviewsReactionCount> reactionCounts = new HashSet<>();
+    private Set<UniversityReviewReactionCount> reactionCounts = new HashSet<>();
 
 }

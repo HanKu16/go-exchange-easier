@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReactionsOnUniversityReviews {
+public class ReactionOnUniversityReview {
 
     @Id
     @Column(name = "reaction_on_university_review_id")
