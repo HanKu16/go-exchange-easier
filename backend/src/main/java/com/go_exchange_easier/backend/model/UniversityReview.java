@@ -43,6 +43,6 @@ public class UniversityReview {
     private Set<UniversityReviewReactionCount> reactionCounts = new HashSet<>();
 
     @OneToMany(mappedBy = "review")
-    private Set<ReactionOnUniversityReview> reactions = new HashSet<>();
+    private Set<UniversityReviewReaction> reactions = new HashSet<>();
 
 }
