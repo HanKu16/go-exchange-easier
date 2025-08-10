@@ -21,13 +21,13 @@ public class ReactionOnUniversityReview {
 
     @ManyToOne
     @JoinColumn(name = "reaction_type_id")
-    private ReactionType reactionTypeId;
+    private ReactionType reactionType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_review_id")
     private UniversityReview review;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
 

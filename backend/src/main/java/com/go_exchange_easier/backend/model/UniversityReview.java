@@ -39,7 +39,10 @@ public class UniversityReview {
     @JoinColumn(name = "university_id")
     private University university;
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "review", fetch = FetchType.EAGER)
     private Set<UniversityReviewReactionCount> reactionCounts = new HashSet<>();
+
+    @OneToMany(mappedBy = "review")
+    private Set<ReactionOnUniversityReview> reactions = new HashSet<>();
 
 }

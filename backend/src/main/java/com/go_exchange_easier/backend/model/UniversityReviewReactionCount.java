@@ -17,12 +17,12 @@ import lombok.Setter;
 public class UniversityReviewReactionCount {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_review_id")
     private UniversityReview review;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "reaction_type_id")
     private ReactionType reactionType;
 
