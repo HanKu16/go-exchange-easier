@@ -19,6 +19,7 @@ public class InternalErrorGlobalHandler {
 
     @ExceptionHandler({InvalidPrincipalTypeException.class,
             MissingDefaultRoleException.class,
+            IllegalStateException.class,
             Exception.class})
     public ResponseEntity<ApiErrorResponse> handleInternalError(
             InvalidPrincipalTypeException e) {
