@@ -1,12 +1,16 @@
 package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.university.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.model.ReactionType;
+import com.go_exchange_easier.backend.model.UniversityReview;
 import com.go_exchange_easier.backend.model.UniversityReviewReactionCount;
+import com.go_exchange_easier.backend.repository.ReactionTypeRepository;
 import com.go_exchange_easier.backend.repository.UniversityReviewReactionCountRepository;
 import com.go_exchange_easier.backend.service.UniversityReviewReactionCountService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,6 +19,7 @@ public class UniversityReviewReactionCountServiceImpl implements
         UniversityReviewReactionCountService {
 
     private final UniversityReviewReactionCountRepository reactionCountRepository;
+    private final ReactionTypeRepository reactionTypeRepository;
 
     @Override
     @Transactional
@@ -53,6 +58,30 @@ public class UniversityReviewReactionCountServiceImpl implements
         decrementCountValue(countForOldType);
         incrementCountValue(countForNewType);
         return mapToReactionDetails(allCountsForReview);
+    }
+
+    @Override
+    @Transactional
+    public List<UniversityReviewReactionDetail> createCounts(UniversityReview review) {
+        short defaultCountValue = (short) 0;
+        List<UniversityReviewReactionCount> countsForReview = new ArrayList<>();
+
+        List<ReactionType> allReactionTypes = reactionTypeRepository.findAll();
+        for (ReactionType reactionType : allReactionTypes) {
+            UniversityReviewReactionCount count = new UniversityReviewReactionCount();
+            count.setReview(review);
+            count.setReactionType(reactionType);
+            count.setCount(defaultCountValue);
+            countsForReview.add(count);
+        }
+        List<UniversityReviewReactionCount> savedCounts =
+                reactionCountRepository.saveAll(countsForReview);
+        return mapToReactionDetails(savedCounts);
+    }
+
+    @Override
+    public void deleteCounts(List<UniversityReviewReactionCount> counts) {
+        reactionCountRepository.deleteAll(counts);
     }
 
     private List<UniversityReviewReactionCount> getAllCountsForReview(int reviewId) {
