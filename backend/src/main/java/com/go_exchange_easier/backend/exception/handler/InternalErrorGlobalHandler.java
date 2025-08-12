@@ -22,7 +22,7 @@ public class InternalErrorGlobalHandler {
             IllegalStateException.class,
             Exception.class})
     public ResponseEntity<ApiErrorResponse> handleInternalError(
-            InvalidPrincipalTypeException e) {
+            Exception e) {
         logger.error(e.getMessage(), e);
         ApiErrorResponse response = new ApiErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected " +

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import java.nio.file.AccessDeniedException;
 import java.security.SignatureException;
 import java.util.List;
 
@@ -43,9 +44,9 @@ public class SecurityGlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(NotOwnerOfResourceException.class)
-    public ResponseEntity<ApiErrorResponse> handleNotOwnerOfResourceException(
-            NotOwnerOfResourceException e) {
+    @ExceptionHandler({NotOwnerOfResourceException.class, AccessDeniedException.class})
+    public ResponseEntity<ApiErrorResponse> handleAccessExceptions(
+            Exception e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(ApiErrorResponseCode
                 .DeletePermissionDenied.name(), e.getMessage());
@@ -53,5 +54,6 @@ public class SecurityGlobalExceptionHandler {
                 "Access denied.", List.of(), List.of(globalError));
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
+
 
 }
