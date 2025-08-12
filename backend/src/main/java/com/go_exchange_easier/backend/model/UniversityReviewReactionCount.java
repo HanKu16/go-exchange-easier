@@ -2,28 +2,27 @@ package com.go_exchange_easier.backend.model;
 
 import com.go_exchange_easier.backend.model.keys.UniversityReviewsReactionCountId;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "university_reviews_reaction_counts")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @IdClass(UniversityReviewsReactionCountId.class)
 public class UniversityReviewReactionCount {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_review_id")
+    @EqualsAndHashCode.Include
     private UniversityReview review;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "reaction_type_id")
+    @EqualsAndHashCode.Include
     private ReactionType reactionType;
 
     @Column(name = "count")

@@ -1,10 +1,7 @@
 package com.go_exchange_easier.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,14 +15,16 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserCredentials implements UserDetails {
 
     @Id
     @Column(name = "user_id")
+    @EqualsAndHashCode.Include
     private Integer id;
 
     @Column(name = "username")
+    @EqualsAndHashCode.Include
     private String username;
 
     @Column(name = "password")

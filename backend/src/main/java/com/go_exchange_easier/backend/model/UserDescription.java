@@ -1,10 +1,7 @@
 package com.go_exchange_easier.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -12,11 +9,12 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserDescription {
 
     @Id
     @Column(name = "user_id")
+    @EqualsAndHashCode.Include
     private Integer id;
 
     @Column(name = "text_content")

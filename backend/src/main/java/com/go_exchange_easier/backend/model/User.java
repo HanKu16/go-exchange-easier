@@ -1,10 +1,7 @@
 package com.go_exchange_easier.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,12 +11,13 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Integer id;
 
     @Column(name = "nick")
@@ -61,13 +59,13 @@ public class User {
     @OneToMany(mappedBy = "author")
     private Set<UniversityReview> universityReviews = new HashSet<>();
 
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "follower")
     private Set<UserFollow> userFollowsSent = new HashSet<>();
 
-    @OneToMany(mappedBy = "followee", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "followee")
     private Set<UserFollow> userFollowsReceived = new HashSet<>();
 
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "follower")
     private Set<UniversityFollow> universityFollowsSent = new HashSet<>();
 
 }

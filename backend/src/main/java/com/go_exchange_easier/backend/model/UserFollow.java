@@ -2,17 +2,14 @@ package com.go_exchange_easier.backend.model;
 
 import com.go_exchange_easier.backend.model.keys.UserFollowId;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "user_follows")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode
 @IdClass(UserFollowId.class)
 public class UserFollow {
 
