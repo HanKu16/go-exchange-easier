@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,7 +45,9 @@ public class SecurityGlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler({NotOwnerOfResourceException.class, AccessDeniedException.class})
+    @ExceptionHandler({NotOwnerOfResourceException.class,
+            AccessDeniedException.class,
+            AuthorizationDeniedException.class})
     public ResponseEntity<ApiErrorResponse> handleAccessExceptions(
             Exception e) {
         logger.error(e.getMessage(), e);
