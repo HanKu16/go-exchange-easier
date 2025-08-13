@@ -17,13 +17,7 @@ import java.lang.annotation.Target;
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Exchange was successfully deleted",
-                content = @Content(mediaType = "application/json")),
-        @ApiResponse(
-                responseCode = "400",
-                description = "Validation failed - invalid request body",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = ApiErrorResponse.class))),
+                description = "Exchange was successfully deleted"),
         @ApiResponse(
                 responseCode = "403",
                 description = "User was trying to delete exchange that he is not owner of",
@@ -33,7 +27,6 @@ import java.lang.annotation.Target;
                 responseCode = "404",
                 description = "Exchange of given id was not found",
                 content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = ApiErrorResponse.class))),
-
+                        schema = @Schema(implementation = ApiErrorResponse.class)))
 })
 public @interface DeleteExchangeApiDocs { }
