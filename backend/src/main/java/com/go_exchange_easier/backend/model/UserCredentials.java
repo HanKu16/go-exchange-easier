@@ -33,7 +33,7 @@ public class UserCredentials implements UserDetails {
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @MapsId
     private User user;

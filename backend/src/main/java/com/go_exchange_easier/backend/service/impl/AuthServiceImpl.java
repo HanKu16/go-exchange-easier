@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.auth.LoginRequest;
 import com.go_exchange_easier.backend.dto.auth.LoginResponse;
+import com.go_exchange_easier.backend.exception.InvalidPrincipalTypeException;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.repository.UserCredentialsRepository;
 import com.go_exchange_easier.backend.service.AuthService;
@@ -25,11 +26,14 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.login(), request.password()));
-        UserCredentials credentials = userCredentialsRepository
-                .findByUsername(request.login()).get();
-        String token = jwtTokenGenerator.generate(credentials);
-        String tokenType = "Bearer";
-        return new LoginResponse(credentials.getId(), token, tokenType);
+        if (authentication.getPrincipal() instanceof UserCredentials credentials) {
+            String token = jwtTokenGenerator.generate(credentials);
+            String tokenType = "Bearer";
+            return new LoginResponse(credentials.getId(), token, tokenType);
+        }
+        throw new InvalidPrincipalTypeException("Principal was expected to be of " +
+                "type UserCredentials but was not.");
+
     }
 
 }

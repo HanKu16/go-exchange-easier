@@ -67,6 +67,9 @@ public class JwtFilter extends OncePerRequestFilter {
         if ((token != null) && jwtTokenValidator.validate(token)) {
             String username = jwtClaimsExtractor.extractUsername(token);
             UserDetails userDetails = loadUser(username);
+            if (!userDetails.isEnabled() || !userDetails.isAccountNonLocked())  {
+                return;
+            }
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
