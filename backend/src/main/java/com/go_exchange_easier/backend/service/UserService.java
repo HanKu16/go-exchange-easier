@@ -5,7 +5,7 @@ import com.go_exchange_easier.backend.dto.user.*;
 public interface UserService {
 
     UpdateUserDescriptionResponse updateDescription(
-            int userId, UpdateDescriptionRequest request);
+            int userId, UpdateUserDescriptionRequest request);
     AssignHomeUniversityResponse assignHomeUniversity(
             int userId, AssignHomeUniversityRequest request);
     UpdateUserStatusResponse updateStatus(int userId,

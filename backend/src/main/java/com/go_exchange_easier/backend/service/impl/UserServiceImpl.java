@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.user.*;
-import com.go_exchange_easier.backend.exception.domain.UniversityNotFoundException;
+import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserStatusNotFoundException;
 import com.go_exchange_easier.backend.model.University;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UpdateUserDescriptionResponse updateDescription(
-            int userId, UpdateDescriptionRequest request) {
+            int userId, UpdateUserDescriptionRequest request) {
         UserDescription description = userDescriptionRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(
                         "Description for user of id " + userId + " was not found. " +
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     public AssignHomeUniversityResponse assignHomeUniversity(
             int userId, AssignHomeUniversityRequest request) {
         University university = universityRepository.findById(request.universityId())
-                .orElseThrow(() -> new UniversityNotFoundException("University " +
+                .orElseThrow(() -> new ReferencedResourceNotFoundException("University " +
                                 "of id " + request.universityId() + " does not exist."));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     public UpdateUserStatusResponse updateStatus(
             int userId, UpdateUserStatusRequest request) {
         UserStatus status = userStatusRepository.findById(request.statusId())
-                .orElseThrow(() -> new UserStatusNotFoundException("Status " +
+                .orElseThrow(() -> new ReferencedResourceNotFoundException("Status " +
                         "of id " + request.statusId() + " does not exist."));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(
