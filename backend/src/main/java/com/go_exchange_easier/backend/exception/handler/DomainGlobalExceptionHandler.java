@@ -1,13 +1,11 @@
 package com.go_exchange_easier.backend.exception.handler;
 
-import com.go_exchange_easier.backend.dto.ErrorResponse;
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponseCode;
 import com.go_exchange_easier.backend.dto.error.GlobalErrorDetail;
 import com.go_exchange_easier.backend.exception.UsernameAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.base.ResourceNotFoundException;
-import com.go_exchange_easier.backend.exception.domain.RoleNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
