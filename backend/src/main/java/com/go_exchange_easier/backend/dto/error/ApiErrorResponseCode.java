@@ -7,6 +7,7 @@ public enum ApiErrorResponseCode {
     DeletePermissionDenied,
     AuthenticationFailed,
     InvalidToken,
-    LoginAlreadyTaken
+    LoginAlreadyTaken,
+    InvalidRequestBody
 
 }

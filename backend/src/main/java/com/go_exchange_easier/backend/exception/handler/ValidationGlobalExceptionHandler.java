@@ -1,12 +1,14 @@
 package com.go_exchange_easier.backend.exception.handler;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
+import com.go_exchange_easier.backend.dto.error.ApiErrorResponseCode;
 import com.go_exchange_easier.backend.dto.error.FieldErrorDetail;
 import com.go_exchange_easier.backend.dto.error.GlobalErrorDetail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,6 +28,17 @@ public class ValidationGlobalExceptionHandler {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
                 HttpStatus.BAD_REQUEST, "Validation failed for one or more fields.",
                 fieldErrorDetails, globalErrorDetails);
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadableException(
+            HttpMessageNotReadableException e) {
+        List<GlobalErrorDetail> globalErrorDetails = List.of(new GlobalErrorDetail(
+                ApiErrorResponseCode.InvalidRequestBody.name(), e.getMessage()));
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                HttpStatus.BAD_REQUEST, "There was something wrong with " +
+                "request body.", List.of(), globalErrorDetails);
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
