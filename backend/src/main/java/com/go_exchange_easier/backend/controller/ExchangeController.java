@@ -1,9 +1,12 @@
 package com.go_exchange_easier.backend.controller;
 
+import com.go_exchange_easier.backend.annoations.docs.exchange.CreateExchangeApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.exchange.DeleteExchangeApiDocs;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeRequest;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeResponse;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.ExchangeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +19,13 @@ import java.net.URI;
 @RequestMapping("/api/exchange")
 @RequiredArgsConstructor
 @EnableMethodSecurity
+@Tag(name = "Exchange", description = "Operations related to exchanges.")
 public class ExchangeController {
 
     private final ExchangeService exchangeService;
 
     @PostMapping
+    @CreateExchangeApiDocs
     public ResponseEntity<CreateExchangeResponse> create(
             @RequestBody @Valid CreateExchangeRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
@@ -32,6 +37,7 @@ public class ExchangeController {
     }
 
     @DeleteMapping("/{exchangeId}")
+    @DeleteExchangeApiDocs
     public ResponseEntity<Void> delete(@PathVariable Integer exchangeId) {
         exchangeService.delete(exchangeId);
         return ResponseEntity.noContent().build();
