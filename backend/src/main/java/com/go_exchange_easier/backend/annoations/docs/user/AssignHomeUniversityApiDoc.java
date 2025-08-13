@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.annoations.docs.user;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.dto.user.UpdateUserDescriptionResponse;
+import com.go_exchange_easier.backend.dto.user.AssignHomeUniversityResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
                 responseCode = "200",
                 description = "University was successfully assigned to user",
                 content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = UpdateUserDescriptionResponse.class))),
+                        schema = @Schema(implementation = AssignHomeUniversityResponse.class))),
         @ApiResponse(
                 responseCode = "400",
                 description = "Validation failed - invalid request body",

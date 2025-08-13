@@ -1,7 +1,6 @@
 package com.go_exchange_easier.backend.annoations.docs.exchange;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.dto.exchange.CreateExchangeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,8 +18,7 @@ import java.lang.annotation.Target;
         @ApiResponse(
                 responseCode = "200",
                 description = "Exchange was successfully deleted",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = CreateExchangeResponse.class))),
+                content = @Content(mediaType = "application/json")),
         @ApiResponse(
                 responseCode = "400",
                 description = "Validation failed - invalid request body",
