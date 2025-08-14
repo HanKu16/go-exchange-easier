@@ -3,7 +3,6 @@ package com.go_exchange_easier.backend.service.impl;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
-import com.go_exchange_easier.backend.exception.domain.UserStatusNotFoundException;
 import com.go_exchange_easier.backend.model.University;
 import com.go_exchange_easier.backend.model.User;
 import com.go_exchange_easier.backend.model.UserDescription;
@@ -46,7 +45,7 @@ public class UserServiceImpl implements UserService {
             int userId, AssignHomeUniversityRequest request) {
         University university = universityRepository.findById(request.universityId())
                 .orElseThrow(() -> new ReferencedResourceNotFoundException("University " +
-                                "of id " + request.universityId() + " does not exist."));
+                        "of id " + request.universityId() + " does not exist."));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(
                         "User of id " + userId + " does not exist."));
