@@ -34,47 +34,51 @@ public class UserRegistrarImpl implements UserRegistrar {
             throw new UsernameAlreadyExistsException("User of login " +
                     request.login() + " already exists.");
         }
-        User user = createUser(request);
-        UserCredentials credentials = createCredentials(user, request);
-        UserDescription description = createDescription(user);
-        UserNotification notification = createNotification(user, request);
+        UserCredentials credentials = buildCredentials(request);
         assignRoles(credentials);
-        return new UserRegistrationResponse(user.getId(), credentials.getUsername(),
-                user.getNick(), user.getCreatedAt());
+        UserCredentials savedCredentials = userCredentialsRepository.save(credentials);
+        UserDescription description = buildDescription();
+        UserDescription savedDescription = userDescriptionRepository.save(description);
+        UserNotification notification = buildNotification(request);
+        UserNotification savedNotification = userNotificationRepository.save(notification);
+        User user = buildUser(request, savedCredentials,
+                savedDescription, savedNotification);
+        User savedUser = userRepository.save(user);
+        return new UserRegistrationResponse(savedUser.getId(), credentials.getUsername(),
+                savedUser.getNick(), savedUser.getCreatedAt());
     }
 
-    private User createUser(UserRegistrationRequest request) {
+    private User buildUser(UserRegistrationRequest request, UserCredentials credentials,
+                           UserDescription description, UserNotification notification) {
         User user = new User();
         user.setNick(request.nick() != null ? request.nick() : request.login());
         user.setCreatedAt(OffsetDateTime.now());
-        return userRepository.save(user);
+        user.setCredentials(credentials);
+        user.setDescription(description);
+        user.setNotification(notification);
+        return user;
     }
 
-    private UserCredentials createCredentials(
-            User user, UserRegistrationRequest request) {
+    private UserCredentials buildCredentials(UserRegistrationRequest request) {
         String encodedPassword = passwordEncoder.encode(request.password());
         UserCredentials credentials = new UserCredentials();
-        credentials.setUser(user);
         credentials.setUsername(request.login());
         credentials.setPassword(encodedPassword);
         credentials.setEnabled(true);
-        return userCredentialsRepository.save(credentials);
+        return credentials;
     }
 
-    private UserDescription createDescription(User user) {
+    private UserDescription buildDescription() {
         UserDescription description = new UserDescription();
-        description.setUser(user);
         description.setTextContent("");
-        return userDescriptionRepository.save(description);
+        return description;
     }
 
-    private UserNotification createNotification(
-            User user, UserRegistrationRequest request) {
+    private UserNotification buildNotification(UserRegistrationRequest request) {
         UserNotification notification = new UserNotification();
-        notification.setUser(user);
         notification.setMail(request.mail());
         notification.setMailNotificationEnabled(request.mail() != null);
-        return userNotificationRepository.save(notification);
+        return notification;
     }
 
     private void assignRoles(UserCredentials credentials) {

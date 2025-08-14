@@ -5,6 +5,7 @@ import com.go_exchange_easier.backend.exception.InvalidPrincipalTypeException;
 import com.go_exchange_easier.backend.exception.domain.MissingDefaultRoleException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,7 +20,8 @@ public class InternalErrorGlobalHandler {
 
     @ExceptionHandler({InvalidPrincipalTypeException.class,
             MissingDefaultRoleException.class,
-            IllegalStateException.class})
+            IllegalStateException.class,
+            DataIntegrityViolationException.class})
     public ResponseEntity<ApiErrorResponse> handleInternalError(
             Exception e) {
         logger.error(e.getMessage(), e);
