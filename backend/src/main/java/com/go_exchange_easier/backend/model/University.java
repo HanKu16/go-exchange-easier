@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +28,9 @@ public class University {
 
     @Column(name = "link_to_website")
     private String linkToWebsite;
+
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
 
     @ManyToOne
     @JoinColumn(name = "city_id")

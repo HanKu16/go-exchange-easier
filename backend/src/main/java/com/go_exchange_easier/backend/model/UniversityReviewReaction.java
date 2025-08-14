@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "reactions_on_university_reviews")
+@Table(name = "university_review_reactions")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,7 +12,7 @@ import lombok.*;
 public class UniversityReviewReaction {
 
     @Id
-    @Column(name = "reaction_on_university_review_id")
+    @Column(name = "university_review_reaction_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;

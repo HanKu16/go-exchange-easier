@@ -29,21 +29,21 @@ public class User {
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
 
-    @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_credential_id")
+    private UserCredentials credentials;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_description_id")
     private UserDescription description;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_notification_id")
+    private UserNotification notification;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_status_id")
     private UserStatus status;
-
-    @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
-    private UserNotification notification;
-
-    @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
-    private UserCredentials credentials;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_of_origin_id")

@@ -13,7 +13,8 @@ import java.time.OffsetDateTime;
 public class UserDescription {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_description_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Integer id;
 
@@ -23,9 +24,7 @@ public class UserDescription {
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    @MapsId
+    @OneToOne(mappedBy = "description")
     private User user;
 
 }

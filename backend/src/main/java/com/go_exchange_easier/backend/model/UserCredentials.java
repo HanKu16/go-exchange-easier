@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 public class UserCredentials implements UserDetails {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_credential_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Integer id;
 
@@ -33,13 +34,11 @@ public class UserCredentials implements UserDetails {
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @MapsId
+    @OneToOne(mappedBy = "credentials")
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_credential_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 

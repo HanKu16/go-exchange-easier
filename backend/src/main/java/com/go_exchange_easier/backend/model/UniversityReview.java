@@ -29,6 +29,9 @@ public class UniversityReview {
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
