@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.filter;
 import com.go_exchange_easier.backend.dto.auth.UserCredentialsDto;
 import com.go_exchange_easier.backend.exception.MissingJwtClaimException;
 import com.go_exchange_easier.backend.model.Role;
+import com.go_exchange_easier.backend.model.User;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.repository.UserCredentialsRepository;
 import com.go_exchange_easier.backend.security.jwt.JwtClaimsExtractor;
@@ -109,6 +110,8 @@ public class JwtFilter extends OncePerRequestFilter {
         userCredentials.setUsername(credentialsDto.username());
         userCredentials.setPassword(credentialsDto.password());
         userCredentials.setEnabled(credentialsDto.isEnabled());
+        User userProxy = buildUserProxy(token);
+        userCredentials.setUser(userProxy);
         userCredentials.setRoles(jwtClaimsExtractor.extractRoles(token)
                 .stream()
                 .map(r -> {
@@ -118,6 +121,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 })
                 .collect(Collectors.toSet()));
         return userCredentials;
+    }
+
+    private User buildUserProxy(String token) {
+        Integer userId = jwtClaimsExtractor.extractUserId(token);
+        User userProxy = new User();
+        userProxy.setId(userId);
+        return userProxy;
     }
 
 }

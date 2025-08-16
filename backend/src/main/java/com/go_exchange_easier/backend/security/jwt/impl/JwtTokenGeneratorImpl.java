@@ -45,7 +45,7 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
 
     private Map<String, Object> getClaims(UserCredentials credentials) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", credentials.getId());
+        claims.put("userId", credentials.getUser().getId());
         claims.put("username", credentials.getUsername());
         Set<String> roleNames = credentials.getRoles().stream()
                 .map(Role::getName)
