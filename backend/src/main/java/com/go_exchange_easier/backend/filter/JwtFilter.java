@@ -1,9 +1,12 @@
 package com.go_exchange_easier.backend.filter;
 
+import com.go_exchange_easier.backend.dto.auth.UserCredentialsDto;
 import com.go_exchange_easier.backend.exception.MissingJwtClaimException;
+import com.go_exchange_easier.backend.model.Role;
+import com.go_exchange_easier.backend.model.UserCredentials;
+import com.go_exchange_easier.backend.repository.UserCredentialsRepository;
 import com.go_exchange_easier.backend.security.jwt.JwtClaimsExtractor;
 import com.go_exchange_easier.backend.security.jwt.JwtTokenValidator;
-import com.go_exchange_easier.backend.service.impl.UserCredentialsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +22,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 
 /**
@@ -35,9 +38,9 @@ import lombok.NonNull;
 public class JwtFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LogManager.getLogger(JwtFilter.class);
+    private final UserCredentialsRepository credentialsRepository;
     private final JwtClaimsExtractor jwtClaimsExtractor;
     private final JwtTokenValidator jwtTokenValidator;
-    private final ApplicationContext applicationContext;
 
     @Override
     protected void doFilterInternal(
@@ -66,7 +69,11 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = parseToken(request);
         if ((token != null) && jwtTokenValidator.validate(token)) {
             String username = jwtClaimsExtractor.extractUsername(token);
-            UserDetails userDetails = loadUser(username);
+            UserCredentialsDto credentialsDto = credentialsRepository
+                    .findDtoByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException(
+                            "User of username " + username + " was not found."));
+            UserDetails userDetails = mapDtoToEntity(credentialsDto, token);
             if (!userDetails.isEnabled() || !userDetails.isAccountNonLocked())  {
                 return;
             }
@@ -95,10 +102,22 @@ public class JwtFilter extends OncePerRequestFilter {
         return (authHeader != null) && (authHeader.startsWith("Bearer "));
     }
 
-    private UserDetails loadUser(String username) {
-        return applicationContext
-                .getBean(UserCredentialsServiceImpl.class)
-                .loadUserByUsername(username);
+    private UserCredentials mapDtoToEntity(UserCredentialsDto credentialsDto,
+            String token) {
+        UserCredentials userCredentials = new UserCredentials();
+        userCredentials.setId(credentialsDto.id());
+        userCredentials.setUsername(credentialsDto.username());
+        userCredentials.setPassword(credentialsDto.password());
+        userCredentials.setEnabled(credentialsDto.isEnabled());
+        userCredentials.setRoles(jwtClaimsExtractor.extractRoles(token)
+                .stream()
+                .map(r -> {
+                    Role role = new Role();
+                    role.setName(r);
+                    return role;
+                })
+                .collect(Collectors.toSet()));
+        return userCredentials;
     }
 
 }
