@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
+import com.go_exchange_easier.backend.exception.domain.UserDescriptionNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
 import com.go_exchange_easier.backend.model.University;
 import com.go_exchange_easier.backend.model.UserStatus;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
         int rowsUpdated = userDescriptionRepository.updateByUserId(
                 userId, request.description(), updatedAt);
         if (rowsUpdated == 0) {
-            throw new UserNotFoundException("Description for user of id " +
+            throw new UserDescriptionNotFoundException("Description for user of id " +
                     userId + " was not found.");
         }
         return new UpdateUserDescriptionResponse(userId,
