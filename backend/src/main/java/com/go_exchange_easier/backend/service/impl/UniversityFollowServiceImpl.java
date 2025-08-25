@@ -5,7 +5,6 @@ import com.go_exchange_easier.backend.exception.base.ResourceAlreadyExistsExcept
 import com.go_exchange_easier.backend.exception.domain.UniversityFollowNotFoundException;
 import com.go_exchange_easier.backend.repository.UniversityFollowRepository;
 import com.go_exchange_easier.backend.repository.UniversityRepository;
-import com.go_exchange_easier.backend.repository.UserRepository;
 import com.go_exchange_easier.backend.service.UniversityFollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,15 +16,10 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
 
     private final UniversityFollowRepository universityFollowRepository;
     private final UniversityRepository universityRepository;
-    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public void follow(Integer userId, Short universityId) {
-        if (!userRepository.existsById(userId)) {
-            throw new ReferencedResourceNotFoundException(
-                    "User of id " + userId + " was not found.");
-        }
         if (!universityRepository.existsById(universityId)) {
             throw new ReferencedResourceNotFoundException(
                     "University of id " + universityId + " was not found.");
