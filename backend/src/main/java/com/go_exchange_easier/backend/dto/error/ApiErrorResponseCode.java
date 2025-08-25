@@ -8,6 +8,7 @@ public enum ApiErrorResponseCode {
     AuthenticationFailed,
     InvalidToken,
     LoginAlreadyTaken,
-    InvalidRequestBody
+    InvalidRequestBody,
+    ResourceAlreadyExists
 
 }
