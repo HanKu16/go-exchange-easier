@@ -34,7 +34,7 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
     @Override
     @Transactional
     public void unfollow(Integer userId, Short universityId) {
-        int rowsDeleted = universityFollowRepository.deleteById(
+        int rowsDeleted = universityFollowRepository.deleteByUniversityIdAndFollowerId(
                 universityId, userId);
         if (rowsDeleted == 0) {
             throw new UniversityFollowNotFoundException("University follow where " +

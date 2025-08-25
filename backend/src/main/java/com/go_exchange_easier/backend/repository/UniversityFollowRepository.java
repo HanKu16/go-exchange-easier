@@ -15,7 +15,7 @@ public interface UniversityFollowRepository extends
     @Modifying
     @Query("DELETE UniversityFollow f WHERE f.follower.id = :followerId " +
             "AND f.university.id = :universityId")
-    int deleteById(@Param("universityId") short universityId,
+    int deleteByUniversityIdAndFollowerId(@Param("universityId") short universityId,
             @Param("followerId") int followerId);
 
     @Modifying
