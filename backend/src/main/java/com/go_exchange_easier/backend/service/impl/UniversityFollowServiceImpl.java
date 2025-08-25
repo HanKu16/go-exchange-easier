@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.service.impl;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.base.ResourceAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.domain.UniversityFollowNotFoundException;
+import com.go_exchange_easier.backend.exception.domain.UniversityNotFoundException;
 import com.go_exchange_easier.backend.repository.UniversityFollowRepository;
 import com.go_exchange_easier.backend.repository.UniversityRepository;
 import com.go_exchange_easier.backend.service.UniversityFollowService;
@@ -21,12 +22,12 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
     @Transactional
     public void follow(Integer userId, Short universityId) {
         if (!universityRepository.existsById(universityId)) {
-            throw new ReferencedResourceNotFoundException(
-                    "University of id " + universityId + " was not found.");
+            throw new UniversityNotFoundException("University of id " +
+                    universityId + " was not found.");
         }
         if (doesFollowExist(universityId, userId)) {
-            throw new ResourceAlreadyExistsException("University follow where " +
-                    userId + " and " + universityId + " already exists.");
+            throw new ResourceAlreadyExistsException("University follow where user id" +
+                    userId + " and university id " + universityId + " already exists.");
         }
         universityFollowRepository.insertByNativeQuery(universityId, userId);
     }
@@ -37,8 +38,9 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
         int rowsDeleted = universityFollowRepository.deleteByUniversityIdAndFollowerId(
                 universityId, userId);
         if (rowsDeleted == 0) {
-            throw new UniversityFollowNotFoundException("University follow where " +
-                    userId + " and " + universityId + " was not found.");
+            throw new UniversityFollowNotFoundException("University follow" +
+                    " where user id " + userId + " and university id " +
+                    universityId + " was not found.");
         }
     }
 

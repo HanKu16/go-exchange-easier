@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.controller;
 
-import com.go_exchange_easier.backend.annoations.docs.university.CreateUniversityFollowApiDocs;
-import com.go_exchange_easier.backend.annoations.docs.university.DeleteUniversityFollowApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.follow.CreateUniversityFollowApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.follow.DeleteUniversityFollowApiDocs;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.UniversityFollowService;
 import io.swagger.v3.oas.annotations.tags.Tag;

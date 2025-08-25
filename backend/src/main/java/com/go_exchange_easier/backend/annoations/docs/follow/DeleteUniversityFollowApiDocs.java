@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.annoations.docs.university;
+package com.go_exchange_easier.backend.annoations.docs.follow;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,21 +13,15 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Create university follow")
+@Operation(summary = "Delete university follow")
 @ApiResponses(value = {
         @ApiResponse(
-                responseCode = "200",
-                description = "Follow was successfully created"),
+                responseCode = "204",
+                description = "Follow was successfully deleted"),
         @ApiResponse(
-                responseCode = "409",
-                description = "Follow already exists",
+                responseCode = "404",
+                description = "Follow was not found",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class))),
-        @ApiResponse(
-                responseCode = "422",
-                description = "There is something wrong with resources that " +
-                        "are referenced in request body",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = ApiErrorResponse.class)))
 })
-public @interface CreateUniversityFollowApiDocs { }
+public @interface DeleteUniversityFollowApiDocs { }
