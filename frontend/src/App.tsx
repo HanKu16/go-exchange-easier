@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom"
-import LoginPage from "./components/Login"
+import LoginPage from "./components/LoginPage"
 import NotImplementedYet from "./components/NotImplementedYet"
 
 const App = () => {
