@@ -1,6 +1,11 @@
+import { Routes, Route } from 'react-router-dom';
+import Login from './components/Login'
+
 const App = () => {
   return (
-    <h1>Go Exchange Easier</h1>
+    <Routes>
+      <Route path='login' element={<Login/>}/>
+    </Routes>
   )
 }
 

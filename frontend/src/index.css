@@ -1,5 +1,13 @@
+@import 'tailwindcss';
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+@theme {
+  --color-dark-blue: #182c44;
+  --color-ocean-blue: #0874bc;
+  --color-ocean-blue-dark: #0868a8;
 }
