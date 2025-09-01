@@ -11,7 +11,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState<string>("")
   const [isLoginButtonClicked, setIsButtonClicked] = useState<boolean>(false)
   const [loginFailedMessage, setLoginFailedMessage] = useState<string>("")
-  
+
   const handleLogin = async () => {
     const body: LoginRequest = {
       login,
@@ -74,7 +74,7 @@ const LoginPage = () => {
               Sign In
             </button>
             <p className="text-[0.7vw]">
-              Don't have an account?
+              Don't have an account?&nbsp;
               <Link to="/register" className="text-ocean-blue hover:font-semibold 
                 duration-150 ease-in"> 
                 Sign up for free!
