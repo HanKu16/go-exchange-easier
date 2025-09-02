@@ -8,4 +8,4 @@ export type ApiErrorResponseCode =
   | 'MailAlreadyTaken'
   | 'InvalidRequestBody'
   | 'ResourceAlreadyExists'
-  | 'Internal Error'
+  | 'InternalError'

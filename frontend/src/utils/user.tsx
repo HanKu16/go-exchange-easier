@@ -52,7 +52,7 @@ export const sendUserRegistrationRequest = async (body: UserRegistrationRequest)
         message: "An unexepected error occured",
         fieldErrors: [],
         globalErrors: [{
-          code: "Internal Error",
+          code: "InternalError",
           message: "An unexepected error occured"
         }]
       }
