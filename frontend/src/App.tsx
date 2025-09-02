@@ -12,6 +12,7 @@ const App = () => {
       <Route path="learn-more" element={ <NotImplementedYet/> }/>
       <Route path="password-recovery" element={ <NotImplementedYet/> }/>
       <Route path="terms-and-conditions" element={ <NotImplementedYet/> }/>
+      <Route path="welcome" element={ <NotImplementedYet/> }/>
     </Routes>
   )
 }

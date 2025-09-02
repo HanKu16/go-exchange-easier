@@ -1,21 +1,34 @@
 import { useEffect, useState } from "react"
 import type { FormInputProps } from "../../props/registration/FormInputProps"
 import FormField from "./FormField"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import captionImage from "../../assets/registration/caption.png"
 import registrationPageTextImage from "../../assets/registration/text.png"
 import earthImage from "../../assets/registration/earth.png"
+import { sendUserRegistrationRequest } from "../../utils/user";
+import type { UserRegistrationResult } from "../../utils/user";
+import type { UserRegistrationRequest } from "../../dto/user/UserRegistrationRequest";
+import { SuggestionsColorsContext } from "./SuggestionsColorsContext";
+import type { ApiErrorResponseCode } from "../../dto/error/ApiErrorResponseCode";
 
 const RegistrationPage = () => {
+  const navigate = useNavigate()
   const [login, setLogin] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [mail, setMail] = useState<string>("")
   const [nick, setNick] = useState<string>("")
   const [isAgreementChecked, setIsAgreementCheck] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>("")
+  const [suggestionsColors, setSuggestionsColors] = useState({
+    login: "text-zinc-500",
+    password: "text-zinc-500",
+    mail: "text-zinc-500",
+    nick: "text-zinc-500"
+  })
 
   const loginInputProps: FormInputProps  = {
     label: "Login",
-    id: "login-input",
+    id: "login",
     value: login,
     isObligatory: true,
     suggestions: ["should have between 6 to 20 signs", "only letters and numbers"],
@@ -27,7 +40,7 @@ const RegistrationPage = () => {
 
   const passwordInputProps: FormInputProps  = {
     label: "Password",
-    id: "password-input",
+    id: "password",
     value: password,
     isObligatory: true,
     suggestions: ["should have between 8 to 20 signs", "only letters and numbers"],
@@ -39,10 +52,10 @@ const RegistrationPage = () => {
 
   const mailInputProps: FormInputProps = {
     label: "Mail",
-    id: "mail-input",
+    id: "mail",
     value: mail,
     isObligatory: false,
-    suggestions: [],
+    suggestions: ["must be valid mail address"],
     onChange: (event => setMail(event.target.value))
   }
   const mailDescriptionProps = {
@@ -51,14 +64,55 @@ const RegistrationPage = () => {
 
   const nickInputProps: FormInputProps = {
     label: "Nick",
-    id: "nick-input",
+    id: "nick",
     value: nick,
-    isObligatory: false,
+    isObligatory: true,
     suggestions: ["should have between 3 to 15 signs", "only letters and numbers"],
     onChange: (event => setNick(event.target.value))
   }
   const nickDescriptionProps = {
     text: "Your nick will be shown on your profile"
+  }
+
+  const handleRegistration = async () => {
+    const body: UserRegistrationRequest = {
+      login: login,
+      password: password,
+      mail: mail,
+      nick: nick
+    }
+    const result: UserRegistrationResult = await sendUserRegistrationRequest(body)
+
+    if (result.isSuccess) {
+      navigate("/welcome")
+    } else {
+      const errorFieldNames: string[] = result.error.fieldErrors.map(e => e.field)
+      const globalErrorsCodes: ApiErrorResponseCode[] = 
+        result.error.globalErrors.map(e => e.code)
+      setSuggestionsColors({
+        login: errorFieldNames.includes("login") ? "text-red-600" : "text-zinc-500",
+        password: errorFieldNames.includes("password") ? "text-red-600" : "text-zinc-500",
+        mail: errorFieldNames.includes("mail") ? "text-red-600" : "text-zinc-500",
+        nick: errorFieldNames.includes("nick") ? "text-red-600" : "text-zinc-500"
+      })
+      if (globalErrorsCodes.includes("LoginAlreadyTaken")) {
+        setErrorMessage("Login is already taken")
+      } else if (globalErrorsCodes.includes("MailAlreadyTaken")) {
+        setErrorMessage("Account associated with given name already exists")
+      } else if (globalErrorsCodes.includes("InternalError") || 
+          result.error.status === "INTERNAL_SERVER_ERROR") {
+        setErrorMessage("An unexpected error occured")
+      }
+    }
+  }
+
+  const handleClickOnRegistrationButton = () => {
+    if (isAgreementChecked) {
+      setErrorMessage("")  
+      handleRegistration()      
+    } else {
+      setErrorMessage("You have to accept Terms and Conditions to sign up")
+    }
   }
 
   useEffect(() => {
@@ -72,10 +126,11 @@ const RegistrationPage = () => {
           <img src={ captionImage } alt="Go Exchange Easier caption" />
         </div>
         <div className="h-6/15 flex justify-center items-center ">
-          <img src={ earthImage } className="scale-60" />
+          <img src={ earthImage } alt="Yellow Earth image" className="scale-60" />
         </div>
         <div className="h-5/15 flex justify-center items-start">
-          <img src={ registrationPageTextImage } className="scale-75 !pt-9" />
+          <img src={ registrationPageTextImage } alt="Decoration text" 
+            className="scale-75 !pt-9" />
         </div>
       </div>
       <div className="bg-dirty-white h-scree w-1/2">
@@ -83,20 +138,24 @@ const RegistrationPage = () => {
           <h1>REGISTRATION FORM</h1>
         </div>
         <div className="w-full h-7/10 flex flex-col justify-around">
-          <FormField inputProps={ loginInputProps } 
-            descriptionProps={ loginDescriptionProps }/>
-          <FormField inputProps={ passwordInputProps } 
-            descriptionProps={ passwordDescriptionProps }/>
-          <FormField inputProps={ mailInputProps } 
-            descriptionProps={ mailDescriptionProps }/>
-          <FormField inputProps={ nickInputProps } 
-            descriptionProps={ nickDescriptionProps }/>
+          <SuggestionsColorsContext.Provider 
+            value={suggestionsColors}>
+            <FormField inputProps={ loginInputProps } 
+              descriptionProps={ loginDescriptionProps }/>
+            <FormField inputProps={ passwordInputProps } 
+              descriptionProps={ passwordDescriptionProps }/>
+            <FormField inputProps={ nickInputProps } 
+              descriptionProps={ nickDescriptionProps }/>
+            <FormField inputProps={ mailInputProps } 
+              descriptionProps={ mailDescriptionProps }/>
+          </SuggestionsColorsContext.Provider>
         </div>
         <div className="w-full h-2/10 flex justify-start items-center">
           <div className="w-6/10 h-full flex flex-col justify-center items-center !pb-3">
             <button className="bg-lapis-lazull text-sunny-yellow font-medium rounded-xl !py-2 w-7/10
               shadow-lg text-[1vw] !mb-3 transition-colors duration-250 hover:brightness-90
-              ease-in-out active:scale-99 active:shadow-lg">
+              ease-in-out active:scale-99 active:shadow-lg" 
+              onClick={ handleClickOnRegistrationButton }>
               Sing Up
             </button>
             <label htmlFor="agree-checkbox" className="text-[1vw]">
@@ -104,7 +163,7 @@ const RegistrationPage = () => {
                 type="checkbox"
                 id="agree-checkbox"
                 checked={ isAgreementChecked }
-                onChange={ event => setIsAgreementCheck(event.target.checked) }
+                onChange={ () => setIsAgreementCheck(prevState => !prevState) }
                 className="accent-lapis-lazull !mr-2 w-3 h-3"
               />
               I read and agree to&nbsp;
@@ -113,6 +172,9 @@ const RegistrationPage = () => {
                   Terms and Conditions
               </Link>
             </label>
+            <p className="text-red-600 text-[1vw] font-semibold text-shadow-sm !mt-1">
+              { errorMessage }
+            </p>
           </div>
         </div>
       </div>
