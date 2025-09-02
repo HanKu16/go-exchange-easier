@@ -1,5 +1,7 @@
+import type { ApiErrorResponseCode } from "./ApiErrorResponseCode";
+
 export interface FieldErrorDetail {
   field: string;
-  code: string;
+  code: ApiErrorResponseCode;
   message: string;
 }

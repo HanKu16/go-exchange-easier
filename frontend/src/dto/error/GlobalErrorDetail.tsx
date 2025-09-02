@@ -1,4 +1,6 @@
+import type { ApiErrorResponseCode } from "./ApiErrorResponseCode";
+
 export interface GlobalErrorDetail {
-  code: string;
+  code: ApiErrorResponseCode;
   message: string;
 }
