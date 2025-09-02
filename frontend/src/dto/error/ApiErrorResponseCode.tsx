@@ -7,4 +7,5 @@ export type ApiErrorResponseCode =
   | 'LoginAlreadyTaken'
   | 'MailAlreadyTaken'
   | 'InvalidRequestBody'
-  | 'ResourceAlreadyExists';
+  | 'ResourceAlreadyExists'
+  | 'Internal Error'
