@@ -1,8 +1,8 @@
-import type { LoginRequest } from "../dto/auth/LoginRequest";
-import type { LoginResult } from "../utils/auth";
+import type { LoginRequest } from "../../dto/auth/LoginRequest";
+import type { LoginResult } from "../../utils/auth";
 import { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom";
-import { sendLoginRequest } from "../utils/auth";
+import { sendLoginRequest } from "../../utils/auth";
 import FormInput from "./FormInput"
 
 const LoginPage = () => {

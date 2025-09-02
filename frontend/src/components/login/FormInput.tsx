@@ -1,4 +1,4 @@
-import type { FormInputProps } from "../props/FormInputProps"
+import type { FormInputProps } from "../../props/FormInputProps"
 
 const FormInput = ({ label, id, value, onChange, placeholder }: FormInputProps) => {
   return (
