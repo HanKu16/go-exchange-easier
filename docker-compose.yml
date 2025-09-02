@@ -19,3 +19,11 @@ services:
     env_file:
       - ./.env
     container_name: gee-backend
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:80"
+    env_file:
+      - ./.env
+    container_name: gee-frontend
