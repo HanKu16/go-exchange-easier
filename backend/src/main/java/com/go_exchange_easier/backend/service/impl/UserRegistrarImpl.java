@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.user.UserRegistrationRequest;
 import com.go_exchange_easier.backend.dto.user.UserRegistrationResponse;
+import com.go_exchange_easier.backend.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.domain.MissingDefaultRoleException;
 import com.go_exchange_easier.backend.exception.UsernameAlreadyExistsException;
 import com.go_exchange_easier.backend.model.*;
@@ -33,6 +34,12 @@ public class UserRegistrarImpl implements UserRegistrar {
         if (doesUserOfGivenUsernameExists) {
             throw new UsernameAlreadyExistsException("User of login " +
                     request.login() + " already exists.");
+        }
+        boolean doesUserOfGivenMailExists = userNotificationRepository
+                .existsByMail(request.mail());
+        if (doesUserOfGivenMailExists) {
+            throw new MailAlreadyExistsException("User of mail " +
+                    request.mail() + " already exists.");
         }
         UserCredentials credentials = buildCredentials(request);
         assignRoles(credentials);
@@ -76,8 +83,12 @@ public class UserRegistrarImpl implements UserRegistrar {
 
     private UserNotification buildNotification(UserRegistrationRequest request) {
         UserNotification notification = new UserNotification();
-        notification.setMail(request.mail());
-        notification.setMailNotificationEnabled(request.mail() != null);
+        String mail = (request.mail() == null || request.mail().isBlank()) ?
+                null : request.mail();
+        System.out.println(mail);
+        boolean isMailNotificationEnabled = mail != null;
+        notification.setMail(mail);
+        notification.setMailNotificationEnabled(isMailNotificationEnabled);
         return notification;
     }
 
