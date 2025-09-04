@@ -10,15 +10,18 @@ import type { UserRegistrationResult } from "../../utils/user";
 import type { UserRegistrationRequest } from "../../dto/user/UserRegistrationRequest";
 import { SuggestionsColorsContext } from "./SuggestionsColorsContext";
 import type { ApiErrorResponseCode } from "../../dto/error/ApiErrorResponseCode";
+import registartionSuccessImage from "../../assets/registration/registration-success.png"
 
 const RegistrationPage = () => {
-  const navigate = useNavigate()
+  const nagivate = useNavigate()
   const [login, setLogin] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [mail, setMail] = useState<string>("")
   const [nick, setNick] = useState<string>("")
   const [isAgreementChecked, setIsAgreementCheck] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("")
+  const [wasUserRegistered, setWasUserRegistered] = useState<boolean>(false)
+  const [registerdUserNick, setRegisteredUserNick] = useState<string>("")
   const [suggestionsColors, setSuggestionsColors] = useState({
     login: "text-zinc-500",
     password: "text-zinc-500",
@@ -84,7 +87,8 @@ const RegistrationPage = () => {
     const result: UserRegistrationResult = await sendUserRegistrationRequest(body)
 
     if (result.isSuccess) {
-      navigate("/welcome")
+      setRegisteredUserNick(result.data.nick)
+      setWasUserRegistered(true)
     } else {
       const errorFieldNames: string[] = result.error.fieldErrors.map(e => e.field)
       const globalErrorsCodes: ApiErrorResponseCode[] = 
@@ -133,51 +137,74 @@ const RegistrationPage = () => {
             className="scale-75 !pt-9" />
         </div>
       </div>
-      <div className="bg-dirty-white h-scree w-1/2">
-        <div className="w-full h-1/12 flex justify-center items-center !pt-3 text-[1.7vw]">
-          <h1>REGISTRATION FORM</h1>
-        </div>
-        <div className="w-full h-7/10 flex flex-col justify-around">
-          <SuggestionsColorsContext.Provider 
-            value={suggestionsColors}>
-            <FormField inputProps={ loginInputProps } 
-              descriptionProps={ loginDescriptionProps }/>
-            <FormField inputProps={ passwordInputProps } 
-              descriptionProps={ passwordDescriptionProps }/>
-            <FormField inputProps={ nickInputProps } 
-              descriptionProps={ nickDescriptionProps }/>
-            <FormField inputProps={ mailInputProps } 
-              descriptionProps={ mailDescriptionProps }/>
-          </SuggestionsColorsContext.Provider>
-        </div>
-        <div className="w-full h-2/10 flex justify-start items-center">
-          <div className="w-6/10 h-full flex flex-col justify-center items-center !pb-3">
-            <button className="bg-lapis-lazull text-sunny-yellow font-medium rounded-xl !py-2 w-7/10
-              shadow-lg text-[1vw] !mb-3 transition-colors duration-250 hover:brightness-90
-              ease-in-out active:scale-99 active:shadow-lg" 
-              onClick={ handleClickOnRegistrationButton }>
-              Sing Up
-            </button>
-            <label htmlFor="agree-checkbox" className="text-[1vw]">
-              <input
-                type="checkbox"
-                id="agree-checkbox"
-                checked={ isAgreementChecked }
-                onChange={ () => setIsAgreementCheck(prevState => !prevState) }
-                className="accent-lapis-lazull !mr-2 w-3 h-3"
-              />
-              I read and agree to&nbsp;
-              <Link to="/terms-and-conditions" className="font-bold 
-                hover:shadow-md duration-150 ease-in">
-                  Terms and Conditions
-              </Link>
-            </label>
-            <p className="text-red-600 text-[1vw] font-semibold text-shadow-sm !mt-1">
-              { errorMessage }
+      {wasUserRegistered ? (
+        <div className="flex flex-col justify-center w-1/2 h-screen">
+          <div className="flex flex-col justify-center items-center w-full h-1/2 text-center">
+            <img src={ registartionSuccessImage }/>
+            <h1 className="text-[4vw] text-lapis-lazull">
+              Welcome { registerdUserNick }
+            </h1>
+            <p className="text-[1.5vw] !py-2">
+              Your account was successfully created!
             </p>
+            <button className="bg-lapis-lazull text-sunny-yellow font-medium 
+                rounded-xl w-1/3 shadow-lg text-[1vw]  transition-colors 
+                duration-250 !py-3 hover:brightness-90 ease-in-out active:scale-99 
+                active:shadow-lg !mt-7" 
+                onClick={ () => nagivate("/login") }>
+                Sign Up
+            </button>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-dirty-white h-scree w-1/2">
+          <div className="w-full h-1/12 flex justify-center items-center !pt-3 text-[1.7vw]">
+            <h1>REGISTRATION FORM</h1>
+          </div>
+          <div className="w-full h-7/10 flex flex-col justify-around">
+            <SuggestionsColorsContext.Provider 
+              value={suggestionsColors}>
+              <FormField inputProps={ loginInputProps } 
+                descriptionProps={ loginDescriptionProps }/>
+              <FormField inputProps={ passwordInputProps } 
+                descriptionProps={ passwordDescriptionProps }/>
+              <FormField inputProps={ nickInputProps } 
+                descriptionProps={ nickDescriptionProps }/>
+              <FormField inputProps={ mailInputProps } 
+                descriptionProps={ mailDescriptionProps }/>
+            </SuggestionsColorsContext.Provider>
+          </div>
+          <div className="w-full h-2/10 flex justify-start items-center">
+            <div className="w-6/10 h-full flex flex-col justify-center items-center !pb-3">
+              <button className="bg-lapis-lazull text-sunny-yellow font-medium 
+                rounded-xl !py-2 w-7/10 shadow-lg text-[1vw] !mb-3 transition-colors 
+                duration-250 hover:brightness-90 ease-in-out active:scale-99 
+                active:shadow-lg" 
+                onClick={ handleClickOnRegistrationButton }>
+                Sign Up
+              </button>
+              <label htmlFor="agree-checkbox" className="text-[1vw]">
+                <input
+                  type="checkbox"
+                  id="agree-checkbox"
+                  checked={ isAgreementChecked }
+                  onChange={ () => setIsAgreementCheck(prevState => !prevState) }
+                  className="accent-lapis-lazull !mr-2 w-3 h-3"
+                />
+                I read and agree to&nbsp;
+                <Link to="/terms-and-conditions" className="font-bold 
+                  hover:shadow-md duration-150 ease-in">
+                    Terms and Conditions
+                </Link>
+              </label>
+              <p className="text-red-600 text-[1vw] font-semibold text-shadow-sm !mt-1">
+                { errorMessage }
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
