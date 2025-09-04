@@ -21,7 +21,7 @@ const LoginPage = () => {
     if (result.isSuccess) {
         localStorage.setItem("jwtToken", result.data.accessToken)
         localStorage.setItem("tokenType", result.data.tokenType)
-        navigate("/profile")
+        navigate("/user-profile")
     } else {
         setLogin(() => "")
         setPassword(() => "")
