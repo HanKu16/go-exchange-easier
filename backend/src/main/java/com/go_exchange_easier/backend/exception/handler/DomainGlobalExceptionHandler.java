@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.exception.handler;
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponseCode;
 import com.go_exchange_easier.backend.dto.error.GlobalErrorDetail;
+import com.go_exchange_easier.backend.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.UsernameAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.base.ResourceAlreadyExistsException;
@@ -65,6 +66,17 @@ public class DomainGlobalExceptionHandler {
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.CONFLICT,
                 "Resource already exists, so it can not be created again.",
                 List.of(), List.of(globalError));
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(MailAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handleMailAlreadyExistsException(
+            MailAlreadyExistsException e) {
+        logger.error(e.getMessage(), e);
+        GlobalErrorDetail globalError = new GlobalErrorDetail(
+                ApiErrorResponseCode.MailAlreadyTaken.name(), e.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.CONFLICT,
+                "Mail is already taken.", List.of(), List.of(globalError));
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
