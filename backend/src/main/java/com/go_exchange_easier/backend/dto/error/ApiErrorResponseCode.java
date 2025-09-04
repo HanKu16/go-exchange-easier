@@ -8,7 +8,9 @@ public enum ApiErrorResponseCode {
     AuthenticationFailed,
     InvalidToken,
     LoginAlreadyTaken,
+    MailAlreadyTaken,
     InvalidRequestBody,
-    ResourceAlreadyExists
+    ResourceAlreadyExists,
+    InternalError
 
 }
