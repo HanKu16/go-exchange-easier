@@ -12,12 +12,13 @@ const SearchBar = (props: SearchBarProps) => {
           </button>
           <input type="text" placeholder="Seach for university" 
             className="placeholder:text-dark-blue placeholder:text-[1.3vw]
-              placeholder:!pl-1 placeholder:font-normal w-9/10
+              placeholder:!pl-0
+              sm:placeholder:!pl-1 placeholder:font-normal w-9/10
               focus:outline-none focus:placeholder-none
               text-dark-blue font-semibold text-[1.2vw]"/>
         </div>
-        <div className="w-2/10 flex justify-end !pr-1.5">
-          <button className="bg-dark-blue rounded-3xl text-sunny-yellow !py-1.5 !px-6
+        <div className="w-2/10 flex justify-end !pr-1.5 h-full items-center">
+          <button className="bg-dark-blue rounded-3xl text-sunny-yellow h-3/4 !px-2 sm:!px-6
             font-semibold text-[1vw] hover:brightness-115 transition duration-125 ease-in"
             onClick={ props.onLanguageChange }>
               { props.searchLanguage }

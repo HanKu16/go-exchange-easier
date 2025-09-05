@@ -4,10 +4,10 @@ import type { NavigationLinkProps } from "../../../props/global/navbar/Navigatio
 const NavigationLink = (props: NavigationLinkProps) => {
   return (
     <>
-      <Link to={ props.navigateTo }>
-        <div className="h-full aspect-1/1 flex justify-center items-center">
-          <img src={ props.iconImage } alt="Go to profile icon image" className="h-4/5 
-            aspect-1/1 hover:brightness-110 transition duration-125 ease-in"/>
+      <Link to={ props.navigateTo } className="w-1/3">
+        <div className="h-full w-full flex justify-center items-center">
+          <img src={ props.iconImage } alt="Go to profile icon image" className="w-7/10
+            aspect-square hover:brightness-110 transition duration-125 ease-in"/>
         </div>
       </Link>
     </>

@@ -20,7 +20,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-dark-blue w-full h-1/8 flex">
+    <nav className="bg-dark-blue w-full h-[8vh] sm:h-[12vh] flex">
       { isLogOutButtonClicked ? (
           <div className="w-3/9 h-full">
             <LogOutPopUp onYes={ () => navigate("/login") }
@@ -38,7 +38,7 @@ const Navbar = () => {
           onLanguageChange={ changeSearchLanguage }
           onSearch={ () => {} }/>
       </div>
-      <div className="flex w-2/9 f-full justify-between !pr-5">
+      <div className="flex w-2/9 f-full justify-around">
         <NavigationLink iconImage={ profileIconImage } navigateTo="/profile"/>
         <NavigationLink iconImage={ chatIconImage } navigateTo="/chat"/>
         <NavigationLink iconImage={ homeIconImage } navigateTo="/home"/>
