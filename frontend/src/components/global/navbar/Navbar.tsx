@@ -1,18 +1,15 @@
 import { useState } from "react"
-import LogOut from "./LogOut"
-import Logo from "./Logo";
-import LogOutPopUp from "./LogOutPopUp";
-import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import chatIconImage  from "../../../assets/global/navbar/chat-icon.png"
 import homeIconImage  from "../../../assets/global/navbar/home-icon.png"
 import profileIconImage  from "../../../assets/global/navbar/profile-icon.png"
 import NavigationLink from "./NavigationLink";
+import { IsLogOutButtonClickedContextProvider } from "./IsLogOutButtonClickedContext.tsx"
+import LogOutAndLogo from "./LogOutAndLogo.tsx";
+import type { UniversityNameSearchLanguage } from "../../../types/UniversityNameSearchLanguage.tsx";
 
 const Navbar = () => {
-  const navigate = useNavigate()
-  const [isLogOutButtonClicked, setIsLogOutButtonClicked] = useState<boolean>(false)
-  const [searchLanguage, setSearchLanguage] = useState<string>("english")
+  const [searchLanguage, setSearchLanguage] = useState<UniversityNameSearchLanguage>("english")
 
   const changeSearchLanguage = () => {
     setSearchLanguage(prevState => prevState === "english" ? 
@@ -21,18 +18,9 @@ const Navbar = () => {
 
   return (
     <nav className="bg-dark-blue w-full h-[8vh] sm:h-[12vh] flex">
-      { isLogOutButtonClicked ? (
-          <div className="w-3/9 h-full">
-            <LogOutPopUp onYes={ () => navigate("/login") }
-              onNo={ () => setIsLogOutButtonClicked(false) }/>
-          </div>
-        ) : (
-          <div className="flex w-3/9 h-full">
-            <LogOut onClick={ () => setIsLogOutButtonClicked(true) }/>
-            <Logo/>
-          </div>
-        )
-      }
+      <IsLogOutButtonClickedContextProvider>
+        <LogOutAndLogo/>
+      </IsLogOutButtonClickedContextProvider>
       <div className="flex w-4/9 h-full justify-center !pr-5 !pt-1.5">
         <SearchBar searchLanguage={ searchLanguage } 
           onLanguageChange={ changeSearchLanguage }
