@@ -49,3 +49,13 @@ export const sendLoginRequest = async (body: LoginRequest) => {
       return result
   }
 }
+
+export const saveJwtToken = (result: LoginSuccessResult): void => {
+  localStorage.setItem("jwtToken", result.data.accessToken)
+  localStorage.setItem("tokenType", result.data.tokenType)
+}
+
+export const removeJwtToken = (): void => {
+  localStorage.removeItem("jwtToken")
+  localStorage.removeItem("tokenType")
+}
