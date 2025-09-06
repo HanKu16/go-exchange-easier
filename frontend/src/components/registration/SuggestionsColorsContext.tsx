@@ -14,7 +14,7 @@ export const SuggestionsColorsContext =
 export const useColorsContext = (): SuggestionsColors => {
   const suggestiosColors = useContext(SuggestionsColorsContext)
   if (suggestiosColors === undefined) {
-    throw new Error("useUserContext must be used with a SuggestionsColorsContext")
+    throw new Error("useColorsContext must be used with a SuggestionsColorsContext")
   }
   return suggestiosColors
 }
