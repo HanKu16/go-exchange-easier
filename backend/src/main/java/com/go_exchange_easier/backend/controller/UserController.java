@@ -1,10 +1,10 @@
 package com.go_exchange_easier.backend.controller;
 
-import com.go_exchange_easier.backend.annoations.docs.user.AssignHomeUniversityApiDoc;
-import com.go_exchange_easier.backend.annoations.docs.user.UpdateUserDescriptionApiDoc;
-import com.go_exchange_easier.backend.annoations.docs.user.UpdateUserStatusApiDoc;
+import com.go_exchange_easier.backend.annoations.docs.user.*;
+import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.model.UserCredentials;
+import com.go_exchange_easier.backend.service.UniversityReviewService;
 import com.go_exchange_easier.backend.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,7 +20,28 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "User", description = "Operations related to user.")
 public class UserController {
 
+    private final UniversityReviewService universityReviewService;
     private final UserService userService;
+
+    @GetMapping("/{userId}/profile")
+    @GetProfileApiDocs
+    public ResponseEntity<GetUserProfileResponse> getProfile(
+            @PathVariable("userId") int userId,
+            @AuthenticationPrincipal UserCredentials principal) {
+        GetUserProfileResponse response = userService.getProfile(
+                userId, principal.getUser().getId());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{userId}/universityReviews")
+    @GetReviewsApiDocs
+    public ResponseEntity<List<GetUniversityReviewResponse>> getReviews(
+            @PathVariable("userId") Integer userId,
+            @AuthenticationPrincipal UserCredentials principal) {
+        List<GetUniversityReviewResponse> response = universityReviewService
+                .getByAuthorId(userId, principal.getUser().getId());
+        return ResponseEntity.ok(response);
+    }
 
     @PatchMapping("/description")
     @UpdateUserDescriptionApiDoc
