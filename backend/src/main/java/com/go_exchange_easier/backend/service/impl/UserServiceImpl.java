@@ -4,8 +4,7 @@ import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserDescriptionNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
-import com.go_exchange_easier.backend.model.University;
-import com.go_exchange_easier.backend.model.UserStatus;
+import com.go_exchange_easier.backend.model.*;
 import com.go_exchange_easier.backend.repository.UniversityRepository;
 import com.go_exchange_easier.backend.repository.UserDescriptionRepository;
 import com.go_exchange_easier.backend.repository.UserRepository;
@@ -15,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +24,37 @@ public class UserServiceImpl implements UserService {
     private final UniversityRepository universityRepository;
     private final UserStatusRepository userStatusRepository;
     private final UserRepository userRepository;
+
+    @Override
+    public GetUserProfileResponse getProfile(int userId, int currentUserId) {
+        List<Object[]> rows = userRepository.findProfileById(userId, currentUserId);
+        if (rows.isEmpty()) {
+            throw new UserNotFoundException("User of id " +
+                    userId + " was not found");
+        }
+        Object[] row = rows.getFirst();
+        Integer id = (Integer) row[0];
+        String nick = (String) row[1];
+        String description = (String) row[2];
+        Short universityId = (Short) row[3];
+        String universityOriginalName = (String) row[4];
+        String universityEnglishName = (String) row[5];
+        Short countryId = (Short) row[6];
+        String countryName = (String) row[7];
+        Short statusId = (Short) row[8];
+        String statusName = (String) row[9];
+        Boolean isFollowed = (Boolean) row[10];
+        GetUserProfileResponse.UniversityDto university =
+                new GetUserProfileResponse.UniversityDto(universityId,
+                        universityOriginalName, universityEnglishName);
+        GetUserProfileResponse.CountryDto country =
+                new GetUserProfileResponse.CountryDto(
+                        countryId, countryName);
+        GetUserProfileResponse.StatusDto status =
+                new GetUserProfileResponse.StatusDto(statusId, statusName);
+        return new GetUserProfileResponse(id, nick, description, isFollowed,
+                university, country, status);
+    }
 
     @Override
     @Transactional

@@ -23,8 +23,7 @@ public record GetUserProfileResponse(
     public record CountryDto(
 
             Short id,
-            String name,
-            String flagUri
+            String name
 
     ) {}
 
