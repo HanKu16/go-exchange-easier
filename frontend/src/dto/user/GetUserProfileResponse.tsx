@@ -1,19 +1,19 @@
 export interface GetUserProfileResponse {
-  userId: Number;
-  nick: String;
-  description: String;
-  isFollowed: Boolean;
-  homeUniversity: {
-    id: Number;
-    nativeName: String;
-    englishName: String;
+  userId: number;
+  nick: string;
+  description: string;
+  isFollowed: boolean;
+  homeUniversity?: {
+    id: number;
+    nativeName: string;
+    englishName?: string;
   };
-  countryOfOrigin: {
-  id: Number;
-  name: String;
+  countryOfOrigin?: {
+  id: number;
+  name: string;
   };
-  status: {
-    id: Number;
-    name: String;
+  status?: {
+    id: number;
+    name: string;
   };
 }

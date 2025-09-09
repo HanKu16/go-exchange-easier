@@ -1,21 +1,21 @@
 export interface GetUniversityReviewResponse {
-  id: Number;
+  id: number;
   author: {
-    id: Number;
-    nick: String;
+    id: number;
+    nick: string;
   };
   university: {
-    id: Number;
-    englishName: String;
-    nativeName: String;
+    id: number;
+    englishName?: string;
+    nativeName: string;
   };
-  starRating: Number;
-  textContent: String;
-  createdAt: String;
+  starRating: number;
+  textContent: string;
+  createdAt: string;
   reactions: {
-    typeId: Number;
-    name: String;
-    count: Number;
-    isSet: Boolean;
+    typeId: number;
+    name: string;
+    count: number;
+    isSet: boolean;
   }[]
 }
