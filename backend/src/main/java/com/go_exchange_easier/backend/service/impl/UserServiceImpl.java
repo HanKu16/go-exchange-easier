@@ -45,13 +45,19 @@ public class UserServiceImpl implements UserService {
         String statusName = (String) row[9];
         Boolean isFollowed = (Boolean) row[10];
         GetUserProfileResponse.UniversityDto university =
+                universityId != null ?
                 new GetUserProfileResponse.UniversityDto(universityId,
-                        universityOriginalName, universityEnglishName);
+                        universityOriginalName, universityEnglishName) :
+                null;
         GetUserProfileResponse.CountryDto country =
+                countryId != null ?
                 new GetUserProfileResponse.CountryDto(
-                        countryId, countryName);
+                        countryId, countryName) :
+                null;
         GetUserProfileResponse.StatusDto status =
-                new GetUserProfileResponse.StatusDto(statusId, statusName);
+                statusId != null ?
+                new GetUserProfileResponse.StatusDto(statusId, statusName) :
+                null;
         return new GetUserProfileResponse(id, nick, description, isFollowed,
                 university, country, status);
     }
