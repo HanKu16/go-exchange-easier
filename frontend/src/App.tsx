@@ -1,13 +1,16 @@
-import { Button, CssBaseline } from "@mui/material"
+// import { Button, CssBaseline } from "@mui/material"
+import { CssBaseline } from "@mui/material"
+import LoginPage from "./pages/LoginPage"
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-function App() {
+export const App = () => {
   return (
-    <>
-      <CssBaseline/>
-      <Button variant="contained">
-        Hello World
-      </Button>
-    </>
+    <BrowserRouter>
+    <CssBaseline/>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
