@@ -1,0 +1,11 @@
+export type ApiErrorResponseCode =
+  | 'ResourceNotFound'
+  | 'ReferencedResourceNotFound'
+  | 'DeletePermissionDenied'
+  | 'AuthenticationFailed'
+  | 'InvalidToken'
+  | 'LoginAlreadyTaken'
+  | 'MailAlreadyTaken'
+  | 'InvalidRequestBody'
+  | 'ResourceAlreadyExists'
+  | 'InternalError'
