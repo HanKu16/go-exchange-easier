@@ -9,7 +9,8 @@ const App = () => {
     <Routes>
       <Route path="login" element={ <LoginPage/> }/>
       <Route path="register" element={ <RegistrationPage/> }/>
-      <Route path="user-profile" element={ <UserProfile/> }/>
+      <Route path="user-profile/:userId" element={ <UserProfile/> }/>
+      <Route path="user-profile/:userId/not-found" element={ <NotImplementedYet/> }/>
       <Route path="learn-more" element={ <NotImplementedYet/> }/>
       <Route path="password-recovery" element={ <NotImplementedYet/> }/>
       <Route path="terms-and-conditions" element={ <NotImplementedYet/> }/>

@@ -1,22 +1,27 @@
 import starRating from "../../../assets/global/review/star-rating.png"
+import type { HeaderProps } from "../../../props/global/review/HeaderProps"
 
-const Header = () => {
+const Header = (props: HeaderProps) => {
+  const nativeUniveristyName = props.university.nativeName
+  const englishUniversityName = props.university.englishName
+  const universityName = nativeUniveristyName + 
+    (englishUniversityName ? `, ${ englishUniversityName }` : "")
+  const formattedDate = props.createdAt.slice(0, 10)
+
   return (
-    <div className="flex justify-between xl:h-[7vh] h-[3vh] w-full">
-      <div className="flex items-center h-full ">
+    <div className="flex justify-between items-center !py-[min(5px, 2vw)] w-full">
+      <div className="flex flex-1 items-center max-w-[75%]">
         <span className="text-dark-blue font-semibold xl:text-[2.3vh] text-[1.1vh]">
-          Università di Bologna, University of Bologna
+          { universityName }
         </span>
-        <div className="flex items-center xl:!pl-3 !pl-1 h-full">
-          <img src={ starRating } className="xl:h-2/5 !pr-1 h-1/2 aspect-3/2" />
-          <span className="font-bold text-sunny-yellow xl:text-[2.3vh] text-[1.1vh]">
-            5.0
-          </span>
-        </div>
+        <img src={ starRating } className="xl:h-2/5 !pr-1 h-1/2 aspect-3/2"/>
+        <span className="font-bold text-sunny-yellow xl:text-[2.3vh] text-[1.1vh]">
+          { props.starRating }
+        </span>
       </div>
-      <div className="flex items-center justify-end !pr-3">
+      <div>
         <span className="text-dark-blue font-semibold xl:text-[2.3vh] text-[1.1vh]">
-          2.11.2023
+          { formattedDate }
         </span>
       </div>
     </div>

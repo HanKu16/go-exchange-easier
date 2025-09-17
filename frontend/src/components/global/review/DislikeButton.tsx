@@ -1,8 +1,9 @@
 import dislikeImage from "../../../assets/global/review/dislike-image.png"
 import whiteDislikeImage from "../../../assets/global/review/white-dislike-image.png" 
 import { useState } from "react"
+import type { DislikeButtonProps } from "../../../props/global/review/DislikeButtonProps"
 
-const DislikeButton = () => {
+const DislikeButton = (props: DislikeButtonProps) => {
   const [isHovered, setIsHovered] = useState<boolean>(false)
 
   return (
@@ -15,7 +16,7 @@ const DislikeButton = () => {
         onMouseLeave={ () => setIsHovered(false) }>
         <img src={ isHovered ? whiteDislikeImage : dislikeImage} className="h-full"/>
         <span className={"xl:!pb-1 font-semibold !pl-1 !pr-1"}>
-          631
+          { props.count }
         </span>
       </button>
     </div>

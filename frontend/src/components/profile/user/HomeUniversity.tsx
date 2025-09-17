@@ -11,7 +11,7 @@ const HomeUniversity = () => {
   return (
     <div className="xl:h-1/8 h-1/3 w-full flex xl:!pt-2 items-center !pr-3">
       <img src={ locationPin } className="h-3/4 aspect-1/1" />
-      <h2 className="font-semibold xl:text-[1.3vw] lg:text-[2vw] text-[3vw] !pl-3"> 
+      <h2 className="font-semibold xl:text-[1.3vw] lg:text-[2vw] text-[2vw] !pl-3"> 
         { universityLabel }
       </h2>
     </div>

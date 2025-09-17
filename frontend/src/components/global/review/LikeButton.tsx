@@ -1,8 +1,9 @@
 import likeImage from "../../../assets/global/review/like-image.png"
 import whiteLikeImage from "../../../assets/global/review/white-like-image.png" 
 import { useState } from "react"
+import type { LikeButtonProps } from "../../../props/global/review/LikeButtonProps"
 
-const LikeButton = () => {
+const LikeButton = (props: LikeButtonProps) => {
   const [isHovered, setIsHovered] = useState<boolean>(false)
 
   return (
@@ -15,7 +16,7 @@ const LikeButton = () => {
         onMouseLeave={ () => setIsHovered(false) }>
         <img src={ isHovered ? whiteLikeImage : likeImage} className="h-full"/>
         <span className={"xl:!pb-1 font-semibold !pl-1 !pr-1"}>
-          631
+          { props.count }
         </span>
       </button>
     </div>

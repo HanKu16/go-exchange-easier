@@ -3,8 +3,57 @@ import Nick from "./Nick"
 import HomeUniversity from "./HomeUniversity"
 import FollowButton from "./FollowButton"
 import ContactButton from "./ContactButton"
+import { useEffect } from "react"
+import { sendGetUserProfileRequest } from "../../../utils/user-profile"
+import type { GetUserProfileResponse } from "../../../dto/user/GetUserProfileResponse"
+import type { ApiErrorResponse } from "../../../dto/error/ApiErrorResponse"
+import { useUserProfileContext } from "./UserProfileContext"
+import { useParams } from "react-router-dom"
+import type { UserProfilePageParams } from "../../../types/UserProfilePageParams"
+
+// type UserProfileRequestParams = {
+//   userId: string;
+// }
   
 const Header = () => {
+  const { user, setUser } = useUserProfileContext()
+  const { userId } = useParams<UserProfilePageParams>();
+
+  const fetchUserProfile = async (userId: number) => {
+    const result = await sendGetUserProfileRequest(userId)
+    if (result.isSuccess) {
+      const user: GetUserProfileResponse = result.data
+      setUser({
+        id: user.userId,
+        nick: user.nick,
+        description: user.description,
+        isFollowed: user.isFollowed,
+        homeUniversity: user.homeUniversity ? { 
+          id: user.homeUniversity.id, 
+          nativeName: user.homeUniversity.nativeName, 
+          englishName: user.homeUniversity.englishName 
+        } : undefined,
+        countryOfOrigin: user.countryOfOrigin ? { 
+          id: user.countryOfOrigin.id, 
+          name: user.countryOfOrigin.name 
+        } : undefined,
+        status: user.status ? { 
+          id: user.status.id, 
+          name: user.status.name 
+        } : undefined
+      });
+    } else {
+      const data: ApiErrorResponse = result.error
+      console.log(data)
+    }
+  }
+
+  useEffect(() => {
+      if (userId !== undefined) {
+        fetchUserProfile(parseInt(userId))
+      }
+  }, [userId])
+
   return (
     <div className="bg-sunny-yellow flex flex-col overflow-hidden text-dark-blue
       rounded-tl-4xl rounded-tr-4xl  
@@ -28,16 +77,14 @@ const Header = () => {
           </div>
           <div className="hidden xl:flex h-5/8 w-full !pr-12 !pl-1 !pt-6 font-medium">
             <p>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Soluta vero a neque. Quod tenetur in aut unde, dolorem saepe quasi cumque maiores impedit nobis provident deserunt consectetur beatae nesciunt nihil!
-              Dignissimos error hic asperiores, reprehenderit ullam molestias sit cumque possimus iusto vel provident ea eum unde vitae corporis ratione illum voluptatibus consectetur. Error ratione voluptate voluptatem optio, omnis aliquid in!
+              { user?.description }
             </p>
           </div>
         </div>
       </div>
       <div className="xl:hidden text-[2vw] !px-3 !pt-5">
         <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Soluta vero a neque. Quod tenetur in aut unde, dolorem saepe quasi cumque maiores impedit nobis provident deserunt consectetur beatae nesciunt nihil!
-          Dignissimos error hic asperiores, reprehenderit ullam molestias sit cumque possimus iusto vel provident ea eum unde vitae corporis ratione illum voluptatibus consectetur. Error ratione voluptate voluptatem optio, omnis aliquid in!
+          { user?.description }
         </p>
       </div>
     </div>
