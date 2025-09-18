@@ -48,8 +48,32 @@ const InputField = (props: InputFieldProps) => {
   )
 }
 
-export const RegistrationPage = () => {
+const SuccessfulRegistrationPanel = () => {
   const navigate = useNavigate()
+  return (
+    <Container sx={{display: 'flex', flexDirection: 'column', 
+      alignItems: 'center', height: '100%',
+      paddingY: {xs: 7, sm: 12, lg: 10}}}>
+      <Typography sx={{fontSize: {xs: '4rem', sm: '5rem', md: '6rem', lg: '3rem'}}}>
+        Welcome!
+      </Typography>
+      <Box sx={{height: {xs: '40%', sm: '50%', md: '60%', lg: '40%'}}}>
+        <img src={registrationSuccessImage}
+          alt="Registration Success Image"
+          style={{height: '100%', objectFit: 'contain'}}/>
+      </Box>
+      <Typography sx={{fontSize: {sm: '2rem', lg: '1.5rem'}}}>
+        Your account was successfully created
+      </Typography>
+      <Button variant="contained" size='large' onClick={() => navigate(`/login`)} 
+      sx={{marginTop: {xs: 3, md: 4, lg: 3}, marginBottom: 2}}>
+          Sign In
+      </Button>
+    </Container>  
+  )
+}
+
+export const RegistrationPage = () => {
   const theme = useTheme();
   const isLgScreen = useMediaQuery(theme.breakpoints.up('lg'));
   const [login, setLogin] = useState<string>("")
@@ -145,30 +169,8 @@ export const RegistrationPage = () => {
         </Container>
       </Grid>
       <Grid size={{xs: 12, lg: 5}}>
-        {wasRegistrationSuccessful ? (
-          <Container sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%',
-            paddingY: {xs: 7, sm: 12, lg: 10}
-          }}>
-             <Typography sx={{fontSize: {xs: '4rem', sm: '5rem', md: '6rem', lg: '3rem'}}}>
-                Welcome!
-              </Typography>
-              <Box sx={{height: {xs: '40%', sm: '50%', md: '60%', lg: '40%'}}}>
-                <img
-                    src={registrationSuccessImage}
-                    alt="Registration Success Image"
-                    style={{height: '100%', objectFit: 'contain'}}
-                />
-              </Box>
-             <Typography sx={{fontSize: {sm: '2rem', lg: '1.5rem'}}}>
-                Your account was successfully created
-              </Typography>
-              <Button variant="contained" size='large' onClick={() => navigate(`/user-profile`)} sx={{
-                  marginTop: {xs: 3, md: 4, lg: 3},
-                  marginBottom: 2,
-                  }}>
-                  Sign In
-              </Button>
-          </Container>) : 
+        {wasRegistrationSuccessful ? 
+        (<SuccessfulRegistrationPanel/>) :
           (
           <Container sx={{backgroundColor: 'white', height: '100vh',
             paddingY: {lg: 3}
@@ -202,8 +204,8 @@ export const RegistrationPage = () => {
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', 
               paddingTop: {lg: 2}}}>
               <FormControlLabel
-              control={<Checkbox value={isAgreementAccepted}
-              onChange={() => setIsAgreementAccepted(prevState => !prevState)}/>}
+                control={<Checkbox value={isAgreementAccepted}
+                onChange={() => setIsAgreementAccepted(prevState => !prevState)}/>}
                 label={
                   <Box sx={{
                     fontSize: {xs: '0.7rem', sm: '1.2rem', md: '1.3rem', lg: '0.8rem'}}}>
