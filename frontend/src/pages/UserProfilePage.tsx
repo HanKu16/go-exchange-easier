@@ -10,6 +10,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 // import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
+import UniversityReview from '../components/UniversityReview';
 
 const ActionButtons = () => {
   return (
@@ -77,7 +78,7 @@ const UserDataPanel = () => {
           </Box>
         </Box> 
       ) : (
-      <Box sx={{ backgroundColor: '#182c44', display: 'flex', 
+        <Box sx={{ backgroundColor: '#182c44', display: 'flex', 
           flexDirection: 'column', paddingY: 2}}>
           <Box sx={{display: 'flex', flexDirection: 'row', paddingLeft: 3}}>
             <Avatar alt="User avatar" src={basicAvatar} sx={{
@@ -110,12 +111,12 @@ const UserDataPanel = () => {
           <Container sx={{marginY: 0.5}}>
             <ActionButtons/>
           </Container>
-          <Box sx={{width: '100%', paddingX: 3, paddingTop: 4}}>
-            <Typography sx={{color: 'white', fontSize: {lg: '1.2rem'}, fontWeight: '600',
+          <Box sx={{paddingX: 3, paddingTop: 4}}>
+            <Typography sx={{color: 'white', fontWeight: '600',
                 paddingBottom: 1}}>
               About
             </Typography>
-            <Typography sx={{color: 'white', fontSize: {lg: '0.8rem'}, fontWeight: '400',
+            <Typography sx={{color: 'white', fontWeight: '400',
               paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Distinctio beatae dolor voluptatum magni nemo accusamus iure doloremque itaque ea non, totam illum error vitae sunt, dolore ex commodi maiores animi.
             </Typography>
@@ -126,19 +127,42 @@ const UserDataPanel = () => {
   )
 }
 
+const FeedPanel = () => {
+  return (
+    <>
+      <Typography sx={{fontSize: {xs: '1.3rem', lg: '1.7rem'}, fontWeight: 600 , paddingY: 2, paddingLeft: {xs: 2, lg: 4}}}>
+        University reviews
+      </Typography>
+      <Container sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
+        <UniversityReview/>
+        <UniversityReview/>
+        <UniversityReview/>
+      </Container>
+    </>
+  )
+}
+
 const UserProfilePage = () => {
   const theme = useTheme();
   const isLgScreen = useMediaQuery(theme.breakpoints.up('lg'));
 
   return (
-    <Grid container minHeight='100vh'>
+    <Grid container minHeight='100vh' sx={{backgroundColor: '#eeececff'}}>
       <Grid size={{xs: 12, lg: 3}}>
         {isLgScreen ? (<></>) : (<Navbar/>)}
         <UserDataPanel/>
+        {isLgScreen ? (<></>) : (<FeedPanel/>)}
       </Grid>
-      <Grid size={{xs: 12, lg: 9}}>
+      <Grid size={{xs: 0, lg: 9}}>
         <Box sx={{minHeight: '100%'}}>
-          {isLgScreen ? (<Navbar/>) : (<></>)}
+          {isLgScreen ? (
+            <>
+              <Navbar/>
+              <FeedPanel/>
+            </>
+          ) : (
+            <></>
+          )}
         </Box>
       </Grid>
     </Grid>
