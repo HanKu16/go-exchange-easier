@@ -1,24 +1,63 @@
 import { Grid, Box, Avatar, Typography, Container } from '@mui/material'
 import basicAvatar from '../assets/examples/basic-avatar.png'
-import exampleFlag from '../assets/examples/example-flag.png'
 import SchoolIcon from '@mui/icons-material/School';
 import PublicIcon from '@mui/icons-material/Public';
 import Navbar from '../components/Navbar';
 import { useTheme, useMediaQuery } from '@mui/material';
 import Button from '@mui/material/Button';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-// import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import PersonRemove from '@mui/icons-material/PersonRemove';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
 import UniversityReview from '../components/UniversityReview';
+import { sendGetUserProfileRequest } from '../utils/user';
+import { useEffect, useState } from 'react';
+import type { GetUserProfileResponse } from '../dtos/user/GetUserProfileResponse';
+import { useNavigate, useParams } from 'react-router-dom';
+import { sendFollowUserRequest, sendUnfollowUserRequest } from '../utils/follow';
 
-const ActionButtons = () => {
+type ActionButtonsProps = {
+  userId: string | number | undefined;
+  isFollowed: boolean;
+  setIsFollowed: (value: boolean) => void;
+}
+
+const ActionButtons = (props : ActionButtonsProps) => {
+  const navigate = useNavigate()
+  const handleFollow = async () => {
+    if (props.userId) {
+      props.setIsFollowed(true)
+      await sendFollowUserRequest(props.userId)
+    }
+  }
+
+  const handleUnfollow = async () => {
+    if (props.userId) {
+      props.setIsFollowed(false)
+      await sendUnfollowUserRequest(props.userId)
+    }
+  }
+
+
   return (
-    <Stack direction="row" spacing={2} sx={{marginTop: 3}}>
-      <Button variant="outlined" endIcon={<PersonAddIcon/>}>
-        FOLLOW
-      </Button>
-      <Button variant="contained" endIcon={<SendIcon/>}>
+    <Stack direction='row' spacing={2} sx={{marginTop: 3}}>
+      {props.isFollowed ? (
+        <Button variant='outlined' endIcon={<PersonRemove/>} 
+          onClick={() => {handleUnfollow()}}>
+          UNFOLLOW
+        </Button>
+      ): (
+        <Button variant='outlined' endIcon={<PersonAdd/>}
+          onClick={() => {handleFollow()}}>
+          FOLLOW
+        </Button>
+      )}
+      <Button variant='contained' endIcon={<SendIcon/>}
+        onClick={() => {
+          if (props.userId) {
+            navigate(`/chat/${props.userId}`)
+          }
+        }}>
         SEND MESSAGE
       </Button>
     </Stack>
@@ -27,38 +66,86 @@ const ActionButtons = () => {
 
 const UserDataPanel = () => {
   const theme = useTheme();
+  const navigate = useNavigate()
   const isLgScreen = useMediaQuery(theme.breakpoints.up('lg'));
+  const signedInUserId: string | null = localStorage.getItem('userId')
+  const { userId } = useParams()
+  const [nick, setNick] = useState<string>()
+  const [countryName, setCountryName] = useState<string>()
+  const [countryFlag, setCountryFlag] = useState<string | null>()
+  const [homeUniversityName, setHomeUniversityName] = useState<string>()
+  const [userDescription, setUserDescription] = useState<string>()
+  const [isFollowed, setIsFollowed] = useState<boolean>(false)
+
+  const getData = async () => {
+    if (!userId) {
+      navigate('/not-found')
+      return
+    } else if (!signedInUserId) {
+      navigate('/forbidden')
+      return
+    }
+    const result = await sendGetUserProfileRequest(userId)
+    if (result.isSuccess) {
+      const data: GetUserProfileResponse = result.data
+      const universityName = data.homeUniversity ?
+        (data.homeUniversity.englishName ? data.homeUniversity.englishName : data.homeUniversity.nativeName) :
+        ('no info about university')
+      setNick(data.nick)
+      setHomeUniversityName(universityName)
+      setCountryName(data.countryOfOrigin ? data.countryOfOrigin.name : 'no info about country')
+      setUserDescription(data.description)
+      setCountryFlag(data.countryOfOrigin ? `/flags/${data.countryOfOrigin?.name}.png` : null)
+      setIsFollowed(data.isFollowed)
+    } else {
+      // tu rozbic na przypadki gdy np zabroniono itd
+      navigate('/not-found')
+    }
+  }
+
+  useEffect(() => {
+    getData()
+  }, [])
 
   return (
     <>
       {isLgScreen ? (
         <Box sx={{ backgroundColor: '#182c44', minHeight: '100vh', display: 'flex', 
           flexDirection: 'column', alignItems: 'center', paddingY: 4}}>
-          <Avatar alt="User avatar" src={basicAvatar} sx={{
+          <Avatar alt='User avatar' src={basicAvatar} sx={{
             width: '20vh', 
             height: '20vh'}}/>
           <Typography sx={{color: 'white', fontSize: {lg: '2rem'}, fontWeight: '700', 
             paddingTop: {lg: 2}}}>
-            Jacob Nomada
+            {nick}
           </Typography>
           <Box sx={{width: '100%', paddingLeft: {lg: 6}, paddingTop: {lg: 2}}}>
             <Box sx={{display: 'flex'}}>
               <PublicIcon sx={{color: 'white'}}/>
               <Typography sx={{color: 'white', fontSize: {lg: '1.2rem'}, fontWeight: '600',
                 paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}, marginLeft: 1}}>
-                Canada
+                {countryName}
               </Typography>
-              <img src={exampleFlag} alt="" style={{height: '1rem', marginTop: 4}}/>
+              {countryFlag ? (
+                <img src={countryFlag} alt='' style={{height: '1rem', marginTop: 4}}/>
+              ) : (
+                <></>
+              )}
             </Box>
             <Box sx={{display: 'flex'}}>
               <SchoolIcon sx={{color: 'white'}}/>
               <Typography sx={{color: 'white', fontSize: {lg: '1rem'}, fontWeight: '500',
                 marginLeft: 1}}>
-                University of Bologna
+                {homeUniversityName}
               </Typography>
             </Box>
           </Box>
-          <ActionButtons/>
+            {signedInUserId !== userId ? (
+              <ActionButtons userId={userId} isFollowed={isFollowed} 
+                setIsFollowed={setIsFollowed}/>
+            ) : (
+              <></>
+            )}
           <Box sx={{width: '100%', paddingX: {lg: 5}, paddingTop: {lg: 4}}}>
             <Typography sx={{color: 'white', fontSize: {lg: '1.2rem'}, fontWeight: '600',
                 paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
@@ -66,14 +153,7 @@ const UserDataPanel = () => {
             </Typography>
             <Typography sx={{color: 'white', fontSize: {lg: '0.8rem'}, fontWeight: '400',
               paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Distinctio beatae dolor voluptatum magni nemo accusamus iure doloremque itaque ea non, totam illum error vitae sunt, dolore ex commodi maiores animi.
-              Facilis quia deleniti illo et voluptatum fugit laudantium illum magni blanditiis pariatur. Blanditiis modi facilis voluptates deserunt nam reiciendis nihil cum cupiditate, debitis ullam necessitatibus est, qui, et impedit ea.
-              Aperiam facilis, iste commodi repudiandae reprehenderit delectus quidem, nostrum ducimus ab dolorem dicta magnam incidunt voluptatem rem veritatis, perspiciatis mollitia architecto! Quis, a officia est magni quas non magnam eligendi.
-              Consequuntur tempora praesentium ab fugiat cum obcaecati nihil dolorum numquam! Minima eaque cum beatae! Eveniet distinctio sed velit perspiciatis necessitatibus quos nemo, adipisci saepe quisquam mollitia eos repudiandae, dicta quae?
-              Unde magnam vel facilis at quae officia iste aut autem accusamus fugiat magni, deleniti minus similique consequuntur nobis debitis, molestiae voluptates nesciunt repellat totam inventore officiis? Inventore et magni commodi?
-              Iure aliquid dolores voluptate explicabo? Cum ipsam excepturi molestiae sint eius facere assumenda aliquam eum aliquid vel dolorum nesciunt, at vero, in beatae natus quaerat, veniam maiores quis aperiam a?
-              Quasi corrupti dolore recusandae magnam, dignissimos quia, minus voluptas porro saepe suscipit natus nam nihil iure! Ipsa ea, repellat inventore aspernatur eveniet eligendi rem libero, dolore vero eaque laudantium distinctio?
-              Repudiandae nesciunt odit earum iste similique praesentium ipsum officiis hic doloremque reiciendis ex quia totam commodi unde, ullam neque sunt maiores asperiores, impedit illo! Nostrum veniam rem placeat architecto! Nihil!
+              {userDescription}
             </Typography>
           </Box>
         </Box> 
@@ -89,27 +169,36 @@ const UserDataPanel = () => {
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
               <Typography sx={{color: 'white', fontSize: '1rem', fontWeight: '700', 
                 paddingY: 0.4}}>
-                Jacob Nomada
+                {nick}
               </Typography>
               <Box sx={{display: 'flex'}}>
                 <PublicIcon sx={{color: 'white'}}/>
                 <Typography sx={{color: 'white', fontSize: {lg: '0.7rem'}, fontWeight: '600',
                   paddingBottom: 0.5, marginLeft: 1, marginRight: 1}}>
-                  Canada
+                  {countryName}
                 </Typography>
-                <img src={exampleFlag} alt="" style={{height: '0.9rem', marginTop: 4}}/>
+                {countryFlag ? (
+                  <img src={countryFlag} style={{height: '1rem', marginTop: 4}}/>
+                ) : (
+                  <></>
+                )}
               </Box>
               <Box sx={{display: 'flex'}}>
                 <SchoolIcon sx={{color: 'white'}}/>
                 <Typography sx={{color: 'white', fontSize: {lg: '1rem'}, fontWeight: '500',
                   marginLeft: 1}}>
-                  University of Bologna
+                  {homeUniversityName}
                 </Typography>
               </Box>
             </Box>
           </Box>
           <Container sx={{marginY: 0.5}}>
-            <ActionButtons/>
+            {signedInUserId !== userId ? (
+              <ActionButtons userId={userId} isFollowed={isFollowed} 
+                setIsFollowed={setIsFollowed}/>
+            ) : (
+              <></>
+            )}
           </Container>
           <Box sx={{paddingX: 3, paddingTop: 4}}>
             <Typography sx={{color: 'white', fontWeight: '600',
@@ -118,7 +207,7 @@ const UserDataPanel = () => {
             </Typography>
             <Typography sx={{color: 'white', fontWeight: '400',
               paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Distinctio beatae dolor voluptatum magni nemo accusamus iure doloremque itaque ea non, totam illum error vitae sunt, dolore ex commodi maiores animi.
+              {userDescription}
             </Typography>
           </Box>
         </Box> 
