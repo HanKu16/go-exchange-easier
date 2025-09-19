@@ -6,6 +6,7 @@ import { sendLoginRequest } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
 
 const saveJwtToken = (response: LoginResponse): void => {
+  localStorage.setItem('userId', `${response.userId}`)
   localStorage.setItem('jwtToken', response.accessToken)
   localStorage.setItem('tokenType', response.tokenType)
 }
@@ -25,7 +26,7 @@ const LoginPage = () => {
     if (result.isSuccess) {
       saveJwtToken(result.data)
       setWasLoginAttemptFailed(false)
-      navigate(`/user-profile/${result.data.userId}`)
+      navigate(`/user/${result.data.userId}/profile`)
       console.log(result.data)
     } else {
       setPassword(() => "")
@@ -76,7 +77,7 @@ const LoginPage = () => {
                 type='password'
                 label='Password'
                 size='medium'
-                autoComplete='new-password'
+                autoComplete='off'
                 sx={{
                   width: {xs: '75%', md: '60%', lg: '65%'}}}/>
             </Box>
