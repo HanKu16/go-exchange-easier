@@ -27,11 +27,9 @@ const LoginPage = () => {
       saveJwtToken(result.data)
       setWasLoginAttemptFailed(false)
       navigate(`/user/${result.data.userId}/profile`)
-      console.log(result.data)
     } else {
       setPassword(() => "")
       setWasLoginAttemptFailed(true)
-      console.log(result.error)
     }
   }
 
