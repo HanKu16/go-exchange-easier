@@ -5,16 +5,14 @@ import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundE
 import com.go_exchange_easier.backend.exception.domain.UserDescriptionNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
 import com.go_exchange_easier.backend.model.*;
-import com.go_exchange_easier.backend.repository.UniversityRepository;
-import com.go_exchange_easier.backend.repository.UserDescriptionRepository;
-import com.go_exchange_easier.backend.repository.UserRepository;
-import com.go_exchange_easier.backend.repository.UserStatusRepository;
+import com.go_exchange_easier.backend.repository.*;
 import com.go_exchange_easier.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +20,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserDescriptionRepository userDescriptionRepository;
     private final UniversityRepository universityRepository;
+    private final CountryRepository countryRepository;
     private final UserStatusRepository userStatusRepository;
     private final UserRepository userRepository;
 
@@ -110,6 +109,34 @@ public class UserServiceImpl implements UserService {
         }
         return new UpdateUserStatusResponse(userId,
                 status.getId(), status.getName());
+    }
+
+    @Override
+    @Transactional
+    public AssignCountryOfOriginResponse assignCountryOfOrigin(
+            int userId, AssignCountryOfOriginRequest request) {
+        if (request.countryId() != null) {
+            Country country = countryRepository.findById(request.countryId())
+                    .orElseThrow(() -> new ReferencedResourceNotFoundException(
+                            "Country of id " + request.countryId() +
+                                    " was not found."));
+            int rowsUpdated = userRepository.assignCountryOfOrigin(
+                    userId, request.countryId());
+            if (rowsUpdated == 0) {
+                throw new UserNotFoundException("User of id " + userId +
+                        " was not found.");
+            }
+            return new AssignCountryOfOriginResponse(userId,
+                    new AssignCountryOfOriginResponse.CountryDto(
+                            country.getId(), country.getEnglishName()));
+        } else {
+            int rowsUpdated = userRepository.assignCountryOfOrigin(userId, null);
+            if (rowsUpdated == 0) {
+                throw new UserNotFoundException("User of id " + userId +
+                        " was not found.");
+            }
+            return new AssignCountryOfOriginResponse(userId, null);
+        }
     }
 
 }

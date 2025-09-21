@@ -11,5 +11,7 @@ public interface UserService {
             int userId, AssignHomeUniversityRequest request);
     UpdateUserStatusResponse updateStatus(int userId,
             UpdateUserStatusRequest request);
+    AssignCountryOfOriginResponse assignCountryOfOrigin(
+            int userId, AssignCountryOfOriginRequest request);
 
 }
