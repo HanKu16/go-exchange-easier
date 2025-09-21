@@ -9,15 +9,17 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import PersonRemove from '@mui/icons-material/PersonRemove';
 import SendIcon from '@mui/icons-material/Send';
 import Stack from '@mui/material/Stack';
-import UniversityReview from '../components/UniversityReview';
-import { sendGetUserProfileRequest } from '../utils/user';
+import UniversityReview, { type UniversityReviewProps } from '../components/UniversityReview';
+import { sendGetUserProfileRequest, sendGetUserReviewsRequest } from '../utils/user';
 import { useEffect, useState } from 'react';
 import type { GetUserProfileResponse } from '../dtos/user/GetUserProfileResponse';
 import { useNavigate, useParams } from 'react-router-dom';
 import { sendFollowUserRequest, sendUnfollowUserRequest } from '../utils/follow';
+import { getLocalDate } from '../utils/date-utils';
+import NoReviewsFrame from '../components/NoReviewsFrame';
 
 type ActionButtonsProps = {
-  userId: string | number | undefined;
+  userId: string | number;
   isFollowed: boolean;
   setIsFollowed: (value: boolean) => void;
 }
@@ -30,14 +32,12 @@ const ActionButtons = (props : ActionButtonsProps) => {
       await sendFollowUserRequest(props.userId)
     }
   }
-
   const handleUnfollow = async () => {
     if (props.userId) {
       props.setIsFollowed(false)
       await sendUnfollowUserRequest(props.userId)
     }
   }
-
 
   return (
     <Stack direction='row' spacing={2} sx={{marginTop: 3}}>
@@ -64,28 +64,28 @@ const ActionButtons = (props : ActionButtonsProps) => {
   );
 }
 
-const UserDataPanel = () => {
+type UserDataPanelProps = {
+  userId: number | string;
+  isOwnProfile: boolean;
+}
+
+const UserDataPanel = (props: UserDataPanelProps) => {
   const theme = useTheme();
   const navigate = useNavigate()
   const isLgScreen = useMediaQuery(theme.breakpoints.up('lg'));
-  const signedInUserId: string | null = localStorage.getItem('userId')
-  const { userId } = useParams()
   const [nick, setNick] = useState<string>()
   const [countryName, setCountryName] = useState<string>()
   const [countryFlag, setCountryFlag] = useState<string | null>()
   const [homeUniversityName, setHomeUniversityName] = useState<string>()
-  const [userDescription, setUserDescription] = useState<string>()
+  const [userDescription, setUserDescription] = useState<string>('')
   const [isFollowed, setIsFollowed] = useState<boolean>(false)
 
   const getData = async () => {
-    if (!userId) {
+    if (!props.userId) {
       navigate('/not-found')
       return
-    } else if (!signedInUserId) {
-      navigate('/forbidden')
-      return
     }
-    const result = await sendGetUserProfileRequest(userId)
+    const result = await sendGetUserProfileRequest(props.userId)
     if (result.isSuccess) {
       const data: GetUserProfileResponse = result.data
       const universityName = data.homeUniversity ?
@@ -97,9 +97,11 @@ const UserDataPanel = () => {
       setUserDescription(data.description)
       setCountryFlag(data.countryOfOrigin ? `/flags/${data.countryOfOrigin?.name}.png` : null)
       setIsFollowed(data.isFollowed)
+      console.log(data)
     } else {
-      // tu rozbic na przypadki gdy np zabroniono itd
-      navigate('/not-found')
+      if (result.error.status === 'NOT_FOUND') {
+        navigate('/not-found')
+      }
     }
   }
 
@@ -140,28 +142,33 @@ const UserDataPanel = () => {
               </Typography>
             </Box>
           </Box>
-            {signedInUserId !== userId ? (
-              <ActionButtons userId={userId} isFollowed={isFollowed} 
+            {!props.isOwnProfile ? (
+              <ActionButtons userId={props.userId} isFollowed={isFollowed} 
                 setIsFollowed={setIsFollowed}/>
             ) : (
               <></>
             )}
           <Box sx={{width: '100%', paddingX: {lg: 5}, paddingTop: {lg: 4}}}>
-            <Typography sx={{color: 'white', fontSize: {lg: '1.2rem'}, fontWeight: '600',
-                paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
-              About
-            </Typography>
-            <Typography sx={{color: 'white', fontSize: {lg: '0.8rem'}, fontWeight: '400',
-              paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
-              {userDescription}
-            </Typography>
+            {userDescription.trim() !== '' ? 
+              <>
+                <Typography sx={{color: 'white', fontSize: {lg: '1.2rem'}, fontWeight: '600',
+                    paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
+                  About
+                </Typography>
+                <Typography sx={{color: 'white', fontSize: {lg: '0.8rem'}, fontWeight: '400',
+                  paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
+                  {userDescription}
+                </Typography>
+              </> : 
+              <></>
+            }
           </Box>
         </Box> 
       ) : (
         <Box sx={{ backgroundColor: '#182c44', display: 'flex', 
           flexDirection: 'column', paddingY: 2}}>
           <Box sx={{display: 'flex', flexDirection: 'row', paddingLeft: 3}}>
-            <Avatar alt="User avatar" src={basicAvatar} sx={{
+            <Avatar alt='User avatar' src={basicAvatar} sx={{
               width: '10vh', 
               height: '10vh',
               marginRight: 3,
@@ -193,22 +200,27 @@ const UserDataPanel = () => {
             </Box>
           </Box>
           <Container sx={{marginY: 0.5}}>
-            {signedInUserId !== userId ? (
-              <ActionButtons userId={userId} isFollowed={isFollowed} 
+            {!props.isOwnProfile ? (
+              <ActionButtons userId={props.userId} isFollowed={isFollowed} 
                 setIsFollowed={setIsFollowed}/>
             ) : (
               <></>
             )}
           </Container>
           <Box sx={{paddingX: 3, paddingTop: 4}}>
-            <Typography sx={{color: 'white', fontWeight: '600',
-                paddingBottom: 1}}>
-              About
-            </Typography>
-            <Typography sx={{color: 'white', fontWeight: '400',
-              paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
-              {userDescription}
-            </Typography>
+            {userDescription.trim() !== '' ? 
+              <>
+              <Typography sx={{color: 'white', fontWeight: '600',
+                  paddingBottom: 1}}>
+                About
+              </Typography>
+              <Typography sx={{color: 'white', fontWeight: '400',
+                paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
+                {userDescription}
+              </Typography>
+              </> : 
+              <></>
+            }
           </Box>
         </Box> 
       )}
@@ -216,38 +228,78 @@ const UserDataPanel = () => {
   )
 }
 
-const FeedPanel = () => {
+type FeedPanelProps = {
+  userId: string | number;
+  isOwnProfile: boolean;
+}
+
+const FeedPanel = (props: FeedPanelProps) => {
+  const [reviewProps, setReviewsProps] = useState<UniversityReviewProps[]>([])
+  const getData = async () => {
+    const result = await sendGetUserReviewsRequest(props.userId)
+    if (result.isSuccess) {
+      const props: UniversityReviewProps[]  = result.data.map(r => ({
+        id: r.id,
+        title: r.university.englishName ? r.university.englishName : r.university.nativeName,
+        subheader: getLocalDate(r.createdAt),
+        starRating: r.starRating,
+        textContent: r.textContent,
+        reactions: r.reactions
+      }))
+      setReviewsProps(props)
+    }
+  }
+
+  useEffect(() => {
+    getData()
+  }, [])
+
   return (
     <>
-      <Typography sx={{fontSize: {xs: '1.3rem', lg: '1.7rem'}, fontWeight: 600 , paddingY: 2, paddingLeft: {xs: 2, lg: 4}}}>
-        University reviews
-      </Typography>
-      <Container sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
-        <UniversityReview/>
-        <UniversityReview/>
-        <UniversityReview/>
-      </Container>
+      {reviewProps.length != 0 ? 
+        (
+          <>
+            <Typography sx={{fontSize: {xs: '1.3rem', lg: '1.7rem'}, fontWeight: 600 , 
+              paddingY: 2, paddingLeft: {xs: 2, lg: 4}}}>
+              University reviews
+            </Typography>
+            <Container sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
+              {reviewProps.map(rp => (<UniversityReview {...rp}/>))}
+          </Container>
+          </>
+        ) : (
+          <NoReviewsFrame isOwnProfile={props.isOwnProfile}/>
+        )}
     </>
   )
 }
 
 const UserProfilePage = () => {
+  const navigate = useNavigate()
   const theme = useTheme();
+  const { userId } = useParams()
   const isLgScreen = useMediaQuery(theme.breakpoints.up('lg'));
+  const signedInUserId: string | null = localStorage.getItem('userId')
+  const isOwnProfile = userId === signedInUserId
+  
+  if (!userId) {
+    navigate('/not-found')
+    return
+  }
 
   return (
     <Grid container minHeight='100vh' sx={{backgroundColor: '#eeececff'}}>
       <Grid size={{xs: 12, lg: 3}}>
         {isLgScreen ? (<></>) : (<Navbar/>)}
-        <UserDataPanel/>
-        {isLgScreen ? (<></>) : (<FeedPanel/>)}
+        <UserDataPanel userId={userId} isOwnProfile={isOwnProfile}/>
+        {isLgScreen ? (<></>) : (<FeedPanel userId={userId} isOwnProfile={isOwnProfile}/>)}
       </Grid>
       <Grid size={{xs: 0, lg: 9}}>
         <Box sx={{minHeight: '100%'}}>
           {isLgScreen ? (
             <>
               <Navbar/>
-              <FeedPanel/>
+              <FeedPanel userId={userId} isOwnProfile={isOwnProfile}/>
             </>
           ) : (
             <></>
