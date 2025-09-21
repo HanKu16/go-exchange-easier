@@ -113,7 +113,8 @@ const UserDataPanel = (props: UserDataPanelProps) => {
     <>
       {isLgScreen ? (
         <Box sx={{ backgroundColor: '#182c44', minHeight: '100vh', display: 'flex', 
-          flexDirection: 'column', alignItems: 'center', paddingY: 4}}>
+          flexDirection: 'column', alignItems: 'center', paddingY: 4,
+          position: 'fixed', width: 'inherit'}}>
           <Avatar alt='User avatar' src={basicAvatar} sx={{
             width: '20vh', 
             height: '20vh'}}/>
@@ -265,7 +266,7 @@ const FeedPanel = (props: FeedPanelProps) => {
             </Typography>
             <Container sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
               {reviewProps.map(rp => (<UniversityReview {...rp}/>))}
-          </Container>
+            </Container>
           </>
         ) : (
           <NoReviewsFrame isOwnProfile={props.isOwnProfile}/>
