@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Update user description")
+@Operation(summary = "Assign home university to user")
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
