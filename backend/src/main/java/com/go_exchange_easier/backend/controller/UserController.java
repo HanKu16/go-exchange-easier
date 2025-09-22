@@ -1,9 +1,11 @@
 package com.go_exchange_easier.backend.controller;
 
 import com.go_exchange_easier.backend.annoations.docs.user.*;
+import com.go_exchange_easier.backend.dto.exchange.GetUserExchangeResponse;
 import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.model.UserCredentials;
+import com.go_exchange_easier.backend.service.ExchangeService;
 import com.go_exchange_easier.backend.service.UniversityReviewService;
 import com.go_exchange_easier.backend.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +23,7 @@ import java.util.List;
 public class UserController {
 
     private final UniversityReviewService universityReviewService;
+    private final ExchangeService exchangeService;
     private final UserService userService;
 
     @GetMapping("/{userId}/profile")
@@ -40,6 +43,15 @@ public class UserController {
             @AuthenticationPrincipal UserCredentials principal) {
         List<GetUniversityReviewResponse> response = universityReviewService
                 .getByAuthorId(userId, principal.getUser().getId());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{userId}/exchanges")
+    @GetExchangesApiDocs
+    public ResponseEntity<List<GetUserExchangeResponse>> getExchanges(
+            @PathVariable("userId") Integer userId,
+            @AuthenticationPrincipal UserCredentials principal) {
+        List<GetUserExchangeResponse> response = exchangeService.getByUserId(userId);
         return ResponseEntity.ok(response);
     }
 
@@ -69,6 +81,16 @@ public class UserController {
             @RequestBody @Valid UpdateUserStatusRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
         UpdateUserStatusResponse response = userService.updateStatus(
+                principal.getUser().getId(), request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/countryOfOrigin")
+    @AssignCountryOfOriginApiDocs
+    public ResponseEntity<AssignCountryOfOriginResponse> assignCountryOfOrigin(
+            @RequestBody @Valid AssignCountryOfOriginRequest request,
+            @AuthenticationPrincipal UserCredentials principal) {
+        AssignCountryOfOriginResponse response = userService.assignCountryOfOrigin(
                 principal.getUser().getId(), request);
         return ResponseEntity.ok(response);
     }
