@@ -1,199 +1,45 @@
 import { Grid, Box, Avatar, Typography, Container } from '@mui/material'
 import basicAvatar from '../assets/examples/basic-avatar.png'
-import SchoolIcon from '@mui/icons-material/School';
-import PublicIcon from '@mui/icons-material/Public';
-import Navbar from '../components/Navbar';
-import { useTheme, useMediaQuery } from '@mui/material';
-import Button from '@mui/material/Button';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import PersonRemove from '@mui/icons-material/PersonRemove';
-import SendIcon from '@mui/icons-material/Send';
-import Stack from '@mui/material/Stack';
-import UniversityReview, { type UniversityReviewProps } from '../components/UniversityReview';
-import { sendGetUserProfileRequest, sendGetUserReviewsRequest } from '../utils/user';
-import { useEffect, useState } from 'react';
-import type { GetUserProfileResponse } from '../dtos/user/GetUserProfileResponse';
-import { useNavigate, useParams } from 'react-router-dom';
-import { sendFollowUserRequest, sendUnfollowUserRequest } from '../utils/follow';
-import { getLocalDate } from '../utils/date-utils';
-import NoReviewsFrame from '../components/NoReviewsFrame';
+import SchoolIcon from '@mui/icons-material/School'
+import PublicIcon from '@mui/icons-material/Public'
+import Navbar from '../components/Navbar'
+import { useTheme, useMediaQuery } from '@mui/material'
+import Button from '@mui/material/Button'
+import PersonAdd from '@mui/icons-material/PersonAdd'
+import PersonRemove from '@mui/icons-material/PersonRemove'
+import SendIcon from '@mui/icons-material/Send'
+import Stack from '@mui/material/Stack'
+import UniversityReview, { type UniversityReviewProps } from '../components/UniversityReview'
+import { sendGetUserExchangesRequest, sendGetUserProfileRequest, 
+  sendGetUserReviewsRequest } from '../utils/user'
+import { useEffect, useState } from 'react'
+import type { GetUserProfileResponse } from '../dtos/user/GetUserProfileResponse'
+import { useNavigate, useParams } from 'react-router-dom'
+import { sendFollowUserRequest, sendUnfollowUserRequest } from '../utils/follow'
+import { getLocalDate } from '../utils/date-utils'
+import NoContent from '../components/NoContent'
+import AddIcon from '@mui/icons-material/Add'
+import type { ExchangesProps } from '../components/Exchanges'
+import Exchanges from '../components/Exchanges'
 
+const AddExchangeButton = () => {
+  const navigate = useNavigate()
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@mui/material";
-
-const rows = [
-  {
-    university: "Massachusetts Institute of Technology",
-    universityMajor: "Computer Science",
-    city: "Cambridge",
-    startedAt: "June 2016",
-    endAt: "May 2020"
-  },
-  {
-    university: "University of Oxford",
-    universityMajor: "Philosophy",
-    city: "Oxford",
-    startedAt: "April 2017",
-    endAt: "August 2021"
-  }
-];
-
- function BasicTable() {
   return (
-    <Box sx={{ display: "flex", margin: "auto", width: "91%" }}>
-      <TableContainer
-        component={Paper}
-        sx={{
-          boxShadow: 4,
-          borderRadius: 3,
-          overflow: "hidden"
-        }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: "#04315fff" }}>
-              {["University", "Major", "City", "Started at", "End at"].map(
-                (header, index) => (
-                  <TableCell
-                    key={index}
-                    align={index === 0 ? "left" : "center"}
-                    sx={{
-                      fontWeight: "bold",
-                      color: "white",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      fontSize: "0.9rem"
-                    }}
-                  >
-                    {header}
-                  </TableCell>
-                )
-              )}
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.university}
-                sx={{
-                  "&:last-child td, &:last-child th": { border: 0 },
-                  "&:nth-of-type(odd)": { backgroundColor: "#f9f9f9" },
-                  "&:hover": {
-                    backgroundColor: "#e3f2fd",
-                    transform: "scale(1.01)",
-                    transition: "0.2s ease-in-out"
-                  }
-                }}
-              >
-                <TableCell align="left">
-                  <Typography fontWeight="600">{row.university}</Typography>
-                </TableCell>
-                <TableCell align="center">{row.universityMajor}</TableCell>
-                <TableCell align="center">{row.city}</TableCell>
-                <TableCell align="center">{row.startedAt}</TableCell>
-                <TableCell align="center">{row.endAt}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <Box sx={{display: 'flex', justifyContent: 'flex-start', mb: 2,
+      width: '91%', margin: 'auto'}}>
+      <Button variant='contained' startIcon={<AddIcon />}
+        onClick={() => navigate('/me/exchanges')}
+        sx={{borderRadius: 2, textTransform: 'none', fontWeight: 'bold', 
+          marginTop: 2, px: 3, py: 1, backgroundColor: '#04315f',
+          '&:hover': {
+            backgroundColor: '#064080'
+          }}}>
+        Add exchange
+      </Button>
     </Box>
   );
 }
-
-
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableContainer from '@mui/material/TableContainer';
-// import TableHead from '@mui/material/TableHead';
-// import TableRow from '@mui/material/TableRow';
-// import Paper from '@mui/material/Paper';
-
-// // function createData(
-// //   name: string,
-// //   calories: number,
-// //   fat: number,
-// //   carbs: number,
-// //   protein: number,
-// // ) {
-// //   return { name, calories, fat, carbs, protein };
-// // }
-
-// // const rows = [
-// //   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-// //   createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-// //   createData('Eclair', 262, 16.0, 24, 6.0),
-// //   createData('Cupcake', 305, 3.7, 67, 4.3),
-// //   createData('Gingerbread', 356, 16.0, 49, 3.9),
-// // ];
-
-// function createData(
-//   university: string,
-//   universityMajor: string,
-//   city: string,
-//   country: string,
-//   startedAt: string,
-//   endAt: string
-// ) {
-//   return { university, universityMajor, city, country, startedAt, endAt};
-// }
-
-// const rows = [
-//   createData('University di Bologna', 'Law', 'Bologna', 'Italy', '21-12-2021', '03-06-2022'),
-// ];
-
-// function BasicTable() {
-//   return (
-//     <Box sx={{ display: 'flex', margin: 'auto', width: '95%' }}>
-//       <TableContainer component={Paper} sx={{ boxShadow: 3}}>
-//         <Table sx={{backgroundColor: '#eeececff'}} aria-label="styled table">
-//           <TableHead>
-//             <TableRow sx={{ backgroundColor: '#f0f0f0' }}>
-//               <TableCell sx={{ fontWeight: 'bold' }}>University</TableCell>
-//               {/* <TableCell align="right" sx={{ fontWeight: 'bold' }}>University</TableCell> */}
-//               <TableCell align="right" sx={{ fontWeight: 'bold' }}>Major</TableCell>
-//               <TableCell align="right" sx={{ fontWeight: 'bold' }}>City</TableCell>
-//               <TableCell align="right" sx={{ fontWeight: 'bold' }}>Country</TableCell>
-//               <TableCell align="right" sx={{ fontWeight: 'bold' }}>Started at</TableCell>
-//               <TableCell align="right" sx={{ fontWeight: 'bold' }}>End at</TableCell>
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {rows.map((row) => (
-//               <TableRow
-//                 key={row.university}
-//                 sx={{
-//                   '&:last-child td, &:last-child th': { border: 0 },
-//                   '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
-//                   '&:hover': { backgroundColor: '#e0e0e0', cursor: 'pointer' },
-//                 }}
-//               >
-//                 <TableCell component="th" scope="row">
-//                   {row.university}
-//                 </TableCell>
-//                 <TableCell align="right">{row.universityMajor}</TableCell>
-//                 <TableCell align="right">{row.city}</TableCell>
-//                 <TableCell align="right">{row.country}</TableCell>
-//                 <TableCell align="right">{row.startedAt}</TableCell>
-//                 <TableCell align="right">{row.endAt}</TableCell>
-//               </TableRow>
-//             ))}
-//           </TableBody>
-//         </Table>
-//       </TableContainer>
-//     </Box>
-//   );
-// }
 
 type ActionButtonsProps = {
   userId: string | number;
@@ -412,7 +258,9 @@ type FeedPanelProps = {
 
 const FeedPanel = (props: FeedPanelProps) => {
   const [reviewProps, setReviewsProps] = useState<UniversityReviewProps[]>([])
-  const getData = async () => {
+  const [exchangesProps, setExchangesProps] = useState<ExchangesProps>()
+
+  const getReviews = async () => {
     const result = await sendGetUserReviewsRequest(props.userId)
     if (result.isSuccess) {
       const props: UniversityReviewProps[]  = result.data.map(r => ({
@@ -427,28 +275,74 @@ const FeedPanel = (props: FeedPanelProps) => {
     }
   }
 
+  const getExchanges = async () => {
+    const result = await sendGetUserExchangesRequest(props.userId)
+    if (result.isSuccess) {
+      const props: ExchangesProps = {
+        exchanges: result.data.map(e => ({
+          id: e.id,
+          timeRange: {
+            startedAt: e.timeRange.startedAt,
+            endAt: e.timeRange.endAt
+          },
+          university: {
+            id: e.university.id,
+            name: e.university.englishName
+              ? e.university.englishName
+              : e.university.nativeName
+          },
+          universityMajorName: e.universityMajor.name,
+          city: {
+            name: e.city.name,
+            countryName: e.city.country.name
+          }
+        }))
+      }
+      setExchangesProps(props)
+    }
+  }
+
+
   useEffect(() => {
-    getData()
+    getReviews()
+    getExchanges()
   }, [])
 
   return (
-    <>
+    <Box sx={{paddingBottom: 4}}>
+      <Typography sx={{fontSize: {xs: '1.3rem', lg: '1.7rem'}, fontWeight: 600 , 
+        paddingY: 2.5, paddingLeft: {xs: 2, lg: 4}}}>
+        Exchange history
+      </Typography>
+      {exchangesProps && (exchangesProps.exchanges.length !== 0) ? 
+        <Exchanges {...exchangesProps}/> :
+        props.isOwnProfile ? 
+          <></> : 
+          <NoContent title='No exchanges yet' subheader="This user hasn't add any exchange."/>
+      }
+      {props.isOwnProfile ? 
+        <AddExchangeButton/> :
+        <></>
+      }
+      <Typography sx={{fontSize: {xs: '1.3rem', lg: '1.7rem'}, fontWeight: 600 , 
+        paddingY: 2.5, paddingLeft: {xs: 2, lg: 4}}}>
+        University reviews
+      </Typography>
       {reviewProps.length != 0 ? 
         (
           <>
-            <Typography sx={{fontSize: {xs: '1.3rem', lg: '1.7rem'}, fontWeight: 600 , 
-              paddingY: 2, paddingLeft: {xs: 2, lg: 4}}}>
-              University reviews
-            </Typography>
             <Container sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
               {reviewProps.map(rp => (<UniversityReview {...rp}/>))}
             </Container>
           </>
         ) : (
-          <NoReviewsFrame isOwnProfile={props.isOwnProfile}/>
+          <NoContent title={'No reviews yet'} 
+            subheader={props.isOwnProfile ? 
+              "You haven't written any reviews." :
+              "This user hasn't written any reviews."
+            }/>
         )}
-      <BasicTable/>
-    </>
+    </Box>
   )
 }
 
