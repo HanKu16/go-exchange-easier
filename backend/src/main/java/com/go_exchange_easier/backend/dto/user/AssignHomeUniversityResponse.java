@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record AssignHomeUniversityResponse(
 
         Integer userId,
-        Short university,
+        Short universityId,
         String originalUniversityName,
         String englishUniversityName
 
