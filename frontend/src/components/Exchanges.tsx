@@ -56,7 +56,11 @@ const Exchanges = (props: ExchangesProps) => {
                     <Typography fontWeight='600'>{e.university.name}</Typography>
                   </TableCell>
                   <TableCell align='center'>{e.universityMajorName}</TableCell>
-                  <TableCell align='center'>{e.city.name}</TableCell>
+                  <TableCell align='center'>
+                    {e.city.name} 
+                    <img src={`/flags/${e.city.countryName}.png`} alt={`${e.city.countryName} flag`} 
+                      style={{height: '0.8rem', marginLeft: 2}}/>
+                  </TableCell>
                   <TableCell align='center'>{e.timeRange.startedAt}</TableCell>
                   <TableCell align='center'>{e.timeRange.endAt}</TableCell>
                 </TableRow>
@@ -78,6 +82,8 @@ const Exchanges = (props: ExchangesProps) => {
               </Typography>
               <Typography variant='body2'>
                 <strong>City:</strong> {e.city.name}
+                <img src={`/flags/${e.city.countryName}.png`} alt={`${e.city.countryName} flag`} 
+                  style={{height: '0.8rem', marginLeft: 2}}/>
               </Typography>
               <Typography variant='body2'>
                 <strong>Started:</strong> {e.timeRange.startedAt}
