@@ -76,7 +76,10 @@ const Navbar = () => {
               open={Boolean(anchorElNav)} onClose={handleCloseNavMenu}
               sx={{display: {xs: 'block', md: 'none'}}}>
               {navbarItems.map(item => (
-                <MenuItem key={item.label} onClick={() => navigate(item.route)}>
+                <MenuItem key={item.label} onClick={() => {
+                  navigate(item.route)
+                  window.location.reload()
+                }}>
                   <Typography sx={{textAlign: 'center'}}>{item.label}</Typography>
                 </MenuItem>
               ))}
@@ -86,7 +89,10 @@ const Navbar = () => {
             {navbarItems.map(item => (
               <Button
                 key={item.label}
-                onClick={() => navigate(item.route)}
+                onClick={() => {
+                  navigate(item.route)
+                  window.location.reload()
+                }}
                 sx={{my: 2, color: 'white', display: 'block'}}
               >
                 {item.label}
