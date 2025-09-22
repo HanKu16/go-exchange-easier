@@ -26,7 +26,7 @@ const LoginPage = () => {
     if (result.isSuccess) {
       saveJwtToken(result.data)
       setWasLoginAttemptFailed(false)
-      navigate(`/user/${result.data.userId}/profile`)
+      navigate(`/users/${result.data.userId}/profile`)
     } else {
       setPassword(() => "")
       setWasLoginAttemptFailed(true)
