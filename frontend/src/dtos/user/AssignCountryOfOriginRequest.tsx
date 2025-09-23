@@ -1,3 +1,3 @@
 export type AssignCountryOfOriginRequest = {
-  countryId: number;
+  countryId: number | null;
 }
