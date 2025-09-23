@@ -1,3 +1,3 @@
 export type UpdateUserStatusRequest = {
-  statusId: number;
+  statusId: number | null;
 }
