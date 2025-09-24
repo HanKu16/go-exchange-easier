@@ -1,12 +1,16 @@
 package com.go_exchange_easier.backend.controller;
 
 import com.go_exchange_easier.backend.annoations.docs.country.GetCountiesApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.country.GetUniversitiesApiDocs;
 import com.go_exchange_easier.backend.dto.country.GetCountryResponse;
+import com.go_exchange_easier.backend.dto.university.GetUniversityResponse;
 import com.go_exchange_easier.backend.service.CountryService;
+import com.go_exchange_easier.backend.service.UniversityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
@@ -17,12 +21,22 @@ import java.util.List;
 @Tag(name = "Country", description = "Operations related to countries.")
 public class CountryController {
 
+    private final UniversityService universityService;
     private final CountryService countryService;
 
     @GetMapping
     @GetCountiesApiDocs
     public ResponseEntity<List<GetCountryResponse>> getAll() {
         List<GetCountryResponse> response = countryService.getAll();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{countryId}/universities")
+    @GetUniversitiesApiDocs
+    public ResponseEntity<List<GetUniversityResponse>> getUniversities(
+            @PathVariable Short countryId) {
+        List<GetUniversityResponse> response = universityService
+                .getByCountryId(countryId);
         return ResponseEntity.ok(response);
     }
 
