@@ -37,7 +37,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Modifying
     @Query("UPDATE User u SET u.status.id = :statusId WHERE u.id = :userId")
-    int updateStatus(@Param("userId") int userId, @Param("statusId") short statusId);
+    int updateStatus(@Param("userId") int userId, @Param("statusId") Short statusId);
 
     @Modifying
     @Query("UPDATE User u SET u.homeUniversity.id = :homeUniversityId " +

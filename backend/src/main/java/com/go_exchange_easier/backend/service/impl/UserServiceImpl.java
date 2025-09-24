@@ -98,17 +98,25 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UpdateUserStatusResponse updateStatus(
             int userId, UpdateUserStatusRequest request) {
-        UserStatus status = userStatusRepository.findById(request.statusId())
-                .orElseThrow(() -> new ReferencedResourceNotFoundException(
-                        "Status of id " + request.statusId() +
-                                " was not found."));
-        int rowsUpdated = userRepository.updateStatus(userId, status.getId());
+        if (request.statusId() != null) {
+            UserStatus status = userStatusRepository.findById(request.statusId())
+                    .orElseThrow(() -> new ReferencedResourceNotFoundException(
+                            "Status of id " + request.statusId() +
+                                    " was not found."));
+            int rowsUpdated = userRepository.updateStatus(userId, status.getId());
+            if (rowsUpdated == 0) {
+                throw new UserNotFoundException("User of id " + userId +
+                        " was not found.");
+            }
+            return new UpdateUserStatusResponse(userId,
+                    status.getId(), status.getName());
+        }
+        int rowsUpdated = userRepository.updateStatus(userId, null);
         if (rowsUpdated == 0) {
             throw new UserNotFoundException("User of id " + userId +
                     " was not found.");
         }
-        return new UpdateUserStatusResponse(userId,
-                status.getId(), status.getName());
+        return new UpdateUserStatusResponse(userId, null, null);
     }
 
     @Override
