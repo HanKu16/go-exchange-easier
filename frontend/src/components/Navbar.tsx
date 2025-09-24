@@ -23,6 +23,7 @@ const userId = localStorage.getItem('userId')
 
 const navbarItems: NavbarItem[] = [
   {label: 'Profile', route: `/users/${userId}/profile`},
+  {label: 'Account', route: '/me'},
   {label: 'Chat', route: '/chat'},
   {label: 'Search', route: '/search'},
   {label: 'Follows', route: '/follows'}

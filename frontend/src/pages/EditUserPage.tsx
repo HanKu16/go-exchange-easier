@@ -8,20 +8,26 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import PersonIcon from '@mui/icons-material/Person'
 import SecurityIcon from '@mui/icons-material/Security'
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import NotificationsIcon from '@mui/icons-material/Notifications'
 import type { ReactElement } from 'react'
-import { Collapse, FormControlLabel, Radio, RadioGroup } from '@mui/material'
+import { Collapse, FormControlLabel, IconButton, Radio, RadioGroup, Tooltip } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { Fragment } from 'react'
 import { sendGetCountriesRequest } from '../utils/country'
 import { FormControl, Button } from '@mui/material'
-import { sendAssignCountryOfOriginRequest } from '../utils/user'
+import { sendAssignCountryOfOriginRequest, sendUpdateDescriptionRequest, sendUpdateStatusRequest } from '../utils/user'
 import Alert from '@mui/material/Alert'
+import { sendGetUserStatusesRequest } from '../utils/user-status'
+import type { GetUserStatusResponse } from '../dtos/user-status/GetUserStatusResponse'
+import { TextField } from '@mui/material'
+import InfoIcon from '@mui/icons-material/Info'
 
 type Country = {
   id: number;
   name: string;
 }
+
+type UserStatus = GetUserStatusResponse
 
 type Message = {
   type: 'success' | 'info' | 'error';
@@ -149,9 +155,133 @@ const SectionsList = (props: SectionListProps) => {
 const PanelHeader = ({label}: {label: string}) => {
   return (
     <Typography variant='h5' sx={{fontWeight: 600, fontSize: {xs: '1.25rem', md: '1.75rem'},
-      color: 'text.primary', letterSpacing: 0.3}}>
+      color: 'text.primary', letterSpacing: 0.3, marginBottom: 1}}>
       {label}
     </Typography>
+  )
+}
+
+const UpdateUserDescriptionPanel = () => {
+  const MAX_DESCRIPTION_SIZE = 500
+  const [description, setDescription] = useState<string>('')
+  const [message, setMessage] = useState<Message | null>(null)
+
+  const handleDescriptionUpdate = async () => {
+    setMessage({type: 'info', content: 'Waiting for response.'})
+    const result = await sendUpdateDescriptionRequest({description: description})
+    if (result.isSuccess) {
+      setMessage({type: 'success', content: 'Success'})
+    } else {
+      if (result.error.fieldErrors.some(e => e.code === "Size")) {
+        setMessage({type: 'error', content: `Description can not be longer than ${MAX_DESCRIPTION_SIZE} characters.
+          But current has ${description.length}.`
+          })
+      } else {
+        setMessage({type: 'error', content: 'An error occured. Please try again later.'})
+      }
+    }
+  }
+
+  return (
+    <Box>
+      <Box sx={{display: 'flex', alignItems: 'center'}}>
+        <PanelHeader label='Update your description'/>
+        <Tooltip title={`Description can not be longer than ${MAX_DESCRIPTION_SIZE} characters 
+          (currently ${description.length})`} sx={{paddingBottom: 3}}>
+          <IconButton>
+            <InfoIcon/>
+          </IconButton>
+        </Tooltip>
+      </Box>
+
+      {message != null ?
+        <Alert variant='filled' severity={message.type} sx={{marginY: 2}}>
+          {message.content}
+        </Alert> : 
+        <></>
+      }
+      <TextField id='description-input' label='Description' multiline rows={6}
+          placeholder='Enter your description' sx={{width: '100%', marginTop: 2}}
+          value={description} onChange={event => setDescription(event.target.value)}/>
+      <Button variant='contained' size='large' sx={{marginTop: 2}}
+          onClick={handleDescriptionUpdate}>
+          CONFIRM
+      </Button>
+    </Box>
+  )
+}
+
+const UpdateUserStatusPanel = () => {
+  const [statuses, setStatuses] = useState<UserStatus[]>([])
+  const [selectedStatusId, setSelectedStatusId] = useState<number | null>(null)
+  const [message, setMessage] = useState<Message | null>(null)
+
+  const getStatuses = async () => {
+    const result = await sendGetUserStatusesRequest()
+    if (result.isSuccess) {
+      const allStatuses = result.data
+      allStatuses.push({id: 0, name: 'UNKNOWN'})
+      setStatuses(allStatuses)
+    }
+  }
+
+  useEffect(() => {
+    getStatuses()
+  }, [statuses])
+
+  useEffect(() => {
+    setMessage(null)
+  }, [selectedStatusId])
+
+  const handleStatusUpdate = async () => {
+    const statusId = selectedStatusId !== 0 ? selectedStatusId : null
+    setMessage({type: 'info', content: 'Waiting for response'})
+    const result = await sendUpdateStatusRequest({statusId: statusId})
+    if (result.isSuccess) {
+      setMessage({type: 'success', content: 'Success'})
+    } else {
+      setMessage({type: 'error', content: 'An error occured'})
+    }
+  }
+  // cos jest nie tak przy nuulu czyli nie znanym statusie
+
+  const getInteractionElement = (statusId: number): ReactElement => {
+    if ((selectedStatusId === statusId) && (message === null)) {
+      return (
+        <Button variant='contained' size='small' sx={{marginLeft: 2}}
+          onClick={handleStatusUpdate}>
+          CONFIRM
+        </Button>
+      )
+    }
+    return <></>
+  }
+
+  return (
+    <Box>
+      <PanelHeader label='Assign status that fits you the most'/>
+      {message != null ?
+        <Alert variant='filled' severity={message.type} sx={{marginY: 2}}>
+          {message.content}
+        </Alert> : 
+        <></>
+      }
+      <FormControl>
+        <RadioGroup name='statuses-buttons-group'
+          value={selectedStatusId}
+          onChange={(event) => {
+            setSelectedStatusId(Number(event.target.value))
+          }}>
+          {statuses.map(s => (
+            <FormControlLabel key={s.id} value={s.id} control={<Radio />} label={(
+              <>
+                {s.name}
+                {getInteractionElement(s.id)}
+              </>)}
+          />))}
+        </RadioGroup>
+      </FormControl>
+    </Box>
   )
 }
 
@@ -217,7 +347,7 @@ const AssignCountryOfOriginPanel = () => {
             setSelectedCountryId(Number(event.target.value))
           }}>
           {countries.map(c => (
-            <FormControlLabel key={c.id} value={c.id} control={<Radio />} label={(
+            <FormControlLabel key={c.id} value={c.id} control={<Radio/>} label={(
               <>
                 {c.name}
                 {c.id !== 0 ?
@@ -236,11 +366,15 @@ const AssignCountryOfOriginPanel = () => {
 
 const EditUserPage = () => {
   const [selectedSectionName, setSelectedSectionName] = useState<SectionName | null>(null)
-  const [getSubsectionPanel, setSelectedSubsectionName] = useState<SubsectionName | null>(null)
+  const [selectedSubsectionPanel, setSelectedSubsectionName] = useState<SubsectionName | null>(null)
 
   const getPanel = () => {
-    if (getSubsectionPanel === 'Country of origin') {
+    if (selectedSubsectionPanel === 'Country of origin') {
       return <AssignCountryOfOriginPanel/>
+    } else if (selectedSubsectionPanel === 'Status') {
+      return <UpdateUserStatusPanel/>
+    } else if (selectedSubsectionPanel === 'Description') {
+      return <UpdateUserDescriptionPanel/>
     }
     return <></>
   }
@@ -253,7 +387,7 @@ const EditUserPage = () => {
           flexDirection: { xs: 'column', sm: 'row'}}}>
           <SectionsList selectedSectionName={selectedSectionName} 
             setSelectedSectionName={setSelectedSectionName}
-            selectedSubsectionName={getSubsectionPanel}
+            selectedSubsectionName={selectedSubsectionPanel}
             setSelectedSubsectionName={setSelectedSubsectionName}/>
           <Box sx={{flexGrow: 1, padding: 4}}>
             {getPanel()}
