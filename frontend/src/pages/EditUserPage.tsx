@@ -7,27 +7,37 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 import PersonIcon from '@mui/icons-material/Person'
-import SecurityIcon from '@mui/icons-material/Security'
-import NotificationsIcon from '@mui/icons-material/Notifications'
 import type { ReactElement } from 'react'
-import { Collapse, FormControlLabel, IconButton, Radio, RadioGroup, Tooltip } from '@mui/material'
+import { Collapse, IconButton, InputLabel, MenuItem, 
+  Radio, RadioGroup, Select, Tooltip } from '@mui/material'
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { Fragment } from 'react'
-import { sendGetCountriesRequest } from '../utils/country'
+import { sendGetCountriesRequest, sendGetUniverisitesFromCountryRequest } from '../utils/country'
 import { FormControl, Button } from '@mui/material'
-import { sendAssignCountryOfOriginRequest, sendUpdateDescriptionRequest, sendUpdateStatusRequest } from '../utils/user'
+import { sendAssignCountryOfOriginRequest, sendAssignHomeUniversityRequest, sendUpdateDescriptionRequest, 
+  sendUpdateStatusRequest } from '../utils/user'
 import Alert from '@mui/material/Alert'
 import { sendGetUserStatusesRequest } from '../utils/user-status'
 import type { GetUserStatusResponse } from '../dtos/user-status/GetUserStatusResponse'
 import { TextField } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
+import type { GetUniversityResponse } from '../dtos/university/GetUniversityResponse'
+import { FormControlLabel } from '@mui/material'
+import PublicIcon from '@mui/icons-material/Public'
+import SecurityIcon from '@mui/icons-material/Security'
 
 type Country = {
   id: number;
   name: string;
 }
 
+type UniversityNameLanguage =
+  'english' |
+  'native'
+
 type UserStatus = GetUserStatusResponse
+
+type University = GetUniversityResponse
 
 type Message = {
   type: 'success' | 'info' | 'error';
@@ -43,7 +53,9 @@ type SubsectionName =
   'Home university' |
   'Country of origin' |
   'Status' |
-  'Description'
+  'Description' |
+  'Add exchange' |
+  'Manage exchanges'
 
 type Section = {
   name: SectionName;
@@ -58,6 +70,16 @@ type SectionListProps = {
   setSelectedSubsectionName: (value: SubsectionName | null) => void;
 }
 
+type AssignHomeUniversityPanelProps = {
+  countries: Country[];
+  getCountries: () => void;
+}
+
+type AssignCountryOfOriginPanelProps = {
+  countries: Country[];
+  getCountries: () => void;
+}
+
 const SectionsList = (props: SectionListProps) => {
   const sections: Section[] = [
     {name: 'Informations', 
@@ -68,11 +90,14 @@ const SectionsList = (props: SectionListProps) => {
         'Description'], 
       icon: (<PersonIcon/>)},
     {name: 'Exchanges', 
-      subsections: [], 
-      icon: (<SecurityIcon/>)},
+      subsections: [
+        'Add exchange',
+        'Manage exchanges'
+      ], 
+      icon: (<PublicIcon/>)},
     {name: 'Security', 
       subsections: [], 
-      icon: (<NotificationsIcon/>)},
+      icon: (<SecurityIcon/>)},
   ];
 
   const handleSectionClick = (section: Section) => {
@@ -161,23 +186,142 @@ const PanelHeader = ({label}: {label: string}) => {
   )
 }
 
+const AssignHomeUniversityPanel = (props: AssignHomeUniversityPanelProps) => {
+  const [selectedCountryId, setSelectedCountryId] = useState<number | null>(null)
+  const [selectedUniversityId, setSelectedUniversityId] = useState<number | null>(null)
+  const [selectedUniversityNameLanguage, setSelectedUniversityNameLanguage] =
+    useState<UniversityNameLanguage>('english')
+  const [universities, setUniversities] = useState<University[]>([])
+  const [message, setMessage] = useState<Message | null>(null)
+
+  const getUniversitiesFromCountry = async () => {
+    if (selectedCountryId === null) {
+      return
+    }
+    setUniversities([])
+    const result = await sendGetUniverisitesFromCountryRequest(selectedCountryId)
+    if (result.isSuccess) {
+      setUniversities(result.data)
+    } else {
+      setMessage({type: 'error', content: 'Failed to load universities.'})
+    }
+  }
+
+  const handleHomeUniversityAssignment = async () => {
+    setMessage({type: 'info', content: 'Waiting for server response.'})
+    const result = await sendAssignHomeUniversityRequest({universityId: selectedUniversityId})
+    if (result.isSuccess) {
+      setMessage({type: 'success', content: 'University was successfully assigned to user.'})
+    } else {
+      setMessage({type: 'error', content: 'Assigning user to university failed. Please try again later.'})
+    }
+  }
+
+  const getInteractionElement = (universityId: number): ReactElement => {
+    if ((selectedUniversityId === universityId) && (message === null)) {
+      return (
+        <Button variant='contained' size='small' sx={{marginLeft: 2}}
+          onClick={handleHomeUniversityAssignment}>
+          CONFIRM
+        </Button>
+      )
+    }
+    return <></>
+  }
+
+  useEffect(() => {
+    props.getCountries()
+    setTimeout(() => {
+      if (props.countries.length === 0)
+      setMessage({type: 'error', content: 'Failed to load countries.'})
+    }, 5000)
+  }, []) 
+
+  useEffect(() => {
+    getUniversitiesFromCountry()
+  }, [selectedCountryId])
+
+  useEffect(() => {
+    setMessage(null)
+  }, [selectedUniversityId, selectedCountryId])
+
+  return (
+    <Box sx={{display: 'flex', flexDirection: 'column'}}>
+      <PanelHeader label='Assign home university to yourself'/>
+      <Box sx={{display: 'flex', flexDirection: {xs: 'column', md:'row'}}}>
+        <FormControl sx={{ m: 2, width: {xs: '100%', sm: '60%', lg: '40%'}}}>
+          <InputLabel>Country</InputLabel>
+          <Select id='select-country-id' autoWidth label='Country'
+            value={selectedCountryId}
+            onChange={e => setSelectedCountryId(Number(e.target.value))}>
+            {props.countries.map(c => (
+              c.id !== 0 ?
+              <MenuItem key={c.id} value={c.id}>
+                {c.name}
+                <img src={`/flags/${c.name}.png`} 
+                  style={{height: '0.8rem', marginLeft: 3}}/>
+              </MenuItem> :
+              <></>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl sx={{ m: 2, width: {xs: '50%', sm: '30%', lg: '20%'}}}>
+          <InputLabel>University name language</InputLabel>
+          <Select id='select-university-name-language-id' autoWidth 
+            label='University name language'
+            value={selectedUniversityNameLanguage}
+            onChange={() => setSelectedUniversityNameLanguage(
+              prevState => (prevState === 'english' ? 'native' : 'english'))}>
+              <MenuItem key={'english'} value={'english'}>english</MenuItem>
+              <MenuItem key={'native'} value={'native'}>native</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      {message != null ?
+        <Alert variant='filled' severity={message.type} sx={{marginY: 2}}>
+          {message.content}
+        </Alert> : 
+        <></>
+      }
+      <FormControl>
+        <RadioGroup name='universities-buttons-group'
+          value={selectedUniversityId}
+          onChange={(event) => {
+            setSelectedUniversityId(Number(event.target.value))
+          }}>
+          {universities.map(u => (
+            <FormControlLabel key={u.id} value={u.id} control={<Radio/>} label={(
+              <>
+                {(selectedUniversityNameLanguage === 'english' && u.englishName) ?
+                  u.englishName :
+                  u.nativeName}
+                {` [${u.city.name}]`}
+                {getInteractionElement(u.id)}
+              </>)}
+          />))}
+        </RadioGroup>
+      </FormControl>
+    </Box>
+  )
+}
+
 const UpdateUserDescriptionPanel = () => {
-  const MAX_DESCRIPTION_SIZE = 500
+  const maxDescriptionSize = 500
   const [description, setDescription] = useState<string>('')
   const [message, setMessage] = useState<Message | null>(null)
 
   const handleDescriptionUpdate = async () => {
-    setMessage({type: 'info', content: 'Waiting for response.'})
+    setMessage({type: 'info', content: 'Waiting for server response.'})
     const result = await sendUpdateDescriptionRequest({description: description})
     if (result.isSuccess) {
-      setMessage({type: 'success', content: 'Success'})
+      setMessage({type: 'success', content: 'Description was updated successfully.'})
     } else {
       if (result.error.fieldErrors.some(e => e.code === "Size")) {
-        setMessage({type: 'error', content: `Description can not be longer than ${MAX_DESCRIPTION_SIZE} characters.
-          But current has ${description.length}.`
-          })
+        setMessage({type: 'error', content: `Description can not be longer 
+          than ${maxDescriptionSize} characters. But current has 
+          ${description.length}.`})
       } else {
-        setMessage({type: 'error', content: 'An error occured. Please try again later.'})
+        setMessage({type: 'error', content: 'Failed to update description. Please try again later.'})
       }
     }
   }
@@ -186,8 +330,8 @@ const UpdateUserDescriptionPanel = () => {
     <Box>
       <Box sx={{display: 'flex', alignItems: 'center'}}>
         <PanelHeader label='Update your description'/>
-        <Tooltip title={`Description can not be longer than ${MAX_DESCRIPTION_SIZE} characters 
-          (currently ${description.length})`} sx={{paddingBottom: 3}}>
+        <Tooltip title={`Description can not be longer than ${maxDescriptionSize} characters 
+          (currently ${description.length}).`} sx={{paddingBottom: 3}}>
           <IconButton>
             <InfoIcon/>
           </IconButton>
@@ -235,15 +379,14 @@ const UpdateUserStatusPanel = () => {
 
   const handleStatusUpdate = async () => {
     const statusId = selectedStatusId !== 0 ? selectedStatusId : null
-    setMessage({type: 'info', content: 'Waiting for response'})
+    setMessage({type: 'info', content: 'Waiting for server response.'})
     const result = await sendUpdateStatusRequest({statusId: statusId})
     if (result.isSuccess) {
-      setMessage({type: 'success', content: 'Success'})
+      setMessage({type: 'success', content: 'Status was updated successfully.'})
     } else {
-      setMessage({type: 'error', content: 'An error occured'})
+      setMessage({type: 'error', content: 'Failed to update status. Please try again later.'})
     }
   }
-  // cos jest nie tak przy nuulu czyli nie znanym statusie
 
   const getInteractionElement = (statusId: number): ReactElement => {
     if ((selectedStatusId === statusId) && (message === null)) {
@@ -285,29 +428,18 @@ const UpdateUserStatusPanel = () => {
   )
 }
 
-const AssignCountryOfOriginPanel = () => {
-  const [countries, setCountries] = useState<Country[]>([])
+const AssignCountryOfOriginPanel = (props: AssignCountryOfOriginPanelProps) => {
   const [selectedCountryId, setSelectedCountryId] = useState<number | null>(null)
   const [message, setMessage] = useState<Message | null>(null)
 
-  const getCountries = async () => {
-    const result = await sendGetCountriesRequest()
-    if (result.isSuccess) {
-      const allCountries: Country[] = result.data
-        .map(c => ({id: c.id, name: c.englishName}))
-      allCountries.push({id: 0, name: 'no country'})
-      setCountries(allCountries)
-    }
-  }
-
   const handleCountryAssignment = async () => {
     const countryId = selectedCountryId !== 0 ? selectedCountryId : null
-    setMessage({type: 'info', content: 'Waiting for response'})
+    setMessage({type: 'info', content: 'Waiting for server response.'})
     const result = await sendAssignCountryOfOriginRequest({countryId: countryId})
     if (result.isSuccess) {
-      setMessage({type: 'success', content: 'Success'})
+      setMessage({type: 'success', content: 'Country was assigned to user successfully.'})
     } else {
-      setMessage({type: 'error', content: 'An error occured'})
+      setMessage({type: 'error', content: 'Failed to assign country. Please try again later.'})
     }
   }
 
@@ -324,7 +456,7 @@ const AssignCountryOfOriginPanel = () => {
   }
 
   useEffect(() => {
-    getCountries()
+    props.getCountries()
   }, [])
 
   useEffect(() => {
@@ -346,7 +478,7 @@ const AssignCountryOfOriginPanel = () => {
           onChange={(event) => {
             setSelectedCountryId(Number(event.target.value))
           }}>
-          {countries.map(c => (
+          {props.countries.map(c => (
             <FormControlLabel key={c.id} value={c.id} control={<Radio/>} label={(
               <>
                 {c.name}
@@ -367,14 +499,31 @@ const AssignCountryOfOriginPanel = () => {
 const EditUserPage = () => {
   const [selectedSectionName, setSelectedSectionName] = useState<SectionName | null>(null)
   const [selectedSubsectionPanel, setSelectedSubsectionName] = useState<SubsectionName | null>(null)
+  const [countries, setCountries] = useState<Country[]>([])
+
+  const getCountries = async () => {
+    if (!countries || (countries.length === 0)) {
+      const result = await sendGetCountriesRequest()
+      if (result.isSuccess) {
+        const allCountries: Country[] = result.data
+          .map(c => ({id: c.id, name: c.englishName}))
+        allCountries.push({id: 0, name: 'no country'})
+        setCountries(allCountries)
+      }
+    }
+  }
 
   const getPanel = () => {
     if (selectedSubsectionPanel === 'Country of origin') {
-      return <AssignCountryOfOriginPanel/>
+      return <AssignCountryOfOriginPanel countries={countries} 
+        getCountries={getCountries}/>
     } else if (selectedSubsectionPanel === 'Status') {
       return <UpdateUserStatusPanel/>
     } else if (selectedSubsectionPanel === 'Description') {
       return <UpdateUserDescriptionPanel/>
+    } else if (selectedSubsectionPanel === 'Home university') {
+      return <AssignHomeUniversityPanel countries={countries} 
+        getCountries={getCountries}/>
     }
     return <></>
   }
