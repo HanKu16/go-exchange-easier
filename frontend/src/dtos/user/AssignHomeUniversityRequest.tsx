@@ -1,3 +1,3 @@
 export type AssignHomeUniversityRequest = {
-  universityId: number;
+  universityId: number | null;
 }
