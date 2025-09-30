@@ -47,6 +47,21 @@ const AssignCountryOfOriginPanel = (props: AssignCountryOfOriginPanelProps) => {
   }, [])
 
   useEffect(() => {
+    if (props.countries.length > 0) {
+      setMessage(null)
+      return
+    }
+
+    const timeout = setTimeout(() => {
+      if (props.countries.length === 0) {
+        setMessage({ type: 'error', content: 'Failed to load countries.' })
+      }
+    }, 5000)
+
+    return () => clearTimeout(timeout)
+  }, [props.countries])
+
+  useEffect(() => {
     setMessage(null)
   }, [selectedCountryId])
 

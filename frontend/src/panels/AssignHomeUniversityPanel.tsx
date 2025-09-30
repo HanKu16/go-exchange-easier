@@ -8,12 +8,10 @@ import { sendAssignHomeUniversityRequest } from '../utils/user'
 import Alert from '@mui/material/Alert'
 import { FormControlLabel } from '@mui/material'
 import type { Country } from '../types/Country'
-import type { GetUniversityResponse } from '../dtos/university/GetUniversityResponse'
 import type { UniversityNameLanguage } from '../types/UniversityNameLanguage'
 import type { AlertMessage } from '../types/AlertMessage'
 import PanelHeader from '../components/PanelHeader'
-
-type University = GetUniversityResponse
+import type { University } from '../types/University'
 
 type AssignHomeUniversityPanelProps = {
   countries: Country[];
@@ -65,12 +63,22 @@ const AssignHomeUniversityPanel = (props: AssignHomeUniversityPanelProps) => {
 
   useEffect(() => {
     props.getCountries()
-    setTimeout(() => {
+  }, [])
+
+  useEffect(() => {
+    if (props.countries.length > 0) {
+      setMessage(null)
+      return
+    }
+
+    const timeout = setTimeout(() => {
       if (props.countries.length === 0) {
-        setMessage({type: 'error', content: 'Failed to load countries.'})
+        setMessage({ type: 'error', content: 'Failed to load countries.' })
       }
     }, 5000)
-  }, []) 
+
+    return () => clearTimeout(timeout)
+  }, [props.countries])
 
   useEffect(() => {
     getUniversitiesFromCountry()
