@@ -135,3 +135,11 @@ export const sendAssignCountryOfOriginRequest = async (body: AssignCountryOfOrig
   }
   return await sendRequest<AssignCountryOfOriginResponse>(uri, request)
 }
+
+export const getSignedInUserId = (): string => {
+  const userId: string | null = localStorage.getItem('userId')
+  if (userId === null) {
+    throw new Error('Did not found userId')    
+  }
+  return userId
+}

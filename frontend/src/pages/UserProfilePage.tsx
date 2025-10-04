@@ -29,7 +29,7 @@ const AddExchangeButton = () => {
     <Box sx={{display: 'flex', justifyContent: 'flex-start', mb: 2,
       width: '91%', margin: 'auto'}}>
       <Button variant='contained' startIcon={<AddIcon />}
-        onClick={() => navigate('/me/exchanges')}
+        onClick={() => navigate('/me')}
         sx={{borderRadius: 2, textTransform: 'none', fontWeight: 'bold', 
           marginTop: 2, px: 3, py: 1, backgroundColor: '#04315f',
           '&:hover': {
