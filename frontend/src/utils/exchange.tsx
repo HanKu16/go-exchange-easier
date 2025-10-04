@@ -20,7 +20,7 @@ export const sendCreateExchangeRequest =  async (body: CreateExchangeRequest):
 }
 
 export const sendDeleteExchangeRequest =  async (exchangeId: number):
-  Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
+  Promise<ResponseSuccessResult<null> | RepsonseFailureResult> => {
   const uri: string = `http://localhost:8080/api/exchange/${exchangeId}`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {

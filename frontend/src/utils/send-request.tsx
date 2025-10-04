@@ -6,10 +6,18 @@ export async function sendRequest<ResponseSuccessBody>(uri: string, request: Req
   Promise<ResponseSuccessResult<ResponseSuccessBody> | RepsonseFailureResult>  {
   try {
     const response = await fetch(uri, request)
+    console.log(response)
     if (response.status === 403) {
       window.location.href = "/login"
     }
     if (response.ok) {
+      if (response.status === 204) {
+        const result: ResponseSuccessResult<ResponseSuccessBody> = {
+          isSuccess: true,
+          data: null as ResponseSuccessBody
+        }
+        return result
+      }
       const data = (await response.json()) as ResponseSuccessBody;
       const result: ResponseSuccessResult<ResponseSuccessBody> = {
         isSuccess: true,
