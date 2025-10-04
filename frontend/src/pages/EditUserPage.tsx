@@ -19,6 +19,8 @@ import UpdateUserDescriptionPanel from '../panels/UpdateUserDescriptionPanel'
 import UpdateUserStatusPanel from '../panels/UpdateUserStatusPanel'
 import AssignCountryOfOriginPanel from '../panels/AssignCountryOfOriginPanel'
 import AddExchangePanel from '../panels/AddExchangePanel'
+import ManageExchangesPanel from '../panels/ManageExchangesPanel'
+import { getSignedInUserId } from '../utils/user'
 
 type SectionName = 
   'Informations' |
@@ -143,6 +145,7 @@ const EditUserPage = () => {
   const [selectedSectionName, setSelectedSectionName] = useState<SectionName | null>(null)
   const [selectedSubsectionPanel, setSelectedSubsectionName] = useState<SubsectionName | null>(null)
   const [countries, setCountries] = useState<Country[]>([])
+  const userId: string = getSignedInUserId()
 
   const getCountries = async () => {
     if (!countries || (countries.length === 0)) {
@@ -170,6 +173,8 @@ const EditUserPage = () => {
     } else if (selectedSubsectionPanel === 'Add exchange') {
       return <AddExchangePanel countries={countries} 
         getCountries={getCountries}/>
+    } else if (selectedSubsectionPanel === 'Manage exchanges') {
+      return <ManageExchangesPanel userId={userId}/>
     }
     return <></>
   }
@@ -179,7 +184,7 @@ const EditUserPage = () => {
       <Box sx={{display: 'flex', height: '100vh', flexDirection: 'column'}}>
         <Navbar/>
         <Box sx={{display: 'flex', flexGrow: {sm: 1}, 
-          flexDirection: { xs: 'column', sm: 'row'}}}>
+          flexDirection: {xs: 'column', sm: 'row'}}}>
           <SectionsList selectedSectionName={selectedSectionName} 
             setSelectedSectionName={setSelectedSectionName}
             selectedSubsectionName={selectedSubsectionPanel}
