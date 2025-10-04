@@ -98,13 +98,12 @@ const AssignHomeUniversityPanel = (props: AssignHomeUniversityPanelProps) => {
             value={selectedCountryId}
             onChange={e => setSelectedCountryId(Number(e.target.value))}>
             {props.countries.map(c => (
-              c.id !== 0 ?
-              <MenuItem key={c.id} value={c.id}>
-                {c.name}
-                <img src={`/flags/${c.name}.png`} 
-                  style={{height: '0.8rem', marginLeft: 3}}/>
-              </MenuItem> :
-              <></>
+              c.id !== 0 ? (
+                <MenuItem key={c.id} value={c.id}>
+                  {c.name}
+                  <img src={`/flags/${c.name}.png`} style={{height: '0.8rem', marginLeft: 3}} />
+                </MenuItem>
+              ) : null
             ))}
           </Select>
         </FormControl>
