@@ -10,3 +10,5 @@ export type ApiErrorResponseCode =
   | 'ResourceAlreadyExists'
   | 'InternalError'
   | 'Size'
+  | 'ValidDateRange'
+  | 'InvalidRequestBody'
