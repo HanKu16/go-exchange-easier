@@ -14,10 +14,11 @@ import type { UpdateUserStatusRequest } from '../dtos/user/UpdateUserStatusReque
 import type { UpdateUserStatusResponse } from '../dtos/user/UpdateUserStatusResponse'
 import type { AssignCountryOfOriginRequest } from '../dtos/user/AssignCountryOfOriginRequest'
 import type { AssignCountryOfOriginResponse } from '../dtos/user/AssignCountryOfOriginResponse'
+import { API_BASE_URL } from '../config/api'
 
 export const sendUserRegistrationRequest = async (body: UserRegistrationRequest): 
   Promise<ResponseSuccessResult<UserRegistrationResponse> | RepsonseFailureResult> => {
-  const uri: string = 'http://localhost:8080/api/auth/register'
+  const uri: string = `${API_BASE_URL}/api/auth/register`
   const request: RequestInit = {
     method: 'POST',
     headers: {
@@ -30,7 +31,7 @@ export const sendUserRegistrationRequest = async (body: UserRegistrationRequest)
 
 export const sendGetUserProfileRequest = async (userId: number | string) :
   Promise<ResponseSuccessResult<GetUserProfileResponse> | RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/users/${userId}/profile`
+  const uri: string = `${API_BASE_URL}/api/users/${userId}/profile`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'GET',
@@ -45,7 +46,7 @@ export const sendGetUserProfileRequest = async (userId: number | string) :
 export const sendGetUserReviewsRequest = async (userId: number | string):
   Promise<ResponseSuccessResult<GetUniversityReviewResponse[]> | 
     RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/users/${userId}/universityReviews`
+  const uri: string = `${API_BASE_URL}/api/users/${userId}/universityReviews`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'GET',
@@ -60,7 +61,7 @@ export const sendGetUserReviewsRequest = async (userId: number | string):
 export const sendGetUserExchangesRequest = async (userId: number | string):
   Promise<ResponseSuccessResult<GetUserExchangeResponse[]> | 
     RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/users/${userId}/exchanges`
+  const uri: string = `${API_BASE_URL}/api/users/${userId}/exchanges`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'GET',
@@ -75,7 +76,7 @@ export const sendGetUserExchangesRequest = async (userId: number | string):
 export const sendUpdateDescriptionRequest = async (body: UpdateUserDescriptionRequest):
   Promise<ResponseSuccessResult<UpdateUserDescriptionResponse> | 
     RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/users/description`
+  const uri: string = `${API_BASE_URL}/api/users/description`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'PATCH',
@@ -91,7 +92,7 @@ export const sendUpdateDescriptionRequest = async (body: UpdateUserDescriptionRe
 export const sendAssignHomeUniversityRequest = async (body: AssignHomeUniversityRequest):
   Promise<ResponseSuccessResult<AssignHomeUniversityResponse> | 
     RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/users/homeUniversity`
+  const uri: string = `${API_BASE_URL}/api/users/homeUniversity`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'PATCH',
@@ -107,7 +108,7 @@ export const sendAssignHomeUniversityRequest = async (body: AssignHomeUniversity
 export const sendUpdateStatusRequest = async (body: UpdateUserStatusRequest):
   Promise<ResponseSuccessResult<UpdateUserStatusResponse> | 
     RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/users/status`
+  const uri: string = `${API_BASE_URL}/api/users/status`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'PATCH',
@@ -123,7 +124,7 @@ export const sendUpdateStatusRequest = async (body: UpdateUserStatusRequest):
 export const sendAssignCountryOfOriginRequest = async (body: AssignCountryOfOriginRequest):
   Promise<ResponseSuccessResult<AssignCountryOfOriginResponse> | 
     RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/users/countryOfOrigin`
+  const uri: string = `${API_BASE_URL}/api/users/countryOfOrigin`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'PATCH',

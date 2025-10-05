@@ -1,10 +1,11 @@
-import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
-import { sendRequest } from "./send-request";
+import type { ResponseSuccessResult } from '../types/ResonseSuccessResult'
+import type { RepsonseFailureResult } from '../types/ResponseFailureResult'
+import { sendRequest } from './send-request'
+import { API_BASE_URL } from '../config/api'
 
 export const sendFollowUserRequest = async (followeeId: number | string):
   Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/users/${followeeId}/follow`
+  const uri: string = `${API_BASE_URL}/api/users/${followeeId}/follow`
   const jwtToken = localStorage.getItem("jwtToken")
   const request: RequestInit = {
     method: 'POST',
@@ -18,7 +19,7 @@ export const sendFollowUserRequest = async (followeeId: number | string):
 
 export const sendUnfollowUserRequest = async (followeeId: number | string):
   Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/users/${followeeId}/follow`
+  const uri: string = `${API_BASE_URL}/api/users/${followeeId}/follow`
   const jwtToken = localStorage.getItem("jwtToken")
   const request: RequestInit = {
     method: 'DELETE',

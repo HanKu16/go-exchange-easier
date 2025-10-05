@@ -2,11 +2,12 @@ import type { AddUniversityReviewReactionRequest } from '../dtos/review/AddUnive
 import type { ResponseSuccessResult } from '../types/ResonseSuccessResult'
 import type { RepsonseFailureResult } from '../types/ResponseFailureResult'
 import { sendRequest } from './send-request'
+import { API_BASE_URL } from '../config/api'
 
 export const sendAddUniversityReviewReactionRequest = async (reviewId: number, 
   body: AddUniversityReviewReactionRequest):
   Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/universityReview/${reviewId}/reaction`
+  const uri: string = `${API_BASE_URL}/api/universityReview/${reviewId}/reaction`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'PUT',
@@ -22,7 +23,7 @@ export const sendAddUniversityReviewReactionRequest = async (reviewId: number,
 export const sendDeleteUniversityReviewReactionRequest = async (reviewId: number, 
   body: AddUniversityReviewReactionRequest):
   Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/universityReview/${reviewId}/reaction`
+  const uri: string = `${API_BASE_URL}/api/universityReview/${reviewId}/reaction`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'DELETE',

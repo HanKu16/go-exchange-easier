@@ -3,10 +3,11 @@ import type { RepsonseFailureResult } from '../types/ResponseFailureResult'
 import { sendRequest } from './send-request'
 import type { CreateExchangeRequest } from '../dtos/exchange/CreateExchangeRequest'
 import type { CreateExchangeResponse } from '../dtos/exchange/CreateExchangeResponse'
+import { API_BASE_URL } from '../config/api'
 
 export const sendCreateExchangeRequest =  async (body: CreateExchangeRequest):
   Promise<ResponseSuccessResult<CreateExchangeResponse> | RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/exchange`
+  const uri: string = `${API_BASE_URL}/api/exchange`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'POST',
@@ -21,7 +22,7 @@ export const sendCreateExchangeRequest =  async (body: CreateExchangeRequest):
 
 export const sendDeleteExchangeRequest =  async (exchangeId: number):
   Promise<ResponseSuccessResult<null> | RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/exchange/${exchangeId}`
+  const uri: string = `${API_BASE_URL}/api/exchange/${exchangeId}`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'DELETE',
