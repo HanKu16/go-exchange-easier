@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.service.impl;
 
+import com.go_exchange_easier.backend.exception.IllegalOperationException;
 import com.go_exchange_easier.backend.exception.base.ResourceAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.domain.UserFollowNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
@@ -20,6 +21,9 @@ public class UserFollowServiceImpl implements UserFollowService {
     @Override
     @Transactional
     public void follow(int followerId, int followeeId) {
+        if (followerId == followeeId) {
+            throw new IllegalOperationException("User can not follow himself.");
+        }
         if (!userRepository.existsById(followeeId)) {
             throw new UserNotFoundException("User of id " +
                     followeeId + " was not found.");

@@ -11,6 +11,7 @@ public enum ApiErrorResponseCode {
     MailAlreadyTaken,
     InvalidRequestBody,
     ResourceAlreadyExists,
-    InternalError
+    InternalError,
+    IllegalOperation
 
 }

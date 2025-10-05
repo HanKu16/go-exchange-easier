@@ -5,6 +5,7 @@ import com.go_exchange_easier.backend.dto.error.ApiErrorResponseCode;
 import com.go_exchange_easier.backend.dto.error.GlobalErrorDetail;
 import com.go_exchange_easier.backend.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.UsernameAlreadyExistsException;
+import com.go_exchange_easier.backend.exception.IllegalOperationException;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.base.ResourceAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.base.ResourceNotFoundException;
@@ -77,6 +78,17 @@ public class DomainGlobalExceptionHandler {
                 ApiErrorResponseCode.MailAlreadyTaken.name(), e.getMessage());
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.CONFLICT,
                 "Mail is already taken.", List.of(), List.of(globalError));
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(IllegalOperationException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalOperationException(
+            IllegalOperationException e) {
+        logger.error(e.getMessage(), e);
+        GlobalErrorDetail globalError = new GlobalErrorDetail(
+                ApiErrorResponseCode.IllegalOperation.name(), e.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.CONFLICT,
+                "Attempt to make illegal operation.", List.of(), List.of(globalError));
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
