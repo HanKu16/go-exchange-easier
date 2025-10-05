@@ -39,7 +39,7 @@ type ManageExchangesPanelProps = {
 
 const ActionExchangeTableProps = (props: ActionExchangeTableProps) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
   const handleDeletion = async (exchangeId: number) => {
     props.setMessage({type: 'info', content: 'Waiting for server response.'})

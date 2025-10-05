@@ -29,7 +29,7 @@ const UpdateUserStatusPanel = () => {
 
   useEffect(() => {
     getStatuses()
-  }, [statuses])
+  }, [])
 
   useEffect(() => {
     setMessage(null)
