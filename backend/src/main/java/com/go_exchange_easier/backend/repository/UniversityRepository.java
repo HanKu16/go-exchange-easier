@@ -11,7 +11,9 @@ import java.util.List;
 public interface UniversityRepository extends JpaRepository<University, Short> {
 
     @Query("SELECT u FROM University u " +
-            "WHERE u.city.country.id = :countryId")
+            "JOIN FETCH u.city c " +
+            "JOIN FETCH c.country " +
+            "WHERE c.country.id = :countryId")
     List<University> findByCountryId(short countryId);
 
     @Query(value = """
