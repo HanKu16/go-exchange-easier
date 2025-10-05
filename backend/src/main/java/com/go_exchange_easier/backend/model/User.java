@@ -2,6 +2,8 @@ package com.go_exchange_easier.backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
+
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@SQLRestriction("deleted_at IS NULL")
 public class User {
 
     @Id
