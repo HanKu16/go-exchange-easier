@@ -64,6 +64,37 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     }
 
     @Override
+    public List<GetUniversityReviewResponse> getByUniversityId(
+            int universityId, int currentUserId, int page, int size) {
+        int limit = size;
+        int offset = page * size;
+        List<Object[]> rows = universityReviewRepository
+                .findByUniversityId(universityId, currentUserId, limit, offset);
+        List<GetUniversityReviewResponse> reviews = new ArrayList<>();
+        for (Object[] row : rows) {
+            Integer id = (Integer) row[0];
+            Integer authorIdRow = (Integer) row[1];
+            String authorNick = (String) row[2];
+            Short university = (Short) row[3];
+            String universityEnglishName = (String) row[4];
+            String universityNativeName = (String) row[5];
+            Short starRating = (Short) row[6];
+            String textContent = (String) row[7];
+            Instant createdAt = (Instant) row[8];
+            String reactionsJson = (String) row[9];
+
+            List<GetUniversityReviewResponse.ReactionDetailDto> reactions =
+                    parseReactionsJson(reactionsJson);
+            reviews.add(new GetUniversityReviewResponse(id,
+                    new GetUniversityReviewResponse.AuthorDto(authorIdRow, authorNick),
+                    new GetUniversityReviewResponse.UniversityDto(
+                            university, universityEnglishName, universityNativeName),
+                    starRating, textContent, createdAt, reactions));
+        }
+        return reviews;
+    }
+
+    @Override
     @Transactional
     public CreateUniversityReviewResponse create(int userId,
             CreateUniversityReviewRequest request) {
@@ -94,6 +125,12 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         }
         reactionCountService.deleteCounts(review.getReactionCounts().stream().toList());
         universityReviewRepository.delete(review);
+    }
+
+    @Override
+    public GetReviewsCountResponse countByUniversityId(int universityId) {
+        int count = universityReviewRepository.countReviewsByUniversityId(universityId);
+        return new GetReviewsCountResponse((short) universityId, count);
     }
 
     private UniversityReview buildUniversityReview(
