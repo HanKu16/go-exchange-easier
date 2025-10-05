@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.repository;
 import com.go_exchange_easier.backend.model.University;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -12,5 +13,25 @@ public interface UniversityRepository extends JpaRepository<University, Short> {
     @Query("SELECT u FROM University u " +
             "WHERE u.city.country.id = :countryId")
     List<University> findByCountryId(short countryId);
+
+    @Query(value = """
+        SELECT\s
+            u.university_id,
+            u.original_name,
+           	u.english_name,
+           	u.link_to_website,
+           	ci.english_name,
+           	co.english_name,
+           	(uf.follower_id IS NOT NULL) AS is_followed
+        FROM universities u
+        JOIN cities ci ON ci.city_id = u.city_id
+        JOIN countries co ON co.country_id = ci.country_id
+        LEFT JOIN university_follows uf ON
+            uf.university_id = u.university_id AND
+          	uf.follower_id = :currentUserId
+        WHERE u.university_id = :universityId AND u.deleted_at IS NULL
+       """, nativeQuery = true)
+    List<Object[]> findProfileById(@Param("universityId") int universityId,
+            @Param("currentUserId") int currentUserId);
 
 }
