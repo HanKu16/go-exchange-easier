@@ -2,6 +2,8 @@ package com.go_exchange_easier.backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +14,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@SQLRestriction("deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE university_reviews " +
+        "SET deleted_at = CURRENT_TIMESTAMP WHERE university_review_id = ?")
 public class UniversityReview {
 
     @Id
