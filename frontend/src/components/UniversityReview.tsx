@@ -25,7 +25,7 @@ export type UniversityReviewProps = {
 
 const UniversityReview = (props: UniversityReviewProps) => {
   const handleReactionChange = async (activeReactionId: number) => {
-    const newReactionProps: ReactionProps[] = reactionsProps.map(rp => rp)
+    const newReactionProps = reactionsProps.map(rp => ({ ...rp }))
     for (let i = 0; i < newReactionProps.length; ++i) {
       if (newReactionProps[i].typeId === activeReactionId) {
         if (newReactionProps[i].isSet) {
