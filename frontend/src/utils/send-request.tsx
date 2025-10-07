@@ -6,7 +6,6 @@ export async function sendRequest<ResponseSuccessBody>(uri: string, request: Req
   Promise<ResponseSuccessResult<ResponseSuccessBody> | RepsonseFailureResult>  {
   try {
     const response = await fetch(uri, request)
-    console.log(response)
     if (response.status === 403) {
       window.location.href = "/login"
     }

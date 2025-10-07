@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import RegistrationPage from './pages/RegistrationPage'
 import UserProfilePage from './pages/UserProfilePage'
 import EditUserPage from './pages/EditUserPage'
+import UniversityProfilePage from './pages/UniversityProfilePage'
 
 export const App = () => {
   return (
@@ -13,6 +14,7 @@ export const App = () => {
         <Route path='/login' element={<LoginPage/>}/>
         <Route path='/register' element={<RegistrationPage/>}/>
         <Route path='/users/:userId/profile' element={<UserProfilePage/>}/>
+        <Route path='/universities/:universityId' element={<UniversityProfilePage/>}/>
         <Route path='/me' element={<EditUserPage/>}/>
       </Routes>
     </BrowserRouter>
