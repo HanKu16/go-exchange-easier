@@ -102,7 +102,7 @@ public interface UniversityReviewRepository extends
             FROM university_reviews ur
             JOIN users us ON us.user_id = ur.author_id
             JOIN universities un ON un.university_id = ur.university_id
-            WHERE ur.university_id = 13 AND ur.deleted_at IS NULL AND
+            WHERE ur.university_id = :universityId AND ur.deleted_at IS NULL AND
             	us.deleted_at IS NULL AND un.deleted_at IS NULL
             """, nativeQuery = true)
     int countReviewsByUniversityId(@Param("universityId") int universityId);
