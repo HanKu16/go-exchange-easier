@@ -33,7 +33,7 @@ public class UniversityReviewController {
         CreateUniversityReviewResponse response = universityReviewService
                 .create(principal.getId(), request);
         return ResponseEntity.created(URI.create("/api/universityReview/" +
-                        response.universityReviewId())).body(response);
+                        response.id())).body(response);
     }
 
     @DeleteMapping("/{reviewId}")

@@ -8,6 +8,7 @@ import com.go_exchange_easier.backend.exception.JsonParsingException;
 import com.go_exchange_easier.backend.exception.NotOwnerOfResourceException;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UniversityReviewReactionNotFoundException;
+import com.go_exchange_easier.backend.model.ReactionType;
 import com.go_exchange_easier.backend.model.University;
 import com.go_exchange_easier.backend.model.UniversityReview;
 import com.go_exchange_easier.backend.model.User;
@@ -29,6 +30,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     private final UniversityReviewReactionCountService reactionCountService;
     private final UniversityReviewRepository universityReviewRepository;
+    private final ReactionTypeRepository reactionTypeRepository;
     private final ResourceOwnershipChecker resourceOwnershipChecker;
     private final UniversityRepository universityRepository;
     private final UserRepository userRepository;
@@ -98,19 +100,33 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     @Transactional
     public CreateUniversityReviewResponse create(int userId,
             CreateUniversityReviewRequest request) {
-        if (!universityRepository.existsById(request.universityId())) {
-            throw new ReferencedResourceNotFoundException("University of id "
-                    + request.universityId() + " was not found.");
-        }
-        User user = userRepository.getReferenceById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ReferencedResourceNotFoundException(
+                        "User of id " + userId + " was not found.")
+        );
         University university = universityRepository
-                .getReferenceById(request.universityId());
+                .findById(request.universityId())
+                .orElseThrow(() -> new ReferencedResourceNotFoundException(
+                        "University of id " + request.universityId() +
+                                " was not found."));
         UniversityReview review = buildUniversityReview(request, user, university);
         UniversityReview savedReview = universityReviewRepository.save(review);
         List<UniversityReviewReactionDetail> reactionDetails =
                 reactionCountService.createCounts(savedReview);
-        return new CreateUniversityReviewResponse(savedReview.getId(),
-                savedReview.getCreatedAt());
+        List<ReactionType> reactionTypes = reactionTypeRepository.findAll();
+        return new CreateUniversityReviewResponse(
+                savedReview.getId(),
+                new CreateUniversityReviewResponse.AuthorDto(userId, user.getNick()),
+                new CreateUniversityReviewResponse.UniversityDto(
+                        university.getId(), university.getEnglishName(),
+                        university.getOriginalName()),
+                review.getStarRating(),
+                review.getTextContent(),
+                review.getCreatedAt(),
+                reactionTypes.stream().map(t -> new CreateUniversityReviewResponse
+                        .ReactionDetailDto(t.getId(), t.getName(), (short) 0, false))
+                        .toList()
+        );
     }
 
     @Override
