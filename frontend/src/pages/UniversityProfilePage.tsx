@@ -16,6 +16,7 @@ import type { UniversityReviewProps } from '../components/UniversityReview'
 import { getLocalDate } from '../utils/date-utils'
 import NoContent from '../components/NoContent'
 import UniversityReview from '../components/UniversityReview'
+import { sendFollowUniversityRequest, sendUnfollowUniversityRequest } from '../utils/follow'
 
 type UniversityDataPanelProps = {
   userId: number | string | null;
@@ -25,19 +26,39 @@ type UniversityDataPanelProps = {
 type FollowButtonProps = {
   universityId: number | string | undefined;
   isFollowed: boolean;
+  setIsFollowed: (value: boolean) => void;
 }
 
 const FollowButton = (props: FollowButtonProps) => {
+  const handleFollow = async () => {
+    if (props.universityId) {
+      props.setIsFollowed(true)
+      const result = await sendFollowUniversityRequest(props.universityId)
+      if (!result.isSuccess) {
+        props.setIsFollowed(false)
+      }
+    }
+  }
+  const handleUnfollow = async () => {
+    if (props.universityId) {
+      props.setIsFollowed(false)
+      const result = await sendUnfollowUniversityRequest(props.universityId)
+      if (!result.isSuccess) {
+        props.setIsFollowed(true)
+      }
+    }
+  }
+
   return (
     <Container sx={{display: 'flex', justifyContent: {lg: 'center'}, marginTop: {xs: 2, lg: 4}}}>
       {props.isFollowed ? (
         <Button variant='outlined' size='medium' endIcon={<BookmarkIcon/>} 
-          onClick={() => {}}>
+          onClick={handleUnfollow}>
           UNFOLLOW
         </Button>
       ): (
         <Button variant='contained' size='medium' endIcon={<BookmarkIcon/>}
-          onClick={() => {}}>
+          onClick={handleFollow}>
           FOLLOW
         </Button>
       )}
@@ -70,7 +91,7 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
       setLinkToWebsite(result.data.linkToWebsite)
       setCityName(result.data.cityName)
       setCountryName(result.data.countryName)
-      setIsFollowed(false)
+      setIsFollowed(result.data.isFollowed)
     } else {
       // ...
     }
@@ -117,7 +138,8 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
                 </Link>
               </Box>
             }
-            <FollowButton universityId={universityId} isFollowed={isFollowed}/>
+            <FollowButton universityId={universityId} isFollowed={isFollowed}
+              setIsFollowed={setIsFollowed}/>
           </Container>          
         </Container> 
       ) : (
@@ -153,7 +175,8 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
                 </Box>
               }
               </Box>
-              <FollowButton universityId={universityId} isFollowed={isFollowed}/>
+              <FollowButton universityId={universityId} isFollowed={isFollowed}
+                setIsFollowed={setIsFollowed}/>
             </Container>
           </Container>
         </Box> 
@@ -232,7 +255,7 @@ const FeedPanel = (props: FeedPanelProps) => {
       {(totalPagesCount > 1) &&
         <Container sx={{display: 'flex', justifyContent: 'center', marginTop: 3}}>
           <Pagination count={totalPagesCount} showFirstButton showLastButton
-            onChange={(event, value) => setCurrentPageNumber(value)}/>
+            onChange={(_, value) => setCurrentPageNumber(value)}/>
         </Container>
       }
     </Box>

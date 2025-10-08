@@ -30,3 +30,31 @@ export const sendUnfollowUserRequest = async (followeeId: number | string):
   }
   return await sendRequest(uri, request)
 }
+
+export const sendFollowUniversityRequest = async (universityId: number | string) :
+  Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
+  const uri: string = `${API_BASE_URL}/api/universities/${universityId}/follow`
+  const jwtToken = localStorage.getItem('jwtToken')
+  const request: RequestInit = {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    }
+  }
+  return await sendRequest(uri, request)
+}
+
+export const sendUnfollowUniversityRequest = async (universityId: number | string) :
+  Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
+  const uri: string = `${API_BASE_URL}/api/universities/${universityId}/follow`
+  const jwtToken = localStorage.getItem('jwtToken')
+  const request: RequestInit = {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    }
+  }
+  return await sendRequest(uri, request)
+}
