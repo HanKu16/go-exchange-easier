@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/universityReview")
+@RequestMapping("/api/universityReviews")
 @RequiredArgsConstructor
 @Tag(name = "University Review", description = "Operations related to university review.")
 public class UniversityReviewController {
@@ -32,7 +32,7 @@ public class UniversityReviewController {
             @AuthenticationPrincipal UserCredentials principal) {
         CreateUniversityReviewResponse response = universityReviewService
                 .create(principal.getId(), request);
-        return ResponseEntity.created(URI.create("/api/universityReview/" +
+        return ResponseEntity.created(URI.create("/api/universityReviews" +
                         response.id())).body(response);
     }
 
