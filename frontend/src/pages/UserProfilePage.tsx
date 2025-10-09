@@ -1,4 +1,4 @@
-import { Grid, Box, Avatar, Typography, Container } from '@mui/material'
+import { Grid, Box, Avatar, Typography, Container, Snackbar, Alert } from '@mui/material'
 import basicAvatar from '../assets/examples/basic-avatar.png'
 import SchoolIcon from '@mui/icons-material/School'
 import PublicIcon from '@mui/icons-material/Public'
@@ -49,29 +49,40 @@ type ActionButtonsProps = {
 
 const ActionButtons = (props : ActionButtonsProps) => {
   const navigate = useNavigate()
-  const handleFollow = async () => {
-    if (props.userId) {
-      props.setIsFollowed(true)
-      await sendFollowUserRequest(props.userId)
+  const [openAlert, setOpenAlert] = useState<boolean>(false)
+
+    const handleFollow = async () => {
+        if (props.userId) {
+            props.setIsFollowed(true);
+            const result = await sendFollowUserRequest(props.userId);
+            if (!result.isSuccess) {
+              props.setIsFollowed(false);
+              setOpenAlert(true)
+            }
+        }
     }
-  }
-  const handleUnfollow = async () => {
-    if (props.userId) {
-      props.setIsFollowed(false)
-      await sendUnfollowUserRequest(props.userId)
+
+    const handleUnfollow = async () => {
+        if (props.userId) {
+            props.setIsFollowed(false);
+            const result = await sendUnfollowUserRequest(props.userId);
+            if (!result.isSuccess) {
+              props.setIsFollowed(true);
+              setOpenAlert(true)
+            }
+        }
     }
-  }
 
   return (
     <Stack direction='row' spacing={2} sx={{marginTop: 3}}>
       {props.isFollowed ? (
         <Button variant='outlined' endIcon={<PersonRemove/>} 
-          onClick={() => {handleUnfollow()}}>
+          onClick={() => handleUnfollow()}>
           UNFOLLOW
         </Button>
       ): (
         <Button variant='outlined' endIcon={<PersonAdd/>}
-          onClick={() => {handleFollow()}}>
+          onClick={() => handleFollow()}>
           FOLLOW
         </Button>
       )}
@@ -83,6 +94,13 @@ const ActionButtons = (props : ActionButtonsProps) => {
         }}>
         SEND MESSAGE
       </Button>
+      <Snackbar open={openAlert} autoHideDuration={6000}
+        onClose={() => setOpenAlert(false)}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+        <Alert severity='error'sx={{width: '100%'}}>
+          An error occured. Try follow university later.
+        </Alert>
+      </Snackbar>
     </Stack>
   );
 }
