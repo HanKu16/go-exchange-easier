@@ -1,10 +1,12 @@
-import { API_BASE_URL } from "../config/api"
-import type { GetUniversityReviewResponse } from "../dtos/review/GetUniversityReviewResponse"
-import type { GetReviewsCountResponse } from "../dtos/university/GetReviewsCountResponse"
-import type { GetUniversityProfileResponse } from "../dtos/university/GetUniversityProfileResponse"
-import type { ResponseSuccessResult } from "../types/ResonseSuccessResult"
-import type { RepsonseFailureResult } from "../types/ResponseFailureResult"
-import { sendRequest } from "./send-request"
+import { API_BASE_URL } from '../config/api'
+import type { CreateUniversityReviewRequest } from '../dtos/review/CreateUniversityReviewRequest'
+import type { CreateUniversityReviewResponse } from '../dtos/review/CreateUniversityReviewResponse'
+import type { GetUniversityReviewResponse } from '../dtos/review/GetUniversityReviewResponse'
+import type { GetReviewsCountResponse } from '../dtos/university/GetReviewsCountResponse'
+import type { GetUniversityProfileResponse } from '../dtos/university/GetUniversityProfileResponse'
+import type { ResponseSuccessResult } from '../types/ResonseSuccessResult'
+import type { RepsonseFailureResult } from '../types/ResponseFailureResult'
+import { sendRequest } from './send-request'
 
 export const sendGetUniversityProfileRequest = async (universityId: number | string) :
   Promise<ResponseSuccessResult<GetUniversityProfileResponse> | RepsonseFailureResult> => {
@@ -35,6 +37,21 @@ export const sendGetUniversityReviewsRequest = async (
     },
   }
   return await sendRequest<GetUniversityReviewResponse[]>(uri, request)
+}
+
+export const sendCreateReviewRequest = async (body: CreateUniversityReviewRequest) :
+  Promise<ResponseSuccessResult<CreateUniversityReviewResponse> | RepsonseFailureResult> => {
+  const uri: string = `${API_BASE_URL}/api/universityReviews`
+  const jwtToken = localStorage.getItem('jwtToken')
+  const request: RequestInit = {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body)
+  }
+  return await sendRequest<CreateUniversityReviewResponse>(uri, request)
 }
 
 export const sendGetReviewsCountRequest = async (universityId: number | string) :
