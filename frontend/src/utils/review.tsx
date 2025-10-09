@@ -7,7 +7,7 @@ import { API_BASE_URL } from '../config/api'
 export const sendAddUniversityReviewReactionRequest = async (reviewId: number, 
   body: AddUniversityReviewReactionRequest):
   Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/universityReview/${reviewId}/reaction`
+  const uri: string = `${API_BASE_URL}/api/universityReviews/${reviewId}/reaction`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'PUT',
@@ -23,7 +23,7 @@ export const sendAddUniversityReviewReactionRequest = async (reviewId: number,
 export const sendDeleteUniversityReviewReactionRequest = async (reviewId: number, 
   body: AddUniversityReviewReactionRequest):
   Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/universityReview/${reviewId}/reaction`
+  const uri: string = `${API_BASE_URL}/api/universityReviews/${reviewId}/reaction`
   const jwtToken = localStorage.getItem('jwtToken')
   const request: RequestInit = {
     method: 'DELETE',
