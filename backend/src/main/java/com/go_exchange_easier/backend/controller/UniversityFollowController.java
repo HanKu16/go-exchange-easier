@@ -24,7 +24,7 @@ public class UniversityFollowController {
     public ResponseEntity<Void> create(@PathVariable Short universityId,
             @AuthenticationPrincipal UserCredentials principal) {
         universityFollowService.follow(principal.getUser().getId(), universityId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping

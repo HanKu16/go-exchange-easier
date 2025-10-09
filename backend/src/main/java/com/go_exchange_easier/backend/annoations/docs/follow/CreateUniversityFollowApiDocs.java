@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Operation(summary = "Create university follow")
 @ApiResponses(value = {
         @ApiResponse(
-                responseCode = "200",
+                responseCode = "204",
                 description = "Follow was successfully created"),
         @ApiResponse(
                 responseCode = "404",
