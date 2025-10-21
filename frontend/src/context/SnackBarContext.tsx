@@ -22,11 +22,11 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({children}) =>
     setOpenAlert(true);
   };
 
-  const handleClose = (event: React.SyntheticEvent<any, Event> | Event,
+  const handleClose = (_event: React.SyntheticEvent<any, Event> | Event,
     reason?: SnackbarCloseReason) => {
     if (reason === 'clickaway') return;
       setOpenAlert(false);
-  };
+    };
 
   const contextValue: SnackbarContextType = { showAlert };
 
