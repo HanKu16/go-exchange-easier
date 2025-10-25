@@ -12,3 +12,4 @@ export type ApiErrorResponseCode =
   | 'Size'
   | 'ValidDateRange'
   | 'InvalidRequestBody'
+  | 'ConnectionError'

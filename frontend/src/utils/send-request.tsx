@@ -32,15 +32,30 @@ export async function sendRequest<ResponseSuccessBody>(uri: string, request: Req
       return result
     }
   } catch (error) {
+    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+      const result: RepsonseFailureResult = {
+        isSuccess: false,
+        error: { 
+          status: "SERVICE_UNAVAILABLE",
+          message: "Could not connect to the server. Service unavailable.",
+          fieldErrors: [],
+          globalErrors: [{
+            code: "ConnectionError",
+            message: "Failed to connect to the backend server."
+          }]
+        }
+      }
+      return result;
+    }
     const result: RepsonseFailureResult = {
       isSuccess: false,
       error: { 
         status: "INTERNAL_SERVER_ERROR",
-        message: "An unexepected error occured",
+        message: "An unexepected error occured.",
         fieldErrors: [],
         globalErrors: [{
           code: "InternalError",
-          message: "An unexepected error occured"
+          message: "An unexepected error occured."
         }]
       }
     }
