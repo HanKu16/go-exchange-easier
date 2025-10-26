@@ -5,7 +5,7 @@ import type { LoginRequest } from '../dtos/auth/LoginRequest';
 import { sendLoginRequest } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
 
-const saveJwtToken = (response: LoginResponse): void => {
+const saveLoginResponseData = (response: LoginResponse): void => {
   localStorage.setItem('userId', `${response.userId}`)
   localStorage.setItem('jwtToken', response.accessToken)
   localStorage.setItem('tokenType', response.tokenType)
@@ -24,9 +24,9 @@ const LoginPage = () => {
     }
     const result = await sendLoginRequest(body)
     if (result.isSuccess) {
-      saveJwtToken(result.data)
+      saveLoginResponseData(result.data)
       setWasLoginAttemptFailed(false)
-      navigate(`/users/${result.data.userId}/profile`)
+      navigate(`/users/${result.data.userId}`)
     } else {
       setPassword(() => "")
       setWasLoginAttemptFailed(true)
@@ -44,7 +44,7 @@ const LoginPage = () => {
         paddingY: {xs: 15, sm: 20, md: 30, lg: 0, xl: 6},
         borderRadius: 3}}>
           <Stack direction='column'
-            sx={{ justifyContent: 'space-around', height: '100%' }}>
+            sx={{justifyContent: 'space-around', height: '100%'}}>
             <Box>
               <Typography sx={{color: 'black',     
                 fontSize: {xs: '1.8rem', sm: '3rem', md: '3rem', lg: '1.8rem'}

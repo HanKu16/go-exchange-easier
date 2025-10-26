@@ -13,23 +13,24 @@ import earthImage from '../assets/registration_page/earth.png'
 import basicAvatar from '../assets/examples/basic-avatar.png'
 import { useTheme, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom'
+import { getSignedInUserId } from '../utils/user'
 
 type NavbarItem = {
   label: string;
   route: string;
 }
 
-const userId = localStorage.getItem('userId')
+const userId = getSignedInUserId()
 
 const navbarItems: NavbarItem[] = [
-  {label: 'Profile', route: `/users/${userId}/profile`},
+  {label: 'Profile', route: `/users/${userId}`},
   {label: 'Account', route: '/me'},
   {label: 'Chat', route: '/chat'},
   {label: 'Search', route: '/search'},
   {label: 'Follows', route: '/follows'}
 ]
 
-const settings = ['Account', 'Edit', 'Logout'];
+const settings = ['Edit', 'Logout'];
 
 const Navbar = () => {
   const navigate = useNavigate()
