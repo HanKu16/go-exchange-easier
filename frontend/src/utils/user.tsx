@@ -144,3 +144,11 @@ export const getSignedInUserId = (): string => {
   }
   return userId
 }
+
+export const getSignedInUserJwtToken = (): string => {
+  const token: string | null = localStorage.getItem('jwtToken')
+  if (token === null) {
+    throw new Error('Did not found jwt token')    
+  }
+  return token
+}
