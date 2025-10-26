@@ -10,7 +10,7 @@ import PersonRemove from '@mui/icons-material/PersonRemove'
 import SendIcon from '@mui/icons-material/Send'
 import Stack from '@mui/material/Stack'
 import UniversityReview, { type UniversityReviewProps } from '../components/UniversityReview'
-import { sendGetUserExchangesRequest, sendGetUserProfileRequest, 
+import { getSignedInUserId, sendGetUserExchangesRequest, sendGetUserProfileRequest, 
   sendGetUserReviewsRequest } from '../utils/user'
 import { useEffect, useState } from 'react'
 import type { GetUserProfileResponse } from '../dtos/user/GetUserProfileResponse'
@@ -21,6 +21,15 @@ import NoContent from '../components/NoContent'
 import AddIcon from '@mui/icons-material/Add'
 import type { ExchangesProps } from '../components/Exchanges'
 import Exchanges from '../components/Exchanges'
+import { isInteger } from '../utils/number-utils'
+import NotFoundPage from './NotFoundPage'
+import PersonOffIcon from '@mui/icons-material/PersonOff'
+import ServerErrorPage from './ServerErrorPage'
+import ServiceUnavailablePage from './ServiceUnavailablePage'
+import LoadingPage from './LoadingPage'
+import type { DataFetchStatus } from '../types/DataFetchStatus'
+import ContentLoadError from '../components/ContentLoadError'
+import LoadingContent from '../components/LoadingContent'
 
 const AddExchangeButton = () => {
   const navigate = useNavigate()
@@ -54,9 +63,9 @@ const ActionButtons = (props : ActionButtonsProps) => {
     const handleFollow = async () => {
         if (props.userId) {
             props.setIsFollowed(true);
-            const result = await sendFollowUserRequest(props.userId);
+            const result = await sendFollowUserRequest(props.userId)
             if (!result.isSuccess) {
-              props.setIsFollowed(false);
+              props.setIsFollowed(false)
               setOpenAlert(true)
             }
         }
@@ -67,7 +76,7 @@ const ActionButtons = (props : ActionButtonsProps) => {
             props.setIsFollowed(false);
             const result = await sendUnfollowUserRequest(props.userId);
             if (!result.isSuccess) {
-              props.setIsFollowed(true);
+              props.setIsFollowed(true)
               setOpenAlert(true)
             }
         }
@@ -107,47 +116,19 @@ const ActionButtons = (props : ActionButtonsProps) => {
 
 type UserDataPanelProps = {
   userId: number | string;
+  nick: string;
+  countryName: string | null;
+  homeUniversityName?: string;
+  description: string;
+  isFollowed: boolean;
   isOwnProfile: boolean;
 }
 
 const UserDataPanel = (props: UserDataPanelProps) => {
-  const theme = useTheme();
-  const navigate = useNavigate()
-  const isLgScreen = useMediaQuery(theme.breakpoints.up('lg'));
-  const [nick, setNick] = useState<string>()
-  const [countryName, setCountryName] = useState<string>()
-  const [countryFlag, setCountryFlag] = useState<string | null>()
-  const [homeUniversityName, setHomeUniversityName] = useState<string>()
-  const [userDescription, setUserDescription] = useState<string>('')
-  const [isFollowed, setIsFollowed] = useState<boolean>(false)
-
-  const getData = async () => {
-    if (!props.userId) {
-      navigate('/not-found')
-      return
-    }
-    const result = await sendGetUserProfileRequest(props.userId)
-    if (result.isSuccess) {
-      const data: GetUserProfileResponse = result.data
-      const universityName = data.homeUniversity ?
-        (data.homeUniversity.englishName ? data.homeUniversity.englishName : data.homeUniversity.nativeName) :
-        ('no info about university')
-      setNick(data.nick)
-      setHomeUniversityName(universityName)
-      setCountryName(data.countryOfOrigin ? data.countryOfOrigin.name : 'no info about country')
-      setUserDescription(data.description)
-      setCountryFlag(data.countryOfOrigin ? `/flags/${data.countryOfOrigin?.name}.png` : null)
-      setIsFollowed(data.isFollowed)
-    } else {
-      if (result.error.status === 'NOT_FOUND') {
-        navigate('/not-found')
-      }
-    }
-  }
-
-  useEffect(() => {
-    getData()
-  }, [])
+  const theme = useTheme()
+  const isLgScreen = useMediaQuery(theme.breakpoints.up('lg'))
+  const countryFlag = props.countryName ? `/flags/${props.countryName}.png` : null
+  const [isFollowed, setIsFollowed] = useState<boolean>(props.isFollowed)
 
   return (
     <>
@@ -160,14 +141,14 @@ const UserDataPanel = (props: UserDataPanelProps) => {
             height: '20vh'}}/>
           <Typography sx={{color: 'white', fontSize: {lg: '2rem'}, fontWeight: '700', 
             paddingTop: {lg: 2}}}>
-            {nick}
+            {props.nick}
           </Typography>
           <Box sx={{width: '100%', paddingLeft: {lg: 6}, paddingTop: {lg: 2}}}>
             <Box sx={{display: 'flex'}}>
               <PublicIcon sx={{color: 'white'}}/>
               <Typography sx={{color: 'white', fontSize: {lg: '1.2rem'}, fontWeight: '600',
                 paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}, marginLeft: 1}}>
-                {countryName}
+                {props.countryName}
               </Typography>
               {countryFlag ? (
                 <img src={countryFlag} alt='' style={{height: '1rem', marginTop: 4}}/>
@@ -179,7 +160,7 @@ const UserDataPanel = (props: UserDataPanelProps) => {
               <SchoolIcon sx={{color: 'white'}}/>
               <Typography sx={{color: 'white', fontSize: {lg: '1rem'}, fontWeight: '500',
                 marginLeft: 1}}>
-                {homeUniversityName}
+                {props.homeUniversityName}
               </Typography>
             </Box>
           </Box>
@@ -190,7 +171,7 @@ const UserDataPanel = (props: UserDataPanelProps) => {
               <></>
             )}
           <Box sx={{width: '100%', paddingX: {lg: 5}, paddingTop: {lg: 4}}}>
-            {userDescription.trim() !== '' ? 
+            {props.description.trim() !== '' ? 
               <>
                 <Typography sx={{color: 'white', fontSize: {lg: '1.2rem'}, fontWeight: '600',
                     paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
@@ -198,7 +179,7 @@ const UserDataPanel = (props: UserDataPanelProps) => {
                 </Typography>
                 <Typography sx={{color: 'white', fontSize: {lg: '0.8rem'}, fontWeight: '400',
                   paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
-                  {userDescription}
+                  {props.description}
                 </Typography>
               </> : 
               <></>
@@ -206,7 +187,7 @@ const UserDataPanel = (props: UserDataPanelProps) => {
           </Box>
         </Box> 
       ) : (
-        <Box sx={{ backgroundColor: '#182c44', display: 'flex', 
+        <Box sx={{backgroundColor: '#182c44', display: 'flex', 
           flexDirection: 'column', paddingY: 2}}>
           <Box sx={{display: 'flex', flexDirection: 'row', paddingLeft: 3}}>
             <Avatar alt='User avatar' src={basicAvatar} sx={{
@@ -217,13 +198,13 @@ const UserDataPanel = (props: UserDataPanelProps) => {
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
               <Typography sx={{color: 'white', fontSize: '1rem', fontWeight: '700', 
                 paddingY: 0.4}}>
-                {nick}
+                {props.nick}
               </Typography>
               <Box sx={{display: 'flex'}}>
                 <PublicIcon sx={{color: 'white'}}/>
                 <Typography sx={{color: 'white', fontSize: {lg: '0.7rem'}, fontWeight: '600',
                   paddingBottom: 0.5, marginLeft: 1, marginRight: 1}}>
-                  {countryName}
+                  {props.countryName}
                 </Typography>
                 {countryFlag ? (
                   <img src={countryFlag} style={{height: '1rem', marginTop: 4}}/>
@@ -235,21 +216,21 @@ const UserDataPanel = (props: UserDataPanelProps) => {
                 <SchoolIcon sx={{color: 'white'}}/>
                 <Typography sx={{color: 'white', fontSize: {lg: '1rem'}, fontWeight: '500',
                   marginLeft: 1}}>
-                  {homeUniversityName}
+                  {props.homeUniversityName}
                 </Typography>
               </Box>
             </Box>
           </Box>
           <Container sx={{marginY: 0.5}}>
             {!props.isOwnProfile ? (
-              <ActionButtons userId={props.userId} isFollowed={isFollowed} 
+              <ActionButtons userId={props.userId} isFollowed={props.isFollowed} 
                 setIsFollowed={setIsFollowed}/>
             ) : (
               <></>
             )}
           </Container>
           <Box sx={{paddingX: 3, paddingTop: 4}}>
-            {userDescription.trim() !== '' ? 
+            {props.description.trim() !== '' ? 
               <>
               <Typography sx={{color: 'white', fontWeight: '600',
                   paddingBottom: 1}}>
@@ -257,7 +238,7 @@ const UserDataPanel = (props: UserDataPanelProps) => {
               </Typography>
               <Typography sx={{color: 'white', fontWeight: '400',
                 paddingBottom: {lg: 0.5}, paddingRight: {lg: 1}}}>
-                {userDescription}
+                {props.description}
               </Typography>
               </> : 
               <></>
@@ -276,7 +257,9 @@ type FeedPanelProps = {
 
 const FeedPanel = (props: FeedPanelProps) => {
   const [reviewProps, setReviewsProps] = useState<UniversityReviewProps[]>([])
-  const [exchangesProps, setExchangesProps] = useState<ExchangesProps>()
+  const [exchangesProps, setExchangesProps] = useState<ExchangesProps | undefined>(undefined)
+  const [reviewsFetchStatus, setReviewsFetchStatus] = useState<DataFetchStatus>('loading')
+  const [exchangesFetchStatus, setExchangesFetchStatus] = useState<DataFetchStatus>('loading')
 
   const getReviews = async () => {
     const result = await sendGetUserReviewsRequest(props.userId)
@@ -290,6 +273,9 @@ const FeedPanel = (props: FeedPanelProps) => {
         reactions: r.reactions
       }))
       setReviewsProps(props)
+      setReviewsFetchStatus('success')
+    } else {
+      setReviewsFetchStatus('serverError')
     }
   }
 
@@ -317,9 +303,66 @@ const FeedPanel = (props: FeedPanelProps) => {
         }))
       }
       setExchangesProps(props)
+      setExchangesFetchStatus('success')
+    } else {
+      setExchangesFetchStatus('serverError')
     }
   }
 
+  const getReviewsContent = () => {
+    if (reviewsFetchStatus === 'success') {
+      if (reviewProps.length !== 0) {
+        return (
+          <Container sx={{display: 'flex', flexDirection: 'column', 
+            alignItems: 'center', gap: 3}}>
+              {reviewProps.map(rp => (<UniversityReview {...rp}/>))}
+          </Container>
+        )
+      } else {
+        return (
+          <NoContent title={'No reviews yet'} 
+            subheader={props.isOwnProfile ? 
+              "You haven't written any reviews." :
+              "This user hasn't written any reviews."
+          }/>
+        )
+      }
+    } else if (reviewsFetchStatus === 'loading') {
+      return <LoadingContent title='Loading reviews'/>
+    } else if ((reviewsFetchStatus === 'connectionError') || 
+      (reviewsFetchStatus === 'serverError')) {
+      return (<ContentLoadError title='Server connection error' 
+        subheader='An error occurred while fetching reviews.'/>
+      )
+    }
+  }
+
+  const getExchangesContent = () => {
+    if (exchangesFetchStatus === 'success') {
+      if ((exchangesProps !== undefined) && (exchangesProps.exchanges.length !== 0)) {
+        return (
+          <>
+            <Exchanges {...exchangesProps}/>
+            {props.isOwnProfile && <AddExchangeButton/>}
+          </>)
+      } else {
+        return (
+          <>
+            {props.isOwnProfile ? 
+              <AddExchangeButton/> : 
+              <NoContent title='No exchanges yet' subheader=
+                "This user hasn't add any exchange."/>}
+          </>
+        )
+      }
+    } else if (exchangesFetchStatus === 'loading') {
+      return <LoadingContent title='Loading exchanges'/>
+    } else if ((reviewsFetchStatus === 'connectionError') || 
+      (reviewsFetchStatus === 'serverError')) {
+      return <ContentLoadError title='Server connection error' subheader=
+          'An error occurred while fetching exchanges.'/>
+    }
+  }
 
   useEffect(() => {
     getReviews()
@@ -332,72 +375,103 @@ const FeedPanel = (props: FeedPanelProps) => {
         paddingY: 2.5, paddingLeft: {xs: 2, lg: 4}}}>
         Exchange history
       </Typography>
-      {exchangesProps && (exchangesProps.exchanges.length !== 0) ? 
-        <Exchanges {...exchangesProps}/> :
-        props.isOwnProfile ? 
-          <></> : 
-          <NoContent title='No exchanges yet' subheader="This user hasn't add any exchange."/>
-      }
-      {props.isOwnProfile ? 
-        <AddExchangeButton/> :
-        <></>
-      }
+      {getExchangesContent()}
       <Typography sx={{fontSize: {xs: '1.3rem', lg: '1.7rem'}, fontWeight: 600 , 
         paddingY: 2.5, paddingLeft: {xs: 2, lg: 4}}}>
         University reviews
       </Typography>
-      {reviewProps.length != 0 ? 
-        (
-          <>
-            <Container sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
-              {reviewProps.map(rp => (<UniversityReview {...rp}/>))}
-            </Container>
-          </>
-        ) : (
-          <NoContent title={'No reviews yet'} 
-            subheader={props.isOwnProfile ? 
-              "You haven't written any reviews." :
-              "This user hasn't written any reviews."
-            }/>
-        )}
+      {getReviewsContent()}
     </Box>
   )
 }
 
+type UserProfileFetchStatus = 
+  DataFetchStatus |
+  'userNotFound'
+
 const UserProfilePage = () => {
-  const navigate = useNavigate()
   const theme = useTheme();
   const { userId } = useParams()
   const isLgScreen = useMediaQuery(theme.breakpoints.up('lg'));
-  const signedInUserId: string | null = localStorage.getItem('userId')
+  const signedInUserId: string = getSignedInUserId()
   const isOwnProfile = userId === signedInUserId
+  const [userProfileFetchStatus, setUserProfileFetchStatus] = 
+    useState<UserProfileFetchStatus>('loading')
+  const [userDataPanelProps, setUserDataPanelProps] = useState<UserDataPanelProps>()
   
-  if (!userId) {
-    navigate('/not-found')
-    return
+  if (!userId || !isInteger(userId)) {
+    return <NotFoundPage icon={PersonOffIcon} title='User not found'
+      subheader='Profile you are looking for was deleted or does not exist'/>
   }
 
-  return (
-    <Grid container minHeight='100vh' sx={{backgroundColor: '#eeececff'}}>
-      <Grid size={{xs: 12, lg: 3}}>
-        {isLgScreen ? (<></>) : (<Navbar/>)}
-        <UserDataPanel userId={userId} isOwnProfile={isOwnProfile}/>
-        {isLgScreen ? (<></>) : (<FeedPanel userId={userId} isOwnProfile={isOwnProfile}/>)}
+  const getData = async () => {
+    if (userId === undefined) {
+      setUserProfileFetchStatus('userNotFound')
+      return
+    }
+    const result = await sendGetUserProfileRequest(userId)
+    if (result.isSuccess) {
+      const data: GetUserProfileResponse = result.data
+      const universityName = data.homeUniversity ?
+        (data.homeUniversity.englishName ? 
+          data.homeUniversity.englishName : data.homeUniversity.nativeName) :
+          ('no info about university')
+      const userDataPanelProps: UserDataPanelProps = {
+        userId: data.userId,
+        nick: data.nick,
+        countryName: data.countryOfOrigin ? data.countryOfOrigin.name : null,
+        homeUniversityName: universityName,
+        description: data.description,
+        isFollowed: data.isFollowed,
+        isOwnProfile: isOwnProfile
+      }
+      setUserDataPanelProps(userDataPanelProps)
+      setUserProfileFetchStatus('success')
+    } else {
+      if (result.error.status === 'NOT_FOUND') {
+        setUserProfileFetchStatus('userNotFound')
+      } else if (result.error.status === 'INTERNAL_SERVER_ERROR') {
+        setUserProfileFetchStatus('serverError')
+      } else if (result.error.status === 'SERVICE_UNAVAILABLE') {
+        setUserProfileFetchStatus('connectionError')
+      }
+    }
+  }
+
+  useEffect(() => {
+    getData()
+  }, [])
+  if (userProfileFetchStatus === 'userNotFound') {
+    return <NotFoundPage icon={PersonOffIcon} title='User not found'
+      subheader='Profile you are looking for was deleted or does not exist'/>
+  } else if (userProfileFetchStatus === 'connectionError') {
+    return <ServiceUnavailablePage/>
+  } else if (userProfileFetchStatus === 'serverError') {
+    return <ServerErrorPage/>
+  } else if (userProfileFetchStatus === 'loading') {
+    return <LoadingPage backgroundColor='#eeececff' circularProgressColor='#182c44'
+      text='Loading user profile'/>
+  } else if (userProfileFetchStatus === 'success' && userDataPanelProps !== undefined) {
+    return (
+      <Grid container minHeight='100vh' sx={{backgroundColor: '#eeececff'}}>
+        <Grid size={{xs: 12, lg: 3}}>
+          {isLgScreen ? (<></>) : (<Navbar/>)}
+          <UserDataPanel {...userDataPanelProps}/>
+          {isLgScreen ? (<></>) : (<FeedPanel userId={userId} isOwnProfile={isOwnProfile}/>)}
+        </Grid>
+        <Grid size={{xs: 0, lg: 9}}>
+          <Box sx={{minHeight: '100%'}}>
+            {isLgScreen &&
+              <>
+                <Navbar/>
+                <FeedPanel userId={userId} isOwnProfile={isOwnProfile}/>
+              </>
+            }
+          </Box>
+        </Grid>
       </Grid>
-      <Grid size={{xs: 0, lg: 9}}>
-        <Box sx={{minHeight: '100%'}}>
-          {isLgScreen ? (
-            <>
-              <Navbar/>
-              <FeedPanel userId={userId} isOwnProfile={isOwnProfile}/>
-            </>
-          ) : (
-            <></>
-          )}
-        </Box>
-      </Grid>
-    </Grid>
-  )
+    )
+  }
 }
 
 export default UserProfilePage
