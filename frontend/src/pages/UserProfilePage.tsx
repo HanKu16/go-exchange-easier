@@ -1,4 +1,4 @@
-import { Grid, Box, Avatar, Typography, Container, Snackbar, Alert } from '@mui/material'
+import { Grid, Box, Avatar, Typography, Container } from '@mui/material'
 import basicAvatar from '../assets/examples/basic-avatar.png'
 import SchoolIcon from '@mui/icons-material/School'
 import PublicIcon from '@mui/icons-material/Public'
@@ -30,6 +30,7 @@ import LoadingPage from './LoadingPage'
 import type { DataFetchStatus } from '../types/DataFetchStatus'
 import ContentLoadError from '../components/ContentLoadError'
 import LoadingContent from '../components/LoadingContent'
+import { useSnackbar } from '../context/SnackBarContext'
 
 const AddExchangeButton = () => {
   const navigate = useNavigate()
@@ -58,7 +59,7 @@ type ActionButtonsProps = {
 
 const ActionButtons = (props : ActionButtonsProps) => {
   const navigate = useNavigate()
-  const [openAlert, setOpenAlert] = useState<boolean>(false)
+  const { showAlert } = useSnackbar()
 
     const handleFollow = async () => {
         if (props.userId) {
@@ -66,7 +67,7 @@ const ActionButtons = (props : ActionButtonsProps) => {
             const result = await sendFollowUserRequest(props.userId)
             if (!result.isSuccess) {
               props.setIsFollowed(false)
-              setOpenAlert(true)
+              showAlert('An error occured. Try follow user later.', 'error')
             }
         }
     }
@@ -77,7 +78,7 @@ const ActionButtons = (props : ActionButtonsProps) => {
             const result = await sendUnfollowUserRequest(props.userId);
             if (!result.isSuccess) {
               props.setIsFollowed(true)
-              setOpenAlert(true)
+              showAlert('An error occured. Try unfollow user later.', 'error')
             }
         }
     }
@@ -103,13 +104,6 @@ const ActionButtons = (props : ActionButtonsProps) => {
         }}>
         SEND MESSAGE
       </Button>
-      <Snackbar open={openAlert} autoHideDuration={6000}
-        onClose={() => setOpenAlert(false)}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
-        <Alert severity='error'sx={{width: '100%'}}>
-          An error occured. Try follow university later.
-        </Alert>
-      </Snackbar>
     </Stack>
   );
 }
