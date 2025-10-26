@@ -430,7 +430,8 @@ const UserProfilePage = () => {
       const userDataPanelProps: UserDataPanelProps = {
         userId: data.userId,
         nick: data.nick,
-        countryName: data.countryOfOrigin ? data.countryOfOrigin.name : null,
+        countryName: data.countryOfOrigin ? 
+          data.countryOfOrigin.name : 'no info about country',
         homeUniversityName: universityName,
         description: data.description,
         isFollowed: data.isFollowed,
