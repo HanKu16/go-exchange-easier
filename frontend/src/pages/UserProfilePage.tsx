@@ -269,7 +269,14 @@ const FeedPanel = (props: FeedPanelProps) => {
       setReviewsProps(props)
       setReviewsFetchStatus('success')
     } else {
-      setReviewsFetchStatus('serverError')
+      switch (result.error.status) {
+        case 'INTERNAL_SERVER_ERROR':
+          setReviewsFetchStatus('serverError')
+          break
+        case 'SERVICE_UNAVAILABLE':
+          setReviewsFetchStatus('connectionError')
+          break
+      }
     }
   }
 
@@ -299,7 +306,14 @@ const FeedPanel = (props: FeedPanelProps) => {
       setExchangesProps(props)
       setExchangesFetchStatus('success')
     } else {
-      setExchangesFetchStatus('serverError')
+      switch (result.error.status) {
+        case 'INTERNAL_SERVER_ERROR':
+          setReviewsFetchStatus('serverError')
+          break
+        case 'SERVICE_UNAVAILABLE':
+          setReviewsFetchStatus('connectionError')
+          break
+      }
     }
   }
 
@@ -323,11 +337,12 @@ const FeedPanel = (props: FeedPanelProps) => {
       }
     } else if (reviewsFetchStatus === 'loading') {
       return <LoadingContent title='Loading reviews'/>
-    } else if ((reviewsFetchStatus === 'connectionError') || 
-      (reviewsFetchStatus === 'serverError')) {
-      return (<ContentLoadError title='Server connection error' 
-        subheader='An error occurred while fetching reviews.'/>
-      )
+    } else if (reviewsFetchStatus === 'connectionError') {
+      return <ContentLoadError title='Connection error' subheader=
+          'An error occurred while fetching reviews.'/>
+    } else if (reviewsFetchStatus === 'serverError') {
+      return <ContentLoadError title='Server error' subheader=
+          'An error occurred while fetching reviews.'/>
     }
   }
 
@@ -351,9 +366,11 @@ const FeedPanel = (props: FeedPanelProps) => {
       }
     } else if (exchangesFetchStatus === 'loading') {
       return <LoadingContent title='Loading exchanges'/>
-    } else if ((reviewsFetchStatus === 'connectionError') || 
-      (reviewsFetchStatus === 'serverError')) {
-      return <ContentLoadError title='Server connection error' subheader=
+    } else if (exchangesFetchStatus === 'connectionError') {
+      return <ContentLoadError title='Connection error' subheader=
+          'An error occurred while fetching exchanges.'/>
+    } else if (exchangesFetchStatus === 'serverError') {
+      return <ContentLoadError title='Server error' subheader=
           'An error occurred while fetching exchanges.'/>
     }
   }
@@ -435,6 +452,7 @@ const UserProfilePage = () => {
   useEffect(() => {
     getData()
   }, [])
+  
   if (userProfileFetchStatus === 'userNotFound') {
     return <NotFoundPage icon={PersonOffIcon} title='User not found'
       subheader='Profile you are looking for was deleted or does not exist'/>
