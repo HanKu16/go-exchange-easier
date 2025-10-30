@@ -50,13 +50,15 @@ const UpdateUserStatusPanel = () => {
   }, [selectedStatusId])
 
   const handleStatusUpdate = async () => {
+    setShowConfirmButton(false)
+    showAlert('Waiting for server response.', 'info')
     const statusId = selectedStatusId !== 0 ? selectedStatusId : null
     const result = await sendUpdateStatusRequest({statusId: statusId})
     if (result.isSuccess) {
       showAlert('Status was updated successfully.', 'success')
-      setShowConfirmButton(false)
     } else {
       showAlert('Failed to update status. Please try again later.', 'error')
+      setShowConfirmButton(true)
     }
   }
 

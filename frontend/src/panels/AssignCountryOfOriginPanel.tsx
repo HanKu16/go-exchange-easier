@@ -4,11 +4,13 @@ import type { ReactElement } from 'react'
 import { Radio, RadioGroup } from '@mui/material'
 import { FormControl, Button } from '@mui/material'
 import { sendAssignCountryOfOriginRequest } from '../utils/user'
-import Alert from '@mui/material/Alert'
 import { FormControlLabel } from '@mui/material'
-import type { AlertMessage } from '../types/AlertMessage'
 import type { Country } from '../types/Country'
 import PanelHeader from '../components/PanelHeader'
+import { useSnackbar } from '../context/SnackBarContext'
+import type { DataFetchStatus } from '../types/DataFetchStatus'
+import LoadingContent from '../components/LoadingContent'
+import ContentLoadError from '../components/ContentLoadError'
 
 type AssignCountryOfOriginPanelProps = {
   countries: Country[];
@@ -16,22 +18,27 @@ type AssignCountryOfOriginPanelProps = {
 }
 
 const AssignCountryOfOriginPanel = (props: AssignCountryOfOriginPanelProps) => {
+  const [countriesFetchStatus, setCountriesFetchStatus] = useState<DataFetchStatus>(
+    props.countries.length > 0 ? 'success' : 'loading')
   const [selectedCountryId, setSelectedCountryId] = useState<number | null>(null)
-  const [message, setMessage] = useState<AlertMessage | null>(null)
-
+  const [showConfirmButton, setShowConfirmButton] = useState<boolean>(false)
+  const { showAlert } = useSnackbar()
+  
   const handleCountryAssignment = async () => {
+    setShowConfirmButton(false)
     const countryId = selectedCountryId !== 0 ? selectedCountryId : null
-    setMessage({type: 'info', content: 'Waiting for server response.'})
+    showAlert('Waiting for server response.', 'info')
     const result = await sendAssignCountryOfOriginRequest({countryId: countryId})
     if (result.isSuccess) {
-      setMessage({type: 'success', content: 'Country was assigned to user successfully.'})
+      showAlert('Country was assigned to user successfully.', 'success')
     } else {
-      setMessage({type: 'error', content: 'Failed to assign country. Please try again later.'})
+      showAlert('Failed to assign country. Please try again later.', 'error')
+      setShowConfirmButton(true)
     }
   }
 
   const getInteractionElement = (countryId: number): ReactElement => {
-    if ((selectedCountryId === countryId) && (message === null)) {
+    if (showConfirmButton && (selectedCountryId === countryId)) {
       return (
         <Button variant='contained' size='small' sx={{marginLeft: 2}}
           onClick={handleCountryAssignment}>
@@ -47,14 +54,11 @@ const AssignCountryOfOriginPanel = (props: AssignCountryOfOriginPanelProps) => {
   }, [])
 
   useEffect(() => {
-    if (props.countries.length > 0) {
-      setMessage(null)
-      return
-    }
-
     const timeout = setTimeout(() => {
       if (props.countries.length === 0) {
-        setMessage({ type: 'error', content: 'Failed to load countries.' })
+        setCountriesFetchStatus('connectionError')
+      } else {
+        setCountriesFetchStatus('success')
       }
     }, 5000)
 
@@ -62,38 +66,46 @@ const AssignCountryOfOriginPanel = (props: AssignCountryOfOriginPanelProps) => {
   }, [props.countries])
 
   useEffect(() => {
-    setMessage(null)
+    setShowConfirmButton(true)
   }, [selectedCountryId])
+
+  const getContent = () => {
+    switch (countriesFetchStatus) {
+      case 'success':
+        return (
+          <FormControl>
+            <RadioGroup name='countries-buttons-group'
+              value={selectedCountryId}
+              onChange={(event) => {
+                setSelectedCountryId(Number(event.target.value))
+              }}>
+              {props.countries.map(c => (
+                <FormControlLabel key={c.id} value={c.id} control={<Radio/>} label={(
+                  <>
+                    {c.name}
+                    {c.id !== 0 &&
+                      <img src={`/flags/${c.name}.png`} 
+                        style={{height: '0.8rem', marginLeft: 3}}/> 
+                    }
+                    {getInteractionElement(c.id)}
+                  </>)}
+              />))}
+            </RadioGroup>
+          </FormControl>
+        )
+      case 'loading':
+        return <LoadingContent title='Loading countries'/>  
+      case 'connectionError':
+        return <ContentLoadError title='Connection error' subheader='Failed to load countries'/>
+      case 'serverError':
+        return <ContentLoadError title='Server error' subheader='Failed to load countries'/>
+    }
+  }
 
   return (
     <Box>
       <PanelHeader label='Assign country of origin to yourself'/>
-      {message != null ?
-        <Alert variant='filled' severity={message.type} sx={{marginY: 2}}>
-          {message.content}
-        </Alert> : 
-        <></>
-      }
-      <FormControl>
-        <RadioGroup name='countries-buttons-group'
-          value={selectedCountryId}
-          onChange={(event) => {
-            setSelectedCountryId(Number(event.target.value))
-          }}>
-          {props.countries.map(c => (
-            <FormControlLabel key={c.id} value={c.id} control={<Radio/>} label={(
-              <>
-                {c.name}
-                {c.id !== 0 ?
-                  <img src={`/flags/${c.name}.png`} 
-                    style={{height: '0.8rem', marginLeft: 3}}/> : 
-                  <></>
-                }
-                {getInteractionElement(c.id)}
-              </>)}
-          />))}
-        </RadioGroup>
-      </FormControl>
+      {getContent()}
     </Box>
   )
 }
