@@ -3,31 +3,33 @@ import Box from '@mui/material/Box'
 import { IconButton, Tooltip } from '@mui/material'
 import { Button } from '@mui/material'
 import { sendUpdateDescriptionRequest } from '../utils/user'
-import Alert from '@mui/material/Alert'
 import { TextField } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
-import type { AlertMessage } from '../types/AlertMessage'
 import PanelHeader from '../components/PanelHeader'
+import { useSnackbar } from '../context/SnackBarContext'
 
 const UpdateUserDescriptionPanel = () => {
   const maxDescriptionSize = 500
   const [description, setDescription] = useState<string>('')
-  const [message, setMessage] = useState<AlertMessage | null>(null)
+  const { showAlert } = useSnackbar()
+  const [showConfirmButton, setShowConfirmButton] = useState<boolean>(true)
 
   const handleDescriptionUpdate = async () => {
-    setMessage({type: 'info', content: 'Waiting for server response.'})
+    setShowConfirmButton(false)
+    showAlert('Waiting for server response.', 'info')
     const result = await sendUpdateDescriptionRequest({description: description})
     if (result.isSuccess) {
-      setMessage({type: 'success', content: 'Description was updated successfully.'})
+      showAlert('Description was updated successfully.', 'success')
     } else {
       if (result.error.fieldErrors.some(e => e.code === "Size")) {
-        setMessage({type: 'error', content: `Description can not be longer 
+        showAlert(`Description can not be longer 
           than ${maxDescriptionSize} characters. But current has 
-          ${description.length}.`})
+          ${description.length}.`, 'error')
       } else {
-        setMessage({type: 'error', content: 'Failed to update description. Please try again later.'})
+        showAlert('Failed to update description. Please try again later.', 'error')
       }
     }
+    setShowConfirmButton(true)
   }
 
   return (
@@ -42,19 +44,16 @@ const UpdateUserDescriptionPanel = () => {
         </Tooltip>
       </Box>
 
-      {message != null ?
-        <Alert variant='filled' severity={message.type} sx={{marginY: 2}}>
-          {message.content}
-        </Alert> : 
-        <></>
-      }
+
       <TextField id='description-input' label='Description' multiline rows={6}
           placeholder='Enter your description' sx={{width: '100%', marginTop: 2}}
           value={description} onChange={event => setDescription(event.target.value)}/>
-      <Button variant='contained' size='large' sx={{marginTop: 2}}
-          onClick={handleDescriptionUpdate}>
-          CONFIRM
-      </Button>
+      {showConfirmButton &&
+        <Button variant='contained' size='large' sx={{marginTop: 2}}
+            onClick={handleDescriptionUpdate}>
+            CONFIRM
+        </Button>
+      }
     </Box>
   )
 }

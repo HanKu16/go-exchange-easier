@@ -3,13 +3,16 @@ import { Box, Button, Paper, Table, TableBody, TableCell,
   TableContainer, TableHead, TableRow, Typography, useMediaQuery, 
   useTheme } from '@mui/material'
 import { sendGetUserExchangesRequest } from '../utils/user'
-import { Alert } from '@mui/material'
 import { useState } from 'react'
 import NoContent from '../components/NoContent'
 import { useEffect } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { sendDeleteExchangeRequest } from '../utils/exchange'
 import type { AlertMessage } from '../types/AlertMessage'
+import { useSnackbar } from '../context/SnackBarContext'
+import type { DataFetchStatus } from '../types/DataFetchStatus'
+import LoadingContent from '../components/LoadingContent'
+import ContentLoadError from '../components/ContentLoadError'
 
 type ActionExchangeTableProps = {
   exchanges: {
@@ -38,17 +41,18 @@ type ManageExchangesPanelProps = {
 }
 
 const ActionExchangeTableProps = (props: ActionExchangeTableProps) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
+  const { showAlert } = useSnackbar()
 
   const handleDeletion = async (exchangeId: number) => {
-    props.setMessage({type: 'info', content: 'Waiting for server response.'})
+    showAlert('Waiting for server response.', 'info')
     const response = await sendDeleteExchangeRequest(exchangeId)
     if (response.isSuccess) {
-      props.setMessage({type: 'success', content: 'Exchange was deleted successfully.'})
+      showAlert('Exchange was deleted successfully.', 'success')
       props.setDeletedExchangeId(exchangeId)
     } else {
-      props.setMessage({type: 'error', content: 'Failed to delete exchange.'})
+      showAlert('Failed to delete exchange.', 'error')
     }
   }
 
@@ -146,6 +150,8 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
   const [exchangesProps, setExchangesProps] = useState<ActionExchangeTableProps | null>(null)
   const [message, setMessage] = useState<AlertMessage | null>(null)
   const [deletedExchangeId, setDeletedExchangeId] = useState<number | null>(null)
+  const [exchangesFetchStatus, setExchangesFetchStatus] = useState<DataFetchStatus>(
+    exchangesProps != null ? 'success' : 'loading')
 
   const getExchanges = async () => {
     const result = await sendGetUserExchangesRequest(props.userId)
@@ -172,8 +178,18 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
             countryName: e.city.country.name
           }
         }))
-      }
+      } 
       setExchangesProps(props)
+      setExchangesFetchStatus('success')
+    } else {
+      switch (result.error.status) {
+        case 'INTERNAL_SERVER_ERROR':
+          setExchangesFetchStatus('serverError')
+          break
+        case 'SERVICE_UNAVAILABLE':
+          setExchangesFetchStatus('connectionError')
+          break
+      }
     }
   }
 
@@ -190,21 +206,27 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
     }
   }, [deletedExchangeId])
 
+  const getContent = () => {
+    switch (exchangesFetchStatus) {
+      case 'loading':
+        return <LoadingContent title='Loading exchanges'/>  
+      case 'connectionError':
+        return <ContentLoadError title='Connection error' subheader='Failed to load exchanges'/>
+      case 'serverError':
+        return <ContentLoadError title='Server error' subheader='Failed to load exchanges'/>
+      case 'success':
+        return (
+          exchangesProps && (exchangesProps.exchanges.length !== 0) ? 
+            <ActionExchangeTableProps {...exchangesProps}/> :
+            <NoContent title='No exchanges yet' subheader="You haven't add any exchange."/>   
+        )
+    }
+  }
+
   return (
       <Box>
         <PanelHeader label='Manage existing exchanges'/>
-        {!message &&
-          <br/>
-        }
-        {message && 
-          <Alert variant='filled' severity={message.type} sx={{marginY: 2}}>
-            {message.content}
-          </Alert>
-        }
-        {exchangesProps && (exchangesProps.exchanges.length !== 0) ? 
-          <ActionExchangeTableProps {...exchangesProps}/> :
-          <NoContent title='No exchanges yet' subheader="You haven't add any exchange."/>
-        }
+        {getContent()}
       </Box>
     )
 }
