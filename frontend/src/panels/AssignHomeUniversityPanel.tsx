@@ -38,11 +38,11 @@ const AssignHomeUniversityPanel = (props: AssignHomeUniversityPanelProps) => {
       return
     }
     setUniversities([])
-    setUniversitiesFetchStatus('loading')
+    // setUniversitiesFetchStatus('loading')
     const result = await sendGetUniverisitesFromCountryRequest(selectedCountryId)
     if (result.isSuccess) {
-      setUniversitiesFetchStatus('success')
       setUniversities(result.data)
+      setUniversitiesFetchStatus('success')
     } else {
       setUniversitiesFetchStatus('connectionError')
     }
@@ -115,7 +115,7 @@ const AssignHomeUniversityPanel = (props: AssignHomeUniversityPanelProps) => {
     }, 5000)
 
     return () => clearTimeout(timeout)
-  }, [])
+  }, [props.countries])
 
   useEffect(() => {
     getUniversitiesFromCountry()

@@ -193,7 +193,7 @@ export const RegistrationPage = () => {
                   infoText='Should have between 8 to 20 characters. Only letters and numbers.'
                   value={password} setValue={setPassword}/>
                 <InputField id='nick' label='Nick' isRequired={true}
-                  infoText='Should have between 6 to 20 characters. Only letters and numbers. 
+                  infoText='Should have between 3 to 20 characters. Only letters and numbers. 
                   Your nick will be shown on your profile. If not provided your login will be used.'
                   value={nick} setValue={setNick}/>
                 <InputField id='mail' label='Mail' isRequired={false}
