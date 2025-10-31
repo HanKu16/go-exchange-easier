@@ -5,5 +5,9 @@ export type GetUniversityResponse = {
   city: {
     id: number;
     name: string;
+    country: {
+      id: number;
+      name: string;
+    }
   };
 }
