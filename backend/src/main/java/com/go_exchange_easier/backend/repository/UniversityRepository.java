@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UniversityRepository extends JpaRepository<University, Short> {
@@ -35,5 +36,16 @@ public interface UniversityRepository extends JpaRepository<University, Short> {
        """, nativeQuery = true)
     List<Object[]> findProfileById(@Param("universityId") int universityId,
             @Param("currentUserId") int currentUserId);
+
+    List<University> findByOriginalName(String originalName);
+    List<University> findByEnglishName(String englishName);
+
+    @Query("""
+        SELECT u FROM University u
+        JOIN FETCH u.city c
+        JOIN FETCH c.country
+        WHERE c.id = :cityId
+        """)
+    List<University> findByCity(@Param("cityId") int cityId);
 
 }

@@ -8,5 +8,7 @@ public interface UniversityService {
 
     GetUniversityProfileResponse getProfile(int universityId, int currentUserId);
     List<GetUniversityResponse> getByCountryId(Short countryId);
+    List<GetUniversityResponse> get(String englishName,
+            String nativeName, Integer cityId, Short countryId);
 
 }
