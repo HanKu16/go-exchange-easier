@@ -11,8 +11,8 @@ import { useState } from 'react'
 import { sendDeleteUniversityReviewReactionRequest } from '../utils/review'
 import { sendAddUniversityReviewReactionRequest } from '../utils/review'
 import type { ReactionDetails } from '../types/ReactionDetails'
-import type { ReactionProps } from './Reaction'
 import Reaction from './Reaction'
+import { useSnackbar } from '../context/SnackBarContext'
 
 export type UniversityReviewProps = {
   id: number;
@@ -24,9 +24,18 @@ export type UniversityReviewProps = {
 }
 
 const UniversityReview = (props: UniversityReviewProps) => {
+  const [canChangeReaction, setCanChangeReaction] = useState<boolean>(true)
+  const { showAlert } = useSnackbar()
+
   const handleReactionChange = async (activeReactionId: number) => {
+    if (!canChangeReaction) {
+      showAlert('You have to wait to update reaction again.', 'warning')
+      return
+    }
+    setCanChangeReaction(false)
     const newReactionProps = reactionsProps.map(rp => ({ ...rp }))
     for (let i = 0; i < newReactionProps.length; ++i) {
+      const wasSetBefore = newReactionProps[i].isSet
       if (newReactionProps[i].typeId === activeReactionId) {
         if (newReactionProps[i].isSet) {
           newReactionProps[i].isSet = false
@@ -40,23 +49,21 @@ const UniversityReview = (props: UniversityReviewProps) => {
             props.id, {reactionTypeId: newReactionProps[i].typeId})
         }
       }
-      if (newReactionProps[i].isSet && (newReactionProps[i].typeId !== activeReactionId)) {
+      if (wasSetBefore && (newReactionProps[i].typeId !== activeReactionId)) {
         newReactionProps[i].isSet = false
-        newReactionProps[i].count = newReactionProps[i].count -1
-        await sendDeleteUniversityReviewReactionRequest(
-          props.id, {reactionTypeId: newReactionProps[i].typeId})
+        newReactionProps[i].count = newReactionProps[i].count - 1
       }
     }
     setReactionsProps(newReactionProps)
+    setCanChangeReaction(true)
   }
 
-  const [reactionsProps, setReactionsProps] = useState<ReactionProps[]>(
+  const [reactionsProps, setReactionsProps] = useState<ReactionDetails[]>(
     props.reactions.map(r => ({
       typeId: r.typeId,
       name: r.name,
       isSet: r.isSet,
       count: r.count,
-      handleReactionChange: handleReactionChange
     }))
   )
 
@@ -81,10 +88,10 @@ const UniversityReview = (props: UniversityReviewProps) => {
       </CardContent>
       <CardActions disableSpacing >
         {reactionsProps.sort((a, b) => (a.typeId - b.typeId))
-          .map(r => <Reaction {...r}/>)}
+          .map(r => <Reaction {...r} handleReactionChange={handleReactionChange}/>)}
       </CardActions>
     </Card>
-  );
+  )
 }
 
 export default UniversityReview
