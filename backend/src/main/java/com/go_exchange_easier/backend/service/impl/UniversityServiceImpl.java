@@ -2,12 +2,14 @@ package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.university.GetUniversityProfileResponse;
 import com.go_exchange_easier.backend.dto.university.GetUniversityResponse;
+import com.go_exchange_easier.backend.exception.domain.BadNumberOfSearchFiltersException;
 import com.go_exchange_easier.backend.exception.domain.UniversityNotFoundException;
 import com.go_exchange_easier.backend.model.University;
 import com.go_exchange_easier.backend.repository.UniversityRepository;
 import com.go_exchange_easier.backend.service.UniversityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,6 +43,40 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public List<GetUniversityResponse> getByCountryId(Short countryId) {
         List<University> universities = universityRepository.findByCountryId(countryId);
+        return mapToResponse(universities);
+    }
+
+    @Override
+    public List<GetUniversityResponse> get(String englishName,
+            String nativeName, Integer cityId, Short countryId) {
+        int filtersCount = countFiltersApplied(englishName, nativeName, cityId, countryId);
+        List<University> universities = new ArrayList<>();
+        if (filtersCount != 1) {
+            throw new BadNumberOfSearchFiltersException("Only 1 filter can be applied, but " +
+                    filtersCount + " were applied.");
+        }
+        if (englishName != null) {
+            universities = universityRepository.findByEnglishName(englishName);
+        } else if (nativeName != null) {
+            universities = universityRepository.findByOriginalName(nativeName);
+        } else if (cityId != null) {
+            universities = universityRepository.findByCity(cityId);
+        } else {
+            universities = universityRepository.findByCountryId(countryId);
+        }
+        return mapToResponse(universities);
+    }
+
+    private int countFiltersApplied(String englishName, String nativeName,
+            Integer cityId, Short countryId) {
+        int count = englishName != null ? 1 : 0;
+        count += ((nativeName != null) ? 1 : 0);
+        count += ((cityId != null) ? 1 : 0);
+        count += ((countryId != null) ? 1 : 0);
+        return count;
+    }
+
+    private List<GetUniversityResponse> mapToResponse(List<University> universities) {
         return universities.stream()
                 .map(u -> new GetUniversityResponse(
                         u.getId(), u.getOriginalName(), u.getEnglishName(),
