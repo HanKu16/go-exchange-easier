@@ -32,7 +32,7 @@ export const sendUserRegistrationRequest = async (body: UserRegistrationRequest)
 export const sendGetUserProfileRequest = async (userId: number | string) :
   Promise<ResponseSuccessResult<GetUserProfileResponse> | RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/users/${userId}/profile`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'GET',
     headers: {
@@ -47,7 +47,7 @@ export const sendGetUserReviewsRequest = async (userId: number | string):
   Promise<ResponseSuccessResult<GetUniversityReviewResponse[]> | 
     RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/users/${userId}/universityReviews`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'GET',
     headers: {
@@ -62,7 +62,7 @@ export const sendGetUserExchangesRequest = async (userId: number | string):
   Promise<ResponseSuccessResult<GetUserExchangeResponse[]> | 
     RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/users/${userId}/exchanges`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'GET',
     headers: {
@@ -77,7 +77,7 @@ export const sendUpdateDescriptionRequest = async (body: UpdateUserDescriptionRe
   Promise<ResponseSuccessResult<UpdateUserDescriptionResponse> | 
     RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/users/description`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'PATCH',
     headers: {
@@ -93,7 +93,7 @@ export const sendAssignHomeUniversityRequest = async (body: AssignHomeUniversity
   Promise<ResponseSuccessResult<AssignHomeUniversityResponse> | 
     RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/users/homeUniversity`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'PATCH',
     headers: {
@@ -109,7 +109,7 @@ export const sendUpdateStatusRequest = async (body: UpdateUserStatusRequest):
   Promise<ResponseSuccessResult<UpdateUserStatusResponse> | 
     RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/users/status`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'PATCH',
     headers: {
@@ -125,7 +125,7 @@ export const sendAssignCountryOfOriginRequest = async (body: AssignCountryOfOrig
   Promise<ResponseSuccessResult<AssignCountryOfOriginResponse> | 
     RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/users/countryOfOrigin`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'PATCH',
     headers: {

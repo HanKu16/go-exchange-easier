@@ -4,11 +4,12 @@ import type { ResponseSuccessResult } from '../types/ResonseSuccessResult'
 import type { RepsonseFailureResult } from '../types/ResponseFailureResult'
 import { sendRequest } from './send-request'
 import { API_BASE_URL } from '../config/api'
+import { getSignedInUserJwtToken } from './user'
 
 export const sendGetCountriesRequest = async () :
   Promise<ResponseSuccessResult<GetCountryResponse[]> | RepsonseFailureResult> => {
-  const uri: string = `http://localhost:8080/api/countries`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const uri: string = `${API_BASE_URL}/api/countries`
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'GET',
     headers: {
@@ -22,7 +23,7 @@ export const sendGetCountriesRequest = async () :
 export const sendGetUniverisitesFromCountryRequest = async (countryId: number) :
   Promise<ResponseSuccessResult<GetUniversityResponse[]> | RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/countries/${countryId}/universities`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'GET',
     headers: {

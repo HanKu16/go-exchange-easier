@@ -4,11 +4,12 @@ import { sendRequest } from './send-request'
 import type { CreateExchangeRequest } from '../dtos/exchange/CreateExchangeRequest'
 import type { CreateExchangeResponse } from '../dtos/exchange/CreateExchangeResponse'
 import { API_BASE_URL } from '../config/api'
+import { getSignedInUserJwtToken } from './user'
 
 export const sendCreateExchangeRequest =  async (body: CreateExchangeRequest):
   Promise<ResponseSuccessResult<CreateExchangeResponse> | RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/exchange`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'POST',
     headers: {
@@ -23,7 +24,7 @@ export const sendCreateExchangeRequest =  async (body: CreateExchangeRequest):
 export const sendDeleteExchangeRequest =  async (exchangeId: number):
   Promise<ResponseSuccessResult<null> | RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/exchange/${exchangeId}`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'DELETE',
     headers: {

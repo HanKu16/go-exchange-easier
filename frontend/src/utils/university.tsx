@@ -7,11 +7,12 @@ import type { GetUniversityProfileResponse } from '../dtos/university/GetUnivers
 import type { ResponseSuccessResult } from '../types/ResonseSuccessResult'
 import type { RepsonseFailureResult } from '../types/ResponseFailureResult'
 import { sendRequest } from './send-request'
+import { getSignedInUserJwtToken } from './user'
 
 export const sendGetUniversityProfileRequest = async (universityId: number | string) :
   Promise<ResponseSuccessResult<GetUniversityProfileResponse> | RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/universities/${universityId}/profile`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'GET',
     headers: {
@@ -28,7 +29,7 @@ export const sendGetUniversityReviewsRequest = async (
   const params = {page: `${page}`, size: `${size}`};
   const searchParams = new URLSearchParams(params).toString();
   const uri: string = `${API_BASE_URL}/api/universities/${universityId}/reviews?${searchParams}`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'GET',
     headers: {
@@ -42,7 +43,7 @@ export const sendGetUniversityReviewsRequest = async (
 export const sendCreateReviewRequest = async (body: CreateUniversityReviewRequest) :
   Promise<ResponseSuccessResult<CreateUniversityReviewResponse> | RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/universityReviews`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'POST',
     headers: {
@@ -57,7 +58,7 @@ export const sendCreateReviewRequest = async (body: CreateUniversityReviewReques
 export const sendGetReviewsCountRequest = async (universityId: number | string) :
   Promise<ResponseSuccessResult<GetReviewsCountResponse> | RepsonseFailureResult> => {
   const uri: string = `${API_BASE_URL}/api/universities/${universityId}/reviews/count`
-  const jwtToken = localStorage.getItem('jwtToken')
+  const jwtToken = getSignedInUserJwtToken()
   const request: RequestInit = {
     method: 'GET',
     headers: {
