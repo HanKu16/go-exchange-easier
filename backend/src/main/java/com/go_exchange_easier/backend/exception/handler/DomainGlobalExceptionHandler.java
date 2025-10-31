@@ -9,6 +9,7 @@ import com.go_exchange_easier.backend.exception.IllegalOperationException;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.base.ResourceAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.base.ResourceNotFoundException;
+import com.go_exchange_easier.backend.exception.domain.BadNumberOfSearchFiltersException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -90,6 +91,17 @@ public class DomainGlobalExceptionHandler {
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.CONFLICT,
                 "Attempt to make illegal operation.", List.of(), List.of(globalError));
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BadNumberOfSearchFiltersException.class)
+    public ResponseEntity<ApiErrorResponse> handleBadNumberOfSearchFiltersException(
+            BadNumberOfSearchFiltersException e) {
+        logger.error(e.getMessage(), e);
+        GlobalErrorDetail globalError = new GlobalErrorDetail(
+                ApiErrorResponseCode.IllegalOperation.name(), e.getMessage());
+        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.BAD_REQUEST,
+                "Bad number of filters applied.", List.of(), List.of(globalError));
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 }
