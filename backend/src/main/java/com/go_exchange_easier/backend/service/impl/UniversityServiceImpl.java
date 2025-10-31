@@ -45,7 +45,10 @@ public class UniversityServiceImpl implements UniversityService {
                 .map(u -> new GetUniversityResponse(
                         u.getId(), u.getOriginalName(), u.getEnglishName(),
                         new GetUniversityResponse.CityDto(
-                                u.getCity().getId(), u.getCity().getEnglishName())))
+                                u.getCity().getId(), u.getCity().getEnglishName(),
+                                new GetUniversityResponse.CountryDto(
+                                        u.getCity().getCountry().getId(),
+                                        u.getCity().getCountry().getEnglishName()))))
                 .toList();
     }
 
