@@ -1,7 +1,0 @@
-1. Replace pk 'user_id' (mapped from table 'users)' in tables: 'user_descriptions', 'user_credentials' and 'user_notifications' with artificial ids. Reason was shared pk make impossible lazy loading when entity from 'users' table was fetched cause each time entities from tables with shared key also were fetched.
-2. Put fk to tables: 'user_descriptions', 'user_credentials' and 'user_notifications' to 'users' to let lazy loading work properly.
-3. Rename table 'reactions_on_university_reviews' to 'university_review_reactions'. Adjust pk name to change in table name.
-4. Add 'deleted_at' column to 'university_reviews' table.
-5. Add 'deleted_at' column to 'universities' table.
-6. Change reference in 'user_roles' table now reference to 'user_credentials' table is on 'user_credential_id' column.
-7. Change orders of executing scripts in 'data' directory.

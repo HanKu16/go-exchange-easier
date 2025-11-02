@@ -1,0 +1,39 @@
+v1.2
+
+1. Set 'is_mail_notification_enable' column in 'user_notifications' as not nullable
+2. Remove 'university_follow_id' from 'university_follows' table, replace it with composed key
+3. Change 'country_id' type from SMALLSERIAL to SMALLINT
+4. Rebuild reaction tables about university reviews
+- remove tables: 'likes_on_university_reviews' and 'dislikes_on_university_reviews'
+- add tables: 'reaction_types', 'reactions_on_university_reviews' and 'university_reviews_reaction_counts'
+- remove columns 'likes_count' and 'dislikes_count' from 'university_reviews'
+5. Add 'deleted_at' column in 'users' table
+6. Change convention for naming .sql scripts
+- each script with start with xx_ where 'x' is digit
+- script responsible for creating database scheme will be 00_ because it should be first
+- next scripts will be in particular order to does not violate FK constraints
+- reason of this change is that docker starts executing scripts in alphabetical order
+7. Remove vx.x postfix from create and drop database scheme file name
+- reason of this change is that we will have to change many things in docker files when new version of 
+database scheme comes, still we can distinct versions because of directory names
+
+
+
+v1.3
+
+1. Remove many to many relationship between 'users' and 'roles', replace 'users' in this relationship by 'user_credentials'
+2. Add 'is_enabled' column in 'user_credentials' table
+3. Rename 'is_mail_notification_enable' column in 'user_notifications' table to 'is_mail_notification_enabled'
+4. Add 'ROLE_' prefix to each role names in 'roles' table
+
+
+
+v1.4
+
+1. Replace pk 'user_id' (mapped from table 'users)' in tables: 'user_descriptions', 'user_credentials' and 'user_notifications' with artificial ids. Reason was shared pk make impossible lazy loading when entity from 'users' table was fetched cause each time entities from tables with shared key also were fetched.
+2. Put fk to tables: 'user_descriptions', 'user_credentials' and 'user_notifications' to 'users' to let lazy loading work properly.
+3. Rename table 'reactions_on_university_reviews' to 'university_review_reactions'. Adjust pk name to change in table name.
+4. Add 'deleted_at' column to 'university_reviews' table.
+5. Add 'deleted_at' column to 'universities' table.
+6. Change reference in 'user_roles' table now reference to 'user_credentials' table is on 'user_credential_id' column.
+7. Change orders of executing scripts in 'data' directory.
