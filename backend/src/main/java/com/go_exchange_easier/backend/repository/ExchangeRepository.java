@@ -1,7 +1,9 @@
 package com.go_exchange_easier.backend.repository;
 
 import com.go_exchange_easier.backend.model.Exchange;
+import com.go_exchange_easier.backend.repository.specification.ExchangeSpecification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -9,7 +11,8 @@ import java.util.List;
 
 @Repository
 public interface ExchangeRepository extends
-        JpaRepository<Exchange, Integer> {
+        JpaRepository<Exchange, Integer>,
+        JpaSpecificationExecutor<Exchange> {
 
     @Query(value = "SELECT " +
             "ex.exchange_id, " +
