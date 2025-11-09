@@ -63,7 +63,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    @Transactional(readOnly = true)x
+    @Transactional(readOnly = true)
     public Page<GetUniversityResponse> findUniversities(
             String nativeName, String englishName,
             Integer cityId, Short countryId,
