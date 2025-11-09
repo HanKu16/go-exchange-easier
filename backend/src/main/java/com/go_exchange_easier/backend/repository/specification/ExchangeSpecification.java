@@ -3,7 +3,6 @@ package com.go_exchange_easier.backend.repository.specification;
 import com.go_exchange_easier.backend.model.*;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 
@@ -45,17 +44,22 @@ public class ExchangeSpecification {
         };
     }
 
-    public static Specification<Exchange> hasDatesRangeBetween(
-            LocalDate rangeStartDate, LocalDate rangeEndDate) {
+    public static Specification<Exchange> hasStartDateAtLeast(
+            LocalDate rangeStartDate) {
         return (root, query, cb) -> {
-            Path<LocalDate> exchangeStartDatePath = root.get("startDate");
-            Predicate startPredicate = cb.greaterThanOrEqualTo(
-                    exchangeStartDatePath, rangeStartDate);
-            Predicate endPredicate = cb.lessThanOrEqualTo(
-                    exchangeStartDatePath, rangeEndDate);
-            return cb.and(startPredicate, endPredicate);
+            Path<LocalDate> exchangeStartDatePath = root.get("startedAt");
+            return cb.greaterThanOrEqualTo(exchangeStartDatePath, rangeStartDate);
         };
     }
+
+    public static Specification<Exchange> hasStartDateAtMost(
+            LocalDate rangeEndDate) {
+        return (root, query, cb) -> {
+            Path<LocalDate> exchangeStartDatePath = root.get("startedAt");
+            return cb.lessThanOrEqualTo(exchangeStartDatePath, rangeEndDate);
+        };
+    }
+
 
     public static Specification<Exchange> fetchUser() {
         return (root, query, cb) -> {
