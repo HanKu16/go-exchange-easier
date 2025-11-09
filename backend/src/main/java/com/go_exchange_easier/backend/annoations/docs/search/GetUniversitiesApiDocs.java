@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.annoations.docs.search;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.dto.search.GetUserByExchangeResponse;
+import com.go_exchange_easier.backend.dto.university.GetUniversityResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,14 +15,14 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Get users that fulfill given exchange criteria")
+@Operation(summary = "Get universities that fulfill given criteria")
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Users were successfully returned",
+                description = "Universities were successfully returned",
                 content = @Content(mediaType = "application/json",
                         array = @ArraySchema(
-                                schema = @Schema(implementation = GetUserByExchangeResponse.class)))),
+                                schema = @Schema(implementation = GetUniversityResponse.class)))),
         @ApiResponse(
                 responseCode = "400",
                 description = "Bad number of filters were applied",
@@ -30,4 +30,4 @@ import java.lang.annotation.Target;
                         array = @ArraySchema(
                                 schema = @Schema(implementation = ApiErrorResponse.class)))),
 })
-public @interface GetUsersByExchangeApiDocs { }
+public @interface GetUniversitiesApiDocs { }
