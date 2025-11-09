@@ -1,6 +1,9 @@
 package com.go_exchange_easier.backend.repository;
 
 import com.go_exchange_easier.backend.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -51,5 +54,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "WHERE u.id = :userId")
     int assignCountryOfOrigin(@Param("userId") int userId,
             @Param("countryId") Short countryOfOriginId);
+
+    @Query("SELECT u FROM User u WHERE u.nick = :nick")
+    @EntityGraph(attributePaths = {"countryOfOrigin", "homeUniversity"})
+    Page<User> findByNick(@Param("nick") String nick , Pageable pageable);
 
 }
