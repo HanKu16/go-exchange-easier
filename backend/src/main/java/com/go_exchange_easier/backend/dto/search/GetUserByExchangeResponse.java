@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.dto.search;
 
 import java.time.LocalDate;
 
-public record GetUsersByExchangeResponse(
+public record GetUserByExchangeResponse(
 
         Integer id,
         String nick,
