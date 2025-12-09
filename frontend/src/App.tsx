@@ -7,6 +7,7 @@ import EditUserPage from './pages/EditUserPage'
 import UniversityProfilePage from './pages/UniversityProfilePage'
 import { SnackbarProvider } from './context/SnackBarContext'
 import RequireAuth from './components/RequireAuth'
+import SearchPage from './pages/SearchPage'
 
 export const App = () => {
   return (
@@ -20,6 +21,7 @@ export const App = () => {
             <Route path='/users/:userId' element={<UserProfilePage/>}/>
             <Route path='/universities/:universityId' element={<UniversityProfilePage/>}/>
             <Route path='/me' element={<EditUserPage/>}/>
+            <Route path='/search' element={<SearchPage/>}/>
           </Route>
         </Routes>
       </SnackbarProvider>
