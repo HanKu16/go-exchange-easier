@@ -10,5 +10,6 @@ public interface UniversityService {
     List<GetUniversityResponse> getByCountryId(Short countryId);
     List<GetUniversityResponse> get(String englishName,
             String nativeName, Integer cityId, Short countryId);
+    List<GetUniversityResponse> getByCityId(Integer cityId);
 
 }

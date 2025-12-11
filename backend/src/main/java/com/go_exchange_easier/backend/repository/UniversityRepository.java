@@ -48,6 +48,6 @@ public interface UniversityRepository extends
         JOIN FETCH c.country
         WHERE c.id = :cityId
         """)
-    List<University> findByCity(@Param("cityId") int cityId);
+    List<University> findByCityId(@Param("cityId") int cityId);
 
 }

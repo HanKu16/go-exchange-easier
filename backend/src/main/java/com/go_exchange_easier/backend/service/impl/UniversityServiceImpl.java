@@ -60,10 +60,16 @@ public class UniversityServiceImpl implements UniversityService {
         } else if (nativeName != null) {
             universities = universityRepository.findByOriginalName(nativeName);
         } else if (cityId != null) {
-            universities = universityRepository.findByCity(cityId);
+            universities = universityRepository.findByCityId(cityId);
         } else {
             universities = universityRepository.findByCountryId(countryId);
         }
+        return mapToResponse(universities);
+    }
+
+    @Override
+    public List<GetUniversityResponse> getByCityId(Integer cityId) {
+        List<University> universities = universityRepository.findByCityId(cityId);
         return mapToResponse(universities);
     }
 
