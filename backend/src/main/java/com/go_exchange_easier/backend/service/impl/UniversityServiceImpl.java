@@ -2,14 +2,16 @@ package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.university.GetUniversityProfileResponse;
 import com.go_exchange_easier.backend.dto.university.GetUniversityResponse;
-import com.go_exchange_easier.backend.exception.domain.BadNumberOfSearchFiltersException;
 import com.go_exchange_easier.backend.exception.domain.UniversityNotFoundException;
 import com.go_exchange_easier.backend.model.University;
 import com.go_exchange_easier.backend.repository.UniversityRepository;
+import com.go_exchange_easier.backend.repository.specification.UniversitySpecification;
 import com.go_exchange_easier.backend.service.UniversityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,57 +43,39 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public List<GetUniversityResponse> getByCountryId(Short countryId) {
-        List<University> universities = universityRepository.findByCountryId(countryId);
-        return mapToResponse(universities);
-    }
-
-    @Override
-    public List<GetUniversityResponse> get(String englishName,
-            String nativeName, Integer cityId, Short countryId) {
-        int filtersCount = countFiltersApplied(englishName, nativeName, cityId, countryId);
-        List<University> universities = new ArrayList<>();
-        if (filtersCount != 1) {
-            throw new BadNumberOfSearchFiltersException("Only 1 filter can be applied, but " +
-                    filtersCount + " were applied.");
+    public Page<GetUniversityResponse> getPage(String englishName, String nativeName,
+            Integer cityId, Short countryId, Pageable pageable) {
+        Specification<University> specification = (root, query, cb) -> null;
+        if (nativeName != null) {
+            specification = specification.and(UniversitySpecification
+                    .hasOriginalName(nativeName));
         }
         if (englishName != null) {
-            universities = universityRepository.findByEnglishName(englishName);
-        } else if (nativeName != null) {
-            universities = universityRepository.findByOriginalName(nativeName);
-        } else if (cityId != null) {
-            universities = universityRepository.findByCityId(cityId);
-        } else {
-            universities = universityRepository.findByCountryId(countryId);
+            specification = specification.and(UniversitySpecification
+                    .hasEnglishName(englishName));
         }
-        return mapToResponse(universities);
+        if (cityId != null) {
+            specification = specification.and(UniversitySpecification
+                    .hasCityId(cityId));
+        }
+        if (countryId != null) {
+            specification = specification.and(UniversitySpecification
+                    .hasCountryId(countryId));
+        }
+        Page<University> universities = universityRepository
+                .findAll(specification, pageable);
+        return universities.map(this::mapToDto);
     }
 
-    @Override
-    public List<GetUniversityResponse> getByCityId(Integer cityId) {
-        List<University> universities = universityRepository.findByCityId(cityId);
-        return mapToResponse(universities);
-    }
-
-    private int countFiltersApplied(String englishName, String nativeName,
-            Integer cityId, Short countryId) {
-        int count = englishName != null ? 1 : 0;
-        count += ((nativeName != null) ? 1 : 0);
-        count += ((cityId != null) ? 1 : 0);
-        count += ((countryId != null) ? 1 : 0);
-        return count;
-    }
-
-    private List<GetUniversityResponse> mapToResponse(List<University> universities) {
-        return universities.stream()
-                .map(u -> new GetUniversityResponse(
-                        u.getId(), u.getOriginalName(), u.getEnglishName(),
-                        new GetUniversityResponse.CityDto(
-                                u.getCity().getId(), u.getCity().getEnglishName(),
-                                new GetUniversityResponse.CountryDto(
-                                        u.getCity().getCountry().getId(),
-                                        u.getCity().getCountry().getEnglishName()))))
-                .toList();
+    private GetUniversityResponse mapToDto(University university) {
+        return new GetUniversityResponse(
+                university.getId(), university.getOriginalName(),
+                university.getEnglishName(),
+                new GetUniversityResponse.CityDto(university.getCity().getId(),
+                        university.getCity().getEnglishName(),
+                        new GetUniversityResponse.CountryDto(
+                                university.getCity().getCountry().getId(),
+                                university.getCity().getCountry().getEnglishName())));
     }
 
 }

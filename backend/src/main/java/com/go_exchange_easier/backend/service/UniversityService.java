@@ -2,14 +2,13 @@ package com.go_exchange_easier.backend.service;
 
 import com.go_exchange_easier.backend.dto.university.GetUniversityProfileResponse;
 import com.go_exchange_easier.backend.dto.university.GetUniversityResponse;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UniversityService {
 
     GetUniversityProfileResponse getProfile(int universityId, int currentUserId);
-    List<GetUniversityResponse> getByCountryId(Short countryId);
-    List<GetUniversityResponse> get(String englishName,
-            String nativeName, Integer cityId, Short countryId);
-    List<GetUniversityResponse> getByCityId(Integer cityId);
+    Page<GetUniversityResponse> getPage(String englishName, String nativeName,
+            Integer cityId, Short countryId, Pageable pageable);
 
 }

@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.controller;
 
-import com.go_exchange_easier.backend.annoations.docs.university.GetApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.university.GetPageApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.university.GetCountApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.university.GetProfileApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.university.GetReviewsApiDocs;
@@ -13,10 +13,14 @@ import com.go_exchange_easier.backend.service.UniversityReviewService;
 import com.go_exchange_easier.backend.service.UniversityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/universities")
@@ -26,6 +30,21 @@ public class UniversityController {
 
     private final UniversityReviewService universityReviewService;
     private final UniversityService universityService;
+
+    @GetMapping
+    @GetPageApiDocs
+    public ResponseEntity<Page<GetUniversityResponse>> getAll(
+            @RequestParam(value = "englishName", required = false) String englishName,
+            @RequestParam(value = "nativeName", required = false) String nativeName,
+            @RequestParam(value = "cityId", required = false) Integer cityId,
+            @RequestParam(value = "countryId", required = false) Short countryId,
+            Pageable pageable) {
+        Page<GetUniversityResponse> response = universityService
+                .getPage(englishName, nativeName, cityId, countryId, pageable);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES))
+                .body(response);
+    }
 
     @GetMapping("/{universityId}/profile")
     @GetProfileApiDocs
@@ -55,18 +74,6 @@ public class UniversityController {
             @PathVariable Integer universityId) {
         GetReviewsCountResponse response = universityReviewService
                 .countByUniversityId(universityId);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping
-    @GetApiDocs
-    public ResponseEntity<List<GetUniversityResponse>> get(
-            @RequestParam(value = "englishName", required = false) String englishName,
-            @RequestParam(value = "nativeName", required = false) String nativeName,
-            @RequestParam(value = "cityId", required = false) Integer cityId,
-            @RequestParam(value = "countryId", required = false) Short countryId) {
-        List<GetUniversityResponse> response = universityService
-                .get(englishName, nativeName, cityId, countryId);
         return ResponseEntity.ok(response);
     }
 
