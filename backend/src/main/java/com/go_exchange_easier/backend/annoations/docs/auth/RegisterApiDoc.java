@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.annoations.docs.user;
+package com.go_exchange_easier.backend.annoations.docs.auth;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.dto.user.UserRegistrationResponse;
@@ -32,5 +32,5 @@ import java.lang.annotation.Target;
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class)))
 })
-public @interface UserRegistrationApiDoc {}
+public @interface RegisterApiDoc {}
 

@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.annoations.docs.country;
 
-import com.go_exchange_easier.backend.dto.university.GetUniversityResponse;
+import com.go_exchange_easier.backend.dto.country.GetCountryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,13 +14,13 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Get all universities associated in country")
+@Operation(summary = "Get all countries")
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Universities were successfully returned",
+                description = "Countries were successfully returned",
                 content = @Content(mediaType = "application/json",
                         array = @ArraySchema(
-                                schema = @Schema(implementation = GetUniversityResponse.class)))),
+                                schema = @Schema(implementation = GetCountryResponse.class)))),
 })
-public @interface GetUniversitiesApiDocs { }
+public @interface GetAllApiDocs { }

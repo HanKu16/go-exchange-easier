@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.controller;
 
-import com.go_exchange_easier.backend.annoations.docs.city.GetCitiesApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.city.GetAllApiDocs;
 import com.go_exchange_easier.backend.dto.city.GetCityResponse;
 import com.go_exchange_easier.backend.service.CitiesService;
 import com.go_exchange_easier.backend.service.UniversityService;
@@ -20,7 +20,7 @@ public class CityController {
     private final CitiesService citiesService;
 
     @GetMapping
-    @GetCitiesApiDocs
+    @GetAllApiDocs
     public ResponseEntity<List<GetCityResponse>> getAll(
             @RequestParam(value = "countryId", required = false) Short countryId
     ) {

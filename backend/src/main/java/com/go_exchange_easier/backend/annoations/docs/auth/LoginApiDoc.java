@@ -1,6 +1,5 @@
 package com.go_exchange_easier.backend.annoations.docs.auth;
 
-import com.go_exchange_easier.backend.dto.auth.LoginResponse;
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,9 +17,7 @@ import java.lang.annotation.Target;
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "User successfully login and token was returned",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = LoginResponse.class))),
+                description = "User successfully login and token was returned"),
         @ApiResponse(
                 responseCode = "400",
                 description = "Validation failed - invalid request body",
@@ -32,4 +29,4 @@ import java.lang.annotation.Target;
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class)))
 })
-public @interface UserLoginApiDoc { }
+public @interface LoginApiDoc { }
