@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface CitiesService {
 
-    List<GetCityResponse> getByCountryId(short countryId);
+    List<GetCityResponse> getAll(Short countryId);
 
 }
