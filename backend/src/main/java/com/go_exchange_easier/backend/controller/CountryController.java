@@ -27,7 +27,7 @@ public class CountryController {
     public ResponseEntity<List<GetCountryResponse>> getAll() {
         List<GetCountryResponse> response = countryService.getAll();
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES))
+                .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS))
                 .body(response);
     }
 

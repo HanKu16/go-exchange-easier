@@ -29,4 +29,4 @@ import java.lang.annotation.Target;
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class)))
 })
-public @interface LoginApiDoc { }
+public @interface LoginApiDocs { }
