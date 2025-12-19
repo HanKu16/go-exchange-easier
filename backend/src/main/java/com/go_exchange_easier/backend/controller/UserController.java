@@ -1,6 +1,7 @@
 package com.go_exchange_easier.backend.controller;
 
 import com.go_exchange_easier.backend.annoations.docs.user.*;
+import com.go_exchange_easier.backend.dto.details.UserDetails;
 import com.go_exchange_easier.backend.dto.exchange.GetUserExchangeResponse;
 import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
 import com.go_exchange_easier.backend.dto.user.*;
@@ -11,10 +12,14 @@ import com.go_exchange_easier.backend.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/users")
@@ -34,6 +39,18 @@ public class UserController {
         GetUserProfileResponse response = userService.getProfile(
                 userId, principal.getUser().getId());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    @GetPageApiDocs
+    public ResponseEntity<Page<UserDetails>> getPage(
+            @RequestParam(value = "nick", required = false) String nick,
+            Pageable pageable
+    ) {
+        Page<UserDetails> page = userService.getPage(nick, pageable);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+                .body(page);
     }
 
     @GetMapping("/{userId}/universityReviews")

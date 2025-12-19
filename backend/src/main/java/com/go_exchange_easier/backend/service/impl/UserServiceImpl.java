@@ -1,18 +1,22 @@
 package com.go_exchange_easier.backend.service.impl;
 
+import com.go_exchange_easier.backend.dto.details.UserDetails;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserDescriptionNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
 import com.go_exchange_easier.backend.model.*;
 import com.go_exchange_easier.backend.repository.*;
+import com.go_exchange_easier.backend.repository.specification.UserSpecification;
 import com.go_exchange_easier.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +63,19 @@ public class UserServiceImpl implements UserService {
                 null;
         return new GetUserProfileResponse(id, nick, description, isFollowed,
                 university, country, status);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UserDetails> getPage(String nick, Pageable pageable) {
+        Page<User> users;
+        Specification<User> spec = UserSpecification.fetchCountryOfOrigin()
+                .and(UserSpecification.fetchHomeUniversity());
+        if (nick != null) {
+            spec = UserSpecification.hasNick(nick);
+        }
+        users = userRepository.findAll(spec, pageable);
+        return users.map(UserDetails::fromEntity);
     }
 
     @Override
