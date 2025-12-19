@@ -51,7 +51,7 @@ public class UserController {
     public ResponseEntity<List<GetUserExchangeResponse>> getExchanges(
             @PathVariable("userId") Integer userId,
             @AuthenticationPrincipal UserCredentials principal) {
-        List<GetUserExchangeResponse> response = exchangeService.getByUserId(userId);
+        List<GetUserExchangeResponse> response = exchangeService.getByUser(userId);
         return ResponseEntity.ok(response);
     }
 
