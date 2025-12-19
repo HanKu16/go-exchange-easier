@@ -1,7 +1,6 @@
-package com.go_exchange_easier.backend.annoations.docs.university;
+package com.go_exchange_easier.backend.annoations.docs.user;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.dto.university.AddUniversityReviewReactionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,23 +13,25 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Create university review reaction")
+@Operation(summary = "Update user description")
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Reaction was successfully added",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = AddUniversityReviewReactionResponse.class))),
+                description = "Description was updated successfully"),
         @ApiResponse(
                 responseCode = "400",
                 description = "Validation failed - invalid request body",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(
-                responseCode = "422",
-                description = "There is something wrong with resources that " +
-                        "are referenced in request body",
+                responseCode = "403",
+                description = "User was trying to update description of another user",
+                content = @Content(mediaType = "application/json",
+                        schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(
+                responseCode = "404",
+                description = "User of given id was not found",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class)))
 })
-public @interface AddUniversityReviewReactionApiDocs { }
+public @interface UpdateDescriptionApiDocs { }

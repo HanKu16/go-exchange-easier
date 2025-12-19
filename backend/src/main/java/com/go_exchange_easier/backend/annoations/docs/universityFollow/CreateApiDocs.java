@@ -1,7 +1,6 @@
-package com.go_exchange_easier.backend.annoations.docs.university;
+package com.go_exchange_easier.backend.annoations.docs.universityFollow;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.dto.university.CreateUniversityReviewResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,23 +13,20 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Create university review")
+@Operation(summary = "Create university follow")
 @ApiResponses(value = {
         @ApiResponse(
-                responseCode = "201",
-                description = "University review was successfully created",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = CreateUniversityReviewResponse.class))),
+                responseCode = "204",
+                description = "Follow was successfully created"),
         @ApiResponse(
-                responseCode = "400",
-                description = "Validation failed - invalid request body",
+                responseCode = "404",
+                description = "University that supposed to be followed was not found",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(
-                responseCode = "422",
-                description = "There is something wrong with resources that " +
-                        "are referenced in request body",
+                responseCode = "409",
+                description = "Follow already exists",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class)))
 })
-public @interface CreateUniversityReviewApiDocs { }
+public @interface CreateApiDocs { }

@@ -18,9 +18,7 @@ import java.lang.annotation.Target;
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Profile was successfully returned",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = GetUserProfileResponse.class))),
+                description = "Profile was successfully returned"),
         @ApiResponse(
                 responseCode = "404",
                 description = "User of given id was not found",

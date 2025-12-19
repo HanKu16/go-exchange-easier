@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @PatchMapping("/description")
-    @UpdateUserDescriptionApiDoc
+    @UpdateDescriptionApiDocs
     public ResponseEntity<UpdateUserDescriptionResponse> updateDescription(
             @RequestBody @Valid UpdateUserDescriptionRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
@@ -83,7 +83,7 @@ public class UserController {
     }
 
     @PatchMapping("/homeUniversity")
-    @AssignHomeUniversityApiDoc
+    @AssignHomeUniversityApiDocs
     public ResponseEntity<AssignHomeUniversityResponse> assignHomeUniversity(
             @RequestBody @Valid AssignHomeUniversityRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
@@ -93,7 +93,7 @@ public class UserController {
     }
 
     @PatchMapping("/status")
-    @UpdateUserStatusApiDoc
+    @UpdateStatusApiDocs
     public ResponseEntity<UpdateUserStatusResponse> updateStatus(
             @RequestBody @Valid UpdateUserStatusRequest request,
             @AuthenticationPrincipal UserCredentials principal) {

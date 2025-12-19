@@ -3,7 +3,6 @@ package com.go_exchange_easier.backend.controller;
 import com.go_exchange_easier.backend.annoations.docs.country.GetAllApiDocs;
 import com.go_exchange_easier.backend.dto.country.GetCountryResponse;
 import com.go_exchange_easier.backend.service.CountryService;
-import com.go_exchange_easier.backend.service.UniversityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;

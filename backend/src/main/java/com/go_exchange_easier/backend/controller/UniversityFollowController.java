@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.controller;
 
-import com.go_exchange_easier.backend.annoations.docs.follow.CreateUniversityFollowApiDocs;
-import com.go_exchange_easier.backend.annoations.docs.follow.DeleteUniversityFollowApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.universityFollow.CreateApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.universityFollow.DeleteApiDocs;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.UniversityFollowService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,7 @@ public class UniversityFollowController {
     private final UniversityFollowService universityFollowService;
 
     @PostMapping
-    @CreateUniversityFollowApiDocs
+    @CreateApiDocs
     public ResponseEntity<Void> create(@PathVariable Short universityId,
             @AuthenticationPrincipal UserCredentials principal) {
         universityFollowService.follow(principal.getUser().getId(), universityId);
@@ -28,7 +28,7 @@ public class UniversityFollowController {
     }
 
     @DeleteMapping
-    @DeleteUniversityFollowApiDocs
+    @DeleteApiDocs
     public ResponseEntity<Void> delete(@PathVariable Short universityId,
             @AuthenticationPrincipal UserCredentials principal) {
         universityFollowService.unfollow(principal.getUser().getId(), universityId);

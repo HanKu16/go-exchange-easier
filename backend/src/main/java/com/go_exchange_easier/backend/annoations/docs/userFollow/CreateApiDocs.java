@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.annoations.docs.university;
+package com.go_exchange_easier.backend.annoations.docs.userFollow;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,20 +13,20 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Delete university review")
+@Operation(summary = "Create user follow")
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "204",
-                description = "University review was successfully deleted"),
-        @ApiResponse(
-                responseCode = "403",
-                description = "User was trying to delete review that he is not owner of",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = ApiErrorResponse.class))),
+                description = "Follow was successfully created"),
         @ApiResponse(
                 responseCode = "404",
-                description = "University review of given id was not found",
+                description = "Followee user was not found",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class))),
+        @ApiResponse(
+                responseCode = "409",
+                description = "Follow already exists",
+                content = @Content(mediaType = "application/json",
+                        schema = @Schema(implementation = ApiErrorResponse.class)))
 })
-public @interface DeleteUniversityReviewApiDocs { }
+public @interface CreateApiDocs { }

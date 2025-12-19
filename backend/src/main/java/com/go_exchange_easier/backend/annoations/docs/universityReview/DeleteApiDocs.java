@@ -1,7 +1,6 @@
-package com.go_exchange_easier.backend.annoations.docs.university;
+package com.go_exchange_easier.backend.annoations.docs.universityReview;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.dto.university.DeleteUniversityReviewReactionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,17 +13,20 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Delete university review reaction")
+@Operation(summary = "Delete university review")
 @ApiResponses(value = {
         @ApiResponse(
-                responseCode = "200",
-                description = "Reaction was successfully deleted",
+                responseCode = "204",
+                description = "University review was successfully deleted"),
+        @ApiResponse(
+                responseCode = "403",
+                description = "User was trying to delete review that he is not owner of",
                 content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = DeleteUniversityReviewReactionResponse.class))),
+                        schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(
                 responseCode = "404",
-                description = "Reaction was not found",
+                description = "University review of given id was not found",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class))),
 })
-public @interface DeleteUniversityReviewReactionApiDocs { }
+public @interface DeleteApiDocs { }

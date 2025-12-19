@@ -1,9 +1,7 @@
-package com.go_exchange_easier.backend.annoations.docs.userStatus;
+package com.go_exchange_easier.backend.annoations.docs.universityReview;
 
-import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
-import com.go_exchange_easier.backend.dto.userStatus.GetUserStatusResponse;
+import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,13 +13,15 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Get user statuses")
+@Operation(summary = "Delete university review reaction")
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Statuses were successfully returned",
+                description = "Reaction was successfully deleted"),
+        @ApiResponse(
+                responseCode = "404",
+                description = "Reaction was not found",
                 content = @Content(mediaType = "application/json",
-                        array = @ArraySchema(
-                                schema = @Schema(implementation = GetUserStatusResponse.class)))),
+                        schema = @Schema(implementation = ApiErrorResponse.class))),
 })
-public @interface GetUserStatusesApiDocs { }
+public @interface DeleteReactionApiDocs { }

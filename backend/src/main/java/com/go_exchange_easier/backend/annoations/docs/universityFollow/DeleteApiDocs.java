@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.annoations.docs.follow;
+package com.go_exchange_easier.backend.annoations.docs.universityFollow;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,4 +24,4 @@ import java.lang.annotation.Target;
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class))),
 })
-public @interface DeleteUniversityFollowApiDocs { }
+public @interface DeleteApiDocs { }

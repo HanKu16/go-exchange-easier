@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.controller;
 
-import com.go_exchange_easier.backend.annoations.docs.userStatus.GetUserStatusesApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.userStatus.GetAllApiDocs;
 import com.go_exchange_easier.backend.dto.userStatus.GetUserStatusResponse;
 import com.go_exchange_easier.backend.service.UserStatusService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,7 @@ public class UserStatusController {
     private final UserStatusService userStatusService;
 
     @GetMapping
-    @GetUserStatusesApiDocs
+    @GetAllApiDocs
     public ResponseEntity<List<GetUserStatusResponse>> getAll() {
         List<GetUserStatusResponse> response = userStatusService.getAll();
         return ResponseEntity.ok(response);

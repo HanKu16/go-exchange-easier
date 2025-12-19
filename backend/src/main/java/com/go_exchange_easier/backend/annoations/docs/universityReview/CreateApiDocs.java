@@ -1,7 +1,6 @@
-package com.go_exchange_easier.backend.annoations.docs.user;
+package com.go_exchange_easier.backend.annoations.docs.universityReview;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.dto.user.UpdateUserStatusResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,26 +13,14 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(summary = "Update user status")
+@Operation(summary = "Create university review")
 @ApiResponses(value = {
         @ApiResponse(
-                responseCode = "200",
-                description = "Status associated with user was successfully updated",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = UpdateUserStatusResponse.class))),
+                responseCode = "201",
+                description = "University review was successfully created"),
         @ApiResponse(
                 responseCode = "400",
                 description = "Validation failed - invalid request body",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = ApiErrorResponse.class))),
-        @ApiResponse(
-                responseCode = "403",
-                description = "User was trying to update status of another user",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = ApiErrorResponse.class))),
-        @ApiResponse(
-                responseCode = "404",
-                description = "User of given id was not found",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class))),
         @ApiResponse(
@@ -43,4 +30,4 @@ import java.lang.annotation.Target;
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ApiErrorResponse.class)))
 })
-public @interface UpdateUserStatusApiDoc { }
+public @interface CreateApiDocs { }
