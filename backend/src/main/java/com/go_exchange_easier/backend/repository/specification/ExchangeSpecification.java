@@ -20,7 +20,7 @@ public class ExchangeSpecification {
         spec = SpecificationUtils.append(spec, filter.majorId(),
                 ExchangeSpecification::hasMajorId);
         spec = SpecificationUtils.append(spec, filter.startDate(),
-                ExchangeSpecification::hasStartDateAtMost);
+                ExchangeSpecification::hasStartDateAtLeast);
         spec = SpecificationUtils.append(spec, filter.endDate(),
                 ExchangeSpecification::hasStartDateAtMost);
         return spec;
