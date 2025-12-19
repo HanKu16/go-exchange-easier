@@ -1,12 +1,30 @@
 package com.go_exchange_easier.backend.repository.specification;
 
 import com.go_exchange_easier.backend.model.*;
+import com.go_exchange_easier.backend.dto.filter.ExchangeFilters;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 
 public class ExchangeSpecification {
+
+    public static Specification<Exchange> fromFilter(ExchangeFilters filter) {
+        Specification<Exchange> spec = ExchangeSpecification.fetchUser();
+        spec = SpecificationUtils.append(spec, filter.universityId(),
+                ExchangeSpecification::hasUniversityId);
+        spec = SpecificationUtils.append(spec, filter.countryId(),
+                ExchangeSpecification::hasCountryId);
+        spec = SpecificationUtils.append(spec, filter.cityId(),
+                ExchangeSpecification::hasCityId);
+        spec = SpecificationUtils.append(spec, filter.majorId(),
+                ExchangeSpecification::hasMajorId);
+        spec = SpecificationUtils.append(spec, filter.startDate(),
+                ExchangeSpecification::hasStartDateAtMost);
+        spec = SpecificationUtils.append(spec, filter.endDate(),
+                ExchangeSpecification::hasStartDateAtMost);
+        return spec;
+    }
 
     public static Specification<Exchange> hasUniversityId(short universityId) {
         return (root, query, cb) -> {
@@ -26,7 +44,7 @@ public class ExchangeSpecification {
         };
     }
 
-    public static Specification<Exchange> hasCountryId(int countryId) {
+    public static Specification<Exchange> hasCountryId(short countryId) {
         return (root, query, cb) -> {
             Join<Exchange, University> universitiesJoin =
                     root.join("university");

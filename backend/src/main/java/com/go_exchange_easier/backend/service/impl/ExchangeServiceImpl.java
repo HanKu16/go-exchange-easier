@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.service.impl;
 
+import com.go_exchange_easier.backend.dto.details.ExchangeDetails;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeRequest;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeResponse;
 import com.go_exchange_easier.backend.dto.exchange.GetUserExchangeResponse;
@@ -11,8 +12,13 @@ import com.go_exchange_easier.backend.repository.ExchangeRepository;
 import com.go_exchange_easier.backend.repository.UniversityMajorRepository;
 import com.go_exchange_easier.backend.repository.UniversityRepository;
 import com.go_exchange_easier.backend.repository.UserRepository;
+import com.go_exchange_easier.backend.dto.filter.ExchangeFilters;
+import com.go_exchange_easier.backend.repository.specification.ExchangeSpecification;
 import com.go_exchange_easier.backend.service.ExchangeService;
 import com.go_exchange_easier.backend.service.ResourceOwnershipChecker;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +38,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     private final UserRepository userRepository;
 
     @Override
-    public List<GetUserExchangeResponse> getByUserId(int userId) {
+    public List<GetUserExchangeResponse> getByUser(int userId) {
         List<Object[]> rows = exchangeRepository.findByUserId(userId);
         List<GetUserExchangeResponse> exchanges = new ArrayList<>();
 
@@ -60,6 +66,14 @@ public class ExchangeServiceImpl implements ExchangeService {
                                     countryId, countryName))));
         }
         return exchanges;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ExchangeDetails> getPage(ExchangeFilters filters, Pageable pageable) {
+        Specification<Exchange> spec = ExchangeSpecification.fromFilter(filters);
+        Page<Exchange> exchanges = exchangeRepository.findAll(spec, pageable);
+        return exchanges.map(ExchangeDetails::fromEntity);
     }
 
     @Override
