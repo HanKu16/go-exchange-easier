@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.service.impl;
 
-import com.go_exchange_easier.backend.dto.city.GetCityResponse;
+import com.go_exchange_easier.backend.dto.details.CityDetails;
 import com.go_exchange_easier.backend.model.City;
 import com.go_exchange_easier.backend.repository.CitiesRepository;
 import com.go_exchange_easier.backend.repository.specification.CitySpecification;
@@ -17,22 +17,14 @@ public class CitiesServiceImpl implements CitiesService {
     private final CitiesRepository citiesRepository;
 
     @Override
-    public List<GetCityResponse> getAll(Short countryId) {
+    public List<CityDetails> getAll(Short countryId) {
         Specification<City> specification = (root, query, cb) -> null;
         if (countryId != null) {
             specification = specification.and(CitySpecification
                     .hasCountryId(countryId));
         }
         List<City> cities = citiesRepository.findAll(specification);
-        return cities.stream().map(this::mapToDto).toList();
-    }
-
-    private GetCityResponse mapToDto(City city) {
-        return new GetCityResponse(
-                city.getId(), city.getEnglishName(),
-                new GetCityResponse.CountryDto(city.getCountry().getId(),
-                        city.getCountry().getEnglishName())
-        );
+        return cities.stream().map(CityDetails::fromEntity).toList();
     }
 
 }
