@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -25,6 +25,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
+import {
+  sendGetUserByExchangeRequest,
+  sendGetUserByNickRequest,
+} from "../utils/search";
+import type { Country } from "../types/Country";
+import { sendGetCountriesRequest } from "../utils/country";
+import { sendGetUniversityMajorsRequest } from "../utils/university-major";
+import type { GetUniversityMajorResponse } from "../dtos/university-major/GetUniversityMajorResponse";
+import type { City } from "../types/City";
 
 const MOCK_CITIES_BY_COUNTRY: Record<string, string[]> = {
   Poland: ["Warsaw", "Krakow", "Wroclaw", "Gdansk", "Poznan"],
@@ -41,23 +50,23 @@ const MOCK_UNIVERSITIES_BY_CITY: Record<string, string[]> = {
   Barcelona: ["University of Barcelona"],
 };
 
-const MOCK_MAJORS = [
-  "Computer Science",
-  "Economics",
-  "Medicine",
-  "Law",
-  "Engineering",
-  "Arts",
-];
+// const MOCK_MAJORS = [
+//   "Computer Science",
+//   "Economics",
+//   "Medicine",
+//   "Law",
+//   "Engineering",
+//   "Arts",
+// ];
 
 type SearchEntity = "user" | "university";
 type SearchMode = "simple" | "filters";
 
 type UserFilterState = {
-  country: string | null;
-  city: string | null;
-  universityName: string | null;
-  major: string | null;
+  countryId: number | null;
+  cityId: string | null;
+  universityId: string | null;
+  majorId: number | null;
   minYear: string;
   maxYear: string;
 };
@@ -66,6 +75,8 @@ type UniversityFilterState = {
   country: string | null;
   city: string | null;
 };
+
+type Major = GetUniversityMajorResponse;
 
 const PageHeaders = () => (
   <>
@@ -102,7 +113,6 @@ const SearchEntitiesOptions = (props: any) => (
       value={props.currentSearchEntity}
       onChange={(_, val) => {
         props.setCurrentSearchEntity(val);
-        props.setSeachQuery("");
       }}
       TabIndicatorProps={{ style: { display: "none" } }}
     >
@@ -117,23 +127,32 @@ const SearchEntitiesOptions = (props: any) => (
   </Paper>
 );
 
-const UserFilterDrawer = (props: {
+type UserFilterDrawerProps = {
   open: boolean;
   onClose: () => void;
   filters: UserFilterState;
   setFilters: (f: UserFilterState) => void;
   onApply: () => void;
   onReset: () => void;
-}) => {
-  const handleCountryChange = (_: any, v: string | null) =>
+  countries: Country[];
+  majors: Major[];
+};
+
+const UserFilterDrawer = (props: UserFilterDrawerProps) => {
+  const handleCountryChange = (value: number | null) =>
     props.setFilters({
       ...props.filters,
-      country: v,
-      city: null,
-      universityName: null,
+      countryId: value,
+      cityId: null,
+      universityId: null,
     });
-  const handleCityChange = (_: any, v: string | null) =>
-    props.setFilters({ ...props.filters, city: v, universityName: null });
+  const handleMajorChange = (value: number | null) =>
+    props.setFilters({
+      ...props.filters,
+      majorId: value,
+    });
+  const handleCityChange = (value: string | null) =>
+    props.setFilters({ ...props.filters, cityId: value, universityId: null });
 
   return (
     <Drawer
@@ -157,36 +176,43 @@ const UserFilterDrawer = (props: {
           </Typography>
           <Stack spacing={2}>
             <Autocomplete
-              options={Object.keys(MOCK_CITIES_BY_COUNTRY)}
-              value={props.filters.country}
-              onChange={handleCountryChange}
-              renderInput={(p) => (
-                <TextField {...p} label="Country" variant="filled" />
+              options={props.countries}
+              getOptionLabel={(option) => option.name}
+              value={
+                props.countries.find((c) => c.id === props.filters.countryId) ||
+                null
+              }
+              onChange={(_, newValue) => {
+                const newId = newValue ? newValue.id : null;
+                handleCountryChange(newId);
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Country" variant="filled" />
               )}
             />
             <Autocomplete
               options={
-                props.filters.country
-                  ? MOCK_CITIES_BY_COUNTRY[props.filters.country]
+                props.filters.countryId
+                  ? MOCK_CITIES_BY_COUNTRY[props.filters.countryId]
                   : []
               }
-              disabled={!props.filters.country}
-              value={props.filters.city}
-              onChange={handleCityChange}
+              disabled={!props.filters.countryId}
+              value={props.filters.cityId}
+              onChange={(_, v) => handleCityChange(v)}
               renderInput={(p) => (
                 <TextField {...p} label="City" variant="filled" />
               )}
             />
             <Autocomplete
               options={
-                props.filters.city
-                  ? MOCK_UNIVERSITIES_BY_CITY[props.filters.city] || []
+                props.filters.cityId
+                  ? MOCK_UNIVERSITIES_BY_CITY[props.filters.cityId] || []
                   : []
               }
-              disabled={!props.filters.city}
-              value={props.filters.universityName}
+              disabled={!props.filters.cityId}
+              value={props.filters.universityId}
               onChange={(_, v) =>
-                props.setFilters({ ...props.filters, universityName: v })
+                props.setFilters({ ...props.filters, universityId: v })
               }
               renderInput={(p) => (
                 <TextField {...p} label="University" variant="filled" />
@@ -199,13 +225,15 @@ const UserFilterDrawer = (props: {
             STUDIES
           </Typography>
           <Autocomplete
-            options={MOCK_MAJORS}
-            value={props.filters.major}
-            onChange={(_, v) =>
-              props.setFilters({ ...props.filters, major: v })
-            }
-            renderInput={(p) => (
-              <TextField {...p} label="Major" variant="outlined" />
+            options={props.majors}
+            getOptionLabel={(option) => option.name}
+            value={props.majors.find((m) => m.id === props.filters.majorId)}
+            onChange={(_, newValue) => {
+              const newId = newValue ? newValue.id : null;
+              handleMajorChange(newId);
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Major" variant="filled" />
             )}
           />
         </Box>
@@ -251,14 +279,16 @@ const UserFilterDrawer = (props: {
   );
 };
 
-const UniversityFilterDrawer = (props: {
+type UniversityFilterDrawerProps = {
   open: boolean;
   onClose: () => void;
   filters: UniversityFilterState;
   setFilters: (f: UniversityFilterState) => void;
   onApply: () => void;
   onReset: () => void;
-}) => {
+};
+
+const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
   const handleCountryChange = (_: any, newValue: string | null) => {
     props.setFilters({ ...props.filters, country: newValue, city: null });
   };
@@ -359,9 +389,14 @@ const UniversityFilterDrawer = (props: {
   );
 };
 
-const SearchButton = () => {
+type SearchButtonProps = {
+  onClick: () => void;
+};
+
+const SearchButton = (props: SearchButtonProps) => {
   return (
     <Button
+      onClick={props.onClick}
       variant="contained"
       sx={{
         borderRadius: "50px",
@@ -378,21 +413,56 @@ const SearchButton = () => {
   );
 };
 
-const UserSearchSection = () => {
+type UserSearchSectionProps = {
+  countries: Country[];
+  majors: Major[];
+};
+
+const UserSearchSection = (props: UserSearchSectionProps) => {
   const [searchNick, setSearchNick] = useState<string>("");
   const [mode, setMode] = useState<SearchMode>("simple");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userFilters, setUserFilters] = useState<UserFilterState>({
-    country: null,
-    city: null,
-    universityName: null,
-    major: null,
+    countryId: null,
+    cityId: null,
+    universityId: null,
+    majorId: null,
     minYear: "",
     maxYear: "",
   });
 
+  console.log(props.countries);
+  console.log(props.majors);
   const handleModeChange = (e: SelectChangeEvent) =>
     setMode(e.target.value as SearchMode);
+
+  const handleSearch = async () => {
+    if (mode === "simple") {
+      const result = await sendGetUserByNickRequest(searchNick, 0, 5);
+      console.log(result);
+    } else if (mode === "filters") {
+      const result = await sendGetUserByExchangeRequest(
+        // (!userFilters.universityId && !userFilters.) ? parseInt(userFilters.universityId) : null,
+        12,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0,
+        5
+      );
+      console.log(result);
+    }
+  };
+  // universityId: number | null,
+  // cityId: number | null,
+  // countryId: number | null,
+  // majorId: number | null,
+  // startDate: string | null,
+  // endDate: string | null,
+  // page: number,
+  // size: number
 
   return (
     <Paper
@@ -468,8 +538,10 @@ const UserSearchSection = () => {
           <FilterListIcon />
         </IconButton>
       )}
-      <SearchButton />
+      <SearchButton onClick={handleSearch} />
       <UserFilterDrawer
+        countries={props.countries}
+        majors={props.majors}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         filters={userFilters}
@@ -477,10 +549,10 @@ const UserSearchSection = () => {
         onApply={() => setDrawerOpen(false)}
         onReset={() =>
           setUserFilters({
-            country: null,
-            city: null,
-            universityName: null,
-            major: null,
+            countryId: null,
+            cityId: null,
+            universityId: null,
+            majorId: null,
             minYear: "",
             maxYear: "",
           })
@@ -588,7 +660,38 @@ const UniversitySearchSection = () => {
 const SearchPage = () => {
   const [currentSearchEntity, setCurrentSearchEntity] =
     useState<SearchEntity>("user");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [majors, setMajors] = useState<Major[]>([]);
+
+  const getCountries = async () => {
+    const result = await sendGetCountriesRequest();
+    if (result.isSuccess) {
+      const allCountries: Country[] = result.data.map((c) => ({
+        id: c.id,
+        name: c.englishName,
+      }));
+      allCountries.push({ id: 0, name: "no country" });
+      setCountries(allCountries);
+    }
+  };
+
+  const getCities = async () => {
+    // const result
+  };
+
+  const getMajors = async () => {
+    const result = await sendGetUniversityMajorsRequest();
+    if (result.isSuccess) {
+      const majors = result.data;
+      setMajors(majors);
+    }
+  };
+
+  useEffect(() => {
+    getCountries();
+    getMajors();
+  }, []);
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
@@ -607,10 +710,9 @@ const SearchPage = () => {
         <SearchEntitiesOptions
           currentSearchEntity={currentSearchEntity}
           setCurrentSearchEntity={setCurrentSearchEntity}
-          setSeachQuery={setSearchQuery}
         />
         {currentSearchEntity === "user" ? (
-          <UserSearchSection />
+          <UserSearchSection countries={countries} majors={majors} />
         ) : (
           <UniversitySearchSection />
         )}

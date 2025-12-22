@@ -4,4 +4,4 @@ export type FieldErrorDetail = {
   field: string;
   code: ApiErrorResponseCode;
   message: string;
-}
+};

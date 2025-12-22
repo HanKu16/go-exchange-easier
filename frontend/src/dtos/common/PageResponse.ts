@@ -1,19 +1,19 @@
-export interface SortInfo {
+export type SortInfo = {
   sorted: boolean;
   empty: boolean;
   unsorted: boolean;
-}
+};
 
-export interface PageableInfo {
+export type PageableInfo = {
   pageNumber: number;
   pageSize: number;
   sort: SortInfo;
   offset: number;
   paged: boolean;
   unpaged: boolean;
-}
+};
 
-export interface PageResponse<T> {
+export type PageResponse<T> = {
   content: T[];
   pageable: PageableInfo;
   totalElements: number;
@@ -25,4 +25,4 @@ export interface PageResponse<T> {
   numberOfElements: number;
   first: boolean;
   empty: boolean;
-}
+};

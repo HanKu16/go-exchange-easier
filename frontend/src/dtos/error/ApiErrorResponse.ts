@@ -6,4 +6,4 @@ export type ApiErrorResponse = {
   message: string;
   fieldErrors: FieldErrorDetail[];
   globalErrors: GlobalErrorDetail[];
-}
+};
