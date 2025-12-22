@@ -3,7 +3,10 @@ package com.go_exchange_easier.backend.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.go_exchange_easier.backend.dto.university.*;
+import com.go_exchange_easier.backend.dto.universityReview.CreateUniversityReviewRequest;
+import com.go_exchange_easier.backend.dto.universityReview.CreateUniversityReviewResponse;
 import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
+import com.go_exchange_easier.backend.dto.universityReview.UniversityReviewReactionDetail;
 import com.go_exchange_easier.backend.exception.JsonParsingException;
 import com.go_exchange_easier.backend.exception.NotOwnerOfResourceException;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
@@ -99,7 +102,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     @Override
     @Transactional
     public CreateUniversityReviewResponse create(int userId,
-            CreateUniversityReviewRequest request) {
+                                                 CreateUniversityReviewRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
                         "User of id " + userId + " was not found.")

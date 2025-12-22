@@ -1,9 +1,9 @@
 package com.go_exchange_easier.backend.service.impl;
 
-import com.go_exchange_easier.backend.dto.university.AddUniversityReviewReactionRequest;
-import com.go_exchange_easier.backend.dto.university.AddUniversityReviewReactionResponse;
-import com.go_exchange_easier.backend.dto.university.DeleteUniversityReviewReactionResponse;
-import com.go_exchange_easier.backend.dto.university.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.dto.universityReview.AddUniversityReviewReactionRequest;
+import com.go_exchange_easier.backend.dto.universityReview.AddUniversityReviewReactionResponse;
+import com.go_exchange_easier.backend.dto.universityReview.DeleteUniversityReviewReactionResponse;
+import com.go_exchange_easier.backend.dto.universityReview.UniversityReviewReactionDetail;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UniversityReviewReactionNotFoundException;
 import com.go_exchange_easier.backend.model.*;

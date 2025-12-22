@@ -4,7 +4,7 @@ import com.go_exchange_easier.backend.annoations.docs.universityReview.AddReacti
 import com.go_exchange_easier.backend.annoations.docs.universityReview.CreateApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.universityReview.DeleteApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.universityReview.DeleteReactionApiDocs;
-import com.go_exchange_easier.backend.dto.university.*;
+import com.go_exchange_easier.backend.dto.universityReview.*;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.UniversityReviewReactionService;
 import com.go_exchange_easier.backend.service.UniversityReviewService;

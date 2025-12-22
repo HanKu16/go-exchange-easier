@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.dto.user;
+package com.go_exchange_easier.backend.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;

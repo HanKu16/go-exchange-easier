@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.service.impl;
 
-import com.go_exchange_easier.backend.dto.user.UserRegistrationRequest;
-import com.go_exchange_easier.backend.dto.user.UserRegistrationResponse;
+import com.go_exchange_easier.backend.dto.auth.UserRegistrationRequest;
+import com.go_exchange_easier.backend.dto.auth.UserRegistrationResponse;
 import com.go_exchange_easier.backend.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.exception.domain.MissingDefaultRoleException;
 import com.go_exchange_easier.backend.exception.UsernameAlreadyExistsException;

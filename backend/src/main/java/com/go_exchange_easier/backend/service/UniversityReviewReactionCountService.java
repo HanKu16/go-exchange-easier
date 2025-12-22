@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.service;
 
-import com.go_exchange_easier.backend.dto.university.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.dto.universityReview.UniversityReviewReactionDetail;
 import com.go_exchange_easier.backend.model.UniversityReview;
 import com.go_exchange_easier.backend.model.UniversityReviewReactionCount;
 import java.util.List;

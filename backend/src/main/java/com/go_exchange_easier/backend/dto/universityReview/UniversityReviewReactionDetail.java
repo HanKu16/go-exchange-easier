@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.dto.university;
+package com.go_exchange_easier.backend.dto.universityReview;
 
 public record UniversityReviewReactionDetail(
 

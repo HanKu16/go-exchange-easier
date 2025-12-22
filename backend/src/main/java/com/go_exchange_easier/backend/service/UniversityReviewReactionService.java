@@ -1,8 +1,8 @@
 package com.go_exchange_easier.backend.service;
 
-import com.go_exchange_easier.backend.dto.university.AddUniversityReviewReactionRequest;
-import com.go_exchange_easier.backend.dto.university.AddUniversityReviewReactionResponse;
-import com.go_exchange_easier.backend.dto.university.DeleteUniversityReviewReactionResponse;
+import com.go_exchange_easier.backend.dto.universityReview.AddUniversityReviewReactionRequest;
+import com.go_exchange_easier.backend.dto.universityReview.AddUniversityReviewReactionResponse;
+import com.go_exchange_easier.backend.dto.universityReview.DeleteUniversityReviewReactionResponse;
 
 public interface UniversityReviewReactionService {
 

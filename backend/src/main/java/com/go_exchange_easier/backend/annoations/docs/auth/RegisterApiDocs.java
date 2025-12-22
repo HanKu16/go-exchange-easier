@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.annoations.docs.auth;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.dto.user.UserRegistrationResponse;
+import com.go_exchange_easier.backend.dto.auth.UserRegistrationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

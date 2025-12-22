@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.dto.university;
+package com.go_exchange_easier.backend.dto.universityReview;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
