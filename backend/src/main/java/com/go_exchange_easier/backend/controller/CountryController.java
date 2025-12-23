@@ -1,7 +1,8 @@
 package com.go_exchange_easier.backend.controller;
 
 import com.go_exchange_easier.backend.annoations.docs.country.GetAllApiDocs;
-import com.go_exchange_easier.backend.dto.country.GetCountryResponse;
+import com.go_exchange_easier.backend.dto.common.Listing;
+import com.go_exchange_easier.backend.dto.details.CountryDetails;
 import com.go_exchange_easier.backend.service.CountryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +24,11 @@ public class CountryController {
 
     @GetMapping
     @GetAllApiDocs
-    public ResponseEntity<List<GetCountryResponse>> getAll() {
-        List<GetCountryResponse> response = countryService.getAll();
+    public ResponseEntity<Listing<CountryDetails>> getAll() {
+        List<CountryDetails> countries = countryService.getAll();
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS))
-                .body(response);
+                .body(Listing.of(countries));
     }
 
 }
