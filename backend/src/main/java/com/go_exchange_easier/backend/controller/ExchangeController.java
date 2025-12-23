@@ -24,7 +24,7 @@ import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/api/exchange")
+@RequestMapping("/api/exchanges")
 @RequiredArgsConstructor
 @EnableMethodSecurity
 @Tag(name = "Exchange", description = "Operations related to exchanges.")

@@ -33,7 +33,7 @@ public class UniversityController {
 
     @GetMapping
     @GetPageApiDocs
-    public ResponseEntity<Page<GetUniversityResponse>> getAll(
+    public ResponseEntity<Page<GetUniversityResponse>> getPage(
             @RequestParam(value = "englishName", required = false) String englishName,
             @RequestParam(value = "nativeName", required = false) String nativeName,
             @RequestParam(value = "cityId", required = false) Integer cityId,
