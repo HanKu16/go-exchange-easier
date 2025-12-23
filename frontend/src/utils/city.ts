@@ -1,24 +1,28 @@
-// import type { GetCountryResponse } from "../dtos/country/GetCountryResponse";
-// import type { GetUniversityResponse } from "../dtos/university/GetUniversityResponse";
-// import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-// import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
-// import { sendRequest } from "./send-request";
-// import { API_BASE_URL } from "../config/api";
-// import { getSignedInUserJwtToken } from "./user";
+import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
+import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
+import { sendRequest } from "./send-request";
+import { API_BASE_URL } from "../config/api";
+import { getSignedInUserJwtToken } from "./user";
+import type { CityDetails } from "../dtos/details/CityDetails";
+import type { Listing } from "../dtos/common/Listing";
 
-// export const sendGetCitiesFromCountryRequest = async (
-//   countryId: number
-// ): Promise<
-//   ResponseSuccessResult<GetCityResponse[]> | RepsonseFailureResult
-// > => {
-//   // const uri: string = `${API_BASE_URL}/api/countries/${countryId}/cities`
-//   const jwtToken = getSignedInUserJwtToken();
-//   const request: RequestInit = {
-//     method: "GET",
-//     headers: {
-//       Authorization: `Bearer ${jwtToken}`,
-//       "Content-Type": "application/json",
-//     },
-//   };
-//   return await sendRequest<GetCountryResponse[]>(uri, request);
-// };
+export const sendGetCitiesRequest = async (
+  countryId: number | undefined | null
+): Promise<
+  ResponseSuccessResult<Listing<CityDetails>> | RepsonseFailureResult
+> => {
+  const url = new URL(`${API_BASE_URL}/api/cities`);
+  if (countryId) {
+    url.searchParams.append("countryId", `${countryId}`);
+  }
+  const uri = url.toString();
+  const jwtToken = getSignedInUserJwtToken();
+  const request: RequestInit = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+  return await sendRequest<Listing<CityDetails>>(uri, request);
+};

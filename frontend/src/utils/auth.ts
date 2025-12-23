@@ -1,19 +1,38 @@
-import type { LoginRequest } from '../dtos/auth/LoginRequest'
-import type { LoginResponse } from '../dtos/auth/LoginResponse'
-import type { ResponseSuccessResult } from '../types/ResonseSuccessResult'
-import type { RepsonseFailureResult } from '../types/ResponseFailureResult'
-import { sendRequest } from './send-request'
-import { API_BASE_URL } from '../config/api'
+import type { LoginRequest } from "../dtos/auth/LoginRequest";
+import type { LoginResponse } from "../dtos/auth/LoginResponse";
+import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
+import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
+import { sendRequest } from "./send-request";
+import { API_BASE_URL } from "../config/api";
+import type { UserRegistrationRequest } from "../dtos/auth/UserRegistrationRequest";
+import type { UserRegistrationResponse } from "../dtos/auth/UserRegistrationResponse";
 
-export const sendLoginRequest = async (body: LoginRequest) :
-  Promise<ResponseSuccessResult<LoginResponse> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/auth/login`
+export const sendLoginRequest = async (
+  body: LoginRequest
+): Promise<ResponseSuccessResult<LoginResponse> | RepsonseFailureResult> => {
+  const uri: string = `${API_BASE_URL}/api/auth/login`;
   const request: RequestInit = {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(body)
-  }
-  return await sendRequest<LoginResponse>(uri, request)
-}
+    body: JSON.stringify(body),
+  };
+  return await sendRequest<LoginResponse>(uri, request);
+};
+
+export const sendUserRegistrationRequest = async (
+  body: UserRegistrationRequest
+): Promise<
+  ResponseSuccessResult<UserRegistrationResponse> | RepsonseFailureResult
+> => {
+  const uri: string = `${API_BASE_URL}/api/auth/register`;
+  const request: RequestInit = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  };
+  return await sendRequest(uri, request);
+};
