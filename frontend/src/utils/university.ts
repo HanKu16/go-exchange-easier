@@ -1,13 +1,40 @@
 import { API_BASE_URL } from "../config/api";
-import type { CreateUniversityReviewRequest } from "../dtos/university-review/CreateUniversityReviewRequest";
-import type { CreateUniversityReviewResponse } from "../dtos/university-review/CreateUniversityReviewResponse";
-import type { GetUniversityReviewResponse } from "../dtos/university-review/GetUniversityReviewResponse";
-import type { GetReviewsCountResponse } from "../dtos/university/GetReviewsCountResponse";
+import type { Listing } from "../dtos/common/Listing";
+import type { PageResponse } from "../dtos/common/PageResponse";
+import type { UniversityDetails } from "../dtos/details/UniversityDetails";
+import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
+import type { UniversityReviewCountSummary } from "../dtos/summary/UniversityReviewCountSummary";
 import type { GetUniversityProfileResponse } from "../dtos/university/GetUniversityProfileResponse";
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
 import { getSignedInUserJwtToken } from "./user";
+
+export const sendGetUniversitiesRequest = async (
+  englishName: string | undefined | null,
+  nativeName: string | undefined | null,
+  cityId: number | undefined | null,
+  countryId: number | undefined | null
+): Promise<
+  ResponseSuccessResult<PageResponse<UniversityDetails>> | RepsonseFailureResult
+> => {
+  const url = new URL(`${API_BASE_URL}/api/universities`);
+  if (englishName) url.searchParams.append("englishName", englishName);
+  if (nativeName) url.searchParams.append("nativeName", nativeName);
+  if (cityId) url.searchParams.append("cityId", `${cityId}`);
+  if (countryId) url.searchParams.append("countryId", `${countryId}`);
+  url.searchParams.append("sort", "englishName,asc");
+  const uri = url.toString();
+  const jwtToken = getSignedInUserJwtToken();
+  const request: RequestInit = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+  return await sendRequest<PageResponse<UniversityDetails>>(uri, request);
+};
 
 export const sendGetUniversityProfileRequest = async (
   universityId: number | string
@@ -31,7 +58,8 @@ export const sendGetUniversityReviewsRequest = async (
   page: number,
   size: number
 ): Promise<
-  ResponseSuccessResult<GetUniversityReviewResponse[]> | RepsonseFailureResult
+  | ResponseSuccessResult<Listing<UniversityReviewDetails>>
+  | RepsonseFailureResult
 > => {
   const params = { page: `${page}`, size: `${size}` };
   const searchParams = new URLSearchParams(params).toString();
@@ -44,31 +72,13 @@ export const sendGetUniversityReviewsRequest = async (
       "Content-Type": "application/json",
     },
   };
-  return await sendRequest<GetUniversityReviewResponse[]>(uri, request);
-};
-
-export const sendCreateReviewRequest = async (
-  body: CreateUniversityReviewRequest
-): Promise<
-  ResponseSuccessResult<CreateUniversityReviewResponse> | RepsonseFailureResult
-> => {
-  const uri: string = `${API_BASE_URL}/api/universityReviews`;
-  const jwtToken = getSignedInUserJwtToken();
-  const request: RequestInit = {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${jwtToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  };
-  return await sendRequest<CreateUniversityReviewResponse>(uri, request);
+  return await sendRequest<Listing<UniversityReviewDetails>>(uri, request);
 };
 
 export const sendGetReviewsCountRequest = async (
   universityId: number | string
 ): Promise<
-  ResponseSuccessResult<GetReviewsCountResponse> | RepsonseFailureResult
+  ResponseSuccessResult<UniversityReviewCountSummary> | RepsonseFailureResult
 > => {
   const uri: string = `${API_BASE_URL}/api/universities/${universityId}/reviews/count`;
   const jwtToken = getSignedInUserJwtToken();
@@ -79,5 +89,5 @@ export const sendGetReviewsCountRequest = async (
       "Content-Type": "application/json",
     },
   };
-  return await sendRequest<GetReviewsCountResponse>(uri, request);
+  return await sendRequest<UniversityReviewCountSummary>(uri, request);
 };

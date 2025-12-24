@@ -1,10 +1,7 @@
-import type { UserRegistrationRequest } from "../dtos/auth/UserRegistrationRequest";
-import type { UserRegistrationResponse } from "../dtos/auth/UserRegistrationResponse";
 import type { GetUserProfileResponse } from "../dtos/user/GetUserProfileResponse";
 import { sendRequest } from "./send-request";
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
-import type { GetUniversityReviewResponse } from "../dtos/university-review/GetUniversityReviewResponse";
 import type { GetUserExchangeResponse } from "../dtos/user/GetUserExchangeResponse";
 import type { UpdateUserDescriptionRequest } from "../dtos/user/UpdateUserDescriptionRequest";
 import type { UpdateUserDescriptionResponse } from "../dtos/user/UpdateUserDescriptionResponse";
@@ -15,22 +12,8 @@ import type { UpdateUserStatusResponse } from "../dtos/user/UpdateUserStatusResp
 import type { AssignCountryOfOriginRequest } from "../dtos/user/AssignCountryOfOriginRequest";
 import type { AssignCountryOfOriginResponse } from "../dtos/user/AssignCountryOfOriginResponse";
 import { API_BASE_URL } from "../config/api";
-
-export const sendUserRegistrationRequest = async (
-  body: UserRegistrationRequest
-): Promise<
-  ResponseSuccessResult<UserRegistrationResponse> | RepsonseFailureResult
-> => {
-  const uri: string = `${API_BASE_URL}/api/auth/register`;
-  const request: RequestInit = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  };
-  return await sendRequest(uri, request);
-};
+import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
+import type { Listing } from "../dtos/common/Listing";
 
 export const sendGetUserProfileRequest = async (
   userId: number | string
@@ -52,7 +35,8 @@ export const sendGetUserProfileRequest = async (
 export const sendGetUserReviewsRequest = async (
   userId: number | string
 ): Promise<
-  ResponseSuccessResult<GetUniversityReviewResponse[]> | RepsonseFailureResult
+  | ResponseSuccessResult<Listing<UniversityReviewDetails>>
+  | RepsonseFailureResult
 > => {
   const uri: string = `${API_BASE_URL}/api/users/${userId}/universityReviews`;
   const jwtToken = getSignedInUserJwtToken();
@@ -63,7 +47,7 @@ export const sendGetUserReviewsRequest = async (
       "Content-Type": "application/json",
     },
   };
-  return await sendRequest<GetUniversityReviewResponse[]>(uri, request);
+  return await sendRequest<Listing<UniversityReviewDetails>>(uri, request);
 };
 
 export const sendGetUserExchangesRequest = async (

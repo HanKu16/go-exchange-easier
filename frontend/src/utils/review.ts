@@ -4,6 +4,26 @@ import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
 import { API_BASE_URL } from "../config/api";
 import { getSignedInUserJwtToken } from "./user";
+import type { CreateUniversityReviewRequest } from "../dtos/university-review/CreateUniversityReviewRequest";
+import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
+
+export const sendCreateReviewRequest = async (
+  body: CreateUniversityReviewRequest
+): Promise<
+  ResponseSuccessResult<UniversityReviewDetails> | RepsonseFailureResult
+> => {
+  const uri: string = `${API_BASE_URL}/api/universityReviews`;
+  const jwtToken = getSignedInUserJwtToken();
+  const request: RequestInit = {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  };
+  return await sendRequest<UniversityReviewDetails>(uri, request);
+};
 
 export const sendAddUniversityReviewReactionRequest = async (
   reviewId: number,
