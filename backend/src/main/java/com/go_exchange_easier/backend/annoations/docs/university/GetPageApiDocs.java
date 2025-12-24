@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Universities"
+                description = "Universities were successfully returned"
         )
 })
 public @interface GetPageApiDocs { }

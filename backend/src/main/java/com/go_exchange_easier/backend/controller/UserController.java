@@ -1,6 +1,8 @@
 package com.go_exchange_easier.backend.controller;
 
 import com.go_exchange_easier.backend.annoations.docs.user.*;
+import com.go_exchange_easier.backend.dto.common.Listing;
+import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
 import com.go_exchange_easier.backend.dto.exchange.GetUserExchangeResponse;
 import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
@@ -55,12 +57,12 @@ public class UserController {
 
     @GetMapping("/{userId}/universityReviews")
     @GetReviewsApiDocs
-    public ResponseEntity<List<GetUniversityReviewResponse>> getReviews(
+    public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
             @PathVariable("userId") Integer userId,
             @AuthenticationPrincipal UserCredentials principal) {
-        List<GetUniversityReviewResponse> response = universityReviewService
+        List<UniversityReviewDetails> reviews = universityReviewService
                 .getByAuthorId(userId, principal.getUser().getId());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Listing.of(reviews));
     }
 
     @GetMapping("/{userId}/exchanges")

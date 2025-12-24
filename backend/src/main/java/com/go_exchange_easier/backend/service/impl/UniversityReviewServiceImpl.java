@@ -2,9 +2,12 @@ package com.go_exchange_easier.backend.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.go_exchange_easier.backend.dto.university.*;
+import com.go_exchange_easier.backend.dto.details.ReactionDetails;
+import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
+import com.go_exchange_easier.backend.dto.summary.UniversityReviewCountSummary;
+import com.go_exchange_easier.backend.dto.summary.UniversitySummary;
+import com.go_exchange_easier.backend.dto.summary.UserSummary;
 import com.go_exchange_easier.backend.dto.universityReview.CreateUniversityReviewRequest;
-import com.go_exchange_easier.backend.dto.universityReview.CreateUniversityReviewResponse;
 import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
 import com.go_exchange_easier.backend.dto.universityReview.UniversityReviewReactionDetail;
 import com.go_exchange_easier.backend.exception.JsonParsingException;
@@ -39,61 +42,53 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     private final UserRepository userRepository;
 
     @Override
-    public List<GetUniversityReviewResponse> getByAuthorId(
+    public List<UniversityReviewDetails> getByAuthorId(
             int authorId, int currentUserId) {
         List<Object[]> rows = universityReviewRepository
                 .findByAuthorId(authorId, currentUserId);
-        List<GetUniversityReviewResponse> reviews = new ArrayList<>();
-
+        List<UniversityReviewDetails> reviews = new ArrayList<>();
         for (Object[] row : rows) {
             Integer id = (Integer) row[0];
             Integer authorIdRow = (Integer) row[1];
             String authorNick = (String) row[2];
-            Short university = (Short) row[3];
+            Short universityId = (Short) row[3];
             String universityEnglishName = (String) row[4];
             String universityNativeName = (String) row[5];
             Short starRating = (Short) row[6];
             String textContent = (String) row[7];
             Instant createdAt = (Instant) row[8];
             String reactionsJson = (String) row[9];
-
-            List<GetUniversityReviewResponse.ReactionDetailDto> reactions =
-                    parseReactionsJson(reactionsJson);
-            reviews.add(new GetUniversityReviewResponse(id,
-                    new GetUniversityReviewResponse.AuthorDto(authorIdRow, authorNick),
-                    new GetUniversityReviewResponse.UniversityDto(
-                            university, universityEnglishName, universityNativeName),
+            List<ReactionDetails> reactions = parseReactionsJson(reactionsJson);
+            reviews.add(new UniversityReviewDetails(id, new UserSummary(authorIdRow, authorNick),
+                    new UniversitySummary(universityId, universityEnglishName, universityNativeName),
                     starRating, textContent, createdAt, reactions));
         }
         return reviews;
     }
 
     @Override
-    public List<GetUniversityReviewResponse> getByUniversityId(
+    public List<UniversityReviewDetails> getByUniversityId(
             int universityId, int currentUserId, int page, int size) {
         int limit = size;
         int offset = page * size;
         List<Object[]> rows = universityReviewRepository
                 .findByUniversityId(universityId, currentUserId, limit, offset);
-        List<GetUniversityReviewResponse> reviews = new ArrayList<>();
+        List<UniversityReviewDetails> reviews = new ArrayList<>();
         for (Object[] row : rows) {
             Integer id = (Integer) row[0];
-            Integer authorIdRow = (Integer) row[1];
+            Integer authorId = (Integer) row[1];
             String authorNick = (String) row[2];
-            Short university = (Short) row[3];
+            Short universityIdFromDb = (Short) row[3];
             String universityEnglishName = (String) row[4];
             String universityNativeName = (String) row[5];
             Short starRating = (Short) row[6];
             String textContent = (String) row[7];
             Instant createdAt = (Instant) row[8];
             String reactionsJson = (String) row[9];
-
-            List<GetUniversityReviewResponse.ReactionDetailDto> reactions =
-                    parseReactionsJson(reactionsJson);
-            reviews.add(new GetUniversityReviewResponse(id,
-                    new GetUniversityReviewResponse.AuthorDto(authorIdRow, authorNick),
-                    new GetUniversityReviewResponse.UniversityDto(
-                            university, universityEnglishName, universityNativeName),
+            List<ReactionDetails> reactions = parseReactionsJson(reactionsJson);
+            reviews.add(new UniversityReviewDetails(id,
+                    new UserSummary(authorId, authorNick),
+                    new UniversitySummary(universityIdFromDb, universityNativeName, universityEnglishName),
                     starRating, textContent, createdAt, reactions));
         }
         return reviews;
@@ -101,8 +96,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     @Override
     @Transactional
-    public CreateUniversityReviewResponse create(int userId,
-                                                 CreateUniversityReviewRequest request) {
+    public UniversityReviewDetails create(int userId, CreateUniversityReviewRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
                         "User of id " + userId + " was not found.")
@@ -117,19 +111,28 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         List<UniversityReviewReactionDetail> reactionDetails =
                 reactionCountService.createCounts(savedReview);
         List<ReactionType> reactionTypes = reactionTypeRepository.findAll();
-        return new CreateUniversityReviewResponse(
-                savedReview.getId(),
-                new CreateUniversityReviewResponse.AuthorDto(userId, user.getNick()),
-                new CreateUniversityReviewResponse.UniversityDto(
-                        university.getId(), university.getEnglishName(),
-                        university.getOriginalName()),
-                review.getStarRating(),
-                review.getTextContent(),
-                review.getCreatedAt(),
-                reactionTypes.stream().map(t -> new CreateUniversityReviewResponse
-                        .ReactionDetailDto(t.getId(), t.getName(), (short) 0, false))
-                        .toList()
-        );
+        List<ReactionDetails> reactions =  reactionTypes.stream()
+                .map(t -> new ReactionDetails(t.getId(), t.getName(), (short) 0, false))
+                .toList();
+        return new UniversityReviewDetails(
+                savedReview.getId(), new UserSummary(user.getId(), user.getNick()),
+                new UniversitySummary(university.getId(), university.getOriginalName(),
+                        university.getEnglishName()),
+                review.getStarRating(), review.getTextContent(),
+                review.getCreatedAt().toInstant(), reactions);
+//        return new CreateUniversityReviewResponse(
+//                savedReview.getId(),
+//                new CreateUniversityReviewResponse.AuthorDto(userId, user.getNick()),
+//                new CreateUniversityReviewResponse.UniversityDto(
+//                        university.getId(), university.getEnglishName(),
+//                        university.getOriginalName()),
+//                review.getStarRating(),
+//                review.getTextContent(),
+//                review.getCreatedAt(),
+//                reactionTypes.stream().map(t -> new CreateUniversityReviewResponse
+//                        .ReactionDetailDto(t.getId(), t.getName(), (short) 0, false))
+//                        .toList()
+//        );
     }
 
     @Override
@@ -147,9 +150,9 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     }
 
     @Override
-    public GetReviewsCountResponse countByUniversityId(int universityId) {
+    public UniversityReviewCountSummary countByUniversityId(int universityId) {
         int count = universityReviewRepository.countReviewsByUniversityId(universityId);
-        return new GetReviewsCountResponse((short) universityId, count);
+        return new UniversityReviewCountSummary((short) universityId, count);
     }
 
     private UniversityReview buildUniversityReview(
@@ -164,7 +167,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         return review;
     }
 
-    private List<GetUniversityReviewResponse.ReactionDetailDto> parseReactionsJson(
+    private List<GetUniversityReviewResponse.ReactionDetailDto> parseReactionsJsonOld(
             String json) {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -173,6 +176,18 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         } catch (Exception e) {
             throw new JsonParsingException("Parsing " + json + " to " +
                     "List<GetUniversityReviewResponse.ReactionDetailDto> failed.");
+        }
+    }
+
+    private List<ReactionDetails> parseReactionsJson(
+            String json) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(json, new TypeReference
+                    <List<ReactionDetails>>() {});
+        } catch (Exception e) {
+            throw new JsonParsingException("Parsing " + json + " to " +
+                    "List<ReactionDetails> failed.");
         }
     }
 

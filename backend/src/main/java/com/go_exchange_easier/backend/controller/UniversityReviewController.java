@@ -4,6 +4,7 @@ import com.go_exchange_easier.backend.annoations.docs.universityReview.AddReacti
 import com.go_exchange_easier.backend.annoations.docs.universityReview.CreateApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.universityReview.DeleteApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.universityReview.DeleteReactionApiDocs;
+import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
 import com.go_exchange_easier.backend.dto.universityReview.*;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.UniversityReviewReactionService;
@@ -27,18 +28,19 @@ public class UniversityReviewController {
 
     @PostMapping
     @CreateApiDocs
-    public ResponseEntity<CreateUniversityReviewResponse> create(
+    public ResponseEntity<UniversityReviewDetails> create(
             @RequestBody @Valid CreateUniversityReviewRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
-        CreateUniversityReviewResponse response = universityReviewService
+        UniversityReviewDetails review = universityReviewService
                 .create(principal.getId(), request);
-        return ResponseEntity.created(URI.create("/api/universityReviews" +
-                        response.id())).body(response);
+        return ResponseEntity.created(URI.create("/api/universityReviews" + review.id()))
+                .body(review);
     }
 
     @DeleteMapping("/{reviewId}")
     @DeleteApiDocs
-    public ResponseEntity<Void> delete(@PathVariable Integer reviewId) {
+    public ResponseEntity<Void> delete(
+            @PathVariable Integer reviewId) {
         universityReviewService.delete(reviewId);
         return ResponseEntity.noContent().build();
     }

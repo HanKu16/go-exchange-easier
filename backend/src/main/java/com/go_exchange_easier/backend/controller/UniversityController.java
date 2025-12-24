@@ -4,15 +4,18 @@ import com.go_exchange_easier.backend.annoations.docs.university.GetPageApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.university.GetCountApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.university.GetProfileApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.university.GetReviewsApiDocs;
-import com.go_exchange_easier.backend.dto.university.GetReviewsCountResponse;
-import com.go_exchange_easier.backend.dto.university.GetUniversityProfileResponse;
-import com.go_exchange_easier.backend.dto.university.GetUniversityResponse;
-import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
+import com.go_exchange_easier.backend.dto.common.Listing;
+import com.go_exchange_easier.backend.dto.details.UniversityDetails;
+import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
+import com.go_exchange_easier.backend.dto.filter.UniversityFilters;
+import com.go_exchange_easier.backend.dto.summary.UniversityReviewCountSummary;
+import com.go_exchange_easier.backend.dto.university.UniversityProfile;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.UniversityReviewService;
 import com.go_exchange_easier.backend.service.UniversityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.CacheControl;
@@ -33,48 +36,45 @@ public class UniversityController {
 
     @GetMapping
     @GetPageApiDocs
-    public ResponseEntity<Page<GetUniversityResponse>> getPage(
-            @RequestParam(value = "englishName", required = false) String englishName,
-            @RequestParam(value = "nativeName", required = false) String nativeName,
-            @RequestParam(value = "cityId", required = false) Integer cityId,
-            @RequestParam(value = "countryId", required = false) Short countryId,
-            Pageable pageable) {
-        Page<GetUniversityResponse> response = universityService
-                .getPage(englishName, nativeName, cityId, countryId, pageable);
+    public ResponseEntity<Page<UniversityDetails>> getPage(
+            @ParameterObject @ModelAttribute UniversityFilters filters,
+            @ParameterObject Pageable pageable) {
+        Page<UniversityDetails> page = universityService
+                .getPage(filters, pageable);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES))
-                .body(response);
+                .body(page);
     }
 
     @GetMapping("/{universityId}/profile")
     @GetProfileApiDocs
-    public ResponseEntity<GetUniversityProfileResponse> getProfile(
+    public ResponseEntity<UniversityProfile> getProfile(
             @PathVariable Integer universityId,
             @AuthenticationPrincipal UserCredentials principal) {
-        GetUniversityProfileResponse response = universityService.getProfile(
+        UniversityProfile profile = universityService.getProfile(
                 universityId, principal.getUser().getId());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(profile);
     }
 
     @GetMapping("/{universityId}/reviews")
     @GetReviewsApiDocs
-    public ResponseEntity<List<GetUniversityReviewResponse>> getReviews(
+    public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
             @PathVariable Integer universityId,
             @AuthenticationPrincipal UserCredentials principal,
             int page, int size) {
-        List<GetUniversityReviewResponse> response = universityReviewService
+        List<UniversityReviewDetails> reviews = universityReviewService
                 .getByUniversityId(universityId, principal.getUser().getId(),
                         page, size);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Listing.of(reviews));
     }
 
     @GetMapping("/{universityId}/reviews/count")
     @GetCountApiDocs
-    public ResponseEntity<GetReviewsCountResponse> getCount(
+    public ResponseEntity<UniversityReviewCountSummary> getCount(
             @PathVariable Integer universityId) {
-        GetReviewsCountResponse response = universityReviewService
+        UniversityReviewCountSummary reviewCount = universityReviewService
                 .countByUniversityId(universityId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(reviewCount);
     }
 
 }

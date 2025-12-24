@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.dto.university;
 
-public record GetUniversityProfileResponse(
+public record UniversityProfile(
 
     Short id,
     String nativeName,

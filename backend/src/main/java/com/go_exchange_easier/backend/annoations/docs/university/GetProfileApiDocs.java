@@ -1,7 +1,6 @@
 package com.go_exchange_easier.backend.annoations.docs.university;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.dto.university.GetUniversityProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,9 +17,7 @@ import java.lang.annotation.Target;
 @ApiResponses(value = {
         @ApiResponse(
                 responseCode = "200",
-                description = "Profile was successfully returned",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = GetUniversityProfileResponse.class))),
+                description = "Profile was successfully returned"),
         @ApiResponse(
                 responseCode = "404",
                 description = "University of given id was not found",

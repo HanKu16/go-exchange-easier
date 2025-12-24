@@ -1,10 +1,24 @@
 package com.go_exchange_easier.backend.repository.specification;
 
+import com.go_exchange_easier.backend.dto.filter.UniversityFilters;
 import com.go_exchange_easier.backend.model.*;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 public class UniversitySpecification {
+
+    public static Specification<University> fromFilter(UniversityFilters filter) {
+        Specification<University> spec = (root, query, cb) -> null;
+        spec = SpecificationUtils.append(spec, filter.englishName(),
+                UniversitySpecification::hasEnglishName);
+        spec = SpecificationUtils.append(spec, filter.nativeName(),
+                UniversitySpecification::hasOriginalName);
+        spec = SpecificationUtils.append(spec, filter.cityId(),
+                UniversitySpecification::hasCityId);
+        spec = SpecificationUtils.append(spec, filter.countryId(),
+                UniversitySpecification::hasCountryId);
+        return spec;
+    }
 
     public static Specification<University> hasOriginalName(
             String originalName) {
@@ -34,7 +48,7 @@ public class UniversitySpecification {
         };
     }
 
-    public static Specification<University> hasCountryId(int countryId) {
+    public static Specification<University> hasCountryId(short countryId) {
         return (root, query, cb) -> {
             Join<University, City> citiesJoin =
                     root.join("city");

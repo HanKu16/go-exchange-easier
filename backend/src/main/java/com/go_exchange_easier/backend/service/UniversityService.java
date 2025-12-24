@@ -1,14 +1,14 @@
 package com.go_exchange_easier.backend.service;
 
-import com.go_exchange_easier.backend.dto.university.GetUniversityProfileResponse;
-import com.go_exchange_easier.backend.dto.university.GetUniversityResponse;
+import com.go_exchange_easier.backend.dto.details.UniversityDetails;
+import com.go_exchange_easier.backend.dto.filter.UniversityFilters;
+import com.go_exchange_easier.backend.dto.university.UniversityProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UniversityService {
 
-    GetUniversityProfileResponse getProfile(int universityId, int currentUserId);
-    Page<GetUniversityResponse> getPage(String englishName, String nativeName,
-            Integer cityId, Short countryId, Pageable pageable);
+    UniversityProfile getProfile(int universityId, int currentUserId);
+    Page<UniversityDetails> getPage(UniversityFilters filters, Pageable pageable);
 
 }
