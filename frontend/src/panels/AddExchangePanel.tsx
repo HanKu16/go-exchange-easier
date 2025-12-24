@@ -1,392 +1,515 @@
-import { useEffect, useState } from 'react'
-import Box from '@mui/material/Box'
-import type { ReactElement } from 'react'
-import { InputLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material'
-import { sendGetUniverisitesFromCountryRequest } from '../utils/country'
-import { FormControl, Button } from '@mui/material'
-import { FormControlLabel } from '@mui/material'
-import { sendGetUniversityMajorsRequest } from '../utils/university-major'
-import type { GetUniversityMajorResponse } from '../dtos/university-major/GetUniversityMajorResponse'
-import type { UniversityNameLanguage } from '../types/UniversityNameLanguage'
-import type { University } from '../types/University'
-import type { Country } from '../types/Country'
-import PanelHeader from '../components/PanelHeader'
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import type { Dayjs } from 'dayjs'
-import type { CreateExchangeRequest } from '../dtos/exchange/CreateExchangeRequest'
-import { sendCreateExchangeRequest } from '../utils/exchange'
-import { getGlobalErrorCodes } from '../utils/error'
-import type { DataFetchStatus } from '../types/DataFetchStatus'
-import LoadingContent from '../components/LoadingContent'
-import ContentLoadError from '../components/ContentLoadError'
-import { useSnackbar } from '../context/SnackBarContext'
+import { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import type { ReactElement } from "react";
+import { InputLabel, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
+import { FormControl, Button } from "@mui/material";
+import { FormControlLabel } from "@mui/material";
+import { sendGetUniversityMajorsRequest } from "../utils/university-major";
+import type { GetUniversityMajorResponse } from "../dtos/university-major/GetUniversityMajorResponse";
+import type { UniversityNameLanguage } from "../types/UniversityNameLanguage";
+import type { University } from "../types/University";
+import type { Country } from "../types/Country";
+import PanelHeader from "../components/PanelHeader";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import type { Dayjs } from "dayjs";
+import type { CreateExchangeRequest } from "../dtos/exchange/CreateExchangeRequest";
+import { sendCreateExchangeRequest } from "../utils/exchange";
+import { getGlobalErrorCodes } from "../utils/error";
+import type { DataFetchStatus } from "../types/DataFetchStatus";
+import LoadingContent from "../components/LoadingContent";
+import ContentLoadError from "../components/ContentLoadError";
+import { useSnackbar } from "../context/SnackBarContext";
+import { sendGetUniversitiesRequest } from "../utils/university";
+import { sendGetCountriesRequest } from "../utils/country";
 
-type Major = GetUniversityMajorResponse
+type Major = GetUniversityMajorResponse;
 
-type AddExchangeStage = 
-  'Choose university' |
-  'Choose major' |
-  'Choose time range'
+type AddExchangeStage =
+  | "Choose university"
+  | "Choose major"
+  | "Choose time range";
 
 type ChooseUniversitySubpanelProps = {
-  countries: Country[];
-  getCountries: () => void;
   selectedUniversityId: number | undefined;
   setSelectedUniversityId: (universityId: number) => void;
   setCurrentStage: (stage: AddExchangeStage) => void;
-}
+};
 
 type ChooseMajorSubpanelProps = {
   selectedMajorId: number | undefined;
   setSelectedMajorId: (majorId: number) => void;
   setCurrentStage: (stage: AddExchangeStage) => void;
-}
+};
 
 type ChooseTimeRangeSubpanel = {
   selectedUniversityId: number | undefined;
   selectedMajorId: number | undefined;
-}
-
-type AddExchangePanelProps = {
-  countries: Country[];
-  getCountries: () => void;
-}
+};
 
 const ChooseUniversitySubpanel = (props: ChooseUniversitySubpanelProps) => {
-  const [selectedCountryId, setSelectedCountryId] = useState<number | null>(null)
+  const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
+    null
+  );
   const [selectedUniversityNameLanguage, setSelectedUniversityNameLanguage] =
-    useState<UniversityNameLanguage>('english')
-  const [universities, setUniversities] = useState<University[]>([])
-  const [countriesFetchStatus, setCountriesFetchStatus] = useState<DataFetchStatus>(
-    props.countries.length != 0 ? 'success' : 'loading')
-  const [universitiesFetchStatus, setUniversitiesFetchStatus] = 
-    useState<DataFetchStatus | undefined>(undefined)
+    useState<UniversityNameLanguage>("english");
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [countriesFetchStatus, setCountriesFetchStatus] =
+    useState<DataFetchStatus>("loading");
+  const [universitiesFetchStatus, setUniversitiesFetchStatus] = useState<
+    DataFetchStatus | undefined
+  >(undefined);
+
+  const getCountries = async () => {
+    const result = await sendGetCountriesRequest();
+    if (result.isSuccess) {
+      const allCountries: Country[] = result.data.content.map((c) => ({
+        id: c.id,
+        name: c.englishName,
+      }));
+      setCountries(allCountries);
+      setCountriesFetchStatus("success");
+    } else {
+      switch (result.error.status) {
+        case "INTERNAL_SERVER_ERROR":
+          setCountriesFetchStatus("serverError");
+          break;
+        case "SERVICE_UNAVAILABLE":
+          setCountriesFetchStatus("connectionError");
+          break;
+      }
+    }
+  };
 
   const getUniversitiesFromCountry = async () => {
     if (selectedCountryId === null) {
-      return
+      return;
     }
-    setUniversities([])
-    setUniversitiesFetchStatus('loading')
-    const result = await sendGetUniverisitesFromCountryRequest(selectedCountryId)
+    setUniversities([]);
+    setUniversitiesFetchStatus("loading");
+    const result = await sendGetUniversitiesRequest(
+      null,
+      null,
+      null,
+      selectedCountryId
+    );
     if (result.isSuccess) {
-      setUniversities(result.data)
-      setUniversitiesFetchStatus('success')
+      setUniversities(result.data.content);
+      setUniversitiesFetchStatus("success");
     } else {
       switch (result.error.status) {
-        case 'INTERNAL_SERVER_ERROR':
-          setUniversitiesFetchStatus('serverError')
-          break
-        case 'SERVICE_UNAVAILABLE':
-          setUniversitiesFetchStatus('connectionError')
-          break
+        case "INTERNAL_SERVER_ERROR":
+          setUniversitiesFetchStatus("serverError");
+          break;
+        case "SERVICE_UNAVAILABLE":
+          setUniversitiesFetchStatus("connectionError");
+          break;
       }
     }
-  }
+  };
 
   const getInteractionElement = (universityId: number): ReactElement => {
     if (props.selectedUniversityId === universityId) {
       return (
-        <Button variant='contained' size='small' sx={{marginLeft: 2}}
+        <Button
+          variant="contained"
+          size="small"
+          sx={{ marginLeft: 2 }}
           onClick={() => {
-            props.setSelectedUniversityId(universityId)
-            props.setCurrentStage('Choose major')
-          }}>
+            props.setSelectedUniversityId(universityId);
+            props.setCurrentStage("Choose major");
+          }}
+        >
           NEXT STEP
         </Button>
-      )
+      );
     }
-    return <></>
-  }
+    return <></>;
+  };
 
   const getUniversitiesContent = () => {
     switch (universitiesFetchStatus) {
       case undefined:
-        return <></>
-      case 'loading':
-        return <LoadingContent title='Loading universities'/>  
-      case 'connectionError':
-        return <ContentLoadError title='Connection error' subheader='Failed to load universities'/>
-      case 'serverError':
-        return <ContentLoadError title='Server error' subheader='Failed to load universities'/>
-      case 'success':
+        return <></>;
+      case "loading":
+        return <LoadingContent title="Loading universities" />;
+      case "connectionError":
+        return (
+          <ContentLoadError
+            title="Connection error"
+            subheader="Failed to load universities"
+          />
+        );
+      case "serverError":
+        return (
+          <ContentLoadError
+            title="Server error"
+            subheader="Failed to load universities"
+          />
+        );
+      case "success":
         return (
           <>
             <FormControl>
-              <RadioGroup name='universities-buttons-group'
+              <RadioGroup
+                name="universities-buttons-group"
                 value={props.selectedUniversityId}
                 onChange={(event) => {
-                  props.setSelectedUniversityId(Number(event.target.value))
-                }}>
-                {universities.map(u => (
-                  <FormControlLabel key={u.id} value={u.id} control={<Radio/>} label={(
-                    <>
-                      {(selectedUniversityNameLanguage === 'english' && u.englishName) ?
-                        u.englishName :
-                        u.nativeName}
-                      {` [${u.city.name}]`}
-                      {getInteractionElement(u.id)}
-                    </>)}
-                />))}
+                  props.setSelectedUniversityId(Number(event.target.value));
+                }}
+              >
+                {universities.map((u) => (
+                  <FormControlLabel
+                    key={u.id}
+                    value={u.id}
+                    control={<Radio />}
+                    label={
+                      <>
+                        {selectedUniversityNameLanguage === "english" &&
+                        u.englishName
+                          ? u.englishName
+                          : u.nativeName}
+                        {` [${u.city.name}]`}
+                        {getInteractionElement(u.id)}
+                      </>
+                    }
+                  />
+                ))}
               </RadioGroup>
             </FormControl>
           </>
-        )
+        );
     }
-  }
+  };
 
   const getContent = () => {
     switch (countriesFetchStatus) {
-      case 'success':
+      case "success":
         return (
           <>
-            <Box sx={{display: 'flex', flexDirection: {xs: 'column', md:'row'}}}>
-              <FormControl sx={{ m: 2, width: {xs: '100%', sm: '60%', lg: '40%'}}}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+              }}
+            >
+              <FormControl
+                sx={{ m: 2, width: { xs: "100%", sm: "60%", lg: "40%" } }}
+              >
                 <InputLabel>Country</InputLabel>
-                <Select id='select-country-id' autoWidth label='Country'
+                <Select
+                  id="select-country-id"
+                  autoWidth
+                  label="Country"
                   value={selectedCountryId}
-                  onChange={e => setSelectedCountryId(Number(e.target.value))}>
-                  {props.countries.map(c => (
+                  onChange={(e) => setSelectedCountryId(Number(e.target.value))}
+                >
+                  {countries.map((c) =>
                     c.id !== 0 ? (
                       <MenuItem key={c.id} value={c.id}>
                         {c.name}
-                        <img src={`/flags/${c.name}.png`} style={{height: '0.8rem', marginLeft: 3}} />
+                        <img
+                          src={`/flags/${c.name}.png`}
+                          style={{ height: "0.8rem", marginLeft: 3 }}
+                        />
                       </MenuItem>
                     ) : null
-                  ))}
+                  )}
                 </Select>
               </FormControl>
-              <FormControl sx={{m: 2, width: {xs: '50%', sm: '30%', lg: '20%'}}}>
+              <FormControl
+                sx={{ m: 2, width: { xs: "50%", sm: "30%", lg: "20%" } }}
+              >
                 <InputLabel>University name language</InputLabel>
-                <Select id='select-university-name-language-id' autoWidth 
-                  label='University name language'
+                <Select
+                  id="select-university-name-language-id"
+                  autoWidth
+                  label="University name language"
                   value={selectedUniversityNameLanguage}
-                  onChange={() => setSelectedUniversityNameLanguage(
-                    prevState => (prevState === 'english' ? 'native' : 'english'))}>
-                    <MenuItem key={'english'} value={'english'}>english</MenuItem>
-                    <MenuItem key={'native'} value={'native'}>native</MenuItem>
+                  onChange={() =>
+                    setSelectedUniversityNameLanguage((prevState) =>
+                      prevState === "english" ? "native" : "english"
+                    )
+                  }
+                >
+                  <MenuItem key={"english"} value={"english"}>
+                    english
+                  </MenuItem>
+                  <MenuItem key={"native"} value={"native"}>
+                    native
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Box>
             {getUniversitiesContent()}
           </>
-        )
-      case 'loading':
-        return <LoadingContent title='Loading countries'/>  
-      case 'connectionError':
-        return <ContentLoadError title='Connection error' subheader='Failed to load countries'/>
-      case 'serverError':
-        return <ContentLoadError title='Server error' subheader='Failed to load countries'/>
+        );
+      case "loading":
+        return <LoadingContent title="Loading countries" />;
+      case "connectionError":
+        return (
+          <ContentLoadError
+            title="Connection error"
+            subheader="Failed to load countries"
+          />
+        );
+      case "serverError":
+        return (
+          <ContentLoadError
+            title="Server error"
+            subheader="Failed to load countries"
+          />
+        );
     }
-  }
+  };
 
   useEffect(() => {
-    props.getCountries()
-  }, [])
+    getCountries();
+  }, []);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (props.countries.length === 0) {
-        setCountriesFetchStatus('connectionError')
-      } else {
-        setCountriesFetchStatus('success')
-      }
-    }, 5000)
-
-    return () => clearTimeout(timeout)
-  }, [props.countries])
-
-  useEffect(() => {
-    getUniversitiesFromCountry()
-  }, [selectedCountryId])
+    getUniversitiesFromCountry();
+  }, [selectedCountryId]);
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column'}}>
-      <PanelHeader label='Find university where you were on exchange'/>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <PanelHeader label="Find university where you were on exchange" />
       {getContent()}
     </Box>
-  )
-}
+  );
+};
 
 const ChooseMajorSubpanel = (props: ChooseMajorSubpanelProps) => {
-  const [majors, setMajors] = useState<Major[]>([])
-  const [majorsFetchStatus, setMajorsFetchStatus] = useState<DataFetchStatus>('loading')
+  const [majors, setMajors] = useState<Major[]>([]);
+  const [majorsFetchStatus, setMajorsFetchStatus] =
+    useState<DataFetchStatus>("loading");
 
   const getInteractionElement = (majorId: number): ReactElement => {
     if (props.selectedMajorId === majorId) {
       return (
-        <Button variant='contained' size='small' sx={{marginLeft: 2}}
+        <Button
+          variant="contained"
+          size="small"
+          sx={{ marginLeft: 2 }}
           onClick={() => {
-            props.setSelectedMajorId(majorId)
-            props.setCurrentStage('Choose time range')
-          }}>
+            props.setSelectedMajorId(majorId);
+            props.setCurrentStage("Choose time range");
+          }}
+        >
           NEXT STEP
         </Button>
-      )
+      );
     }
-    return <></>
-  }
+    return <></>;
+  };
 
   const getMajors = async () => {
-    const result = await sendGetUniversityMajorsRequest()
+    const result = await sendGetUniversityMajorsRequest();
     if (result.isSuccess) {
-      const majors = result.data
-      setMajors(majors)
-      setMajorsFetchStatus('success')
+      const majors = result.data;
+      setMajors(majors);
+      setMajorsFetchStatus("success");
     } else {
       switch (result.error.status) {
-        case 'INTERNAL_SERVER_ERROR':
-          setMajorsFetchStatus('serverError')
-          break
-        case 'SERVICE_UNAVAILABLE':
-          setMajorsFetchStatus('connectionError')
-          break
+        case "INTERNAL_SERVER_ERROR":
+          setMajorsFetchStatus("serverError");
+          break;
+        case "SERVICE_UNAVAILABLE":
+          setMajorsFetchStatus("connectionError");
+          break;
       }
     }
-  }
+  };
 
   const getContent = () => {
     switch (majorsFetchStatus) {
-      case 'success':
+      case "success":
         return (
-          <Box sx={{display: 'flex', flexDirection: {xs: 'column', md:'row'}}}>
-            <RadioGroup name='universities-buttons-group'
+          <Box
+            sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}
+          >
+            <RadioGroup
+              name="universities-buttons-group"
               value={props.selectedMajorId}
               onChange={(event) => {
-                props.setSelectedMajorId(Number(event.target.value))
-              }}>
-              {majors.map(m => (
-                <FormControlLabel key={m.id} value={m.id} control={<Radio/>} label={(
-                  <>
-                    {m.name}
-                    {getInteractionElement(m.id)}
-                  </>)}
-              />))}
+                props.setSelectedMajorId(Number(event.target.value));
+              }}
+            >
+              {majors.map((m) => (
+                <FormControlLabel
+                  key={m.id}
+                  value={m.id}
+                  control={<Radio />}
+                  label={
+                    <>
+                      {m.name}
+                      {getInteractionElement(m.id)}
+                    </>
+                  }
+                />
+              ))}
             </RadioGroup>
           </Box>
-        )
-      case 'loading':
-        return <LoadingContent title='Loading majors'/>  
-      case 'connectionError':
-        return <ContentLoadError title='Connection error' subheader='Failed to load majors'/>
-      case 'serverError':
-        return <ContentLoadError title='Server error' subheader='Failed to load majors'/>
+        );
+      case "loading":
+        return <LoadingContent title="Loading majors" />;
+      case "connectionError":
+        return (
+          <ContentLoadError
+            title="Connection error"
+            subheader="Failed to load majors"
+          />
+        );
+      case "serverError":
+        return (
+          <ContentLoadError
+            title="Server error"
+            subheader="Failed to load majors"
+          />
+        );
     }
-  }
+  };
 
   useEffect(() => {
-    getMajors()
-  }, []) 
+    getMajors();
+  }, []);
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column'}}>
-      <PanelHeader label='Find your university major'/>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <PanelHeader label="Find your university major" />
       {getContent()}
     </Box>
-  )
-}
+  );
+};
 
 const ChooseTimeRangeSubpanel = (props: ChooseTimeRangeSubpanel) => {
-  const [startDate, setStartDate] = useState<Dayjs | null>(null)
-  const [endDate, setEndDate] = useState<Dayjs | null>(null)
-  const [shouldButtonBeShown, setShouldButtonBeShown] = useState<boolean>(false)
-  const [wasExchangeAddedSuccessfully, setWasExchangeAddedSuccessfully] = useState<boolean>(false)
-  const { showAlert } = useSnackbar()
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const [shouldButtonBeShown, setShouldButtonBeShown] =
+    useState<boolean>(false);
+  const [wasExchangeAddedSuccessfully, setWasExchangeAddedSuccessfully] =
+    useState<boolean>(false);
+  const { showAlert } = useSnackbar();
 
   const handleAddingExchange = async () => {
-    if (!props.selectedUniversityId || !props.selectedMajorId || 
-      !startDate || !endDate) {
-        showAlert('An error occured please try again later.', 'error')
-        return
+    if (
+      !props.selectedUniversityId ||
+      !props.selectedMajorId ||
+      !startDate ||
+      !endDate
+    ) {
+      showAlert("An error occured please try again later.", "error");
+      return;
     }
-    const formattedStartDate = startDate.format('YYYY-MM-DD')
-    const formattedEndDate = endDate.format('YYYY-MM-DD')
+    const formattedStartDate = startDate.format("YYYY-MM-DD");
+    const formattedEndDate = endDate.format("YYYY-MM-DD");
     const request: CreateExchangeRequest = {
       startedAt: formattedStartDate,
       endAt: formattedEndDate,
       universityId: props.selectedUniversityId,
-      universityMajorId: props.selectedMajorId
-    }
-    showAlert('Waiting for server response.', 'info')
-    setShouldButtonBeShown(false)
-    const response = await sendCreateExchangeRequest(request)
+      universityMajorId: props.selectedMajorId,
+    };
+    showAlert("Waiting for server response.", "info");
+    setShouldButtonBeShown(false);
+    const response = await sendCreateExchangeRequest(request);
     if (response.isSuccess) {
-      showAlert('Exchange was successfully added.', 'success')
-      setWasExchangeAddedSuccessfully(true)
+      showAlert("Exchange was successfully added.", "success");
+      setWasExchangeAddedSuccessfully(true);
     } else {
-      const globalErrorsCodes = getGlobalErrorCodes(response.error)
+      const globalErrorsCodes = getGlobalErrorCodes(response.error);
       if (globalErrorsCodes.length !== 0) {
-        if (globalErrorsCodes.includes('ValidDateRange')) {
-          showAlert('Start date must be before end date.', 'error')
+        if (globalErrorsCodes.includes("ValidDateRange")) {
+          showAlert("Start date must be before end date.", "error");
         } else {
-          showAlert('An error occured please try again later.', 'error')
+          showAlert("An error occured please try again later.", "error");
         }
       }
     }
-  }
+  };
 
   useEffect(() => {
-    setShouldButtonBeShown(!!(startDate && endDate))
-  }, [startDate, endDate])
+    setShouldButtonBeShown(!!(startDate && endDate));
+  }, [startDate, endDate]);
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column'}}>
-      <PanelHeader label='Pick boundary dates for your exchange'/>
-      {!wasExchangeAddedSuccessfully &&
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <PanelHeader label="Pick boundary dates for your exchange" />
+      {!wasExchangeAddedSuccessfully && (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Box display="flex" gap={2}>
             <DatePicker
               label="Start date"
               value={startDate}
-              onChange={(newValue) => setStartDate(newValue)}/>
+              onChange={(newValue) => setStartDate(newValue)}
+            />
             <DatePicker
               label="End date"
               value={endDate}
-              onChange={(newValue) => setEndDate(newValue)}/>
+              onChange={(newValue) => setEndDate(newValue)}
+            />
           </Box>
-          {shouldButtonBeShown &&
-            <Button variant='contained' size='medium' sx={{marginLeft: 2, 
-              marginTop: 2, width: {xs: '50%', md: '25%'}}}
+          {shouldButtonBeShown && (
+            <Button
+              variant="contained"
+              size="medium"
+              sx={{
+                marginLeft: 2,
+                marginTop: 2,
+                width: { xs: "50%", md: "25%" },
+              }}
               onClick={() => {
-                handleAddingExchange()
-              }}>
+                handleAddingExchange();
+              }}
+            >
               Add exchange
             </Button>
-          }
+          )}
         </LocalizationProvider>
-      }
+      )}
     </Box>
-  )
-}
+  );
+};
 
-const AddExchangePanel = (props: AddExchangePanelProps) => {
-  const [currentStage, setCurrentStage] = useState<AddExchangeStage>('Choose university')
-  const [selectedUniversityId, setSelectedUniversityId] = useState<number | undefined>(undefined)
-  const [selectedMajorId, setSelectedMajorId] = useState<number | undefined>(undefined)
+const AddExchangePanel = () => {
+  const [currentStage, setCurrentStage] =
+    useState<AddExchangeStage>("Choose university");
+  const [selectedUniversityId, setSelectedUniversityId] = useState<
+    number | undefined
+  >(undefined);
+  const [selectedMajorId, setSelectedMajorId] = useState<number | undefined>(
+    undefined
+  );
 
   const getStagePanel = () => {
-    if (currentStage === 'Choose university') {
-      return <ChooseUniversitySubpanel countries={props.countries} 
-        getCountries={props.getCountries} 
-        selectedUniversityId={selectedUniversityId}
-        setSelectedUniversityId={setSelectedUniversityId}
-        setCurrentStage={setCurrentStage}/>
-    } else if (currentStage === 'Choose major') {
-      return <ChooseMajorSubpanel selectedMajorId={selectedMajorId}
-        setSelectedMajorId={setSelectedMajorId} setCurrentStage={setCurrentStage}/>
-    } else if (currentStage === 'Choose time range') {
-      return <ChooseTimeRangeSubpanel selectedMajorId={selectedMajorId}
-        selectedUniversityId={selectedUniversityId}/>
+    if (currentStage === "Choose university") {
+      return (
+        <ChooseUniversitySubpanel
+          selectedUniversityId={selectedUniversityId}
+          setSelectedUniversityId={setSelectedUniversityId}
+          setCurrentStage={setCurrentStage}
+        />
+      );
+    } else if (currentStage === "Choose major") {
+      return (
+        <ChooseMajorSubpanel
+          selectedMajorId={selectedMajorId}
+          setSelectedMajorId={setSelectedMajorId}
+          setCurrentStage={setCurrentStage}
+        />
+      );
+    } else if (currentStage === "Choose time range") {
+      return (
+        <ChooseTimeRangeSubpanel
+          selectedMajorId={selectedMajorId}
+          selectedUniversityId={selectedUniversityId}
+        />
+      );
     }
-  }
+  };
 
-  return (
-    <Box>
-      {getStagePanel()}
-    </Box>
-  )
-}
+  return <Box>{getStagePanel()}</Box>;
+};
 
-export default AddExchangePanel
+export default AddExchangePanel;

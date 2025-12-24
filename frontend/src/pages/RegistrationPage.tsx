@@ -21,7 +21,7 @@ import registrationPageTextImage from "../assets/registration_page/text.png";
 import registrationSuccessImage from "../assets/registration_page/registration-success.png";
 import type { UserRegistrationRequest } from "../dtos/auth/UserRegistrationRequest";
 import { useState } from "react";
-import { sendUserRegistrationRequest } from "../utils/user";
+import { sendUserRegistrationRequest } from "../utils/auth";
 import type { ApiErrorResponseCode } from "../dtos/error/ApiErrorResponseCode";
 import type { ApiErrorResponse } from "../dtos/error/ApiErrorResponse";
 import { useNavigate } from "react-router-dom";

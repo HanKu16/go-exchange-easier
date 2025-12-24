@@ -1,3 +1,3 @@
-import type { GetUniversityResponse } from "../dtos/university/GetUniversityResponse"
+import type { UniversityDetails } from "../dtos/details/UniversityDetails";
 
-export type University = GetUniversityResponse
+export type University = UniversityDetails;

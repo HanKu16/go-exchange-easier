@@ -33,7 +33,7 @@ import type { Country } from "../types/Country";
 import { sendGetCountriesRequest } from "../utils/country";
 import { sendGetUniversityMajorsRequest } from "../utils/university-major";
 import type { GetUniversityMajorResponse } from "../dtos/university-major/GetUniversityMajorResponse";
-import type { City } from "../types/City";
+// import type { City } from "../types/City";
 
 const MOCK_CITIES_BY_COUNTRY: Record<string, string[]> = {
   Poland: ["Warsaw", "Krakow", "Wroclaw", "Gdansk", "Poznan"],
@@ -661,13 +661,13 @@ const SearchPage = () => {
   const [currentSearchEntity, setCurrentSearchEntity] =
     useState<SearchEntity>("user");
   const [countries, setCountries] = useState<Country[]>([]);
-  const [cities, setCities] = useState<City[]>([]);
+  // const [cities, setCities] = useState<City[]>([]);
   const [majors, setMajors] = useState<Major[]>([]);
 
   const getCountries = async () => {
     const result = await sendGetCountriesRequest();
     if (result.isSuccess) {
-      const allCountries: Country[] = result.data.map((c) => ({
+      const allCountries: Country[] = result.data.content.map((c) => ({
         id: c.id,
         name: c.englishName,
       }));
@@ -676,9 +676,9 @@ const SearchPage = () => {
     }
   };
 
-  const getCities = async () => {
-    // const result
-  };
+  // const getCities = async () => {
+  //   // const result
+  // };
 
   const getMajors = async () => {
     const result = await sendGetUniversityMajorsRequest();
