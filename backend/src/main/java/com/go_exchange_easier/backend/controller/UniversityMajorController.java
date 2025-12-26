@@ -1,6 +1,7 @@
 package com.go_exchange_easier.backend.controller;
 
-import com.go_exchange_easier.backend.dto.universityMajor.GetUniversityMajorResponse;
+import com.go_exchange_easier.backend.dto.common.Listing;
+import com.go_exchange_easier.backend.dto.summary.UniversityMajorSummary;
 import com.go_exchange_easier.backend.service.UniversityMajorService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +23,11 @@ public class UniversityMajorController {
     private final UniversityMajorService universityMajorService;
 
     @GetMapping
-    public ResponseEntity<List<GetUniversityMajorResponse>> getAll() {
-        List<GetUniversityMajorResponse> response = universityMajorService.getAll();
+    public ResponseEntity<Listing<UniversityMajorSummary>> getAll() {
+        List<UniversityMajorSummary> majors = universityMajorService.getAll();
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
-                .body(response);
+                .body(Listing.of(majors));
     }
 
 }

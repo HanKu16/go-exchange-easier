@@ -1,7 +1,8 @@
 package com.go_exchange_easier.backend.controller;
 
 import com.go_exchange_easier.backend.annoations.docs.userStatus.GetAllApiDocs;
-import com.go_exchange_easier.backend.dto.userStatus.GetUserStatusResponse;
+import com.go_exchange_easier.backend.dto.common.Listing;
+import com.go_exchange_easier.backend.dto.summary.UserStatusSummary;
 import com.go_exchange_easier.backend.service.UserStatusService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,9 @@ public class UserStatusController {
 
     @GetMapping
     @GetAllApiDocs
-    public ResponseEntity<List<GetUserStatusResponse>> getAll() {
-        List<GetUserStatusResponse> response = userStatusService.getAll();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Listing<UserStatusSummary>> getAll() {
+        List<UserStatusSummary> statuses = userStatusService.getAll();
+        return ResponseEntity.ok(Listing.of(statuses));
     }
 
 }
