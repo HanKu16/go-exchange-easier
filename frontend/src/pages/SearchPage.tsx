@@ -32,7 +32,7 @@ import {
 import type { Country } from "../types/Country";
 import { sendGetCountriesRequest } from "../utils/country";
 import { sendGetUniversityMajorsRequest } from "../utils/university-major";
-import type { GetUniversityMajorResponse } from "../dtos/university-major/GetUniversityMajorResponse";
+import type { UniversityMajorSummary } from "../dtos/summary/UniversityMajorSummary";
 // import type { City } from "../types/City";
 
 const MOCK_CITIES_BY_COUNTRY: Record<string, string[]> = {
@@ -76,7 +76,7 @@ type UniversityFilterState = {
   city: string | null;
 };
 
-type Major = GetUniversityMajorResponse;
+type Major = UniversityMajorSummary;
 
 const PageHeaders = () => (
   <>

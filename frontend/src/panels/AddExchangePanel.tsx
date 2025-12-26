@@ -5,7 +5,7 @@ import { InputLabel, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
 import { FormControl, Button } from "@mui/material";
 import { FormControlLabel } from "@mui/material";
 import { sendGetUniversityMajorsRequest } from "../utils/university-major";
-import type { GetUniversityMajorResponse } from "../dtos/university-major/GetUniversityMajorResponse";
+import type { UniversityMajorSummary } from "../dtos/summary/UniversityMajorSummary";
 import type { UniversityNameLanguage } from "../types/UniversityNameLanguage";
 import type { University } from "../types/University";
 import type { Country } from "../types/Country";
@@ -24,7 +24,7 @@ import { useSnackbar } from "../context/SnackBarContext";
 import { sendGetUniversitiesRequest } from "../utils/university";
 import { sendGetCountriesRequest } from "../utils/country";
 
-type Major = GetUniversityMajorResponse;
+type Major = UniversityMajorSummary;
 
 type AddExchangeStage =
   | "Choose university"
@@ -309,7 +309,7 @@ const ChooseMajorSubpanel = (props: ChooseMajorSubpanelProps) => {
     const result = await sendGetUniversityMajorsRequest();
     if (result.isSuccess) {
       const majors = result.data;
-      setMajors(majors);
+      setMajors(majors.content);
       setMajorsFetchStatus("success");
     } else {
       switch (result.error.status) {
