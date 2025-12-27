@@ -8,7 +8,6 @@ import com.go_exchange_easier.backend.dto.summary.UniversityReviewCountSummary;
 import com.go_exchange_easier.backend.dto.summary.UniversitySummary;
 import com.go_exchange_easier.backend.dto.summary.UserSummary;
 import com.go_exchange_easier.backend.dto.universityReview.CreateUniversityReviewRequest;
-import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
 import com.go_exchange_easier.backend.dto.universityReview.UniversityReviewReactionDetail;
 import com.go_exchange_easier.backend.exception.JsonParsingException;
 import com.go_exchange_easier.backend.exception.NotOwnerOfResourceException;
@@ -120,19 +119,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
                         university.getEnglishName()),
                 review.getStarRating(), review.getTextContent(),
                 review.getCreatedAt().toInstant(), reactions);
-//        return new CreateUniversityReviewResponse(
-//                savedReview.getId(),
-//                new CreateUniversityReviewResponse.AuthorDto(userId, user.getNick()),
-//                new CreateUniversityReviewResponse.UniversityDto(
-//                        university.getId(), university.getEnglishName(),
-//                        university.getOriginalName()),
-//                review.getStarRating(),
-//                review.getTextContent(),
-//                review.getCreatedAt(),
-//                reactionTypes.stream().map(t -> new CreateUniversityReviewResponse
-//                        .ReactionDetailDto(t.getId(), t.getName(), (short) 0, false))
-//                        .toList()
-//        );
     }
 
     @Override
@@ -165,18 +151,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         review.setAuthor(user);
         review.setUniversity(university);
         return review;
-    }
-
-    private List<GetUniversityReviewResponse.ReactionDetailDto> parseReactionsJsonOld(
-            String json) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(json, new TypeReference
-                    <List<GetUniversityReviewResponse.ReactionDetailDto>>() {});
-        } catch (Exception e) {
-            throw new JsonParsingException("Parsing " + json + " to " +
-                    "List<GetUniversityReviewResponse.ReactionDetailDto> failed.");
-        }
     }
 
     private List<ReactionDetails> parseReactionsJson(

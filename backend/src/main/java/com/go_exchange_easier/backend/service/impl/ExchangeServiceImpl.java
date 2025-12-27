@@ -3,7 +3,6 @@ package com.go_exchange_easier.backend.service.impl;
 import com.go_exchange_easier.backend.dto.details.ExchangeDetails;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeRequest;
 import com.go_exchange_easier.backend.dto.exchange.CreateExchangeResponse;
-import com.go_exchange_easier.backend.dto.exchange.GetUserExchangeResponse;
 import com.go_exchange_easier.backend.exception.*;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.ExchangeNotFoundException;
@@ -22,10 +21,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,37 +31,6 @@ public class ExchangeServiceImpl implements ExchangeService {
     private final UniversityRepository universityRepository;
     private final ExchangeRepository exchangeRepository;
     private final UserRepository userRepository;
-
-    @Override
-    public List<GetUserExchangeResponse> getByUser(int userId) {
-        List<Object[]> rows = exchangeRepository.findByUserId(userId);
-        List<GetUserExchangeResponse> exchanges = new ArrayList<>();
-
-        for (Object[] row : rows) {
-            Integer exchangeId = (Integer) row[0];
-            LocalDate startedAt = ((Date) row[1]).toLocalDate();
-            LocalDate endAt = ((Date) row[2]).toLocalDate();
-            Short universityId = (Short) row[3];
-            String universityOriginalName = (String) row[4];
-            String universityEnglishName = (String) row[5];
-            Integer cityId = (Integer) row[6];
-            String cityName = (String) row[7];
-            Short countryId = (Short) row[8];
-            String countryName = (String) row[9];
-            Short universityMajorId = (Short) row[10];
-            String universityMajorName = (String) row[11];
-            exchanges.add(new GetUserExchangeResponse(exchangeId,
-                    new GetUserExchangeResponse.TimeRangeDto(startedAt, endAt),
-                    new GetUserExchangeResponse.UniversityDto(universityId,
-                            universityOriginalName, universityEnglishName),
-                    new GetUserExchangeResponse.UniversityMajorDto(
-                            universityMajorId, universityMajorName),
-                    new GetUserExchangeResponse.CityDto(cityId, cityName,
-                            new GetUserExchangeResponse.CountryDto(
-                                    countryId, countryName))));
-        }
-        return exchanges;
-    }
 
     @Override
     @Transactional(readOnly = true)

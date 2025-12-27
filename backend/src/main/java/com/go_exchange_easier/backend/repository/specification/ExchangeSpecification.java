@@ -23,6 +23,8 @@ public class ExchangeSpecification {
                 ExchangeSpecification::hasStartDateAtLeast);
         spec = SpecificationUtils.append(spec, filter.endDate(),
                 ExchangeSpecification::hasStartDateAtMost);
+        spec = SpecificationUtils.append(spec, filter.userId(),
+                ExchangeSpecification::hasUserId);
         return spec;
     }
 
@@ -78,6 +80,12 @@ public class ExchangeSpecification {
         };
     }
 
+    public static Specification<Exchange> hasUserId(int userId) {
+        return (root, query, cb) -> {
+            Join<Exchange, User> userJoin = root.join("user");
+            return cb.equal(userJoin.get("id"), userId);
+        };
+    }
 
     public static Specification<Exchange> fetchUser() {
         return (root, query, cb) -> {

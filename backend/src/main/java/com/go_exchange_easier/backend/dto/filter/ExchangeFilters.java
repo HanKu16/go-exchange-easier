@@ -10,6 +10,7 @@ public record ExchangeFilters(
         @RequestParam(value = "countryId", required = false) Short countryId,
         @RequestParam(value = "majorId", required = false) Short majorId,
         @RequestParam(value = "startDate", required = false) LocalDate startDate,
-        @RequestParam(value = "endDate", required = false) LocalDate endDate
+        @RequestParam(value = "endDate", required = false) LocalDate endDate,
+        @RequestParam(value = "userId", required = false) Integer userId
 
 ) {}

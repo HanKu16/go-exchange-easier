@@ -4,8 +4,6 @@ import com.go_exchange_easier.backend.annoations.docs.user.*;
 import com.go_exchange_easier.backend.dto.common.Listing;
 import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
-import com.go_exchange_easier.backend.dto.exchange.GetUserExchangeResponse;
-import com.go_exchange_easier.backend.dto.universityReview.GetUniversityReviewResponse;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.ExchangeService;
@@ -63,15 +61,6 @@ public class UserController {
         List<UniversityReviewDetails> reviews = universityReviewService
                 .getByAuthorId(userId, principal.getUser().getId());
         return ResponseEntity.ok(Listing.of(reviews));
-    }
-
-    @GetMapping("/{userId}/exchanges")
-    @GetExchangesApiDocs
-    public ResponseEntity<List<GetUserExchangeResponse>> getExchanges(
-            @PathVariable("userId") Integer userId,
-            @AuthenticationPrincipal UserCredentials principal) {
-        List<GetUserExchangeResponse> response = exchangeService.getByUser(userId);
-        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/description")

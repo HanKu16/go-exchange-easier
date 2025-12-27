@@ -3,7 +3,7 @@ package com.go_exchange_easier.backend.controller;
 import com.go_exchange_easier.backend.annoations.docs.auth.LoginApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.auth.RegisterApiDocs;
 import com.go_exchange_easier.backend.dto.auth.LoginRequest;
-import com.go_exchange_easier.backend.dto.auth.LoginResponse;
+import com.go_exchange_easier.backend.dto.auth.TokenBundle;
 import com.go_exchange_easier.backend.dto.auth.UserRegistrationRequest;
 import com.go_exchange_easier.backend.dto.auth.UserRegistrationResponse;
 import com.go_exchange_easier.backend.service.AuthService;
@@ -39,9 +39,9 @@ public class AuthController {
 
     @PostMapping("/login")
     @LoginApiDocs
-    public ResponseEntity<LoginResponse> login(
+    public ResponseEntity<TokenBundle> login(
             @RequestBody @Valid LoginRequest request) {
-        LoginResponse response = authService.login(request);
+        TokenBundle response = authService.login(request);
         return ResponseEntity.ok(response);
     }
 
