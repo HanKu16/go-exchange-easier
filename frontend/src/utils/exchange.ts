@@ -9,12 +9,16 @@ import type { ExchangeDetails } from "../dtos/details/ExchangeDetails";
 import type { PageResponse } from "../dtos/common/PageResponse";
 
 export const sendGetExchangesRequest = async (
+  page: number,
+  size: number,
+  sort: string,
   countryId: number | undefined | null,
   universityId: number | undefined | null,
   cityId: number | undefined | null,
   majorId: number | undefined | null,
   startDate: string | undefined | null,
-  endDate: string | undefined | null
+  endDate: string | undefined | null,
+  userId: number | undefined | null
 ): Promise<
   ResponseSuccessResult<PageResponse<ExchangeDetails>> | RepsonseFailureResult
 > => {
@@ -25,7 +29,10 @@ export const sendGetExchangesRequest = async (
   if (majorId) url.searchParams.append("majorId", `${majorId}`);
   if (startDate) url.searchParams.append("startDate", startDate);
   if (endDate) url.searchParams.append("endDate", endDate);
-  url.searchParams.append("sort", "endDate,desc");
+  if (userId) url.searchParams.append("userId", `${userId}`);
+  url.searchParams.append("page", `${page}`);
+  url.searchParams.append("size", `${size}`);
+  url.searchParams.append("sort", sort);
   const uri = url.toString();
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {

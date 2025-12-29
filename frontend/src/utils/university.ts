@@ -14,7 +14,10 @@ export const sendGetUniversitiesRequest = async (
   englishName: string | undefined | null,
   nativeName: string | undefined | null,
   cityId: number | undefined | null,
-  countryId: number | undefined | null
+  countryId: number | undefined | null,
+  page: number,
+  size: number,
+  sort: string
 ): Promise<
   ResponseSuccessResult<PageResponse<UniversityDetails>> | RepsonseFailureResult
 > => {
@@ -23,7 +26,9 @@ export const sendGetUniversitiesRequest = async (
   if (nativeName) url.searchParams.append("nativeName", nativeName);
   if (cityId) url.searchParams.append("cityId", `${cityId}`);
   if (countryId) url.searchParams.append("countryId", `${countryId}`);
-  url.searchParams.append("sort", "englishName,asc");
+  url.searchParams.append("page", `${page}`);
+  url.searchParams.append("size", `${size}`);
+  url.searchParams.append("sort", sort);
   const uri = url.toString();
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Box,
   Button,
@@ -18,6 +18,7 @@ import {
   Divider,
   Autocomplete,
   type SelectChangeEvent,
+  Pagination,
 } from "@mui/material";
 import Navbar from "../components/Navbar";
 import FilterListIcon from "@mui/icons-material/Tune";
@@ -33,15 +34,25 @@ import type { Country } from "../types/Country";
 import { sendGetCountriesRequest } from "../utils/country";
 import { sendGetUniversityMajorsRequest } from "../utils/university-major";
 import type { UniversityMajorSummary } from "../dtos/summary/UniversityMajorSummary";
-// import type { City } from "../types/City";
+import type { City } from "../types/City";
+import { sendGetCitiesRequest } from "../utils/city";
+import { sendGetUniversitiesRequest } from "../utils/university";
+import type { UniversityDetails } from "../dtos/details/UniversityDetails";
+import SearchResultTable from "../components/SearchResult";
+import { data } from "react-router-dom";
+import { API_BASE_URL } from "../config/api";
+import type { DataFetchStatus } from "../types/DataFetchStatus";
+import LoadingContent from "../components/LoadingContent";
+import ContentLoadError from "../components/ContentLoadError";
+import ContentEmpty from "../components/ContentEmpty";
 
-const MOCK_CITIES_BY_COUNTRY: Record<string, string[]> = {
-  Poland: ["Warsaw", "Krakow", "Wroclaw", "Gdansk", "Poznan"],
-  Spain: ["Madrid", "Barcelona", "Valencia", "Seville"],
-  Italy: ["Rome", "Milan", "Naples"],
-  Germany: ["Berlin", "Munich", "Hamburg"],
-  France: ["Paris", "Lyon", "Marseille"],
-};
+// const MOCK_CITIES_BY_COUNTRY: Record<string, string[]> = {
+//   Poland: ["Warsaw", "Krakow", "Wroclaw", "Gdansk", "Poznan"],
+//   Spain: ["Madrid", "Barcelona", "Valencia", "Seville"],
+//   Italy: ["Rome", "Milan", "Naples"],
+//   Germany: ["Berlin", "Munich", "Hamburg"],
+//   France: ["Paris", "Lyon", "Marseille"],
+// };
 
 const MOCK_UNIVERSITIES_BY_CITY: Record<string, string[]> = {
   Warsaw: ["University of Warsaw", "Warsaw University of Technology"],
@@ -72,8 +83,10 @@ type UserFilterState = {
 };
 
 type UniversityFilterState = {
-  country: string | null;
-  city: string | null;
+  englishName: string | null;
+  nativeName: string | null;
+  countryId: number | null;
+  cityId: number | null;
 };
 
 type Major = UniversityMajorSummary;
@@ -190,7 +203,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
                 <TextField {...params} label="Country" variant="filled" />
               )}
             />
-            <Autocomplete
+            {/* <Autocomplete
               options={
                 props.filters.countryId
                   ? MOCK_CITIES_BY_COUNTRY[props.filters.countryId]
@@ -202,7 +215,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
               renderInput={(p) => (
                 <TextField {...p} label="City" variant="filled" />
               )}
-            />
+            /> */}
             <Autocomplete
               options={
                 props.filters.cityId
@@ -286,16 +299,43 @@ type UniversityFilterDrawerProps = {
   setFilters: (f: UniversityFilterState) => void;
   onApply: () => void;
   onReset: () => void;
+  countries: Country[];
 };
 
 const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
-  const handleCountryChange = (_: any, newValue: string | null) => {
-    props.setFilters({ ...props.filters, country: newValue, city: null });
+  const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
+    null
+  );
+  const [cities, setCities] = useState<City[]>([]);
+
+  const handleCountryChange = (_: any, newValue: Country | null) => {
+    props.setFilters({
+      ...props.filters,
+      countryId: newValue ? newValue.id : null,
+      cityId: null,
+    });
+    setSelectedCountryId(newValue ? newValue.id : null);
+    console.log(props.filters);
   };
 
-  const handleCityChange = (_: any, newValue: string | null) => {
-    props.setFilters({ ...props.filters, city: newValue });
+  const handleCityChange = (_: any, newValue: City | null) => {
+    props.setFilters({
+      ...props.filters,
+      cityId: newValue ? newValue.id : null,
+    });
+    console.log(props.filters);
   };
+
+  const getCities = async () => {
+    const result = await sendGetCitiesRequest(selectedCountryId);
+    if (result.isSuccess) {
+      setCities(result.data.content);
+    }
+  };
+
+  useEffect(() => {
+    getCities();
+  }, [selectedCountryId]);
 
   return (
     <Drawer
@@ -322,9 +362,13 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
             </Typography>
           </Stack>
           <Stack spacing={2}>
-            <Autocomplete
-              options={Object.keys(MOCK_CITIES_BY_COUNTRY)}
-              value={props.filters.country}
+            <Autocomplete<Country>
+              options={props.countries}
+              value={
+                props.countries.find((c) => c.id === props.filters.countryId) ||
+                null
+              }
+              getOptionLabel={(c) => c.name}
               onChange={handleCountryChange}
               renderInput={(params) => (
                 <TextField
@@ -337,13 +381,10 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
               )}
             />
             <Autocomplete
-              options={
-                props.filters.country
-                  ? MOCK_CITIES_BY_COUNTRY[props.filters.country]
-                  : []
-              }
-              disabled={!props.filters.country}
-              value={props.filters.city}
+              options={cities}
+              value={cities.find((c) => c.id === props.filters.cityId) || null}
+              getOptionLabel={(c) => c.name}
+              disabled={!props.filters.countryId}
               onChange={handleCityChange}
               noOptionsText="No cities found"
               renderInput={(params) => (
@@ -351,7 +392,7 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
                   {...params}
                   label="City"
                   placeholder={
-                    props.filters.country
+                    props.countries.length > 0
                       ? "Filter by city"
                       : "Select country first"
                   }
@@ -367,20 +408,13 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
       <Stack spacing={2} sx={{ mt: 4 }}>
         <Button
           variant="contained"
-          onClick={props.onApply}
+          onClick={props.onReset}
           sx={{
             py: 1.5,
             borderRadius: 3,
             fontWeight: "bold",
             bgcolor: "black",
           }}
-        >
-          Apply Filters
-        </Button>
-        <Button
-          variant="text"
-          onClick={props.onReset}
-          sx={{ color: "text.secondary" }}
         >
           Clear all
         </Button>
@@ -431,15 +465,12 @@ const UserSearchSection = (props: UserSearchSectionProps) => {
     maxYear: "",
   });
 
-  console.log(props.countries);
-  console.log(props.majors);
   const handleModeChange = (e: SelectChangeEvent) =>
     setMode(e.target.value as SearchMode);
 
   const handleSearch = async () => {
     if (mode === "simple") {
       const result = await sendGetUserByNickRequest(searchNick, 0, 5);
-      console.log(result);
     } else if (mode === "filters") {
       const result = await sendGetUserByExchangeRequest(
         // (!userFilters.universityId && !userFilters.) ? parseInt(userFilters.universityId) : null,
@@ -452,17 +483,8 @@ const UserSearchSection = (props: UserSearchSectionProps) => {
         0,
         5
       );
-      console.log(result);
     }
   };
-  // universityId: number | null,
-  // cityId: number | null,
-  // countryId: number | null,
-  // majorId: number | null,
-  // startDate: string | null,
-  // endDate: string | null,
-  // page: number,
-  // size: number
 
   return (
     <Paper
@@ -562,107 +584,272 @@ const UserSearchSection = (props: UserSearchSectionProps) => {
   );
 };
 
-const UniversitySearchSection = () => {
+type UniversitySearchSectionProps = {
+  countries: Country[];
+  setSearchResult: (searchResult: SearchResult) => void;
+  currentPage: number;
+  setCurrentPage: (currentPage: number) => void;
+  pageSize: number;
+};
+
+type SearchResultFetchStatus = DataFetchStatus | "fetchingWasNotStarted";
+
+const UniversitySearchSection = (props: UniversitySearchSectionProps) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [uniNameType, setUniNameType] = useState<"english" | "native">(
     "english"
   );
   const [searchName, setSearchName] = useState("");
-
+  const [universities, setUniversities] = useState<UniversityDetails[]>([]);
   const [uniFilters, setUniFilters] = useState<UniversityFilterState>({
-    country: null,
-    city: null,
+    countryId: null,
+    cityId: null,
+    englishName: null,
+    nativeName: null,
   });
+  const [universitiesFetchStatus, setUniversitiesFetchStatus] =
+    useState<SearchResultFetchStatus>("fetchingWasNotStarted");
+  const [totalPagesCount, setTotalPagesCount] = useState<number | undefined>(
+    undefined
+  );
+  const previousPage = useRef(props.currentPage);
+
+  const getUniverisites = async () => {
+    setUniversitiesFetchStatus("loading");
+    const result = await sendGetUniversitiesRequest(
+      uniFilters.englishName,
+      uniFilters.nativeName,
+      uniFilters.cityId,
+      uniFilters.countryId,
+      props.currentPage,
+      props.pageSize,
+      "englishName,asc"
+    );
+    console.log(uniFilters);
+    console.log(result);
+    if (result.isSuccess) {
+      setUniversities(result.data.content);
+      setTotalPagesCount(result.data.totalPages);
+      setUniversitiesFetchStatus("success");
+    } else {
+      setUniversities([]);
+      switch (result.error.status) {
+        case "INTERNAL_SERVER_ERROR":
+          setUniversitiesFetchStatus("serverError");
+          break;
+        case "SERVICE_UNAVAILABLE":
+          setUniversitiesFetchStatus("connectionError");
+          break;
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (previousPage.current === props.currentPage) {
+      return;
+    }
+    previousPage.current = props.currentPage;
+    getUniverisites();
+  }, [props.currentPage]);
+
+  useEffect(() => {
+    setSearchName("");
+    if (uniNameType === "english") {
+      setUniFilters({ ...uniFilters, nativeName: null });
+    } else if (uniNameType === "native") {
+      setUniFilters({ ...uniFilters, englishName: null });
+    }
+  }, [uniNameType]);
+
+  useEffect(() => {
+    if (universitiesFetchStatus === "success") {
+      props.setSearchResult({
+        status: "success",
+        resultComponent: getSuccessSearchResult(),
+        totalNumberOfPages: totalPagesCount,
+      });
+    } else {
+      props.setSearchResult({
+        status: universitiesFetchStatus,
+        resultComponent: undefined,
+        totalNumberOfPages: undefined,
+      });
+    }
+  }, [universitiesFetchStatus]);
+
+  const shouldShowGoToDrawerIcon = () => {
+    return props.countries.length > 0;
+  };
+
+  const getSuccessSearchResult = () => {
+    if (universities.length === 0) {
+      return undefined;
+    }
+    return (
+      <SearchResultTable
+        columnNames={["Native name", "English name", "City", "Country"]}
+        rows={universities.map((u) => ({
+          id: u.id,
+          data: [
+            {
+              toShow: u.nativeName || "",
+              route: `/universities/${u.id}`,
+            },
+            {
+              toShow: u.englishName || "",
+              route: `/universities/${u.id}`,
+            },
+            { toShow: u.city?.name || "", route: undefined },
+            {
+              toShow:
+                (
+                  <>
+                    {u.city?.country?.englishName}
+                    <img
+                      src={`/flags/${u.city?.country?.englishName}.png`}
+                      style={{ height: "0.8rem", marginLeft: 2 }}
+                    />
+                  </>
+                ) || "",
+              route: undefined,
+            },
+          ],
+        }))}
+      />
+    );
+  };
 
   return (
-    <Paper
-      elevation={4}
-      sx={{
-        p: "8px 8px 8px 24px",
-        display: "flex",
-        alignItems: "center",
-        width: "100%",
-        maxWidth: 800,
-        borderRadius: "50px",
-        border: "1px solid rgba(0,0,0,0.05)",
-        boxShadow: "0px 4px 20px rgba(0,0,0,0.08)",
-      }}
-    >
-      <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-        <>
-          <Select
-            value={uniNameType}
-            onChange={(e) =>
-              setUniNameType(e.target.value as "english" | "native")
-            }
-            disableUnderline
-            variant="standard"
-            sx={{
-              fontWeight: 600,
-              fontSize: "0.85rem",
-              color: "primary.main",
-              mr: 1.5,
-              minWidth: 80,
-              "& .MuiSelect-icon": { color: "primary.main" },
-            }}
-          >
-            <MenuItem value="english">ENG</MenuItem>
-            <MenuItem value="native">NAT</MenuItem>
-          </Select>
-          <Divider orientation="vertical" sx={{ height: 20, mr: 2 }} />
-        </>
-
-        <InputBase
-          sx={{ flex: 1, fontSize: "1.1rem", fontWeight: 500 }}
-          placeholder={
-            uniNameType === "english"
-              ? "Enter English name..."
-              : "Enter Native name..."
-          }
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-        />
-      </Box>
-
-      <IconButton
-        onClick={() => setDrawerOpen(true)}
-        sx={{ color: "primary.main", mr: 1 }}
-      >
-        <FilterListIcon />
-      </IconButton>
-
-      <Button
-        variant="contained"
+    <>
+      <Paper
+        elevation={4}
         sx={{
+          p: "8px 8px 8px 24px",
+          display: "flex",
+          alignItems: "center",
+          width: "90%",
+          maxWidth: 800,
           borderRadius: "50px",
-          px: 4,
-          py: 1.5,
-          fontWeight: 700,
-          bgcolor: "black",
-          "&:hover": { bgcolor: "#333" },
-          ml: 1,
+          border: "1px solid rgba(0,0,0,0.05)",
+          boxShadow: "0px 4px 20px rgba(0,0,0,0.08)",
+          marginBottom: 8,
         }}
       >
-        Search
-      </Button>
-      <UniversityFilterDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        filters={uniFilters}
-        setFilters={setUniFilters}
-        onApply={() => setDrawerOpen(false)}
-        onReset={() => setUniFilters({ country: null, city: null })}
-      />
-    </Paper>
+        <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
+          <>
+            <Select
+              value={uniNameType}
+              onChange={(e) =>
+                setUniNameType(e.target.value as "english" | "native")
+              }
+              disableUnderline
+              variant="standard"
+              sx={{
+                fontWeight: 600,
+                fontSize: "0.85rem",
+                color: "primary.main",
+                mr: 1.5,
+                minWidth: 80,
+                "& .MuiSelect-icon": { color: "primary.main" },
+              }}
+            >
+              <MenuItem value="english">ENG</MenuItem>
+              <MenuItem value="native">NAT</MenuItem>
+            </Select>
+            <Divider orientation="vertical" sx={{ height: 20, mr: 2 }} />
+          </>
+          <InputBase
+            sx={{ flex: 1, fontSize: "1.1rem", fontWeight: 500 }}
+            placeholder={
+              uniNameType === "english"
+                ? "Enter English name..."
+                : "Enter Native name..."
+            }
+            value={searchName}
+            onChange={(e) => {
+              setSearchName(e.target.value);
+              if (uniNameType === "english") {
+                props.setCurrentPage(0);
+                setUniFilters({ ...uniFilters, englishName: e.target.value });
+              } else {
+                props.setCurrentPage(0);
+                setUniFilters({ ...uniFilters, nativeName: e.target.value });
+              }
+            }}
+          />
+        </Box>
+        {shouldShowGoToDrawerIcon() && (
+          <IconButton
+            onClick={() => setDrawerOpen(true)}
+            sx={{ color: "primary.main", mr: 1 }}
+          >
+            <FilterListIcon />
+          </IconButton>
+        )}
+
+        <Button
+          variant="contained"
+          sx={{
+            borderRadius: "50px",
+            px: 4,
+            py: 1.5,
+            fontWeight: 700,
+            bgcolor: "black",
+            "&:hover": { bgcolor: "#333" },
+            ml: 1,
+          }}
+          onClick={getUniverisites}
+        >
+          Search
+        </Button>
+        <UniversityFilterDrawer
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          filters={uniFilters}
+          setFilters={(f) => {
+            props.setCurrentPage(0);
+            setUniFilters(f);
+          }}
+          onApply={() => setDrawerOpen(false)}
+          onReset={() => {
+            previousPage.current = props.currentPage;
+            props.setSearchResult({
+              status: "fetchingWasNotStarted",
+              resultComponent: undefined,
+              totalNumberOfPages: undefined,
+            });
+            props.setCurrentPage(0);
+            setUniFilters({
+              countryId: null,
+              cityId: null,
+              englishName: null,
+              nativeName: null,
+            });
+          }}
+          countries={props.countries}
+        />
+      </Paper>
+    </>
   );
+};
+
+type SearchResult = {
+  status: DataFetchStatus | "fetchingWasNotStarted";
+  resultComponent: ReactNode | undefined;
+  totalNumberOfPages: number | undefined;
 };
 
 const SearchPage = () => {
   const [currentSearchEntity, setCurrentSearchEntity] =
     useState<SearchEntity>("user");
   const [countries, setCountries] = useState<Country[]>([]);
-  // const [cities, setCities] = useState<City[]>([]);
   const [majors, setMajors] = useState<Major[]>([]);
+  const [searchResult, setSearchResult] = useState<SearchResult>({
+    status: "fetchingWasNotStarted",
+    resultComponent: undefined,
+    totalNumberOfPages: undefined,
+  });
+  const [currentPage, setCurrentPage] = useState<number>(0);
 
   const getCountries = async () => {
     const result = await sendGetCountriesRequest();
@@ -671,33 +858,52 @@ const SearchPage = () => {
         id: c.id,
         name: c.englishName,
       }));
-      allCountries.push({ id: 0, name: "no country" });
       setCountries(allCountries);
     }
   };
 
-  // const getCities = async () => {
-  //   // const result
-  // };
-
-  const getMajors = async () => {
-    const result = await sendGetUniversityMajorsRequest();
-    if (result.isSuccess) {
-      const majors = result.data;
-      setMajors(majors);
+  const getSearchResult = () => {
+    switch (searchResult.status) {
+      case "success":
+        if (searchResult.resultComponent != undefined) {
+          return searchResult.resultComponent;
+        }
+        return (
+          <ContentEmpty
+            title="No records found"
+            subheader="We don't have records that fulfill your filters."
+          />
+        );
+      case "loading":
+        return <LoadingContent title="Searching..." />;
+      case "connectionError":
+        return (
+          <ContentLoadError
+            title="Connection error"
+            subheader="An error occurred during search."
+          />
+        );
+      case "serverError":
+        return (
+          <ContentLoadError
+            title="Connection error"
+            subheader="An error occurred during search."
+          />
+        );
+      case "fetchingWasNotStarted":
+        return <></>;
     }
   };
 
   useEffect(() => {
     getCountries();
-    getMajors();
   }, []);
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
       <Navbar />
       <Container
-        maxWidth="md"
+        maxWidth="lg"
         sx={{
           mt: 8,
           mb: 10,
@@ -714,8 +920,29 @@ const SearchPage = () => {
         {currentSearchEntity === "user" ? (
           <UserSearchSection countries={countries} majors={majors} />
         ) : (
-          <UniversitySearchSection />
+          <UniversitySearchSection
+            countries={countries}
+            setSearchResult={setSearchResult}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageSize={10}
+          />
         )}
+        {getSearchResult()}
+        {searchResult.totalNumberOfPages != undefined &&
+          searchResult.totalNumberOfPages > 1 && (
+            <Container
+              sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}
+            >
+              <Pagination
+                count={searchResult.totalNumberOfPages}
+                page={currentPage + 1}
+                showFirstButton
+                showLastButton
+                onChange={(_, value) => setCurrentPage(value - 1)}
+              />
+            </Container>
+          )}
       </Container>
     </Box>
   );
