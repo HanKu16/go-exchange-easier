@@ -14,7 +14,6 @@ import UniversityReview, {
 } from "../components/UniversityReview";
 import {
   getSignedInUserId,
-  sendGetUserExchangesRequest,
   sendGetUserProfileRequest,
   sendGetUserReviewsRequest,
 } from "../utils/user";
@@ -40,6 +39,7 @@ import type { DataFetchStatus } from "../types/DataFetchStatus";
 import ContentLoadError from "../components/ContentLoadError";
 import LoadingContent from "../components/LoadingContent";
 import { useSnackbar } from "../context/SnackBarContext";
+import { sendGetExchangesRequest } from "../utils/exchange";
 
 const AddExchangeButton = () => {
   const navigate = useNavigate();
@@ -433,10 +433,21 @@ const FeedPanel = (props: FeedPanelProps) => {
   };
 
   const getExchanges = async () => {
-    const result = await sendGetUserExchangesRequest(props.userId);
+    const result = await sendGetExchangesRequest(
+      0,
+      100,
+      "endAt,desc",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      Number(props.userId)
+    );
     if (result.isSuccess) {
       const props: ExchangesProps = {
-        exchanges: result.data.map((e) => ({
+        exchanges: result.data.content.map((e) => ({
           id: e.id,
           timeRange: {
             startedAt: e.timeRange.startedAt,
@@ -448,10 +459,14 @@ const FeedPanel = (props: FeedPanelProps) => {
               ? e.university.englishName
               : e.university.nativeName,
           },
-          universityMajorName: e.universityMajor.name,
+          universityMajorName: e.major.name,
           city: {
-            name: e.city.name,
-            countryName: e.city.country.name,
+            name: e.university.city.name,
+            countryName: e.university.city.country.englishName,
+          },
+          user: {
+            id: e.user.id,
+            nick: e.user.nick,
           },
         })),
       };
