@@ -93,7 +93,10 @@ const ChooseUniversitySubpanel = (props: ChooseUniversitySubpanelProps) => {
       null,
       null,
       null,
-      selectedCountryId
+      selectedCountryId,
+      0,
+      1000,
+      "englishName,asc"
     );
     if (result.isSuccess) {
       setUniversities(result.data.content);
