@@ -39,7 +39,6 @@ public class ExchangeController {
             @ParameterObject Pageable pageable) {
         Page<ExchangeDetails> page = exchangeService.getPage(filters, pageable);
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
                 .body(page);
     }
 
