@@ -26,10 +26,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
-import {
-  sendGetUserByExchangeRequest,
-  sendGetUserByNickRequest,
-} from "../utils/search";
 import type { Country } from "../types/Country";
 import { sendGetCountriesRequest } from "../utils/country";
 import { sendGetUniversityMajorsRequest } from "../utils/university-major";
@@ -39,44 +35,22 @@ import { sendGetCitiesRequest } from "../utils/city";
 import { sendGetUniversitiesRequest } from "../utils/university";
 import type { UniversityDetails } from "../dtos/details/UniversityDetails";
 import SearchResultTable from "../components/SearchResult";
-import { data } from "react-router-dom";
-import { API_BASE_URL } from "../config/api";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
 import ContentEmpty from "../components/ContentEmpty";
-
-// const MOCK_CITIES_BY_COUNTRY: Record<string, string[]> = {
-//   Poland: ["Warsaw", "Krakow", "Wroclaw", "Gdansk", "Poznan"],
-//   Spain: ["Madrid", "Barcelona", "Valencia", "Seville"],
-//   Italy: ["Rome", "Milan", "Naples"],
-//   Germany: ["Berlin", "Munich", "Hamburg"],
-//   France: ["Paris", "Lyon", "Marseille"],
-// };
-
-const MOCK_UNIVERSITIES_BY_CITY: Record<string, string[]> = {
-  Warsaw: ["University of Warsaw", "Warsaw University of Technology"],
-  Krakow: ["Jagiellonian University", "AGH UST"],
-  Madrid: ["Complutense University of Madrid"],
-  Barcelona: ["University of Barcelona"],
-};
-
-// const MOCK_MAJORS = [
-//   "Computer Science",
-//   "Economics",
-//   "Medicine",
-//   "Law",
-//   "Engineering",
-//   "Arts",
-// ];
+import { sendGetUsersRequest } from "../utils/user";
+import { type UserDetails } from "../dtos/details/UserDetails";
+import { sendGetExchangesRequest } from "../utils/exchange";
+import type { ExchangeDetails } from "../dtos/details/ExchangeDetails";
 
 type SearchEntity = "user" | "university";
 type SearchMode = "simple" | "filters";
 
 type UserFilterState = {
   countryId: number | null;
-  cityId: string | null;
-  universityId: string | null;
+  cityId: number | null;
+  universityId: number | null;
   majorId: number | null;
   minYear: string;
   maxYear: string;
@@ -148,24 +122,106 @@ type UserFilterDrawerProps = {
   onApply: () => void;
   onReset: () => void;
   countries: Country[];
-  majors: Major[];
+  resetSearchResult: () => void;
 };
 
 const UserFilterDrawer = (props: UserFilterDrawerProps) => {
-  const handleCountryChange = (value: number | null) =>
+  const [selectedCountryId, setSelectedCountryId] = useState<
+    number | null | undefined
+  >(undefined);
+  const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+  const [selectedUniversityId, setSelectedUniversityId] = useState<
+    number | null
+  >(null);
+  const [selectedMajorId, setSelectedMajorId] = useState<number | null>(null);
+  // const [selectedStartYear, setSelectedStartYear] = useState<number | null>(null);
+  // const [selectedYear, setSelectedEndYear] = useState<number | null>(null);
+
+  const [majors, setMajors] = useState<Major[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [universities, setUniversities] = useState<UniversityDetails[]>([]);
+
+  const getMajors = async () => {
+    const result = await sendGetUniversityMajorsRequest();
+    if (result.isSuccess) {
+      setMajors(result.data.content);
+    }
+  };
+
+  const getCities = async () => {
+    const result = await sendGetCitiesRequest(selectedCountryId);
+    if (result.isSuccess) {
+      setCities(result.data.content);
+    }
+  };
+
+  const getUniverisites = async () => {
+    const result = await sendGetUniversitiesRequest(
+      null,
+      null,
+      selectedCityId,
+      null,
+      0,
+      100,
+      "englishName,asc"
+    );
+    if (result.isSuccess) {
+      setUniversities(result.data.content);
+    }
+  };
+
+  useEffect(() => {
+    getMajors();
+  }, []);
+
+  useEffect(() => {
+    if (selectedCountryId === undefined) {
+      return;
+    }
+    if (selectedCityId == null) {
+      props.resetSearchResult();
+    } else {
+      setSelectedCityId(null);
+      setCities([]);
+    }
+    getCities();
     props.setFilters({
       ...props.filters,
-      countryId: value,
+      countryId: selectedCountryId != undefined ? selectedCountryId : null,
       cityId: null,
+    });
+  }, [selectedCountryId]);
+
+  useEffect(() => {
+    if (selectedUniversityId == null) {
+      props.resetSearchResult();
+    } else {
+      setSelectedUniversityId(null);
+      setUniversities([]);
+    }
+    getUniverisites();
+    props.setFilters({
+      ...props.filters,
+      cityId: selectedCityId,
       universityId: null,
     });
-  const handleMajorChange = (value: number | null) =>
+  }, [selectedCityId]);
+
+  useEffect(() => {
+    props.resetSearchResult();
     props.setFilters({
       ...props.filters,
-      majorId: value,
+      universityId: selectedUniversityId,
     });
-  const handleCityChange = (value: string | null) =>
-    props.setFilters({ ...props.filters, cityId: value, universityId: null });
+  }, [selectedUniversityId]);
+
+  useEffect(() => {
+    props.resetSearchResult();
+    props.setFilters({
+      ...props.filters,
+      majorId: selectedMajorId,
+    });
+  }, [selectedMajorId]);
 
   return (
     <Drawer
@@ -188,47 +244,64 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
             LOCATION
           </Typography>
           <Stack spacing={2}>
-            <Autocomplete
+            <Autocomplete<Country>
               options={props.countries}
-              getOptionLabel={(option) => option.name}
               value={
-                props.countries.find((c) => c.id === props.filters.countryId) ||
-                null
+                props.countries.find((c) => c.id === selectedCountryId) || null
               }
+              getOptionLabel={(c) => c.name}
               onChange={(_, newValue) => {
                 const newId = newValue ? newValue.id : null;
-                handleCountryChange(newId);
+                setSelectedCountryId(newId);
               }}
               renderInput={(params) => (
-                <TextField {...params} label="Country" variant="filled" />
+                <TextField
+                  {...params}
+                  label="Country"
+                  placeholder="Select country"
+                  variant="filled"
+                  sx={{ "& .MuiFilledInput-root": { borderRadius: 2 } }}
+                />
               )}
             />
-            {/* <Autocomplete
-              options={
-                props.filters.countryId
-                  ? MOCK_CITIES_BY_COUNTRY[props.filters.countryId]
-                  : []
-              }
-              disabled={!props.filters.countryId}
-              value={props.filters.cityId}
-              onChange={(_, v) => handleCityChange(v)}
-              renderInput={(p) => (
-                <TextField {...p} label="City" variant="filled" />
+            <Autocomplete<City>
+              options={cities}
+              value={cities.find((c) => c.id === selectedCityId) || null}
+              getOptionLabel={(c) => c.name}
+              disabled={!selectedCountryId}
+              onChange={(_, newValue) => {
+                const newId = newValue ? newValue.id : null;
+                setSelectedCityId(newId);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="City"
+                  placeholder="Select city"
+                  variant="filled"
+                  sx={{ "& .MuiFilledInput-root": { borderRadius: 2 } }}
+                />
               )}
-            /> */}
-            <Autocomplete
-              options={
-                props.filters.cityId
-                  ? MOCK_UNIVERSITIES_BY_CITY[props.filters.cityId] || []
-                  : []
+            />
+            <Autocomplete<UniversityDetails>
+              options={universities}
+              value={
+                universities.find((c) => c.id === selectedUniversityId) || null
               }
-              disabled={!props.filters.cityId}
-              value={props.filters.universityId}
-              onChange={(_, v) =>
-                props.setFilters({ ...props.filters, universityId: v })
-              }
-              renderInput={(p) => (
-                <TextField {...p} label="University" variant="filled" />
+              getOptionLabel={(c) => c.englishName || c.nativeName}
+              disabled={!selectedCityId || !selectedCountryId}
+              onChange={(_, newValue) => {
+                const newId = newValue ? newValue.id : null;
+                setSelectedUniversityId(newId);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="University"
+                  placeholder="Select university"
+                  variant="filled"
+                  sx={{ "& .MuiFilledInput-root": { borderRadius: 2 } }}
+                />
               )}
             />
           </Stack>
@@ -237,13 +310,13 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
           <Typography variant="subtitle2" fontWeight="bold" mb={2}>
             STUDIES
           </Typography>
-          <Autocomplete
-            options={props.majors}
+          <Autocomplete<Major>
+            options={majors}
             getOptionLabel={(option) => option.name}
-            value={props.majors.find((m) => m.id === props.filters.majorId)}
+            value={majors.find((m) => m.id === props.filters.majorId)}
             onChange={(_, newValue) => {
               const newId = newValue ? newValue.id : null;
-              handleMajorChange(newId);
+              setSelectedMajorId(newId);
             }}
             renderInput={(params) => (
               <TextField {...params} label="Major" variant="filled" />
@@ -300,6 +373,7 @@ type UniversityFilterDrawerProps = {
   onApply: () => void;
   onReset: () => void;
   countries: Country[];
+  resetSearchResult: () => void;
 };
 
 const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
@@ -309,21 +383,21 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
   const [cities, setCities] = useState<City[]>([]);
 
   const handleCountryChange = (_: any, newValue: Country | null) => {
+    props.resetSearchResult();
     props.setFilters({
       ...props.filters,
       countryId: newValue ? newValue.id : null,
       cityId: null,
     });
     setSelectedCountryId(newValue ? newValue.id : null);
-    console.log(props.filters);
   };
 
   const handleCityChange = (_: any, newValue: City | null) => {
+    props.resetSearchResult();
     props.setFilters({
       ...props.filters,
       cityId: newValue ? newValue.id : null,
     });
-    console.log(props.filters);
   };
 
   const getCities = async () => {
@@ -447,12 +521,7 @@ const SearchButton = (props: SearchButtonProps) => {
   );
 };
 
-type UserSearchSectionProps = {
-  countries: Country[];
-  majors: Major[];
-};
-
-const UserSearchSection = (props: UserSearchSectionProps) => {
+const UserSearchSection = (props: SearchSectionProps) => {
   const [searchNick, setSearchNick] = useState<string>("");
   const [mode, setMode] = useState<SearchMode>("simple");
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -464,26 +533,187 @@ const UserSearchSection = (props: UserSearchSectionProps) => {
     minYear: "",
     maxYear: "",
   });
+  const [users, setUsers] = useState<UserDetails[] | null>(null);
+  const [exchanges, setExchanges] = useState<ExchangeDetails[]>([]);
+  const [totalPagesCount, setTotalPagesCount] = useState<number | undefined>(
+    undefined
+  );
+  const previousPage = useRef(props.currentPage);
+  const [fetchStatus, setFetchStatus] = useState<SearchResultFetchStatus>(
+    "fetchingWasNotStarted"
+  );
 
-  const handleModeChange = (e: SelectChangeEvent) =>
+  const handleModeChange = (e: SelectChangeEvent) => {
+    props.resetSearchResult();
     setMode(e.target.value as SearchMode);
+  };
 
-  const handleSearch = async () => {
+  const getUsers = async () => {
+    setFetchStatus("loading");
     if (mode === "simple") {
-      const result = await sendGetUserByNickRequest(searchNick, 0, 5);
-    } else if (mode === "filters") {
-      const result = await sendGetUserByExchangeRequest(
-        // (!userFilters.universityId && !userFilters.) ? parseInt(userFilters.universityId) : null,
-        12,
-        null,
-        null,
-        null,
-        null,
-        null,
-        0,
-        5
+      const result = await sendGetUsersRequest(
+        searchNick,
+        props.currentPage,
+        props.pageSize
       );
+      if (result.isSuccess) {
+        setFetchStatus("success");
+        setTotalPagesCount(result.data.totalPages);
+        setUsers(result.data.content);
+      } else {
+        setUsers([]);
+        switch (result.error.status) {
+          case "INTERNAL_SERVER_ERROR":
+            setFetchStatus("serverError");
+            break;
+          case "SERVICE_UNAVAILABLE":
+            setFetchStatus("connectionError");
+            break;
+        }
+      }
+    } else if (mode === "filters") {
+      const result = await sendGetExchangesRequest(
+        props.currentPage,
+        props.pageSize,
+        "endAt,desc",
+        userFilters.countryId,
+        userFilters.universityId,
+        userFilters.cityId,
+        userFilters.majorId,
+        userFilters.minYear,
+        userFilters.maxYear,
+        null
+      );
+      console.log(result);
+      if (result.isSuccess) {
+        setFetchStatus("success");
+        setTotalPagesCount(result.data.totalPages);
+        setExchanges(result.data.content);
+      } else {
+        setExchanges([]);
+        switch (result.error.status) {
+          case "INTERNAL_SERVER_ERROR":
+            setFetchStatus("serverError");
+            break;
+          case "SERVICE_UNAVAILABLE":
+            setFetchStatus("connectionError");
+            break;
+        }
+      }
     }
+  };
+
+  useEffect(() => {
+    if (fetchStatus === "fetchingWasNotStarted" || fetchStatus === "loading") {
+      return;
+    }
+    if (mode === "simple") {
+      if (fetchStatus === "success") {
+        props.setSearchResult({
+          status: "success",
+          resultComponent: getSuccessUsersSearchResult(),
+          totalNumberOfPages: totalPagesCount,
+        });
+      } else {
+        props.resetSearchResult();
+      }
+    } else if (mode === "filters") {
+      if (fetchStatus === "success") {
+        props.setSearchResult({
+          status: "success",
+          resultComponent: getSuccessExchangesSearchResult(),
+          totalNumberOfPages: totalPagesCount,
+        });
+      } else {
+        props.resetSearchResult();
+      }
+    }
+  }, [fetchStatus]);
+
+  useEffect(() => {
+    if (previousPage.current === props.currentPage) {
+      return;
+    }
+    getUsers();
+    previousPage.current = props.currentPage;
+  }, [props.currentPage]);
+
+  const getSuccessExchangesSearchResult = () => {
+    if (!exchanges || exchanges.length === 0) {
+      return undefined;
+    }
+    return (
+      <SearchResultTable
+        columnNames={["Nick", "University", "Major", "Start Date", "End Date"]}
+        rows={exchanges.map((e) => ({
+          id: e.id,
+          data: [
+            {
+              toShow: e.user.nick,
+              route: `/users/${e.user.id}`,
+            },
+            {
+              toShow: e.university.englishName || "unknown",
+              route: `/universities/${e.university.id}`,
+            },
+            {
+              toShow: e.major.name,
+              route: undefined,
+            },
+            {
+              toShow: `${e.timeRange.startedAt}`,
+              route: undefined,
+            },
+            {
+              toShow: `${e.timeRange.endAt}`,
+              route: undefined,
+            },
+          ],
+        }))}
+      />
+    );
+  };
+
+  const getSuccessUsersSearchResult = () => {
+    if (!users || users.length === 0) {
+      return undefined;
+    }
+    return (
+      <SearchResultTable
+        columnNames={["Nick", "Home university", "Country of origin"]}
+        rows={users.map((u) => ({
+          id: u.id,
+          data: [
+            {
+              toShow: u.nick || "",
+              route: `/users/${u.id}`,
+            },
+            {
+              toShow: u.university?.englishName || "unknown",
+              route: `/universities/${u.university?.id}`,
+            },
+            {
+              toShow:
+                u.country && u.country.englishName ? (
+                  <span
+                    style={{ display: "inline-flex", alignItems: "center" }}
+                  >
+                    {u.country.englishName}
+                    <img
+                      src={`/flags/${u.country.englishName}.png`}
+                      alt={u.country.englishName}
+                      style={{ height: "0.8rem", marginLeft: "6px" }}
+                    />
+                  </span>
+                ) : (
+                  "unknown"
+                ),
+              route: undefined,
+            },
+          ],
+        }))}
+      />
+    );
   };
 
   return (
@@ -560,16 +790,16 @@ const UserSearchSection = (props: UserSearchSectionProps) => {
           <FilterListIcon />
         </IconButton>
       )}
-      <SearchButton onClick={handleSearch} />
+      <SearchButton onClick={getUsers} />
       <UserFilterDrawer
         countries={props.countries}
-        majors={props.majors}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         filters={userFilters}
         setFilters={setUserFilters}
         onApply={() => setDrawerOpen(false)}
-        onReset={() =>
+        onReset={() => {
+          previousPage.current = props.currentPage;
           setUserFilters({
             countryId: null,
             cityId: null,
@@ -577,24 +807,26 @@ const UserSearchSection = (props: UserSearchSectionProps) => {
             majorId: null,
             minYear: "",
             maxYear: "",
-          })
-        }
+          });
+        }}
+        resetSearchResult={props.resetSearchResult}
       />
     </Paper>
   );
 };
 
-type UniversitySearchSectionProps = {
+type SearchSectionProps = {
   countries: Country[];
   setSearchResult: (searchResult: SearchResult) => void;
   currentPage: number;
   setCurrentPage: (currentPage: number) => void;
   pageSize: number;
+  resetSearchResult: () => void;
 };
 
 type SearchResultFetchStatus = DataFetchStatus | "fetchingWasNotStarted";
 
-const UniversitySearchSection = (props: UniversitySearchSectionProps) => {
+const UniversitySearchSection = (props: SearchSectionProps) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [uniNameType, setUniNameType] = useState<"english" | "native">(
     "english"
@@ -625,8 +857,6 @@ const UniversitySearchSection = (props: UniversitySearchSectionProps) => {
       props.pageSize,
       "englishName,asc"
     );
-    console.log(uniFilters);
-    console.log(result);
     if (result.isSuccess) {
       setUniversities(result.data.content);
       setTotalPagesCount(result.data.totalPages);
@@ -654,6 +884,7 @@ const UniversitySearchSection = (props: UniversitySearchSectionProps) => {
 
   useEffect(() => {
     setSearchName("");
+    props.resetSearchResult();
     if (uniNameType === "english") {
       setUniFilters({ ...uniFilters, nativeName: null });
     } else if (uniNameType === "native") {
@@ -732,7 +963,6 @@ const UniversitySearchSection = (props: UniversitySearchSectionProps) => {
           borderRadius: "50px",
           border: "1px solid rgba(0,0,0,0.05)",
           boxShadow: "0px 4px 20px rgba(0,0,0,0.08)",
-          marginBottom: 8,
         }}
       >
         <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
@@ -762,17 +992,17 @@ const UniversitySearchSection = (props: UniversitySearchSectionProps) => {
             sx={{ flex: 1, fontSize: "1.1rem", fontWeight: 500 }}
             placeholder={
               uniNameType === "english"
-                ? "Enter English name..."
-                : "Enter Native name..."
+                ? "Enter English name"
+                : "Enter Native name"
             }
             value={searchName}
             onChange={(e) => {
               setSearchName(e.target.value);
               if (uniNameType === "english") {
-                props.setCurrentPage(0);
+                props.resetSearchResult();
                 setUniFilters({ ...uniFilters, englishName: e.target.value });
               } else {
-                props.setCurrentPage(0);
+                props.resetSearchResult();
                 setUniFilters({ ...uniFilters, nativeName: e.target.value });
               }
             }}
@@ -813,12 +1043,7 @@ const UniversitySearchSection = (props: UniversitySearchSectionProps) => {
           onApply={() => setDrawerOpen(false)}
           onReset={() => {
             previousPage.current = props.currentPage;
-            props.setSearchResult({
-              status: "fetchingWasNotStarted",
-              resultComponent: undefined,
-              totalNumberOfPages: undefined,
-            });
-            props.setCurrentPage(0);
+            props.resetSearchResult();
             setUniFilters({
               countryId: null,
               cityId: null,
@@ -827,6 +1052,7 @@ const UniversitySearchSection = (props: UniversitySearchSectionProps) => {
             });
           }}
           countries={props.countries}
+          resetSearchResult={props.resetSearchResult}
         />
       </Paper>
     </>
@@ -843,13 +1069,34 @@ const SearchPage = () => {
   const [currentSearchEntity, setCurrentSearchEntity] =
     useState<SearchEntity>("user");
   const [countries, setCountries] = useState<Country[]>([]);
-  const [majors, setMajors] = useState<Major[]>([]);
   const [searchResult, setSearchResult] = useState<SearchResult>({
     status: "fetchingWasNotStarted",
     resultComponent: undefined,
     totalNumberOfPages: undefined,
   });
   const [currentPage, setCurrentPage] = useState<number>(0);
+
+  const handleEntityChange = (newEntity: SearchEntity) => {
+    setCurrentSearchEntity(newEntity);
+    setSearchResult({
+      status: "fetchingWasNotStarted",
+      resultComponent: undefined,
+      totalNumberOfPages: undefined,
+    });
+    setCurrentPage(0);
+  };
+
+  const resetSearchResult = () => {
+    if (resetSearchResult === undefined) {
+      return;
+    }
+    setSearchResult({
+      status: "fetchingWasNotStarted",
+      resultComponent: undefined,
+      totalNumberOfPages: undefined,
+    });
+    setCurrentPage(0);
+  };
 
   const getCountries = async () => {
     const result = await sendGetCountriesRequest();
@@ -899,6 +1146,10 @@ const SearchPage = () => {
     getCountries();
   }, []);
 
+  useEffect(() => {
+    console.log("Current page changed: ", currentPage);
+  }, [currentPage]);
+
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
       <Navbar />
@@ -915,17 +1166,27 @@ const SearchPage = () => {
         <PageHeaders />
         <SearchEntitiesOptions
           currentSearchEntity={currentSearchEntity}
-          setCurrentSearchEntity={setCurrentSearchEntity}
+          setCurrentSearchEntity={handleEntityChange}
         />
         {currentSearchEntity === "user" ? (
-          <UserSearchSection countries={countries} majors={majors} />
-        ) : (
-          <UniversitySearchSection
+          <UserSearchSection
+            key="user-section"
             countries={countries}
             setSearchResult={setSearchResult}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             pageSize={10}
+            resetSearchResult={resetSearchResult}
+          />
+        ) : (
+          <UniversitySearchSection
+            key="university-section"
+            countries={countries}
+            setSearchResult={setSearchResult}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageSize={10}
+            resetSearchResult={resetSearchResult}
           />
         )}
         {getSearchResult()}
