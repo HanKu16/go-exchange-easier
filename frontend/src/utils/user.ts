@@ -14,6 +14,8 @@ import type { AssignCountryOfOriginResponse } from "../dtos/user/AssignCountryOf
 import { API_BASE_URL } from "../config/api";
 import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
 import type { Listing } from "../dtos/common/Listing";
+import type { PageResponse } from "../dtos/common/PageResponse";
+import type { UserDetails } from "../dtos/details/UserDetails";
 
 export const sendGetUserProfileRequest = async (
   userId: number | string
@@ -153,4 +155,28 @@ export const getSignedInUserJwtToken = (): string => {
     throw new Error("Did not found jwt token");
   }
   return token;
+};
+
+export const sendGetUsersRequest = async (
+  nick: string,
+  page: number,
+  size: number
+): Promise<
+  ResponseSuccessResult<PageResponse<UserDetails>> | RepsonseFailureResult
+> => {
+  const params = new URLSearchParams({
+    nick: nick,
+    page: page.toString(),
+    size: size.toString(),
+  });
+  const uri: string = `${API_BASE_URL}/api/users?${params.toString()}`;
+  const jwtToken = getSignedInUserJwtToken();
+  const request: RequestInit = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+  return await sendRequest<PageResponse<UserDetails>>(uri, request);
 };

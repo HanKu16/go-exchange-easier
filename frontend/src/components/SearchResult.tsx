@@ -31,7 +31,7 @@ const SearchResultTable = (props: SearchResultTableProps) => {
   const navigate = useNavigate();
 
   return (
-    <Box sx={{ display: "flex", margin: "auto", width: "100%" }}>
+    <Box sx={{ display: "flex", margin: "auto", width: "100%", marginTop: 8 }}>
       {!isMobile ? (
         <TableContainer
           component={Paper}

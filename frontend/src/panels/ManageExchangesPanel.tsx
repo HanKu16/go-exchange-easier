@@ -13,7 +13,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { sendGetUserExchangesRequest } from "../utils/user";
 import { useState } from "react";
 import NoContent from "../components/NoContent";
 import { useEffect } from "react";
