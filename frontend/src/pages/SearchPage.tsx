@@ -119,8 +119,6 @@ type UserFilterDrawerProps = {
   onClose: () => void;
   filters: UserFilterState;
   setFilters: (f: UserFilterState) => void;
-  onApply: () => void;
-  onReset: () => void;
   countries: Country[];
   resetSearchResult: () => void;
 };
@@ -222,6 +220,14 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
       majorId: selectedMajorId,
     });
   }, [selectedMajorId]);
+
+  const resetButtonHandler = () => {
+    props.resetSearchResult();
+    setSelectedCountryId(null);
+    setSelectedCityId(null);
+    setSelectedUniversityId(null);
+    setSelectedMajorId(null);
+  };
 
   return (
     <Drawer
@@ -352,12 +358,9 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
       <Stack spacing={2} mt={4}>
         <Button
           variant="contained"
-          onClick={props.onApply}
+          onClick={resetButtonHandler}
           sx={{ py: 1.5, borderRadius: 3, bgcolor: "black" }}
         >
-          Apply
-        </Button>
-        <Button onClick={props.onReset} sx={{ color: "text.secondary" }}>
           Reset
         </Button>
       </Stack>
@@ -797,18 +800,6 @@ const UserSearchSection = (props: SearchSectionProps) => {
         onClose={() => setDrawerOpen(false)}
         filters={userFilters}
         setFilters={setUserFilters}
-        onApply={() => setDrawerOpen(false)}
-        onReset={() => {
-          previousPage.current = props.currentPage;
-          setUserFilters({
-            countryId: null,
-            cityId: null,
-            universityId: null,
-            majorId: null,
-            minYear: "",
-            maxYear: "",
-          });
-        }}
         resetSearchResult={props.resetSearchResult}
       />
     </Paper>
