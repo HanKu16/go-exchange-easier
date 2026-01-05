@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.repository.specification;
 import com.go_exchange_easier.backend.model.*;
 import com.go_exchange_easier.backend.dto.filter.ExchangeFilters;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
@@ -22,7 +23,7 @@ public class ExchangeSpecification {
         spec = SpecificationUtils.append(spec, filter.startDate(),
                 ExchangeSpecification::hasStartDateAtLeast);
         spec = SpecificationUtils.append(spec, filter.endDate(),
-                ExchangeSpecification::hasStartDateAtMost);
+                ExchangeSpecification::hasEndDateAtMost);
         spec = SpecificationUtils.append(spec, filter.userId(),
                 ExchangeSpecification::hasUserId);
         return spec;
@@ -72,11 +73,11 @@ public class ExchangeSpecification {
         };
     }
 
-    public static Specification<Exchange> hasStartDateAtMost(
+    public static Specification<Exchange> hasEndDateAtMost(
             LocalDate rangeEndDate) {
         return (root, query, cb) -> {
-            Path<LocalDate> exchangeStartDatePath = root.get("startedAt");
-            return cb.lessThanOrEqualTo(exchangeStartDatePath, rangeEndDate);
+            Path<LocalDate> exchangeEndDatePath = root.get("endAt");
+            return cb.lessThanOrEqualTo(exchangeEndDatePath, rangeEndDate);
         };
     }
 
@@ -89,11 +90,8 @@ public class ExchangeSpecification {
 
     public static Specification<Exchange> fetchUser() {
         return (root, query, cb) -> {
-            if ((query.getResultType() != Long.class) &&
-                    (query.getResultType() != long.class)) {
-                root.fetch("user");
-            }
-            return null;
+            Join<Exchange, User> userJoin = root.join("user", JoinType.INNER);
+            return cb.isNull(userJoin.get("deletedAt"));
         };
     }
 
