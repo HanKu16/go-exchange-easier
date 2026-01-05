@@ -52,8 +52,8 @@ type UserFilterState = {
   cityId: number | null;
   universityId: number | null;
   majorId: number | null;
-  minYear: string;
-  maxYear: string;
+  minYear: number | null;
+  maxYear: number | null;
 };
 
 type UniversityFilterState = {
@@ -132,8 +132,8 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
     number | null
   >(null);
   const [selectedMajorId, setSelectedMajorId] = useState<number | null>(null);
-  // const [selectedStartYear, setSelectedStartYear] = useState<number | null>(null);
-  // const [selectedYear, setSelectedEndYear] = useState<number | null>(null);
+  const [selectedMinYear, setSelectedMinYear] = useState<number | null>(null);
+  const [selectedMaxYear, setSelectedMaxYear] = useState<number | null>(null);
 
   const [majors, setMajors] = useState<Major[]>([]);
   const [cities, setCities] = useState<City[]>([]);
@@ -221,12 +221,30 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
     });
   }, [selectedMajorId]);
 
+  useEffect(() => {
+    props.resetSearchResult();
+    props.setFilters({
+      ...props.filters,
+      minYear: selectedMinYear,
+    });
+  }, [selectedMinYear]);
+
+  useEffect(() => {
+    props.resetSearchResult();
+    props.setFilters({
+      ...props.filters,
+      maxYear: selectedMaxYear,
+    });
+  }, [selectedMaxYear]);
+
   const resetButtonHandler = () => {
     props.resetSearchResult();
     setSelectedCountryId(null);
     setSelectedCityId(null);
     setSelectedUniversityId(null);
     setSelectedMajorId(null);
+    setSelectedMinYear(null);
+    setSelectedMaxYear(null);
   };
 
   return (
@@ -238,7 +256,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
         <Typography variant="h5" fontWeight="800">
-          Filter Users
+          Filter by exchange details
         </Typography>
         <IconButton onClick={props.onClose} sx={{ bgcolor: "#f5f5f5" }}>
           <CloseIcon />
@@ -319,7 +337,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
           <Autocomplete<Major>
             options={majors}
             getOptionLabel={(option) => option.name}
-            value={majors.find((m) => m.id === props.filters.majorId)}
+            value={majors.find((m) => m.id === props.filters.majorId) || null}
             onChange={(_, newValue) => {
               const newId = newValue ? newValue.id : null;
               setSelectedMajorId(newId);
@@ -337,18 +355,22 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
             <TextField
               label="From"
               type="number"
-              value={props.filters.minYear}
+              value={selectedMinYear ?? ""}
               onChange={(e) =>
-                props.setFilters({ ...props.filters, minYear: e.target.value })
+                setSelectedMinYear(
+                  e.target.value ? Number(e.target.value) : null
+                )
               }
               sx={{ width: "50%" }}
             />
             <TextField
               label="To"
               type="number"
-              value={props.filters.maxYear}
+              value={selectedMaxYear ?? ""}
               onChange={(e) =>
-                props.setFilters({ ...props.filters, maxYear: e.target.value })
+                setSelectedMaxYear(
+                  e.target.value ? Number(e.target.value) : null
+                )
               }
               sx={{ width: "50%" }}
             />
@@ -533,8 +555,8 @@ const UserSearchSection = (props: SearchSectionProps) => {
     cityId: null,
     universityId: null,
     majorId: null,
-    minYear: "",
-    maxYear: "",
+    minYear: null,
+    maxYear: null,
   });
   const [users, setUsers] = useState<UserDetails[] | null>(null);
   const [exchanges, setExchanges] = useState<ExchangeDetails[]>([]);
@@ -583,8 +605,8 @@ const UserSearchSection = (props: SearchSectionProps) => {
         userFilters.universityId,
         userFilters.cityId,
         userFilters.majorId,
-        userFilters.minYear,
-        userFilters.maxYear,
+        userFilters.minYear === null ? null : `${userFilters.minYear}-01-01`,
+        userFilters.maxYear === null ? null : `${userFilters.maxYear}-12-31`,
         null
       );
       console.log(result);
@@ -754,7 +776,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
             By Nick
           </MenuItem>
           <MenuItem value="filters">
-            <SettingsSuggestIcon fontSize="small" /> By Filters
+            <SettingsSuggestIcon fontSize="small" /> By Exchange
           </MenuItem>
         </Select>
       </FormControl>
