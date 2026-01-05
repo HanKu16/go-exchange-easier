@@ -26,6 +26,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
+import SearchIcon from "@mui/icons-material/Search";
+
 import type { Country } from "../types/Country";
 import { sendGetCountriesRequest } from "../utils/country";
 import { sendGetUniversityMajorsRequest } from "../utils/university-major";
@@ -187,31 +189,32 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
     if (selectedCountryId === undefined) {
       return;
     }
-    if (selectedCityId == null) {
-      props.resetSearchResult();
-    } else {
-      setSelectedCityId(null);
-      setCities([]);
+    setSelectedCityId(null);
+    setSelectedUniversityId(null);
+    setCities([]);
+    setUniversities([]);
+    props.resetSearchResult();
+    if (selectedCountryId !== null) {
+      getCities();
     }
-    getCities();
     props.setFilters({
       ...props.filters,
       countryId: selectedCountryId != undefined ? selectedCountryId : null,
       cityId: null,
+      universityId: null,
     });
   }, [selectedCountryId]);
 
   useEffect(() => {
-    if (selectedCountryId === undefined) {
+    if (selectedCountryId === null || selectedCountryId === undefined) {
       return;
     }
-    if (selectedUniversityId == null) {
-      props.resetSearchResult();
-    } else {
-      setSelectedUniversityId(null);
-      setUniversities([]);
+    setSelectedUniversityId(null);
+    setUniversities([]);
+    if (selectedCityId !== null) {
+      getUniversities();
     }
-    getUniversities();
+    props.resetSearchResult();
     props.setFilters({
       ...props.filters,
       cityId: selectedCityId,
@@ -220,11 +223,18 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
   }, [selectedCityId]);
 
   useEffect(() => {
-    props.resetSearchResult();
+    if (
+      selectedCountryId === null ||
+      selectedCountryId === undefined ||
+      selectedCityId === null
+    ) {
+      return;
+    }
     props.setFilters({
       ...props.filters,
       universityId: selectedUniversityId,
     });
+    props.resetSearchResult();
   }, [selectedUniversityId]);
 
   useEffect(() => {
@@ -601,6 +611,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
   };
 
   const getUsers = async () => {
+    console.log(userFilters);
     setFetchStatus("loading");
     if (mode === "simple") {
       const result = await sendGetUsersRequest(
@@ -789,24 +800,30 @@ const UserSearchSection = (props: SearchSectionProps) => {
     <Paper
       elevation={4}
       sx={{
-        p: "8px 8px 8px 24px",
         display: "flex",
         alignItems: "center",
-        width: "100%",
+        width: { xs: "95%", sm: "90%" },
         maxWidth: 800,
         borderRadius: "50px",
         border: "1px solid rgba(0,0,0,0.05)",
         boxShadow: "0px 4px 20px rgba(0,0,0,0.08)",
+        p: { xs: "4px 8px", md: "8px 8px 8px 24px" },
       }}
     >
-      <FormControl variant="standard" sx={{ minWidth: 140, mr: 2 }}>
+      <FormControl
+        variant="standard"
+        sx={{
+          minWidth: { xs: 110, md: 140 },
+          mr: { xs: 1, md: 2 },
+        }}
+      >
         <Select
           value={mode}
           onChange={handleModeChange}
           disableUnderline
           sx={{
             fontWeight: 700,
-            fontSize: "0.9rem",
+            fontSize: { xs: "0.8rem", md: "0.9rem" },
             color: "text.secondary",
             "& .MuiSelect-select": {
               display: "flex",
@@ -826,12 +843,18 @@ const UserSearchSection = (props: SearchSectionProps) => {
           )}
         </Select>
       </FormControl>
-
-      <Divider orientation="vertical" sx={{ height: 28, mr: 2 }} />
+      <Divider
+        orientation="vertical"
+        sx={{ height: 28, mr: { xs: 1, md: 2 } }}
+      />
       {mode === "simple" ? (
         <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
           <InputBase
-            sx={{ flex: 1, fontSize: "1.1rem", fontWeight: 500 }}
+            sx={{
+              flex: 1,
+              fontWeight: 500,
+              fontSize: { xs: "0.95rem", md: "1.1rem" },
+            }}
             placeholder="Enter nickname"
             value={searchNick}
             onChange={(e) => setSearchNick(e.target.value)}
@@ -848,20 +871,43 @@ const UserSearchSection = (props: SearchSectionProps) => {
           }}
           onClick={() => setDrawerOpen(true)}
         >
-          <Typography fontSize="1.1rem" color="text.secondary">
-            Click to set filters
+          <Typography
+            color="text.secondary"
+            sx={{ fontSize: { xs: "0.9rem", md: "1.1rem" } }}
+          >
+            Set filters
           </Typography>
         </Box>
       )}
       {mode === "filters" && (
         <IconButton
           onClick={() => setDrawerOpen(true)}
-          sx={{ color: "primary.main", mr: 1 }}
+          sx={{
+            color: "primary.main",
+            mr: { xs: 0, md: 1 },
+            padding: { xs: 1, md: "8px" },
+          }}
         >
           <FilterListIcon />
         </IconButton>
       )}
-      <SearchButton onClick={getUsers} />
+      <IconButton
+        onClick={getUsers}
+        sx={{
+          display: { xs: "flex", sm: "none" },
+          bgcolor: "black",
+          color: "white",
+          p: 1,
+          ml: 1,
+          "&:hover": { bgcolor: "#333" },
+        }}
+      >
+        <SearchIcon />
+      </IconButton>
+      <Box sx={{ display: { xs: "none", sm: "block" }, ml: 1 }}>
+        <SearchButton onClick={getUsers} />
+      </Box>
+
       <UserFilterDrawer
         countries={props.countries}
         open={drawerOpen}
@@ -1010,111 +1056,137 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
   };
 
   return (
-    <>
-      <Paper
-        elevation={4}
+    <Paper
+      elevation={4}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        width: { xs: "95%", sm: "90%" },
+        maxWidth: 800,
+        borderRadius: "50px",
+        border: "1px solid rgba(0,0,0,0.05)",
+        boxShadow: "0px 4px 20px rgba(0,0,0,0.08)",
+        p: { xs: "4px 8px", md: "8px 8px 8px 24px" },
+      }}
+    >
+      <Box
         sx={{
-          p: "8px 8px 8px 24px",
+          flex: 1,
           display: "flex",
           alignItems: "center",
-          width: "90%",
-          maxWidth: 800,
-          borderRadius: "50px",
-          border: "1px solid rgba(0,0,0,0.05)",
-          boxShadow: "0px 4px 20px rgba(0,0,0,0.08)",
+          overflow: "hidden",
         }}
       >
-        <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-          <>
-            <Select
-              value={uniNameType}
-              onChange={(e) =>
-                setUniNameType(e.target.value as "english" | "native")
-              }
-              disableUnderline
-              variant="standard"
-              sx={{
-                fontWeight: 600,
-                fontSize: "0.85rem",
-                color: "primary.main",
-                mr: 1.5,
-                minWidth: 80,
-                "& .MuiSelect-icon": { color: "primary.main" },
-              }}
-            >
-              <MenuItem value="english">ENG</MenuItem>
-              <MenuItem value="native">NAT</MenuItem>
-            </Select>
-            <Divider orientation="vertical" sx={{ height: 20, mr: 2 }} />
-          </>
-          <InputBase
-            sx={{ flex: 1, fontSize: "1.1rem", fontWeight: 500 }}
-            placeholder={
-              uniNameType === "english"
-                ? "Enter English name"
-                : "Enter Native name"
-            }
-            value={searchName}
-            onChange={(e) => {
-              setSearchName(e.target.value);
-              if (uniNameType === "english") {
-                props.resetSearchResult();
-                setUniFilters({ ...uniFilters, englishName: e.target.value });
-              } else {
-                props.resetSearchResult();
-                setUniFilters({ ...uniFilters, nativeName: e.target.value });
-              }
-            }}
-          />
-        </Box>
-        {shouldShowGoToDrawerIcon() && (
-          <IconButton
-            onClick={() => setDrawerOpen(true)}
-            sx={{ color: "primary.main", mr: 1 }}
-          >
-            <FilterListIcon />
-          </IconButton>
-        )}
-
-        <Button
-          variant="contained"
+        <Select
+          value={uniNameType}
+          onChange={(e) =>
+            setUniNameType(e.target.value as "english" | "native")
+          }
+          disableUnderline
+          variant="standard"
           sx={{
-            borderRadius: "50px",
-            px: 4,
-            py: 1.5,
-            fontWeight: 700,
-            bgcolor: "black",
-            "&:hover": { bgcolor: "#333" },
-            ml: 1,
+            fontWeight: 600,
+            fontSize: "0.85rem",
+            color: "primary.main",
+            mr: { xs: 0.5, md: 1.5 },
+            minWidth: { xs: 60, md: 80 },
+            "& .MuiSelect-icon": { color: "primary.main" },
           }}
-          onClick={getUniverisities}
         >
-          Search
-        </Button>
-        <UniversityFilterDrawer
-          open={drawerOpen}
-          onClose={() => setDrawerOpen(false)}
-          filters={uniFilters}
-          setFilters={(f) => {
-            props.setCurrentPage(0);
-            setUniFilters(f);
-          }}
-          onApply={() => setDrawerOpen(false)}
-          onReset={() => {
-            previousPage.current = props.currentPage;
-            props.resetSearchResult();
-            setUniFilters({
-              countryId: null,
-              cityId: null,
-              englishName: null,
-              nativeName: null,
-            });
-          }}
-          countries={props.countries}
-          resetSearchResult={props.resetSearchResult}
+          <MenuItem value="english">ENG</MenuItem>
+          <MenuItem value="native">NAT</MenuItem>
+        </Select>
+        <Divider
+          orientation="vertical"
+          sx={{ height: 20, mr: { xs: 1, md: 2 } }}
         />
-      </Paper>
-    </>
+        <InputBase
+          sx={{
+            flex: 1,
+            fontSize: { xs: "0.95rem", md: "1.1rem" },
+            fontWeight: 500,
+          }}
+          placeholder={
+            uniNameType === "english" ? "English name" : "Native name"
+          }
+          value={searchName}
+          onChange={(e) => {
+            setSearchName(e.target.value);
+            if (uniNameType === "english") {
+              props.resetSearchResult();
+              setUniFilters({ ...uniFilters, englishName: e.target.value });
+            } else {
+              props.resetSearchResult();
+              setUniFilters({ ...uniFilters, nativeName: e.target.value });
+            }
+          }}
+        />
+      </Box>
+      {shouldShowGoToDrawerIcon() && (
+        <IconButton
+          onClick={() => setDrawerOpen(true)}
+          sx={{
+            color: "primary.main",
+            mr: { xs: 0, md: 1 },
+            padding: { xs: 1, md: "8px" },
+          }}
+        >
+          <FilterListIcon />
+        </IconButton>
+      )}
+      <IconButton
+        onClick={getUniverisities}
+        sx={{
+          display: { xs: "flex", sm: "none" },
+          bgcolor: "black",
+          color: "white",
+          p: 1,
+          ml: 1,
+          "&:hover": { bgcolor: "#333" },
+        }}
+      >
+        <SearchIcon />
+      </IconButton>
+      <Button
+        variant="contained"
+        onClick={getUniverisities}
+        sx={{
+          display: { xs: "none", sm: "flex" },
+          borderRadius: "50px",
+          px: 4,
+          py: 1.5,
+          fontWeight: 700,
+          bgcolor: "black",
+          "&:hover": { bgcolor: "#333" },
+          ml: 1,
+        }}
+      >
+        Search
+      </Button>
+      <UniversityFilterDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        filters={uniFilters}
+        setFilters={(f) => {
+          props.setCurrentPage(0);
+          setUniFilters(f);
+        }}
+        onApply={() => setDrawerOpen(false)}
+        onReset={() => {
+          previousPage.current = props.currentPage;
+          props.resetSearchResult();
+          setUniFilters({
+            countryId: null,
+            cityId: null,
+            englishName: null,
+            nativeName: null,
+          });
+          setSearchName("");
+        }}
+        countries={props.countries}
+        resetSearchResult={props.resetSearchResult}
+      />
+    </Paper>
   );
 };
 
