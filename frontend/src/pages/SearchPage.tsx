@@ -43,6 +43,7 @@ import { sendGetUsersRequest } from "../utils/user";
 import { type UserDetails } from "../dtos/details/UserDetails";
 import { sendGetExchangesRequest } from "../utils/exchange";
 import type { ExchangeDetails } from "../dtos/details/ExchangeDetails";
+import { useSnackbar } from "../context/SnackBarContext";
 
 type SearchEntity = "user" | "university";
 type SearchMode = "simple" | "filters";
@@ -134,15 +135,19 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
   const [selectedMajorId, setSelectedMajorId] = useState<number | null>(null);
   const [selectedMinYear, setSelectedMinYear] = useState<number | null>(null);
   const [selectedMaxYear, setSelectedMaxYear] = useState<number | null>(null);
-
   const [majors, setMajors] = useState<Major[]>([]);
+  const [showMajorsDropdown, setShowMajorsDropdown] = useState(false);
   const [cities, setCities] = useState<City[]>([]);
   const [universities, setUniversities] = useState<UniversityDetails[]>([]);
+  const { showAlert } = useSnackbar();
 
   const getMajors = async () => {
     const result = await sendGetUniversityMajorsRequest();
     if (result.isSuccess) {
       setMajors(result.data.content);
+      setShowMajorsDropdown(true);
+    } else {
+      setShowMajorsDropdown(false);
     }
   };
 
@@ -150,10 +155,13 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
     const result = await sendGetCitiesRequest(selectedCountryId);
     if (result.isSuccess) {
       setCities(result.data.content);
+    } else {
+      setCities([]);
+      showAlert("Failed to load cities.", "error");
     }
   };
 
-  const getUniverisites = async () => {
+  const getUniversities = async () => {
     const result = await sendGetUniversitiesRequest(
       null,
       null,
@@ -165,6 +173,9 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
     );
     if (result.isSuccess) {
       setUniversities(result.data.content);
+    } else {
+      setUniversities([]);
+      showAlert("Failed to load universities.", "error");
     }
   };
 
@@ -191,13 +202,16 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
   }, [selectedCountryId]);
 
   useEffect(() => {
+    if (selectedCountryId === undefined) {
+      return;
+    }
     if (selectedUniversityId == null) {
       props.resetSearchResult();
     } else {
       setSelectedUniversityId(null);
       setUniversities([]);
     }
-    getUniverisites();
+    getUniversities();
     props.setFilters({
       ...props.filters,
       cityId: selectedCityId,
@@ -331,21 +345,27 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
           </Stack>
         </Box>
         <Box>
-          <Typography variant="subtitle2" fontWeight="bold" mb={2}>
-            STUDIES
-          </Typography>
-          <Autocomplete<Major>
-            options={majors}
-            getOptionLabel={(option) => option.name}
-            value={majors.find((m) => m.id === props.filters.majorId) || null}
-            onChange={(_, newValue) => {
-              const newId = newValue ? newValue.id : null;
-              setSelectedMajorId(newId);
-            }}
-            renderInput={(params) => (
-              <TextField {...params} label="Major" variant="filled" />
-            )}
-          />
+          {showMajorsDropdown && (
+            <>
+              <Typography variant="subtitle2" fontWeight="bold" mb={2}>
+                STUDIES
+              </Typography>
+              <Autocomplete<Major>
+                options={majors}
+                getOptionLabel={(option) => option.name}
+                value={
+                  majors.find((m) => m.id === props.filters.majorId) || null
+                }
+                onChange={(_, newValue) => {
+                  const newId = newValue ? newValue.id : null;
+                  setSelectedMajorId(newId);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Major" variant="filled" />
+                )}
+              />
+            </>
+          )}
         </Box>
         <Box>
           <Typography variant="subtitle2" fontWeight="bold" mb={2}>
@@ -402,10 +422,11 @@ type UniversityFilterDrawerProps = {
 };
 
 const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
-  const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
-    null
-  );
+  const [selectedCountryId, setSelectedCountryId] = useState<
+    number | null | undefined
+  >(undefined);
   const [cities, setCities] = useState<City[]>([]);
+  const { showAlert } = useSnackbar();
 
   const handleCountryChange = (_: any, newValue: Country | null) => {
     props.resetSearchResult();
@@ -429,10 +450,16 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
     const result = await sendGetCitiesRequest(selectedCountryId);
     if (result.isSuccess) {
       setCities(result.data.content);
+    } else {
+      setCities([]);
+      showAlert("Failed to load cities.", "error");
     }
   };
 
   useEffect(() => {
+    if (selectedCountryId === undefined) {
+      return;
+    }
     getCities();
   }, [selectedCountryId]);
 
@@ -609,7 +636,6 @@ const UserSearchSection = (props: SearchSectionProps) => {
         userFilters.maxYear === null ? null : `${userFilters.maxYear}-12-31`,
         null
       );
-      console.log(result);
       if (result.isSuccess) {
         setFetchStatus("success");
         setTotalPagesCount(result.data.totalPages);
@@ -629,29 +655,37 @@ const UserSearchSection = (props: SearchSectionProps) => {
   };
 
   useEffect(() => {
-    if (fetchStatus === "fetchingWasNotStarted" || fetchStatus === "loading") {
+    if (fetchStatus === "fetchingWasNotStarted") {
       return;
     }
-    if (mode === "simple") {
-      if (fetchStatus === "success") {
+    if (fetchStatus === "loading") {
+      props.setSearchResult({
+        status: "loading",
+        resultComponent: undefined,
+        totalNumberOfPages: undefined,
+      });
+      return;
+    }
+    if (fetchStatus === "success") {
+      if (mode === "simple") {
         props.setSearchResult({
           status: "success",
           resultComponent: getSuccessUsersSearchResult(),
           totalNumberOfPages: totalPagesCount,
         });
-      } else {
-        props.resetSearchResult();
-      }
-    } else if (mode === "filters") {
-      if (fetchStatus === "success") {
+      } else if (mode === "filters") {
         props.setSearchResult({
           status: "success",
           resultComponent: getSuccessExchangesSearchResult(),
           totalNumberOfPages: totalPagesCount,
         });
-      } else {
-        props.resetSearchResult();
       }
+    } else {
+      props.setSearchResult({
+        status: fetchStatus,
+        resultComponent: undefined,
+        totalNumberOfPages: undefined,
+      });
     }
   }, [fetchStatus]);
 
@@ -674,11 +708,21 @@ const UserSearchSection = (props: SearchSectionProps) => {
           id: e.id,
           data: [
             {
-              toShow: e.user.nick,
+              toShow: <span>{e.user.nick}</span>,
               route: `/users/${e.user.id}`,
             },
             {
-              toShow: e.university.englishName || "unknown",
+              toShow: (
+                <span style={{ display: "inline-flex", alignItems: "center" }}>
+                  {" "}
+                  {e.university.englishName || e.university.nativeName}{" "}
+                  <img
+                    src={`/flags/${e.university.city.country.englishName}.png`}
+                    alt={e.university.city.country.englishName}
+                    style={{ height: "0.8rem", marginLeft: "6px" }}
+                  />{" "}
+                </span>
+              ),
               route: `/universities/${e.university.id}`,
             },
             {
@@ -710,7 +754,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
           id: u.id,
           data: [
             {
-              toShow: u.nick || "",
+              toShow: <span>{u.nick}</span>,
               route: `/users/${u.id}`,
             },
             {
@@ -775,9 +819,11 @@ const UserSearchSection = (props: SearchSectionProps) => {
             <PersonOutlineIcon fontSize="small" />
             By Nick
           </MenuItem>
-          <MenuItem value="filters">
-            <SettingsSuggestIcon fontSize="small" /> By Exchange
-          </MenuItem>
+          {props.countries.length > 0 && (
+            <MenuItem value="filters">
+              <SettingsSuggestIcon fontSize="small" /> By Exchange
+            </MenuItem>
+          )}
         </Select>
       </FormControl>
 
@@ -859,7 +905,7 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
   );
   const previousPage = useRef(props.currentPage);
 
-  const getUniverisites = async () => {
+  const getUniverisities = async () => {
     setUniversitiesFetchStatus("loading");
     const result = await sendGetUniversitiesRequest(
       uniFilters.englishName,
@@ -892,7 +938,7 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
       return;
     }
     previousPage.current = props.currentPage;
-    getUniverisites();
+    getUniverisities();
   }, [props.currentPage]);
 
   useEffect(() => {
@@ -936,11 +982,11 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
           id: u.id,
           data: [
             {
-              toShow: u.nativeName || "",
+              toShow: <span>{u.nativeName || ""}</span>,
               route: `/universities/${u.id}`,
             },
             {
-              toShow: u.englishName || "",
+              toShow: <span>{u.englishName}</span>,
               route: `/universities/${u.id}`,
             },
             { toShow: u.city?.name || "", route: undefined },
@@ -1041,7 +1087,7 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
             "&:hover": { bgcolor: "#333" },
             ml: 1,
           }}
-          onClick={getUniverisites}
+          onClick={getUniverisities}
         >
           Search
         </Button>
@@ -1158,10 +1204,6 @@ const SearchPage = () => {
   useEffect(() => {
     getCountries();
   }, []);
-
-  useEffect(() => {
-    console.log("Current page changed: ", currentPage);
-  }, [currentPage]);
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
