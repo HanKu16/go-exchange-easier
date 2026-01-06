@@ -2,8 +2,10 @@ package com.go_exchange_easier.backend.controller;
 
 import com.go_exchange_easier.backend.annoations.docs.user.*;
 import com.go_exchange_easier.backend.dto.common.Listing;
+import com.go_exchange_easier.backend.dto.details.UniversityDetails;
 import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
+import com.go_exchange_easier.backend.dto.summary.UserSummary;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.ExchangeService;
@@ -45,8 +47,7 @@ public class UserController {
     @GetPageApiDocs
     public ResponseEntity<Page<UserDetails>> getPage(
             @RequestParam(value = "nick", required = false) String nick,
-            Pageable pageable
-    ) {
+            Pageable pageable) {
         Page<UserDetails> page = userService.getPage(nick, pageable);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
@@ -101,6 +102,23 @@ public class UserController {
         AssignCountryOfOriginResponse response = userService.assignCountryOfOrigin(
                 principal.getUser().getId(), request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{userId}/followees")
+    @GetFolloweesApiDocs
+    public ResponseEntity<Listing<UserSummary>> getFollowees(
+            @PathVariable Integer userId) {
+        List<UserSummary> followees = userService.getFollowees(userId);
+        return ResponseEntity.ok(Listing.of(followees));
+    }
+
+    @GetMapping("/{userId}/followedUniversities")
+    @GetFollowedUniversitiesApiDocs
+    public ResponseEntity<Listing<UniversityDetails>> getFollowedUniversities(
+            @PathVariable Integer userId) {
+        List<UniversityDetails> universities = userService
+                .getFollowedUniversities(userId);
+        return ResponseEntity.ok(Listing.of(universities));
     }
 
 }

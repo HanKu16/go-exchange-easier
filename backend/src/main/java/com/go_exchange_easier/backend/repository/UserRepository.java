@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends
@@ -57,5 +58,16 @@ public interface UserRepository extends
     @Query("SELECT u FROM User u WHERE u.nick = :nick")
     @EntityGraph(attributePaths = {"countryOfOrigin", "homeUniversity"})
     Page<User> findByNick(@Param("nick") String nick , Pageable pageable);
+
+    @EntityGraph(attributePaths = {"userFollowsSent", "userFollowsSent.followee"},
+            type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT u FROM User u WHERE u.id = :userId")
+    Optional<User> findWithFollowees(@Param("userId") int userId);
+
+    @EntityGraph(attributePaths = {"universityFollowsSent",
+            "universityFollowsSent.university"},
+            type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT u FROM User u WHERE u.id = :userId")
+    Optional<User> findWithFollowedUniversities(@Param("userId") int userId);
 
 }

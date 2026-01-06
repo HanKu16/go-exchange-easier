@@ -1,6 +1,8 @@
 package com.go_exchange_easier.backend.service.impl;
 
+import com.go_exchange_easier.backend.dto.details.UniversityDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
+import com.go_exchange_easier.backend.dto.summary.UserSummary;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserDescriptionNotFoundException;
@@ -162,6 +164,30 @@ public class UserServiceImpl implements UserService {
             }
             return new AssignCountryOfOriginResponse(userId, null);
         }
+    }
+
+    @Override
+    public List<UserSummary> getFollowees(int userId) {
+        User user = userRepository.findWithFollowees(userId)
+                .orElseThrow(() -> new UserNotFoundException(
+                "User of id " + userId +
+                        " was not found."));
+        return user.getUserFollowsSent()
+                .stream()
+                .map(f -> UserSummary.fromEntity(f.getFollowee()))
+                .toList();
+    }
+
+    @Override
+    public List<UniversityDetails> getFollowedUniversities(int userId) {
+        User user = userRepository.findWithFollowedUniversities(userId)
+                .orElseThrow(() -> new UserNotFoundException(
+                        "User of id " + userId +
+                                " was not found."));
+        return user.getUniversityFollowsSent()
+                .stream()
+                .map(f -> UniversityDetails.fromEntity(f.getUniversity()))
+                .toList();
     }
 
 }

@@ -1,9 +1,12 @@
 package com.go_exchange_easier.backend.service;
 
+import com.go_exchange_easier.backend.dto.details.UniversityDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
+import com.go_exchange_easier.backend.dto.summary.UserSummary;
 import com.go_exchange_easier.backend.dto.user.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 public interface UserService {
 
@@ -17,5 +20,7 @@ public interface UserService {
             UpdateUserStatusRequest request);
     AssignCountryOfOriginResponse assignCountryOfOrigin(
             int userId, AssignCountryOfOriginRequest request);
+    List<UserSummary> getFollowees(int userId);
+    List<UniversityDetails> getFollowedUniversities(int userId);
 
 }
