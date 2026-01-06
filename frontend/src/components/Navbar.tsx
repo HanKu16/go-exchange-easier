@@ -29,7 +29,6 @@ const Navbar = () => {
     { label: "Search", route: "/search" },
     { label: "Follows", route: "/follows" },
   ];
-  const settings = ["Edit", "Logout"];
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -49,6 +48,12 @@ const Navbar = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogOut = () => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("jwtToken");
+    navigate("/login");
   };
 
   return (
@@ -140,13 +145,9 @@ const Navbar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    {setting}
-                  </Typography>
-                </MenuItem>
-              ))}
+              <MenuItem key="Logout" onClick={handleLogOut}>
+                <Typography sx={{ textAlign: "center" }}>Log out</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
