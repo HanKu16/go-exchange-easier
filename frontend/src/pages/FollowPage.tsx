@@ -13,6 +13,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { PersonAdd } from "@mui/icons-material";
+import { PersonRemove } from "@mui/icons-material";
 import { deepPurple } from "@mui/material/colors";
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
@@ -21,10 +22,25 @@ import {
   sendGetFolloweesRequest,
 } from "../utils/user";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
+import { useNavigate } from "react-router-dom";
+import {
+  sendFollowUniversityRequest,
+  sendFollowUserRequest,
+  sendUnfollowUniversityRequest,
+  sendUnfollowUserRequest,
+} from "../utils/follow";
+import { useSnackbar } from "../context/SnackBarContext";
+import LoadingPage from "./LoadingPage";
+import ServiceUnavailablePage from "./ServiceUnavailablePage";
+import ServerErrorPage from "./ServerErrorPage";
 
 type FollowBoxProps = {
-  userId: number;
-  nick: string;
+  id: number;
+  name: string;
+  route: string;
+  isFollowed: boolean;
+  avatarUrl?: string;
+  followEntity: FollowEntity;
 };
 
 type FollowEntity = "user" | "university";
@@ -63,9 +79,38 @@ const FollowEntitiesOptions = (props: FollowEntitiesOptionsProps) => (
   </Paper>
 );
 
-const FollowBox = ({ userId, nick }: FollowBoxProps) => {
+const FollowBox = (props: FollowBoxProps) => {
   const theme = useTheme();
   const isTinyScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const navigate = useNavigate();
+  const [isFollowed, setIsFollowed] = useState<boolean>(props.isFollowed);
+  const { showAlert } = useSnackbar();
+
+  const handleButtonClick = async () => {
+    const wasFollowed = isFollowed;
+    setIsFollowed((prevState) => !prevState);
+    let isSuccess;
+    if (props.followEntity === "user") {
+      if (isFollowed) {
+        isSuccess = (await sendUnfollowUserRequest(props.id)).isSuccess;
+      } else {
+        isSuccess = (await sendFollowUserRequest(props.id)).isSuccess;
+      }
+    } else if (props.followEntity === "university") {
+      if (isFollowed) {
+        isSuccess = (await sendUnfollowUniversityRequest(props.id)).isSuccess;
+      } else {
+        isSuccess = (await sendFollowUniversityRequest(props.id)).isSuccess;
+      }
+    }
+    if (!isSuccess) {
+      setIsFollowed(wasFollowed);
+      showAlert(
+        `Failed to ${wasFollowed ? "unfollow" : " follow back"}.`,
+        "error"
+      );
+    }
+  };
 
   return (
     <Card
@@ -102,6 +147,7 @@ const FollowBox = ({ userId, nick }: FollowBoxProps) => {
           }}
         >
           <Avatar
+            src={props.avatarUrl}
             sx={{
               bgcolor: deepPurple[500],
               width: { xs: 40, sm: 50, md: 56 },
@@ -110,41 +156,33 @@ const FollowBox = ({ userId, nick }: FollowBoxProps) => {
               flexShrink: 0,
             }}
           >
-            {nick.charAt(0).toUpperCase()}
+            {props.name.charAt(0).toUpperCase()}
           </Avatar>
           <Box sx={{ minWidth: 0 }}>
             <Typography
               variant="h6"
               noWrap
-              title={nick}
+              onClick={() => navigate(props.route)}
               sx={{
                 fontWeight: "bold",
-                fontSize: { xs: "0.95rem", sm: "1.1rem", md: "1.25rem" },
-                lineHeight: 1.2,
+                fontSize: { xs: "0.95rem", sm: "1.1rem" },
                 display: "block",
+                cursor: "pointer",
+                transition: "color 0.2s",
+                "&:hover": {
+                  color: "primary.main",
+                  textDecoration: "underline",
+                },
               }}
             >
-              {nick}
-            </Typography>
-
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              noWrap
-              sx={{
-                fontSize: { xs: "0.75rem", sm: "0.85rem" },
-                mt: 0.5,
-                display: "block",
-              }}
-            >
-              ID: {userId}
+              {props.name}
             </Typography>
           </Box>
         </Box>
         <Button
           variant="contained"
           size={isTinyScreen ? "small" : "medium"}
-          endIcon={<PersonAdd />}
+          endIcon={props.isFollowed ? <PersonRemove /> : <PersonAdd />}
           sx={{
             borderRadius: 20,
             textTransform: "none",
@@ -156,8 +194,9 @@ const FollowBox = ({ userId, nick }: FollowBoxProps) => {
             flexShrink: 0,
             marginLeft: 1,
           }}
+          onClick={handleButtonClick}
         >
-          Follow
+          {isFollowed ? "Unfollow" : "Follow"}
         </Button>
       </Stack>
     </Card>
@@ -199,8 +238,16 @@ const FollowPage = () => {
           isFollowed: true,
         }))
       );
-      setUniversityFollowsFetchStatus("success");
+      setUserFollowsFetchStatus("success");
     } else {
+      switch (result.error.status) {
+        case "INTERNAL_SERVER_ERROR":
+          setUserFollowsFetchStatus("serverError");
+          break;
+        case "SERVICE_UNAVAILABLE":
+          setUserFollowsFetchStatus("connectionError");
+          break;
+      }
     }
   };
 
@@ -217,31 +264,115 @@ const FollowPage = () => {
       );
       setUniversityFollowsFetchStatus("success");
     } else {
+      switch (result.error.status) {
+        case "INTERNAL_SERVER_ERROR":
+          setUniversityFollowsFetchStatus("serverError");
+          break;
+        case "SERVICE_UNAVAILABLE":
+          setUniversityFollowsFetchStatus("connectionError");
+          break;
+      }
     }
   };
 
-  // Inside FollowPage component
   const getFollowBoxes = () => {
     if (currentFollowEntity === "user") {
-      return userFollows.map((user) => (
-        <Box key={user.id} sx={{ display: "flex", justifyContent: "center" }}>
-          <FollowBox userId={user.id} nick={user.nick} />
-        </Box>
-      ));
+      return userFollows.map((u) => {
+        const route = `/users/${u.id}`;
+        return (
+          <Box key={u.id} sx={{ display: "flex", justifyContent: "center" }}>
+            <FollowBox
+              id={u.id}
+              name={u.nick}
+              route={route}
+              isFollowed={u.isFollowed}
+              followEntity="user"
+            />
+          </Box>
+        );
+      });
     } else if (currentFollowEntity === "university") {
-      return universityFollows.map((university) => (
+      return universityFollows.map((u) => {
+        const route = `/universities/${u.id}`;
+        return (
+          <Box key={u.id} sx={{ display: "flex", justifyContent: "center" }}>
+            <FollowBox
+              id={u.id}
+              name={u.name}
+              route={route}
+              isFollowed={u.isFollowed}
+              followEntity="university"
+              avatarUrl={`/flags/${u.countryName}.png`}
+            />
+          </Box>
+        );
+      });
+    }
+  };
+
+  const getPageContent = () => {
+    if (
+      userFollowsFetchStatus === "success" &&
+      universityFollowsFetchStatus === "success"
+    ) {
+      return (
         <Box
-          key={university.id}
-          sx={{ display: "flex", justifyContent: "center" }}
+          sx={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}
         >
-          <FollowBox
-            userId={university.id}
-            // CHANGE HERE: Pass the full name.
-            // Do not use substring() or manual logic.
-            nick={university.name}
-          />
+          <Navbar />
+          <Container
+            sx={{
+              paddingY: 4,
+              maxWidth: "lg",
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <FollowEntitiesOptions
+              currentFollowEntity={currentFollowEntity}
+              setCurrentFollowEntity={setCurrentFollowEntity}
+            />
+            <Box
+              sx={{
+                display: "grid",
+                width: "100%",
+                marginTop: 4,
+                gap: 2,
+                gridTemplateColumns:
+                  currentFollowEntity === "user"
+                    ? { xs: "minmax(0, 1fr)", xl: "repeat(3, minmax(0, 1fr))" }
+                    : { xs: "minmax(0, 1fr)" },
+              }}
+            >
+              {getFollowBoxes()}
+            </Box>
+          </Container>
         </Box>
-      ));
+      );
+    }
+    if (
+      userFollowsFetchStatus === "loading" ||
+      universityFollowsFetchStatus === "loading"
+    ) {
+      return (
+        <LoadingPage
+          backgroundColor="#eeececff"
+          circularProgressColor="#182c44"
+          text={"Loading..."}
+        />
+      );
+    } else if (
+      userFollowsFetchStatus === "connectionError" ||
+      universityFollowsFetchStatus === "connectionError"
+    ) {
+      return <ServiceUnavailablePage />;
+    } else if (
+      userFollowsFetchStatus === "serverError" ||
+      universityFollowsFetchStatus === "serverError"
+    ) {
+      return <ServerErrorPage />;
     }
   };
 
@@ -250,41 +381,7 @@ const FollowPage = () => {
     getFollowedUniversities();
   }, []);
 
-  return (
-    <Box sx={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
-      <Navbar />
-
-      <Container
-        sx={{
-          paddingY: 4,
-          maxWidth: "lg",
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <FollowEntitiesOptions
-          currentFollowEntity={currentFollowEntity}
-          setCurrentFollowEntity={setCurrentFollowEntity}
-        />
-        <Box
-          sx={{
-            display: "grid",
-            width: "100%",
-            marginTop: 4,
-            gap: 2,
-            gridTemplateColumns:
-              currentFollowEntity === "user"
-                ? { xs: "minmax(0, 1fr)", xl: "repeat(3, minmax(0, 1fr))" }
-                : { xs: "minmax(0, 1fr)" },
-          }}
-        >
-          {getFollowBoxes()}
-        </Box>
-      </Container>
-    </Box>
-  );
+  return getPageContent();
 };
 
 export default FollowPage;
