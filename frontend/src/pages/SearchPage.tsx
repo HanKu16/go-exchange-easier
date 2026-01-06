@@ -611,7 +611,6 @@ const UserSearchSection = (props: SearchSectionProps) => {
   };
 
   const getUsers = async () => {
-    console.log(userFilters);
     setFetchStatus("loading");
     if (mode === "simple") {
       const result = await sendGetUsersRequest(

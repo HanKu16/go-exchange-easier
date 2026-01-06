@@ -16,6 +16,8 @@ import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDe
 import type { Listing } from "../dtos/common/Listing";
 import type { PageResponse } from "../dtos/common/PageResponse";
 import type { UserDetails } from "../dtos/details/UserDetails";
+import type { UserSummary } from "../dtos/summary/UserSummary";
+import type { UniversityDetails } from "../dtos/details/UniversityDetails";
 
 export const sendGetUserProfileRequest = async (
   userId: number | string
@@ -179,4 +181,36 @@ export const sendGetUsersRequest = async (
     },
   };
   return await sendRequest<PageResponse<UserDetails>>(uri, request);
+};
+
+export const sendGetFolloweesRequest = async (): Promise<
+  ResponseSuccessResult<Listing<UserSummary>> | RepsonseFailureResult
+> => {
+  const userId = getSignedInUserId();
+  const uri: string = `${API_BASE_URL}/api/users/${userId}/followees`;
+  const jwtToken = getSignedInUserJwtToken();
+  const request: RequestInit = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+  return await sendRequest<Listing<UserSummary>>(uri, request);
+};
+
+export const sendGetFollowedUniversitiesRequest = async (): Promise<
+  ResponseSuccessResult<Listing<UniversityDetails>> | RepsonseFailureResult
+> => {
+  const userId = getSignedInUserId();
+  const uri: string = `${API_BASE_URL}/api/users/${userId}/followedUniversities`;
+  const jwtToken = getSignedInUserJwtToken();
+  const request: RequestInit = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+      "Content-Type": "application/json",
+    },
+  };
+  return await sendRequest<Listing<UniversityDetails>>(uri, request);
 };
