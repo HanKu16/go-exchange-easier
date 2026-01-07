@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.time.temporal.ChronoUnit;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import io.jsonwebtoken.Jwts;
 import javax.crypto.SecretKey;
@@ -29,9 +26,9 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
     private final SecretKey signingKey;
 
     @Override
-    public String generate(UserCredentials credentials) {
+    public String generateAccessToken(UserCredentials credentials) {
         Map<String, Object> claims = getClaims(credentials);
-        TokenLifetime tokenLifetime = getTokenLifetime();
+        TokenLifetime tokenLifetime = getAccessTokenLifetime();
         return Jwts.builder()
                 .claims()
                 .add(claims)
@@ -41,6 +38,11 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
                 .and()
                 .signWith(signingKey)
                 .compact();
+    }
+
+    @Override
+    public String generateRefreshToken() {
+        return UUID.randomUUID().toString();
     }
 
     private Map<String, Object> getClaims(UserCredentials credentials) {
@@ -54,9 +56,9 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
         return claims;
     }
 
-    private TokenLifetime getTokenLifetime() {
+    private TokenLifetime getAccessTokenLifetime() {
         Instant now = Instant.now();
-        Instant expiration = now.plus(30, ChronoUnit.MINUTES);
+        Instant expiration = now.plus(15, ChronoUnit.MINUTES);
         return new TokenLifetime(Date.from(now), Date.from(expiration));
     }
 

@@ -4,6 +4,7 @@ import com.go_exchange_easier.backend.model.UserCredentials;
 
 public interface JwtTokenGenerator {
 
-    String generate(UserCredentials credentials);
+    String generateAccessToken(UserCredentials credentials);
+    String generateRefreshToken();
 
 }
