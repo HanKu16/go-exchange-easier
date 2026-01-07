@@ -128,14 +128,6 @@ export const sendAssignCountryOfOriginRequest = async (
   return await sendRequest<AssignCountryOfOriginResponse>(uri, request);
 };
 
-export const getSignedInUserId = (): string => {
-  const userId: string | null = localStorage.getItem("userId");
-  if (userId === null) {
-    throw new Error("Did not found userId");
-  }
-  return userId;
-};
-
 export const getSignedInUserJwtToken = (): string => {
   const token: string | null = localStorage.getItem("jwtToken");
   if (token === null) {
@@ -166,10 +158,11 @@ export const sendGetUsersRequest = async (
   return await sendRequest<PageResponse<UserDetails>>(uri, request);
 };
 
-export const sendGetFolloweesRequest = async (): Promise<
+export const sendGetFolloweesRequest = async (
+  userId: number
+): Promise<
   ResponseSuccessResult<Listing<UserSummary>> | RepsonseFailureResult
 > => {
-  const userId = getSignedInUserId();
   const uri: string = `/api/users/${userId}/followees`;
   const request: RequestInit = {
     method: "GET",
@@ -180,10 +173,11 @@ export const sendGetFolloweesRequest = async (): Promise<
   return await sendRequest<Listing<UserSummary>>(uri, request);
 };
 
-export const sendGetFollowedUniversitiesRequest = async (): Promise<
+export const sendGetFollowedUniversitiesRequest = async (
+  userId: number
+): Promise<
   ResponseSuccessResult<Listing<UniversityDetails>> | RepsonseFailureResult
 > => {
-  const userId = getSignedInUserId();
   const uri: string = `/api/users/${userId}/followedUniversities`;
   const request: RequestInit = {
     method: "GET",
