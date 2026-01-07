@@ -13,7 +13,7 @@ import earthImage from "../assets/registration_page/earth.png";
 import basicAvatar from "../assets/examples/basic-avatar.png";
 import { useTheme, useMediaQuery } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getSignedInUserId } from "../utils/user";
+import { useSignedInUser } from "../context/SignedInUserContext";
 
 type NavbarItem = {
   label: string;
@@ -21,9 +21,9 @@ type NavbarItem = {
 };
 
 const Navbar = () => {
-  const userId = getSignedInUserId();
+  const { signedInUser } = useSignedInUser();
   const navbarItems: NavbarItem[] = [
-    { label: "Profile", route: `/users/${userId}` },
+    { label: "Profile", route: `/users/${signedInUser.id}` },
     { label: "Account", route: "/me" },
     { label: "Chat", route: "/chat" },
     { label: "Search", route: "/search" },
@@ -101,7 +101,6 @@ const Navbar = () => {
                   key={item.label}
                   onClick={() => {
                     navigate(item.route);
-                    window.location.reload();
                   }}
                 >
                   <Typography sx={{ textAlign: "center" }}>
@@ -117,7 +116,6 @@ const Navbar = () => {
                 key={item.label}
                 onClick={() => {
                   navigate(item.route);
-                  window.location.reload();
                 }}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
