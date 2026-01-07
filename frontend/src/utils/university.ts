@@ -1,4 +1,3 @@
-import { API_BASE_URL } from "../config/api";
 import type { Listing } from "../dtos/common/Listing";
 import type { PageResponse } from "../dtos/common/PageResponse";
 import type { UniversityDetails } from "../dtos/details/UniversityDetails";
@@ -21,7 +20,7 @@ export const sendGetUniversitiesRequest = async (
 ): Promise<
   ResponseSuccessResult<PageResponse<UniversityDetails>> | RepsonseFailureResult
 > => {
-  const url = new URL(`${API_BASE_URL}/api/universities`);
+  const url = new URL(`/api/universities`, window.location.origin);
   if (englishName) url.searchParams.append("englishName", englishName);
   if (nativeName) url.searchParams.append("nativeName", nativeName);
   if (cityId) url.searchParams.append("cityId", `${cityId}`);
@@ -46,7 +45,7 @@ export const sendGetUniversityProfileRequest = async (
 ): Promise<
   ResponseSuccessResult<GetUniversityProfileResponse> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/universities/${universityId}/profile`;
+  const uri: string = `/api/universities/${universityId}/profile`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
@@ -68,7 +67,7 @@ export const sendGetUniversityReviewsRequest = async (
 > => {
   const params = { page: `${page}`, size: `${size}` };
   const searchParams = new URLSearchParams(params).toString();
-  const uri: string = `${API_BASE_URL}/api/universities/${universityId}/reviews?${searchParams}`;
+  const uri: string = `/api/universities/${universityId}/reviews?${searchParams}`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
@@ -85,7 +84,7 @@ export const sendGetReviewsCountRequest = async (
 ): Promise<
   ResponseSuccessResult<UniversityReviewCountSummary> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/universities/${universityId}/reviews/count`;
+  const uri: string = `/api/universities/${universityId}/reviews/count`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",

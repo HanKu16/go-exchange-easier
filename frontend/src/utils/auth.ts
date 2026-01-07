@@ -3,14 +3,13 @@ import type { LoginResponse } from "../dtos/auth/LoginResponse";
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
-import { API_BASE_URL } from "../config/api";
 import type { UserRegistrationRequest } from "../dtos/auth/UserRegistrationRequest";
 import type { UserRegistrationResponse } from "../dtos/auth/UserRegistrationResponse";
 
 export const sendLoginRequest = async (
   body: LoginRequest
 ): Promise<ResponseSuccessResult<LoginResponse> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/auth/login`;
+  const uri: string = `/api/auth/login`;
   const request: RequestInit = {
     method: "POST",
     headers: {
@@ -26,7 +25,7 @@ export const sendUserRegistrationRequest = async (
 ): Promise<
   ResponseSuccessResult<UserRegistrationResponse> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/auth/register`;
+  const uri: string = `/api/auth/register`;
   const request: RequestInit = {
     method: "POST",
     headers: {

@@ -2,7 +2,6 @@ import type { AddUniversityReviewReactionRequest } from "../dtos/university-revi
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
-import { API_BASE_URL } from "../config/api";
 import { getSignedInUserJwtToken } from "./user";
 import type { CreateUniversityReviewRequest } from "../dtos/university-review/CreateUniversityReviewRequest";
 import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
@@ -12,7 +11,7 @@ export const sendCreateReviewRequest = async (
 ): Promise<
   ResponseSuccessResult<UniversityReviewDetails> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/universityReviews`;
+  const uri: string = `/api/universityReviews`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "POST",
@@ -29,7 +28,7 @@ export const sendAddUniversityReviewReactionRequest = async (
   reviewId: number,
   body: AddUniversityReviewReactionRequest
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/universityReviews/${reviewId}/reaction`;
+  const uri: string = `/api/universityReviews/${reviewId}/reaction`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "PUT",
@@ -46,7 +45,7 @@ export const sendDeleteUniversityReviewReactionRequest = async (
   reviewId: number,
   body: AddUniversityReviewReactionRequest
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/universityReviews/${reviewId}/reaction`;
+  const uri: string = `/api/universityReviews/${reviewId}/reaction`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "DELETE",

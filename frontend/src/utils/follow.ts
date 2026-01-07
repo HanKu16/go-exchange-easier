@@ -1,13 +1,12 @@
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
-import { API_BASE_URL } from "../config/api";
 import { getSignedInUserJwtToken } from "./user";
 
 export const sendFollowUserRequest = async (
   followeeId: number | string
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/users/${followeeId}/follow`;
+  const uri: string = `/api/users/${followeeId}/follow`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "POST",
@@ -22,7 +21,7 @@ export const sendFollowUserRequest = async (
 export const sendUnfollowUserRequest = async (
   followeeId: number | string
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/users/${followeeId}/follow`;
+  const uri: string = `/api/users/${followeeId}/follow`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "DELETE",
@@ -37,7 +36,7 @@ export const sendUnfollowUserRequest = async (
 export const sendFollowUniversityRequest = async (
   universityId: number | string
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/universities/${universityId}/follow`;
+  const uri: string = `/api/universities/${universityId}/follow`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "POST",
@@ -52,7 +51,7 @@ export const sendFollowUniversityRequest = async (
 export const sendUnfollowUniversityRequest = async (
   universityId: number | string
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/universities/${universityId}/follow`;
+  const uri: string = `/api/universities/${universityId}/follow`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "DELETE",

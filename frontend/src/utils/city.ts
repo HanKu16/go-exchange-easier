@@ -1,7 +1,6 @@
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
-import { API_BASE_URL } from "../config/api";
 import { getSignedInUserJwtToken } from "./user";
 import type { CityDetails } from "../dtos/details/CityDetails";
 import type { Listing } from "../dtos/common/Listing";
@@ -11,7 +10,7 @@ export const sendGetCitiesRequest = async (
 ): Promise<
   ResponseSuccessResult<Listing<CityDetails>> | RepsonseFailureResult
 > => {
-  const url = new URL(`${API_BASE_URL}/api/cities`);
+  const url = new URL(`/api/cities`, window.location.origin);
   if (countryId) {
     url.searchParams.append("countryId", `${countryId}`);
   }

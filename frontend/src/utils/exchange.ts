@@ -3,7 +3,6 @@ import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
 import type { CreateExchangeRequest } from "../dtos/exchange/CreateExchangeRequest";
 import type { CreateExchangeResponse } from "../dtos/exchange/CreateExchangeResponse";
-import { API_BASE_URL } from "../config/api";
 import { getSignedInUserJwtToken } from "./user";
 import type { ExchangeDetails } from "../dtos/details/ExchangeDetails";
 import type { PageResponse } from "../dtos/common/PageResponse";
@@ -22,7 +21,7 @@ export const sendGetExchangesRequest = async (
 ): Promise<
   ResponseSuccessResult<PageResponse<ExchangeDetails>> | RepsonseFailureResult
 > => {
-  const url = new URL(`${API_BASE_URL}/api/exchanges`);
+  const url = new URL(`/api/exchanges`, window.location.origin);
   if (countryId) url.searchParams.append("countryId", `${countryId}`);
   if (universityId) url.searchParams.append("universityId", `${universityId}`);
   if (cityId) url.searchParams.append("cityId", `${cityId}`);
@@ -50,7 +49,7 @@ export const sendCreateExchangeRequest = async (
 ): Promise<
   ResponseSuccessResult<CreateExchangeResponse> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/exchanges`;
+  const uri: string = `/api/exchanges`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "POST",
@@ -66,7 +65,7 @@ export const sendCreateExchangeRequest = async (
 export const sendDeleteExchangeRequest = async (
   exchangeId: number
 ): Promise<ResponseSuccessResult<null> | RepsonseFailureResult> => {
-  const uri: string = `${API_BASE_URL}/api/exchanges/${exchangeId}`;
+  const uri: string = `/api/exchanges/${exchangeId}`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "DELETE",

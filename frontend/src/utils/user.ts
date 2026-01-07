@@ -24,7 +24,8 @@ export const sendGetUserProfileRequest = async (
 ): Promise<
   ResponseSuccessResult<GetUserProfileResponse> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/users/${userId}/profile`;
+  const uri: string = `/api/users/${userId}/profile`;
+  // const uri: string = `${API_BASE_URL}/api/users/${userId}/profile`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
@@ -42,7 +43,8 @@ export const sendGetUserReviewsRequest = async (
   | ResponseSuccessResult<Listing<UniversityReviewDetails>>
   | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/users/${userId}/universityReviews`;
+  // const uri: string = `${API_BASE_URL}/api/users/${userId}/universityReviews`;
+  const uri: string = `/api/users/${userId}/universityReviews`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
@@ -59,7 +61,8 @@ export const sendGetUserExchangesRequest = async (
 ): Promise<
   ResponseSuccessResult<GetUserExchangeResponse[]> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/users/${userId}/exchanges`;
+  // const uri: string = `${API_BASE_URL}/api/users/${userId}/exchanges`;
+  const uri: string = `/api/users/${userId}/exchanges`;
   const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
