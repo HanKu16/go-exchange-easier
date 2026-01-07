@@ -9,27 +9,30 @@ import { SnackbarProvider } from "./context/SnackBarContext";
 import RequireAuth from "./components/RequireAuth";
 import SearchPage from "./pages/SearchPage";
 import FollowPage from "./pages/FollowPage";
+import { SignedInUserProvider } from "./context/SignedInUserContext";
 
 export const App = () => {
   return (
     <BrowserRouter>
       <CssBaseline />
-      <SnackbarProvider>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route element={<RequireAuth />}>
-            <Route path="/users/:userId" element={<UserProfilePage />} />
-            <Route
-              path="/universities/:universityId"
-              element={<UniversityProfilePage />}
-            />
-            <Route path="/me" element={<EditUserPage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/follows" element={<FollowPage />} />
-          </Route>
-        </Routes>
-      </SnackbarProvider>
+      <SignedInUserProvider>
+        <SnackbarProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegistrationPage />} />
+            <Route element={<RequireAuth />}>
+              <Route path="/users/:userId" element={<UserProfilePage />} />
+              <Route
+                path="/universities/:universityId"
+                element={<UniversityProfilePage />}
+              />
+              <Route path="/me" element={<EditUserPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/follows" element={<FollowPage />} />
+            </Route>
+          </Routes>
+        </SnackbarProvider>
+      </SignedInUserProvider>
     </BrowserRouter>
   );
 };
