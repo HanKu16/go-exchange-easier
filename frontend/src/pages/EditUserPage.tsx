@@ -18,7 +18,7 @@ import UpdateUserStatusPanel from "../panels/UpdateUserStatusPanel";
 import AssignCountryOfOriginPanel from "../panels/AssignCountryOfOriginPanel";
 import AddExchangePanel from "../panels/AddExchangePanel";
 import ManageExchangesPanel from "../panels/ManageExchangesPanel";
-import { getSignedInUserId } from "../utils/user";
+import { useSignedInUser } from "../context/SignedInUserContext";
 
 type SectionName = "Informations" | "Exchanges";
 
@@ -174,7 +174,7 @@ const EditUserPage = () => {
     useState<SectionName | null>(null);
   const [selectedSubsectionPanel, setSelectedSubsectionName] =
     useState<SubsectionName | null>(null);
-  const userId: string = getSignedInUserId();
+  const { signedInUser } = useSignedInUser();
 
   const getPanel = () => {
     if (selectedSubsectionPanel === "Country of origin") {
@@ -188,7 +188,7 @@ const EditUserPage = () => {
     } else if (selectedSubsectionPanel === "Add exchange") {
       return <AddExchangePanel />;
     } else if (selectedSubsectionPanel === "Manage exchanges") {
-      return <ManageExchangesPanel userId={userId} />;
+      return <ManageExchangesPanel userId={signedInUser.id} />;
     }
     return <></>;
   };

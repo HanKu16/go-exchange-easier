@@ -13,7 +13,6 @@ import UniversityReview, {
   type UniversityReviewProps,
 } from "../components/UniversityReview";
 import {
-  getSignedInUserId,
   sendGetUserProfileRequest,
   sendGetUserReviewsRequest,
 } from "../utils/user";
@@ -40,6 +39,7 @@ import ContentLoadError from "../components/ContentLoadError";
 import LoadingContent from "../components/LoadingContent";
 import { useSnackbar } from "../context/SnackBarContext";
 import { sendGetExchangesRequest } from "../utils/exchange";
+import { useSignedInUser } from "../context/SignedInUserContext";
 
 const AddExchangeButton = () => {
   const navigate = useNavigate();
@@ -616,8 +616,9 @@ const UserProfilePage = () => {
   const theme = useTheme();
   const { userId } = useParams();
   const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
-  const signedInUserId: string = getSignedInUserId();
-  const isOwnProfile = userId === signedInUserId;
+  const { signedInUser } = useSignedInUser();
+  const isOwnProfile: boolean =
+    signedInUser != undefined && userId === String(signedInUser.id);
   const [userProfileFetchStatus, setUserProfileFetchStatus] =
     useState<UserProfileFetchStatus>("loading");
   const [userDataPanelProps, setUserDataPanelProps] =

@@ -30,7 +30,6 @@ import StarIcon from "@mui/icons-material/Star";
 import AddIcon from "@mui/icons-material/Add";
 import { useSnackbar } from "../context/SnackBarContext";
 import { type DataFetchStatus } from "../types/DataFetchStatus";
-import { getSignedInUserId } from "../utils/user";
 import { isInteger } from "../utils/number-utils";
 import NotFoundPage from "./NotFoundPage";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
@@ -40,6 +39,7 @@ import ServerErrorPage from "./ServerErrorPage";
 import type { GetUniversityProfileResponse } from "../dtos/university/GetUniversityProfileResponse";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
+import { useSignedInUser } from "../context/SignedInUserContext";
 
 type FollowButtonProps = {
   universityId: number | string | undefined;
@@ -609,7 +609,7 @@ const UniversityProfilePage = () => {
   const theme = useTheme();
   const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const { universityId } = useParams();
-  const signedInUserId: string = getSignedInUserId();
+  const { signedInUser } = useSignedInUser();
   const [universityProfileFetchStatus, setUniversityProfileFetchStatus] =
     useState<UniversityProfileFetchStatus>("loading");
   const [universityDataPanelProps, setUniversityDataPanelProps] =
@@ -630,7 +630,7 @@ const UniversityProfilePage = () => {
     if (result.isSuccess) {
       const data: GetUniversityProfileResponse = result.data;
       const universityDataPanelProps: UniversityDataPanelProps = {
-        userId: signedInUserId,
+        userId: signedInUser.id,
         university: {
           id: data.id,
           nativeName: data.nativeName,

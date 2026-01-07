@@ -33,6 +33,7 @@ import { useSnackbar } from "../context/SnackBarContext";
 import LoadingPage from "./LoadingPage";
 import ServiceUnavailablePage from "./ServiceUnavailablePage";
 import ServerErrorPage from "./ServerErrorPage";
+import { useSignedInUser } from "../context/SignedInUserContext";
 
 type FollowBoxProps = {
   id: number;
@@ -227,9 +228,10 @@ const FollowPage = () => {
     useState<DataFetchStatus>("loading");
   const [universityFollowsFetchStatus, setUniversityFollowsFetchStatus] =
     useState<DataFetchStatus>("loading");
+  const { signedInUser } = useSignedInUser();
 
   const getFollowees = async () => {
-    const result = await sendGetFolloweesRequest();
+    const result = await sendGetFolloweesRequest(signedInUser.id);
     if (result.isSuccess) {
       setUserFollows(
         result.data.content.map((u) => ({
@@ -252,7 +254,7 @@ const FollowPage = () => {
   };
 
   const getFollowedUniversities = async () => {
-    const result = await sendGetFollowedUniversitiesRequest();
+    const result = await sendGetFollowedUniversitiesRequest(signedInUser.id);
     if (result.isSuccess) {
       setUniversityFollows(
         result.data.content.map((u) => ({
