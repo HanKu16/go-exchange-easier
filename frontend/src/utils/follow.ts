@@ -7,11 +7,9 @@ export const sendFollowUserRequest = async (
   followeeId: number | string
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
   const uri: string = `/api/users/${followeeId}/follow`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -22,11 +20,9 @@ export const sendUnfollowUserRequest = async (
   followeeId: number | string
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
   const uri: string = `/api/users/${followeeId}/follow`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "DELETE",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -37,11 +33,9 @@ export const sendFollowUniversityRequest = async (
   universityId: number | string
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
   const uri: string = `/api/universities/${universityId}/follow`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };

@@ -7,7 +7,6 @@ import type { GetUniversityProfileResponse } from "../dtos/university/GetUnivers
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
-import { getSignedInUserJwtToken } from "./user";
 
 export const sendGetUniversitiesRequest = async (
   englishName: string | undefined | null,
@@ -29,11 +28,9 @@ export const sendGetUniversitiesRequest = async (
   url.searchParams.append("size", `${size}`);
   url.searchParams.append("sort", sort);
   const uri = url.toString();
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -46,11 +43,9 @@ export const sendGetUniversityProfileRequest = async (
   ResponseSuccessResult<GetUniversityProfileResponse> | RepsonseFailureResult
 > => {
   const uri: string = `/api/universities/${universityId}/profile`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -68,11 +63,9 @@ export const sendGetUniversityReviewsRequest = async (
   const params = { page: `${page}`, size: `${size}` };
   const searchParams = new URLSearchParams(params).toString();
   const uri: string = `/api/universities/${universityId}/reviews?${searchParams}`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -85,11 +78,9 @@ export const sendGetReviewsCountRequest = async (
   ResponseSuccessResult<UniversityReviewCountSummary> | RepsonseFailureResult
 > => {
   const uri: string = `/api/universities/${universityId}/reviews/count`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };

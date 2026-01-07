@@ -11,7 +11,6 @@ import type { UpdateUserStatusRequest } from "../dtos/user/UpdateUserStatusReque
 import type { UpdateUserStatusResponse } from "../dtos/user/UpdateUserStatusResponse";
 import type { AssignCountryOfOriginRequest } from "../dtos/user/AssignCountryOfOriginRequest";
 import type { AssignCountryOfOriginResponse } from "../dtos/user/AssignCountryOfOriginResponse";
-import { API_BASE_URL } from "../config/api";
 import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
 import type { Listing } from "../dtos/common/Listing";
 import type { PageResponse } from "../dtos/common/PageResponse";
@@ -25,12 +24,9 @@ export const sendGetUserProfileRequest = async (
   ResponseSuccessResult<GetUserProfileResponse> | RepsonseFailureResult
 > => {
   const uri: string = `/api/users/${userId}/profile`;
-  // const uri: string = `${API_BASE_URL}/api/users/${userId}/profile`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -43,13 +39,10 @@ export const sendGetUserReviewsRequest = async (
   | ResponseSuccessResult<Listing<UniversityReviewDetails>>
   | RepsonseFailureResult
 > => {
-  // const uri: string = `${API_BASE_URL}/api/users/${userId}/universityReviews`;
   const uri: string = `/api/users/${userId}/universityReviews`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -61,13 +54,10 @@ export const sendGetUserExchangesRequest = async (
 ): Promise<
   ResponseSuccessResult<GetUserExchangeResponse[]> | RepsonseFailureResult
 > => {
-  // const uri: string = `${API_BASE_URL}/api/users/${userId}/exchanges`;
   const uri: string = `/api/users/${userId}/exchanges`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -79,12 +69,10 @@ export const sendUpdateDescriptionRequest = async (
 ): Promise<
   ResponseSuccessResult<UpdateUserDescriptionResponse> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/users/description`;
-  const jwtToken = getSignedInUserJwtToken();
+  const uri: string = `/api/users/description`;
   const request: RequestInit = {
     method: "PATCH",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -97,12 +85,10 @@ export const sendAssignHomeUniversityRequest = async (
 ): Promise<
   ResponseSuccessResult<AssignHomeUniversityResponse> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/users/homeUniversity`;
-  const jwtToken = getSignedInUserJwtToken();
+  const uri: string = `/api/users/homeUniversity`;
   const request: RequestInit = {
     method: "PATCH",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -115,12 +101,10 @@ export const sendUpdateStatusRequest = async (
 ): Promise<
   ResponseSuccessResult<UpdateUserStatusResponse> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/users/status`;
-  const jwtToken = getSignedInUserJwtToken();
+  const uri: string = `/api/users/status`;
   const request: RequestInit = {
     method: "PATCH",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -133,12 +117,10 @@ export const sendAssignCountryOfOriginRequest = async (
 ): Promise<
   ResponseSuccessResult<AssignCountryOfOriginResponse> | RepsonseFailureResult
 > => {
-  const uri: string = `${API_BASE_URL}/api/users/countryOfOrigin`;
-  const jwtToken = getSignedInUserJwtToken();
+  const uri: string = `/api/users/countryOfOrigin`;
   const request: RequestInit = {
     method: "PATCH",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -174,12 +156,10 @@ export const sendGetUsersRequest = async (
     page: page.toString(),
     size: size.toString(),
   });
-  const uri: string = `${API_BASE_URL}/api/users?${params.toString()}`;
-  const jwtToken = getSignedInUserJwtToken();
+  const uri: string = `/api/users?${params.toString()}`;
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -190,12 +170,10 @@ export const sendGetFolloweesRequest = async (): Promise<
   ResponseSuccessResult<Listing<UserSummary>> | RepsonseFailureResult
 > => {
   const userId = getSignedInUserId();
-  const uri: string = `${API_BASE_URL}/api/users/${userId}/followees`;
-  const jwtToken = getSignedInUserJwtToken();
+  const uri: string = `/api/users/${userId}/followees`;
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -206,12 +184,10 @@ export const sendGetFollowedUniversitiesRequest = async (): Promise<
   ResponseSuccessResult<Listing<UniversityDetails>> | RepsonseFailureResult
 > => {
   const userId = getSignedInUserId();
-  const uri: string = `${API_BASE_URL}/api/users/${userId}/followedUniversities`;
-  const jwtToken = getSignedInUserJwtToken();
+  const uri: string = `/api/users/${userId}/followedUniversities`;
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };

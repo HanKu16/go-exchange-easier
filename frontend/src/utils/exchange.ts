@@ -3,7 +3,6 @@ import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
 import type { CreateExchangeRequest } from "../dtos/exchange/CreateExchangeRequest";
 import type { CreateExchangeResponse } from "../dtos/exchange/CreateExchangeResponse";
-import { getSignedInUserJwtToken } from "./user";
 import type { ExchangeDetails } from "../dtos/details/ExchangeDetails";
 import type { PageResponse } from "../dtos/common/PageResponse";
 
@@ -33,11 +32,9 @@ export const sendGetExchangesRequest = async (
   url.searchParams.append("size", `${size}`);
   url.searchParams.append("sort", sort);
   const uri = url.toString();
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
@@ -50,11 +47,9 @@ export const sendCreateExchangeRequest = async (
   ResponseSuccessResult<CreateExchangeResponse> | RepsonseFailureResult
 > => {
   const uri: string = `/api/exchanges`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -66,11 +61,9 @@ export const sendDeleteExchangeRequest = async (
   exchangeId: number
 ): Promise<ResponseSuccessResult<null> | RepsonseFailureResult> => {
   const uri: string = `/api/exchanges/${exchangeId}`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "DELETE",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };

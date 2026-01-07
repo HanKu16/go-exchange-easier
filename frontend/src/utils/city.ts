@@ -1,7 +1,6 @@
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
-import { getSignedInUserJwtToken } from "./user";
 import type { CityDetails } from "../dtos/details/CityDetails";
 import type { Listing } from "../dtos/common/Listing";
 
@@ -15,11 +14,9 @@ export const sendGetCitiesRequest = async (
     url.searchParams.append("countryId", `${countryId}`);
   }
   const uri = url.toString();
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };

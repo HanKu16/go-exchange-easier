@@ -2,7 +2,6 @@ import type { AddUniversityReviewReactionRequest } from "../dtos/university-revi
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
-import { getSignedInUserJwtToken } from "./user";
 import type { CreateUniversityReviewRequest } from "../dtos/university-review/CreateUniversityReviewRequest";
 import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
 
@@ -12,11 +11,9 @@ export const sendCreateReviewRequest = async (
   ResponseSuccessResult<UniversityReviewDetails> | RepsonseFailureResult
 > => {
   const uri: string = `/api/universityReviews`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -29,11 +26,9 @@ export const sendAddUniversityReviewReactionRequest = async (
   body: AddUniversityReviewReactionRequest
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
   const uri: string = `/api/universityReviews/${reviewId}/reaction`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "PUT",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -46,11 +41,9 @@ export const sendDeleteUniversityReviewReactionRequest = async (
   body: AddUniversityReviewReactionRequest
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
   const uri: string = `/api/universityReviews/${reviewId}/reaction`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "DELETE",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
