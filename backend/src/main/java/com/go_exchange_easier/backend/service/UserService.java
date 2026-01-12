@@ -22,5 +22,6 @@ public interface UserService {
             int userId, AssignCountryOfOriginRequest request);
     List<UserSummary> getFollowees(int userId);
     List<UniversityDetails> getFollowedUniversities(int userId);
+    UserSummary getMe(int userId);
 
 }

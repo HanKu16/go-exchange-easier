@@ -25,9 +25,9 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(
                         request.login(), request.password()));
         if (authentication.getPrincipal() instanceof UserCredentials credentials) {
-            String token = jwtTokenGenerator.generate(credentials);
-            String tokenType = "Bearer";
-            return new TokenBundle(credentials.getUser().getId(), token, tokenType);
+            String accessToken = jwtTokenGenerator.generateAccessToken(credentials);
+            String refreshToken = jwtTokenGenerator.generateRefreshToken();
+            return new TokenBundle(credentials.getUser().getId(), accessToken, refreshToken);
         }
         throw new InvalidPrincipalTypeException("Principal was expected to be of " +
                 "type UserCredentials but was not.");

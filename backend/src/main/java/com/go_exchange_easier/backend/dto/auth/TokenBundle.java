@@ -7,6 +7,6 @@ public record TokenBundle(
 
         Integer userId,
         String accessToken,
-        String tokenType
+        String refreshToken
 
 ) { }

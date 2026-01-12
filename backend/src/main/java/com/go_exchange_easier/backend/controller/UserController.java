@@ -5,6 +5,7 @@ import com.go_exchange_easier.backend.dto.common.Listing;
 import com.go_exchange_easier.backend.dto.details.UniversityDetails;
 import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
+import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.dto.summary.UserSummary;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.model.UserCredentials;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -119,6 +121,16 @@ public class UserController {
         List<UniversityDetails> universities = userService
                 .getFollowedUniversities(userId);
         return ResponseEntity.ok(Listing.of(universities));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getMe(
+            @AuthenticationPrincipal(errorOnInvalidType = false) UserCredentials principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        UserSummary user = userService.getMe(principal.getUser().getId());
+        return ResponseEntity.ok(user);
     }
 
 }

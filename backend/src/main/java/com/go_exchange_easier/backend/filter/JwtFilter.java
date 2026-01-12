@@ -1,15 +1,15 @@
 package com.go_exchange_easier.backend.filter;
 
-import com.go_exchange_easier.backend.dto.auth.UserCredentialsDto;
 import com.go_exchange_easier.backend.exception.MissingJwtClaimException;
 import com.go_exchange_easier.backend.model.Role;
 import com.go_exchange_easier.backend.model.User;
 import com.go_exchange_easier.backend.model.UserCredentials;
-import com.go_exchange_easier.backend.repository.UserCredentialsRepository;
+import com.go_exchange_easier.backend.repository.RoleRepository;
 import com.go_exchange_easier.backend.security.jwt.JwtClaimsExtractor;
 import com.go_exchange_easier.backend.security.jwt.JwtTokenValidator;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +17,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 
@@ -39,9 +41,9 @@ import lombok.NonNull;
 public class JwtFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LogManager.getLogger(JwtFilter.class);
-    private final UserCredentialsRepository credentialsRepository;
     private final JwtClaimsExtractor jwtClaimsExtractor;
     private final JwtTokenValidator jwtTokenValidator;
+    private final RoleRepository roleRepository;
 
     @Override
     protected void doFilterInternal(
@@ -67,17 +69,27 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private void tryDoFilterInternal(HttpServletRequest request) {
-        String token = parseToken(request);
-        if ((token != null) && jwtTokenValidator.validate(token)) {
-            String username = jwtClaimsExtractor.extractUsername(token);
-            UserCredentialsDto credentialsDto = credentialsRepository
-                    .findDtoByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException(
-                            "User of username " + username + " was not found."));
-            UserDetails userDetails = mapDtoToEntity(credentialsDto, token);
-            if (!userDetails.isEnabled() || !userDetails.isAccountNonLocked())  {
-                return;
+        String accessToken = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    accessToken = cookie.getValue();
+                }
             }
+        }
+        if ((accessToken != null) && jwtTokenValidator.validate(accessToken)) {
+            int userId = jwtClaimsExtractor.extractUserId(accessToken);
+            String username = jwtClaimsExtractor.extractUsername(accessToken);
+            List<String> authorities = jwtClaimsExtractor.extractRoles(accessToken);
+            UserCredentials userDetails = new UserCredentials();
+            userDetails.setUser(buildUserProxy(userId));
+            userDetails.setUsername(username);
+            Set<Role> roles = authorities.stream()
+                    .map(roleRepository::findByName)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toSet());
+            userDetails.setRoles(roles);
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
@@ -92,39 +104,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 .getAuthentication() != null;
     }
 
-    private String parseToken(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        return isAuthHeaderValid(authHeader) ?
-                authHeader.substring(7) :
-                null;
-    }
-
-    private boolean isAuthHeaderValid(String authHeader) {
-        return (authHeader != null) && (authHeader.startsWith("Bearer "));
-    }
-
-    private UserCredentials mapDtoToEntity(UserCredentialsDto credentialsDto,
-            String token) {
-        UserCredentials userCredentials = new UserCredentials();
-        userCredentials.setId(credentialsDto.id());
-        userCredentials.setUsername(credentialsDto.username());
-        userCredentials.setPassword(credentialsDto.password());
-        userCredentials.setEnabled(credentialsDto.isEnabled());
-        User userProxy = buildUserProxy(token);
-        userCredentials.setUser(userProxy);
-        userCredentials.setRoles(jwtClaimsExtractor.extractRoles(token)
-                .stream()
-                .map(r -> {
-                    Role role = new Role();
-                    role.setName(r);
-                    return role;
-                })
-                .collect(Collectors.toSet()));
-        return userCredentials;
-    }
-
-    private User buildUserProxy(String token) {
-        Integer userId = jwtClaimsExtractor.extractUserId(token);
+    private User buildUserProxy(int userId) {
         User userProxy = new User();
         userProxy.setId(userId);
         return userProxy;

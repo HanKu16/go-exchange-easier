@@ -190,4 +190,12 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    @Override
+    public UserSummary getMe(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User of id " + userId +
+                        " was not found."));
+        return UserSummary.fromEntity(user);
+    }
+
 }
