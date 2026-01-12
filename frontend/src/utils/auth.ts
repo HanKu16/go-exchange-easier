@@ -35,3 +35,16 @@ export const sendUserRegistrationRequest = async (
   };
   return await sendRequest(uri, request);
 };
+
+export const sendLogoutRequest = async (): Promise<
+  ResponseSuccessResult<UserRegistrationResponse> | RepsonseFailureResult
+> => {
+  const uri: string = `/api/auth/logout`;
+  const request: RequestInit = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  return await sendRequest(uri, request);
+};

@@ -187,3 +187,16 @@ export const sendGetFollowedUniversitiesRequest = async (
   };
   return await sendRequest<Listing<UniversityDetails>>(uri, request);
 };
+
+export const sendGetMe = async (): Promise<
+  ResponseSuccessResult<UserSummary> | RepsonseFailureResult
+> => {
+  const uri: string = `/api/users/me`;
+  const request: RequestInit = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  return await sendRequest<UserSummary>(uri, request);
+};

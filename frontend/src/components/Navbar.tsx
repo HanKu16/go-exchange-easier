@@ -14,6 +14,8 @@ import basicAvatar from "../assets/examples/basic-avatar.png";
 import { useTheme, useMediaQuery } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSignedInUser } from "../context/SignedInUserContext";
+import { sendLogoutRequest } from "../utils/auth";
+import { useSnackbar } from "../context/SnackBarContext";
 
 type NavbarItem = {
   label: string;
@@ -34,6 +36,7 @@ const Navbar = () => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
+  const { showAlert } = useSnackbar();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -50,10 +53,13 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
 
-  const handleLogOut = () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("jwtToken");
-    navigate("/login");
+  const handleLogOut = async () => {
+    const result = await sendLogoutRequest();
+    if (result.isSuccess) {
+      navigate("/login");
+    } else {
+      showAlert("Failed to log out. Please try again later.", "error");
+    }
   };
 
   return (

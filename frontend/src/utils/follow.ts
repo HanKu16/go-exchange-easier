@@ -1,7 +1,6 @@
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
-import { getSignedInUserJwtToken } from "./user";
 
 export const sendFollowUserRequest = async (
   followeeId: number | string
@@ -46,11 +45,9 @@ export const sendUnfollowUniversityRequest = async (
   universityId: number | string
 ): Promise<ResponseSuccessResult<void> | RepsonseFailureResult> => {
   const uri: string = `/api/universities/${universityId}/follow`;
-  const jwtToken = getSignedInUserJwtToken();
   const request: RequestInit = {
     method: "DELETE",
     headers: {
-      Authorization: `Bearer ${jwtToken}`,
       "Content-Type": "application/json",
     },
   };
