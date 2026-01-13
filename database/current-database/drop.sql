@@ -1,3 +1,4 @@
+DROP TABLE refresh_tokens;
 DROP TABLE exchanges;
 DROP TABLE university_follows;
 DROP TABLE user_follows;

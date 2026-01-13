@@ -37,3 +37,9 @@ v1.4
 5. Add 'deleted_at' column to 'universities' table.
 6. Change reference in 'user_roles' table now reference to 'user_credentials' table is on 'user_credential_id' column.
 7. Change orders of executing scripts in 'data' directory.
+
+
+
+v1.5
+
+1. Add 'refresh_tokens' table.

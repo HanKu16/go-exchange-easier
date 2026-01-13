@@ -122,6 +122,18 @@ CREATE TABLE exchanges (
   university_id SMALLINT NOT NULL
 );
 
+CREATE TABLE refresh_tokens (
+  refresh_token_id UUID PRIMARY KEY,
+  hashed_token UUID NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  is_revoked BOOLEAN NOT NULL,
+  device_id UUID NOT NULL,
+  device_name VARCHAR(255),
+  ip_address VARCHAR(45),
+  user_id INTEGER NOT NULL
+);
+
 ALTER TABLE cities ADD FOREIGN KEY (country_id) REFERENCES countries (country_id);
 
 ALTER TABLE universities ADD FOREIGN KEY (city_id) REFERENCES cities (city_id);
@@ -170,3 +182,4 @@ ALTER TABLE exchanges ADD FOREIGN KEY (university_major_id) REFERENCES universit
 
 ALTER TABLE exchanges ADD FOREIGN KEY (university_id) REFERENCES universities (university_id);
 
+ALTER TABLE refresh_tokens ADD FOREIGN KEY (user_id) REFERENCES users (user_id);
