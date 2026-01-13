@@ -48,7 +48,7 @@ public class ExchangeController {
             @RequestBody @Valid CreateExchangeRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
         CreateExchangeResponse response = exchangeService
-                .create(principal.getId(), request);
+                .create(principal.getUser().getId(), request);
         return ResponseEntity.created(URI.create(
                 "/api/exchange/" + response.id()))
                 .body(response);

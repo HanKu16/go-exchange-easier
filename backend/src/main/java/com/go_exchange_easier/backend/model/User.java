@@ -3,7 +3,6 @@ package com.go_exchange_easier.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
-
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -70,5 +69,8 @@ public class User {
 
     @OneToMany(mappedBy = "follower")
     private Set<UniversityFollow> universityFollowsSent = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<RefreshToken> refreshTokens = new HashSet<>();
 
 }
