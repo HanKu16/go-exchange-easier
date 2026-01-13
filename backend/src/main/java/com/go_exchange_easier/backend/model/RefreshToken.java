@@ -23,7 +23,7 @@ public class RefreshToken {
     private UUID id;
 
     @Column(name="hashed_token")
-    private UUID hashedToken;
+    private String hashedToken;
 
     @Column(name="created_at")
     private OffsetDateTime createdAt;

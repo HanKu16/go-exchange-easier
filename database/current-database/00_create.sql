@@ -124,7 +124,7 @@ CREATE TABLE exchanges (
 
 CREATE TABLE refresh_tokens (
   refresh_token_id UUID PRIMARY KEY,
-  hashed_token UUID NOT NULL,
+  hashed_token TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL,
   expires_at TIMESTAMPTZ NOT NULL,
   is_revoked BOOLEAN NOT NULL,
