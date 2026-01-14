@@ -580,7 +580,7 @@ const FeedPanel = (props: FeedPanelProps) => {
   useEffect(() => {
     getReviews();
     getExchanges();
-  }, []);
+  }, [props.userId]);
 
   return (
     <Box sx={{ paddingBottom: 4 }}>
@@ -673,7 +673,7 @@ const UserProfilePage = () => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [userId]);
 
   if (userProfileFetchStatus === "userNotFound") {
     return (
