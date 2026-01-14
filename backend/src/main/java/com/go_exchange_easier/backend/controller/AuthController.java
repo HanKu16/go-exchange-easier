@@ -10,6 +10,7 @@ import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.AuthService;
 import com.go_exchange_easier.backend.service.UserRegistrar;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,27 +42,24 @@ public class AuthController {
     @PostMapping("/login")
     @LoginApiDocs
     public ResponseEntity<TokenBundle> login(
-            @RequestBody @Valid LoginRequest request) {
-        TokenBundle response = authService.login(request);
+            @RequestBody @Valid LoginRequest request,
+            HttpServletRequest servletRequest) {
+        TokenBundle response = authService.login(request, servletRequest);
         ResponseCookie accessTokenCookie = ResponseCookie.from(
                 "accessToken", response.accessToken())
                 .httpOnly(true)
                 .secure(false)
-//                .secure(true)
                 .path("/")
-                .maxAge(15 * 60)
+                .maxAge(60)
                 .sameSite("Lax")
-//                .sameSite("Strict")
                 .build();
         ResponseCookie refreshTokenCookie = ResponseCookie.from(
                         "refreshToken", response.refreshToken())
                 .httpOnly(true)
                 .secure(false)
-//                .secure(true)
                 .path("/")
                 .maxAge(30 * 24 * 60 * 3600)
                 .sameSite("Lax")
-//                .sameSite("Strict")
                 .build();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
@@ -71,29 +69,52 @@ public class AuthController {
 
     @PostMapping("/logout")
     @LoginApiDocs
-    public ResponseEntity<Void> logOut(
-            @AuthenticationPrincipal UserCredentials principal) {
-        // there will be log out service method called
-        // when refresh token will be stored in database
+    public ResponseEntity<Void> logout(
+            @AuthenticationPrincipal UserCredentials principal,
+            @CookieValue(name = "refreshToken") String refreshToken) {
+        TokenBundle tokenBundle = authService.logout(refreshToken);
         ResponseCookie accessTokenCookie = ResponseCookie.from(
-                        "accessToken", "")
+                        "accessToken", tokenBundle.accessToken())
                 .httpOnly(true)
                 .secure(false)
-//                .secure(true)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Lax")
-//                .sameSite("Strict")
                 .build();
         ResponseCookie refreshTokenCookie = ResponseCookie.from(
-                        "refreshToken", "")
+                        "refreshToken", tokenBundle.refreshToken())
                 .httpOnly(true)
                 .secure(false)
-//                .secure(true)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Lax")
-//                .sameSite("Strict")
+                .build();
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Void> refresh(
+            @CookieValue(name = "refreshToken") String refreshToken,
+            HttpServletRequest servletRequest) {
+        TokenBundle tokenBundle = authService.refresh(refreshToken, servletRequest);
+        ResponseCookie accessTokenCookie = ResponseCookie.from(
+                        "accessToken", tokenBundle.accessToken())
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(15 * 60)
+                .sameSite("Lax")
+                .build();
+        ResponseCookie refreshTokenCookie = ResponseCookie.from(
+                        "refreshToken", tokenBundle.refreshToken())
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(30 * 24 * 60 * 3600)
+                .sameSite("Lax")
                 .build();
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())

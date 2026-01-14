@@ -5,6 +5,7 @@ import com.go_exchange_easier.backend.dto.auth.TokenBundle;
 import com.go_exchange_easier.backend.exception.InvalidPrincipalTypeException;
 import com.go_exchange_easier.backend.exception.domain.auth.DeviceMismatchException;
 import com.go_exchange_easier.backend.exception.domain.auth.TokenExpiredException;
+import com.go_exchange_easier.backend.exception.domain.auth.TokenNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.auth.TokenRevokedException;
 import com.go_exchange_easier.backend.model.RefreshToken;
 import com.go_exchange_easier.backend.model.User;
@@ -21,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.codec.digest.DigestUtils;
 import java.time.OffsetDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -55,21 +55,18 @@ public class AuthServiceImpl implements AuthService {
     public TokenBundle refresh(String refreshToken, HttpServletRequest servletRequest) {
         RefreshToken oldToken = refreshTokenRepository
                 .findByHashedToken(getHashedToken(refreshToken))
-                .orElseThrow(() -> new RuntimeException("Token was not found."));
+                .orElseThrow(() -> new TokenNotFoundException(
+                        "Token" + refreshToken + "was not found."));
         if (oldToken.isRevoked()) {
             throw new TokenRevokedException("There was attempt of " +
-                    "usage token that is revoked. Probably someone "  +
-                    "stole the token.");
+                    "usage token" + refreshToken + "that is revoked. " +
+                    "Probably someone stole the token.");
         }
         if (oldToken.getExpiresAt().isBefore(OffsetDateTime.now())) {
-            throw new TokenExpiredException("Token expired.");
+            throw new TokenExpiredException("Token" + refreshToken +
+                    "expired.");
         }
-        if ((servletRequest.getHeader("X-Device-Id") != null) &&
-                !Objects.equals(oldToken.getDeviceId().toString(),
-                servletRequest.getHeader("X-Device-Id"))) {
-            throw new DeviceMismatchException("There was attempt of " +
-                    "usage token from not matching device.");
-        }
+        validateDeviceMatch(oldToken, servletRequest);
         User user = oldToken.getUser();
         UserCredentials credentials = user.getCredentials();
         String newAccessToken = jwtTokenGenerator.generateAccessToken(credentials);
@@ -87,7 +84,8 @@ public class AuthServiceImpl implements AuthService {
     public TokenBundle logout(String refreshToken) {
         RefreshToken oldRefreshToken = refreshTokenRepository
                 .findByHashedToken(getHashedToken(refreshToken))
-                .orElseThrow(() -> new RuntimeException("Token does not exist"));
+                .orElseThrow(() -> new TokenNotFoundException(
+                        "Token " + refreshToken + " was not found."));
         oldRefreshToken.setRevoked(true);
         refreshTokenRepository.save(oldRefreshToken);
         String newAccessToken = "";
@@ -127,6 +125,19 @@ public class AuthServiceImpl implements AuthService {
 
     private String getHashedToken(String token) {
         return DigestUtils.sha256Hex(token);
+    }
+
+    private void validateDeviceMatch(RefreshToken oldToken, HttpServletRequest request) {
+        String headerDeviceId = request.getHeader("X-Device-Id");
+        String tokenDeviceId = (oldToken.getDeviceId() != null) ?
+                oldToken.getDeviceId().toString() : null;
+        if (tokenDeviceId != null && !tokenDeviceId.equals(headerDeviceId)) {
+            throw new DeviceMismatchException("Token bound to device " + tokenDeviceId +
+                    " but request came from " + headerDeviceId);
+        }
+        if (headerDeviceId == null) {
+            throw new DeviceMismatchException("Missing Device-ID header");
+        }
     }
 
 }
