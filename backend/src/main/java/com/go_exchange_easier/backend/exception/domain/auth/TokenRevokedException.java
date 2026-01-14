@@ -1,0 +1,9 @@
+package com.go_exchange_easier.backend.exception.domain.auth;
+
+public class TokenRevokedException extends RuntimeException {
+
+    public TokenRevokedException(String message) {
+        super(message);
+    }
+
+}
