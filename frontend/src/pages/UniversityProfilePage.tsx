@@ -176,7 +176,7 @@ const ReviewInput = (props: ReviewInput) => {
       props.handleGoBackClick();
       setPostText("");
       setRatingValue(null);
-      showAlert("Review was created successfully.", "info");
+      showAlert("Review was created successfully.", "success");
     } else {
       showAlert("Failed to create review. Please try again later.", "error");
     }
