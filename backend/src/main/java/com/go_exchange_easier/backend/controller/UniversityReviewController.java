@@ -32,7 +32,7 @@ public class UniversityReviewController {
             @RequestBody @Valid CreateUniversityReviewRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
         UniversityReviewDetails review = universityReviewService
-                .create(principal.getId(), request);
+                .create(principal.getUser().getId(), request);
         return ResponseEntity.created(URI.create("/api/universityReviews" + review.id()))
                 .body(review);
     }
@@ -52,7 +52,7 @@ public class UniversityReviewController {
             @RequestBody @Valid AddUniversityReviewReactionRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
         AddUniversityReviewReactionResponse response = reviewReactionService
-                .add(principal.getId(), reviewId,request);
+                .add(principal.getUser().getId(), reviewId,request);
         return ResponseEntity.ok(response);
     }
 
@@ -62,7 +62,7 @@ public class UniversityReviewController {
             @PathVariable Integer reviewId,
             @AuthenticationPrincipal UserCredentials principal) {
         DeleteUniversityReviewReactionResponse response = reviewReactionService
-                .delete(principal.getId(), reviewId);
+                .delete(principal.getUser().getId(), reviewId);
         return ResponseEntity.ok(response);
     }
 
