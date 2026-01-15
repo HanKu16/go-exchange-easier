@@ -11,6 +11,7 @@ import com.go_exchange_easier.backend.model.RefreshToken;
 import com.go_exchange_easier.backend.model.User;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.repository.RefreshTokenRepository;
+import com.go_exchange_easier.backend.security.JwtConfig;
 import com.go_exchange_easier.backend.service.AuthService;
 import com.go_exchange_easier.backend.security.jwt.JwtTokenGenerator;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenGenerator jwtTokenGenerator;
+    private final JwtConfig jwtConfig;
 
     @Override
     @Transactional
@@ -100,7 +102,8 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setHashedToken(DigestUtils.sha256Hex(rawRefreshToken));
         refreshToken.setCreatedAt(OffsetDateTime.now());
-        refreshToken.setExpiresAt(OffsetDateTime.now().plusDays(30));
+        refreshToken.setExpiresAt(OffsetDateTime.now()
+                .plusSeconds(jwtConfig.getRefreshTokenValidityInSeconds()));
         refreshToken.setRevoked(false);
         refreshToken.setDeviceId(UUID.fromString(servletRequest.getHeader("X-Device-Id")));
         refreshToken.setDeviceName(servletRequest.getHeader("User-Agent"));

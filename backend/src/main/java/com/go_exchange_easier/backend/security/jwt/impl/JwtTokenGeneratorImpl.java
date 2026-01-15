@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.security.jwt.impl;
 
 import com.go_exchange_easier.backend.model.Role;
 import com.go_exchange_easier.backend.model.UserCredentials;
+import com.go_exchange_easier.backend.security.JwtConfig;
 import com.go_exchange_easier.backend.security.jwt.JwtTokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import io.jsonwebtoken.Jwts;
-import javax.crypto.SecretKey;
 
 /**
  * {@code JwtTokenGeneratorImpl} is a class responsible for generating
@@ -23,7 +23,7 @@ import javax.crypto.SecretKey;
 @RequiredArgsConstructor
 public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
 
-    private final SecretKey signingKey;
+    private final JwtConfig jwtConfig;
 
     @Override
     public String generateAccessToken(UserCredentials credentials) {
@@ -36,7 +36,7 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
                 .issuedAt(tokenLifetime.issuedAt)
                 .expiration(tokenLifetime.expirationAt)
                 .and()
-                .signWith(signingKey)
+                .signWith(jwtConfig.signingKey())
                 .compact();
     }
 
@@ -58,7 +58,8 @@ public class JwtTokenGeneratorImpl implements JwtTokenGenerator {
 
     private TokenLifetime getAccessTokenLifetime() {
         Instant now = Instant.now();
-        Instant expiration = now.plus(15, ChronoUnit.MINUTES);
+        Instant expiration = now.plus(jwtConfig.getAccessTokenValidityInSeconds(),
+                ChronoUnit.SECONDS);
         return new TokenLifetime(Date.from(now), Date.from(expiration));
     }
 
