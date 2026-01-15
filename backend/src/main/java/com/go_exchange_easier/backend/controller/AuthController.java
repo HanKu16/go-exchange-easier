@@ -8,6 +8,8 @@ import com.go_exchange_easier.backend.dto.auth.LoginRequest;
 import com.go_exchange_easier.backend.dto.auth.TokenBundle;
 import com.go_exchange_easier.backend.dto.auth.UserRegistrationRequest;
 import com.go_exchange_easier.backend.dto.auth.UserRegistrationResponse;
+import com.go_exchange_easier.backend.dto.summary.LoginSummary;
+import com.go_exchange_easier.backend.dto.summary.SignedInUserSummary;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.security.JwtConfig;
 import com.go_exchange_easier.backend.service.AuthService;
@@ -45,12 +47,13 @@ public class AuthController {
 
     @PostMapping("/login")
     @LoginApiDocs
-    public ResponseEntity<TokenBundle> login(
+    public ResponseEntity<SignedInUserSummary> login(
             @RequestBody @Valid LoginRequest request,
             HttpServletRequest servletRequest) {
-        TokenBundle response = authService.login(request, servletRequest);
+        LoginSummary loginSummary = authService.login(request, servletRequest);
+        TokenBundle tokenBundle = loginSummary.tokenBundle();
         ResponseCookie accessTokenCookie = ResponseCookie.from(
-                "accessToken", response.accessToken())
+                "accessToken", tokenBundle.accessToken())
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
@@ -58,7 +61,7 @@ public class AuthController {
                 .sameSite("Lax")
                 .build();
         ResponseCookie refreshTokenCookie = ResponseCookie.from(
-                        "refreshToken", response.refreshToken())
+                        "refreshToken", tokenBundle.refreshToken())
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
@@ -68,7 +71,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-                .body(response);
+                .body(loginSummary.signedInUserSummary());
     }
 
     @PostMapping("/logout")

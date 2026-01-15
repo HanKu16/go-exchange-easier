@@ -2,6 +2,8 @@ package com.go_exchange_easier.backend.service.impl;
 
 import com.go_exchange_easier.backend.dto.auth.LoginRequest;
 import com.go_exchange_easier.backend.dto.auth.TokenBundle;
+import com.go_exchange_easier.backend.dto.summary.LoginSummary;
+import com.go_exchange_easier.backend.dto.summary.SignedInUserSummary;
 import com.go_exchange_easier.backend.exception.InvalidPrincipalTypeException;
 import com.go_exchange_easier.backend.exception.domain.auth.DeviceMismatchException;
 import com.go_exchange_easier.backend.exception.domain.auth.TokenExpiredException;
@@ -37,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public TokenBundle login(LoginRequest request, HttpServletRequest servletRequest) {
+    public LoginSummary login(LoginRequest request, HttpServletRequest servletRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.login(), request.password()));
@@ -46,8 +48,10 @@ public class AuthServiceImpl implements AuthService {
             String refreshToken = jwtTokenGenerator.generateRefreshToken();
             refreshTokenRepository.save(createNewRefreshToken(
                     credentials.getUser(), refreshToken, servletRequest));
-            return new TokenBundle(credentials.getUser()
-                    .getId(), accessToken, refreshToken);
+            return new LoginSummary(
+                    new SignedInUserSummary(credentials.getUser().getId(), ""),
+                    new TokenBundle(accessToken, refreshToken)
+            );
         }
         throw new InvalidPrincipalTypeException("Principal was expected to be of " +
                 "type UserCredentials but was not.");
@@ -79,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
         oldToken.setRevoked(true);
         refreshTokenRepository.save(oldToken);
         refreshTokenRepository.save(newToken);
-        return new TokenBundle(user.getId(), newAccessToken, newRawRefreshToken);
+        return new TokenBundle(newAccessToken, newRawRefreshToken);
     }
 
     @Override
@@ -90,13 +94,12 @@ public class AuthServiceImpl implements AuthService {
         Optional<RefreshToken> optionalOldRefreshToken = refreshTokenRepository
                 .findByHashedToken(getHashedToken(refreshToken));
         if (optionalOldRefreshToken.isEmpty()) {
-            return new TokenBundle(null, newAccessToken, newRefreshToken);
+            return new TokenBundle(newAccessToken, newRefreshToken);
         }
         RefreshToken oldRefreshToken = optionalOldRefreshToken.get();
         oldRefreshToken.setRevoked(true);
         refreshTokenRepository.save(oldRefreshToken);
-        return new TokenBundle(oldRefreshToken.getUser().getId(),
-                newAccessToken, newRefreshToken);
+        return new TokenBundle(newAccessToken, newRefreshToken);
     }
 
     private RefreshToken createNewRefreshToken(
