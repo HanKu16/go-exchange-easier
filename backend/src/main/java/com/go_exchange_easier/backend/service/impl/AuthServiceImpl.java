@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.codec.digest.DigestUtils;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -58,15 +59,15 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken oldToken = refreshTokenRepository
                 .findByHashedToken(getHashedToken(refreshToken))
                 .orElseThrow(() -> new TokenNotFoundException(
-                        "Token" + refreshToken + "was not found."));
+                        "Token " + refreshToken + " was not found."));
         if (oldToken.isRevoked()) {
             throw new TokenRevokedException("There was attempt of " +
                     "usage token" + refreshToken + "that is revoked. " +
                     "Probably someone stole the token.");
         }
         if (oldToken.getExpiresAt().isBefore(OffsetDateTime.now())) {
-            throw new TokenExpiredException("Token" + refreshToken +
-                    "expired.");
+            throw new TokenExpiredException("Token " + refreshToken +
+                    " expired.");
         }
         validateDeviceMatch(oldToken, servletRequest);
         User user = oldToken.getUser();
@@ -84,14 +85,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public TokenBundle logout(String refreshToken) {
-        RefreshToken oldRefreshToken = refreshTokenRepository
-                .findByHashedToken(getHashedToken(refreshToken))
-                .orElseThrow(() -> new TokenNotFoundException(
-                        "Token " + refreshToken + " was not found."));
-        oldRefreshToken.setRevoked(true);
-        refreshTokenRepository.save(oldRefreshToken);
         String newAccessToken = "";
         String newRefreshToken = "";
+        Optional<RefreshToken> optionalOldRefreshToken = refreshTokenRepository
+                .findByHashedToken(getHashedToken(refreshToken));
+        if (optionalOldRefreshToken.isEmpty()) {
+            return new TokenBundle(null, newAccessToken, newRefreshToken);
+        }
+        RefreshToken oldRefreshToken = optionalOldRefreshToken.get();
+        oldRefreshToken.setRevoked(true);
+        refreshTokenRepository.save(oldRefreshToken);
         return new TokenBundle(oldRefreshToken.getUser().getId(),
                 newAccessToken, newRefreshToken);
     }

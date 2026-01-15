@@ -1,12 +1,15 @@
 package com.go_exchange_easier.backend.controller;
 
 import com.go_exchange_easier.backend.annoations.docs.auth.LoginApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.auth.LogoutApiDocs;
+import com.go_exchange_easier.backend.annoations.docs.auth.RefreshApiDocs;
 import com.go_exchange_easier.backend.annoations.docs.auth.RegisterApiDocs;
 import com.go_exchange_easier.backend.dto.auth.LoginRequest;
 import com.go_exchange_easier.backend.dto.auth.TokenBundle;
 import com.go_exchange_easier.backend.dto.auth.UserRegistrationRequest;
 import com.go_exchange_easier.backend.dto.auth.UserRegistrationResponse;
 import com.go_exchange_easier.backend.model.UserCredentials;
+import com.go_exchange_easier.backend.security.JwtConfig;
 import com.go_exchange_easier.backend.service.AuthService;
 import com.go_exchange_easier.backend.service.UserRegistrar;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +32,7 @@ public class AuthController {
 
     private final UserRegistrar userRegistrar;
     private final AuthService authService;
+    private final JwtConfig jwtConfig;
 
     @PostMapping("/register")
     @RegisterApiDocs
@@ -50,7 +54,7 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(15 * 60)
+                .maxAge(jwtConfig.getAccessTokenValidityInSeconds())
                 .sameSite("Lax")
                 .build();
         ResponseCookie refreshTokenCookie = ResponseCookie.from(
@@ -58,7 +62,7 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(30 * 24 * 60 * 3600)
+                .maxAge(jwtConfig.getRefreshTokenValidityInSeconds())
                 .sameSite("Lax")
                 .build();
         return ResponseEntity.ok()
@@ -68,7 +72,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    @LoginApiDocs
+    @LogoutApiDocs
     public ResponseEntity<Void> logout(
             @AuthenticationPrincipal UserCredentials principal,
             @CookieValue(name = "refreshToken") String refreshToken) {
@@ -96,6 +100,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
+    @RefreshApiDocs
     public ResponseEntity<Void> refresh(
             @CookieValue(name = "refreshToken") String refreshToken,
             HttpServletRequest servletRequest) {
@@ -105,7 +110,7 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(15 * 60)
+                .maxAge(jwtConfig.getAccessTokenValidityInSeconds())
                 .sameSite("Lax")
                 .build();
         ResponseCookie refreshTokenCookie = ResponseCookie.from(
@@ -113,7 +118,7 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(30 * 24 * 60 * 3600)
+                .maxAge(jwtConfig.getRefreshTokenValidityInSeconds())
                 .sameSite("Lax")
                 .build();
         return ResponseEntity.noContent()
