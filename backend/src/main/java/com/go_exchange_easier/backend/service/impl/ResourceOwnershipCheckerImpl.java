@@ -18,7 +18,8 @@ public class ResourceOwnershipCheckerImpl implements ResourceOwnershipChecker {
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
         if (authentication.getPrincipal() instanceof UserCredentials userCredentials) {
-            return Objects.equals(exchange.getUser().getId(), userCredentials.getId());
+            return Objects.equals(exchange.getUser().getId(),
+                    userCredentials.getUser().getId());
         }
         throw new InvalidPrincipalTypeException("Principal was expected to be of " +
                 "type UserCredentials but was not.");
@@ -29,7 +30,8 @@ public class ResourceOwnershipCheckerImpl implements ResourceOwnershipChecker {
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
         if (authentication.getPrincipal() instanceof UserCredentials userCredentials) {
-            return Objects.equals(review.getAuthor().getId(), userCredentials.getId());
+            return Objects.equals(review.getAuthor().getId(), userCredentials
+                    .getUser().getId());
         }
         throw new InvalidPrincipalTypeException("Principal was expected to be of " +
                 "type UserCredentials but was not.");
