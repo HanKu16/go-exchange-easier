@@ -1,6 +1,6 @@
 import type { ApiErrorResponse } from "../dtos/error/ApiErrorResponse";
 
-export interface RepsonseFailureResult {
+export type ResponseFailureResult = {
   isSuccess: false;
-  error: ApiErrorResponse 
-}
+  error: ApiErrorResponse;
+};

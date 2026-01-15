@@ -1,29 +1,33 @@
 import type { LoginRequest } from "../dtos/auth/LoginRequest";
-import type { LoginResponse } from "../dtos/auth/LoginResponse";
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
-import { sendRequest } from "./send-request";
+import type { ResponseFailureResult } from "../types/ResponseFailureResult";
+import { sendRequestWithoutRefresh } from "./send-request";
 import type { UserRegistrationRequest } from "../dtos/auth/UserRegistrationRequest";
 import type { UserRegistrationResponse } from "../dtos/auth/UserRegistrationResponse";
+import { getDeviceId } from "./device";
+import type { SignedInUserSummary } from "../dtos/summary/SignedInUserSummary";
 
 export const sendLoginRequest = async (
   body: LoginRequest
-): Promise<ResponseSuccessResult<LoginResponse> | RepsonseFailureResult> => {
+): Promise<
+  ResponseSuccessResult<SignedInUserSummary> | ResponseFailureResult
+> => {
   const uri: string = `/api/auth/login`;
   const request: RequestInit = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-Device-Id": getDeviceId(),
     },
     body: JSON.stringify(body),
   };
-  return await sendRequest<LoginResponse>(uri, request);
+  return await sendRequestWithoutRefresh(uri, request);
 };
 
 export const sendUserRegistrationRequest = async (
   body: UserRegistrationRequest
 ): Promise<
-  ResponseSuccessResult<UserRegistrationResponse> | RepsonseFailureResult
+  ResponseSuccessResult<UserRegistrationResponse> | ResponseFailureResult
 > => {
   const uri: string = `/api/auth/register`;
   const request: RequestInit = {
@@ -33,18 +37,44 @@ export const sendUserRegistrationRequest = async (
     },
     body: JSON.stringify(body),
   };
-  return await sendRequest(uri, request);
+  return await sendRequestWithoutRefresh(uri, request);
 };
 
 export const sendLogoutRequest = async (): Promise<
-  ResponseSuccessResult<UserRegistrationResponse> | RepsonseFailureResult
+  ResponseSuccessResult<void> | ResponseFailureResult
 > => {
   const uri: string = `/api/auth/logout`;
   const request: RequestInit = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "X-Device-Id": getDeviceId(),
     },
   };
-  return await sendRequest(uri, request);
+  return await sendRequestWithoutRefresh(uri, request);
+};
+
+let activeRefreshPromise: Promise<
+  ResponseSuccessResult<void> | ResponseFailureResult
+> | null = null;
+
+export const sendRefreshRequest = async (): Promise<
+  ResponseSuccessResult<void> | ResponseFailureResult
+> => {
+  if (activeRefreshPromise) {
+    return activeRefreshPromise;
+  }
+
+  activeRefreshPromise = (async () => {
+    try {
+      const uri: string = "/api/auth/refresh";
+      const request: RequestInit = {
+        method: "POST",
+      };
+      return await sendRequestWithoutRefresh(uri, request);
+    } finally {
+      activeRefreshPromise = null;
+    }
+  })();
+  return activeRefreshPromise;
 };

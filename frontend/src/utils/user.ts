@@ -1,7 +1,7 @@
 import type { GetUserProfileResponse } from "../dtos/user/GetUserProfileResponse";
 import { sendRequest } from "./send-request";
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
+import type { ResponseFailureResult } from "../types/ResponseFailureResult";
 import type { GetUserExchangeResponse } from "../dtos/user/GetUserExchangeResponse";
 import type { UpdateUserDescriptionRequest } from "../dtos/user/UpdateUserDescriptionRequest";
 import type { UpdateUserDescriptionResponse } from "../dtos/user/UpdateUserDescriptionResponse";
@@ -21,14 +21,11 @@ import type { UniversityDetails } from "../dtos/details/UniversityDetails";
 export const sendGetUserProfileRequest = async (
   userId: number | string
 ): Promise<
-  ResponseSuccessResult<GetUserProfileResponse> | RepsonseFailureResult
+  ResponseSuccessResult<GetUserProfileResponse> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/${userId}/profile`;
   const request: RequestInit = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
   };
   return await sendRequest<GetUserProfileResponse>(uri, request);
 };
@@ -37,14 +34,11 @@ export const sendGetUserReviewsRequest = async (
   userId: number | string
 ): Promise<
   | ResponseSuccessResult<Listing<UniversityReviewDetails>>
-  | RepsonseFailureResult
+  | ResponseFailureResult
 > => {
   const uri: string = `/api/users/${userId}/universityReviews`;
   const request: RequestInit = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
   };
   return await sendRequest<Listing<UniversityReviewDetails>>(uri, request);
 };
@@ -52,14 +46,11 @@ export const sendGetUserReviewsRequest = async (
 export const sendGetUserExchangesRequest = async (
   userId: number | string
 ): Promise<
-  ResponseSuccessResult<GetUserExchangeResponse[]> | RepsonseFailureResult
+  ResponseSuccessResult<GetUserExchangeResponse[]> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/${userId}/exchanges`;
   const request: RequestInit = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
   };
   return await sendRequest<GetUserExchangeResponse[]>(uri, request);
 };
@@ -67,14 +58,11 @@ export const sendGetUserExchangesRequest = async (
 export const sendUpdateDescriptionRequest = async (
   body: UpdateUserDescriptionRequest
 ): Promise<
-  ResponseSuccessResult<UpdateUserDescriptionResponse> | RepsonseFailureResult
+  ResponseSuccessResult<UpdateUserDescriptionResponse> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/description`;
   const request: RequestInit = {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(body),
   };
   return await sendRequest<UpdateUserDescriptionResponse>(uri, request);
@@ -83,14 +71,11 @@ export const sendUpdateDescriptionRequest = async (
 export const sendAssignHomeUniversityRequest = async (
   body: AssignHomeUniversityRequest
 ): Promise<
-  ResponseSuccessResult<AssignHomeUniversityResponse> | RepsonseFailureResult
+  ResponseSuccessResult<AssignHomeUniversityResponse> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/homeUniversity`;
   const request: RequestInit = {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(body),
   };
   return await sendRequest<AssignHomeUniversityResponse>(uri, request);
@@ -99,14 +84,11 @@ export const sendAssignHomeUniversityRequest = async (
 export const sendUpdateStatusRequest = async (
   body: UpdateUserStatusRequest
 ): Promise<
-  ResponseSuccessResult<UpdateUserStatusResponse> | RepsonseFailureResult
+  ResponseSuccessResult<UpdateUserStatusResponse> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/status`;
   const request: RequestInit = {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(body),
   };
   return await sendRequest<UpdateUserStatusResponse>(uri, request);
@@ -115,14 +97,11 @@ export const sendUpdateStatusRequest = async (
 export const sendAssignCountryOfOriginRequest = async (
   body: AssignCountryOfOriginRequest
 ): Promise<
-  ResponseSuccessResult<AssignCountryOfOriginResponse> | RepsonseFailureResult
+  ResponseSuccessResult<AssignCountryOfOriginResponse> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/countryOfOrigin`;
   const request: RequestInit = {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(body),
   };
   return await sendRequest<AssignCountryOfOriginResponse>(uri, request);
@@ -141,7 +120,7 @@ export const sendGetUsersRequest = async (
   page: number,
   size: number
 ): Promise<
-  ResponseSuccessResult<PageResponse<UserDetails>> | RepsonseFailureResult
+  ResponseSuccessResult<PageResponse<UserDetails>> | ResponseFailureResult
 > => {
   const params = new URLSearchParams({
     nick: nick,
@@ -151,9 +130,6 @@ export const sendGetUsersRequest = async (
   const uri: string = `/api/users?${params.toString()}`;
   const request: RequestInit = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
   };
   return await sendRequest<PageResponse<UserDetails>>(uri, request);
 };
@@ -161,14 +137,11 @@ export const sendGetUsersRequest = async (
 export const sendGetFolloweesRequest = async (
   userId: number
 ): Promise<
-  ResponseSuccessResult<Listing<UserSummary>> | RepsonseFailureResult
+  ResponseSuccessResult<Listing<UserSummary>> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/${userId}/followees`;
   const request: RequestInit = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
   };
   return await sendRequest<Listing<UserSummary>>(uri, request);
 };
@@ -176,27 +149,21 @@ export const sendGetFolloweesRequest = async (
 export const sendGetFollowedUniversitiesRequest = async (
   userId: number
 ): Promise<
-  ResponseSuccessResult<Listing<UniversityDetails>> | RepsonseFailureResult
+  ResponseSuccessResult<Listing<UniversityDetails>> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/${userId}/followedUniversities`;
   const request: RequestInit = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
   };
   return await sendRequest<Listing<UniversityDetails>>(uri, request);
 };
 
 export const sendGetMe = async (): Promise<
-  ResponseSuccessResult<UserSummary> | RepsonseFailureResult
+  ResponseSuccessResult<UserSummary> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/me`;
   const request: RequestInit = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
   };
   return await sendRequest<UserSummary>(uri, request);
 };

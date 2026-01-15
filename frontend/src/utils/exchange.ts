@@ -1,5 +1,5 @@
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-import type { RepsonseFailureResult } from "../types/ResponseFailureResult";
+import type { ResponseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
 import type { CreateExchangeRequest } from "../dtos/exchange/CreateExchangeRequest";
 import type { CreateExchangeResponse } from "../dtos/exchange/CreateExchangeResponse";
@@ -18,7 +18,7 @@ export const sendGetExchangesRequest = async (
   endDate: string | undefined | null,
   userId: number | undefined | null
 ): Promise<
-  ResponseSuccessResult<PageResponse<ExchangeDetails>> | RepsonseFailureResult
+  ResponseSuccessResult<PageResponse<ExchangeDetails>> | ResponseFailureResult
 > => {
   const url = new URL(`/api/exchanges`, window.location.origin);
   if (countryId) url.searchParams.append("countryId", `${countryId}`);
@@ -34,9 +34,6 @@ export const sendGetExchangesRequest = async (
   const uri = url.toString();
   const request: RequestInit = {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
   };
   return await sendRequest<PageResponse<ExchangeDetails>>(uri, request);
 };
@@ -44,14 +41,11 @@ export const sendGetExchangesRequest = async (
 export const sendCreateExchangeRequest = async (
   body: CreateExchangeRequest
 ): Promise<
-  ResponseSuccessResult<CreateExchangeResponse> | RepsonseFailureResult
+  ResponseSuccessResult<CreateExchangeResponse> | ResponseFailureResult
 > => {
   const uri: string = `/api/exchanges`;
   const request: RequestInit = {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(body),
   };
   return await sendRequest(uri, request);
@@ -59,13 +53,10 @@ export const sendCreateExchangeRequest = async (
 
 export const sendDeleteExchangeRequest = async (
   exchangeId: number
-): Promise<ResponseSuccessResult<null> | RepsonseFailureResult> => {
+): Promise<ResponseSuccessResult<null> | ResponseFailureResult> => {
   const uri: string = `/api/exchanges/${exchangeId}`;
   const request: RequestInit = {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
   };
   return await sendRequest(uri, request);
 };
