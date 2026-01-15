@@ -21,9 +21,10 @@ const LoginPage = () => {
     const result = await sendLoginRequest(body);
     if (result.isSuccess) {
       const userId = result.data.userId;
+
       setSignedInUser({
         id: userId,
-        avatarUrl: undefined,
+        avatarUrl: result.data.avatarUrl,
         isSignedIn: true,
       });
       setWasLoginAttemptFailed(false);

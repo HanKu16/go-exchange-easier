@@ -229,7 +229,6 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
       null,
       Number(props.userId)
     );
-    console.log(result);
     if (result.isSuccess) {
       const props: ActionExchangeTableProps = {
         message: message,
