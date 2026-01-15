@@ -1,4 +1,5 @@
 services:
+
   database:
     build:
       context: ./database
@@ -9,6 +10,13 @@ services:
     ports:
       - "5431:5432"
     container_name: gee-database
+    
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    container_name: gee-redis
+
   backend:
     build:
       context: ./backend
@@ -16,9 +24,11 @@ services:
       - "8080:8080"
     depends_on:
       - database
+      - redis
     env_file:
       - ./.env
     container_name: gee-backend
+    
   frontend:
     build:
       context: ./frontend
@@ -27,3 +37,4 @@ services:
     env_file:
       - ./.env
     container_name: gee-frontend
+
