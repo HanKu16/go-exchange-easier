@@ -91,14 +91,8 @@ public class AuthServiceImpl implements AuthService {
     public TokenBundle logout(String refreshToken) {
         String newAccessToken = "";
         String newRefreshToken = "";
-        Optional<RefreshToken> optionalOldRefreshToken = refreshTokenRepository
-                .findByHashedToken(getHashedToken(refreshToken));
-        if (optionalOldRefreshToken.isEmpty()) {
-            return new TokenBundle(newAccessToken, newRefreshToken);
-        }
-        RefreshToken oldRefreshToken = optionalOldRefreshToken.get();
-        oldRefreshToken.setRevoked(true);
-        refreshTokenRepository.save(oldRefreshToken);
+        refreshTokenRepository.revokeByHashedToken(
+                getHashedToken(refreshToken));
         return new TokenBundle(newAccessToken, newRefreshToken);
     }
 
