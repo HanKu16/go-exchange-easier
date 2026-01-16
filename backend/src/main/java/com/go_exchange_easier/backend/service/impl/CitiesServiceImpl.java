@@ -6,6 +6,7 @@ import com.go_exchange_easier.backend.repository.CitiesRepository;
 import com.go_exchange_easier.backend.repository.specification.CitySpecification;
 import com.go_exchange_easier.backend.service.CitiesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -17,6 +18,8 @@ public class CitiesServiceImpl implements CitiesService {
     private final CitiesRepository citiesRepository;
 
     @Override
+    @Cacheable(value="cities", key="'country:' + #countryId",
+            condition="#countryId != null")
     public List<CityDetails> getAll(Short countryId) {
         Specification<City> specification = (root, query, cb) -> null;
         if (countryId != null) {
