@@ -3,13 +3,15 @@ package com.go_exchange_easier.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "roles")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Role {
+public class Role implements Serializable {
 
     @Id
     @Column(name = "role_id")
