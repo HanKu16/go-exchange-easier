@@ -25,7 +25,7 @@ export async function sendRequest<ResponseSuccessBody>(
     if (response.status === 403 || response.status == 401) {
       const refreshResponse = await sendRefreshRequest();
       if (!refreshResponse.isSuccess) {
-        window.location.href = "/login";
+        window.dispatchEvent(new Event("auth:logout"));
         return {
           isSuccess: false,
           error: {

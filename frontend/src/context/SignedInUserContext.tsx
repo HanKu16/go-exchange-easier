@@ -1,10 +1,11 @@
-import React, {
+import {
   useState,
   createContext,
   useContext,
   type ReactNode,
   useEffect,
 } from "react";
+import { sendGetMeRequest } from "../utils/user";
 
 type SignedInUser = {
   id: number;
@@ -19,16 +20,10 @@ type SignedInUserContextType = {
 };
 
 const SignedInUserContext = createContext<SignedInUserContextType | undefined>(
-  undefined
+  undefined,
 );
 
-type SignedInUserProviderProps = {
-  children: ReactNode;
-};
-
-export const SignedInUserProvider: React.FC<SignedInUserProviderProps> = ({
-  children,
-}) => {
+export const SignedInUserProvider = ({ children }: { children: ReactNode }) => {
   const [signedInUser, setSignedInUser] = useState<SignedInUser>({
     id: 0,
     avatarUrl: undefined,
@@ -37,15 +32,48 @@ export const SignedInUserProvider: React.FC<SignedInUserProviderProps> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function init() {
-      setIsLoading(false);
-    }
-    init();
+    let isMounted = true;
+    const verifyUser = async () => {
+      try {
+        const result = await sendGetMeRequest();
+        if (isMounted) {
+          if (result.isSuccess) {
+            setSignedInUser({ id: result.data.id, isSignedIn: true });
+          } else {
+            setSignedInUser({ id: 0, isSignedIn: false });
+          }
+        }
+      } catch (error) {
+        if (isMounted) {
+          setSignedInUser({ id: 0, isSignedIn: false });
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+    verifyUser();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleForceLogout = () => {
+      setSignedInUser({ id: 0, avatarUrl: undefined, isSignedIn: false });
+    };
+
+    window.addEventListener("auth:logout", handleForceLogout);
+
+    return () => {
+      window.removeEventListener("auth:logout", handleForceLogout);
+    };
   }, []);
 
   return (
     <SignedInUserContext.Provider
-      value={{ signedInUser, isLoading, setSignedInUser }}
+      value={{ signedInUser, setSignedInUser, isLoading }}
     >
       {children}
     </SignedInUserContext.Provider>
@@ -56,7 +84,7 @@ export const useSignedInUser = (): SignedInUserContextType => {
   const context = useContext(SignedInUserContext);
   if (!context) {
     throw new Error(
-      "useSignedInUser must be used within a SignedInUserProvider"
+      "useSignedInUser must be used within a SignedInUserProvider",
     );
   }
   return context;

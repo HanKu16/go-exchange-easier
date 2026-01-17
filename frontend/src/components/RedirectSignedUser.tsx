@@ -2,14 +2,15 @@ import { Navigate, useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useSignedInUser } from "../context/SignedInUserContext";
 
-const RequireAuth = () => {
+const RedirectSignedUser = () => {
   const { signedInUser } = useSignedInUser();
   const location = useLocation();
 
-  if (!signedInUser.isSignedIn) {
+  if (signedInUser.isSignedIn) {
+    const path = `/users/${signedInUser.id}`;
     return (
       <Navigate
-        to="/login"
+        to={path}
         state={{ from: location.pathname + location.search }}
         replace
       />
@@ -19,4 +20,4 @@ const RequireAuth = () => {
   return <Outlet />;
 };
 
-export default RequireAuth;
+export default RedirectSignedUser;
