@@ -2,11 +2,11 @@ import type { ApiErrorResponse } from "../dtos/error/ApiErrorResponse";
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { ResponseFailureResult } from "../types/ResponseFailureResult";
 import { sendRefreshRequest } from "./auth";
-import { getDeviceId } from "./device";
+import { getDeviceId, getReadableDeviceName } from "./device";
 
 export async function sendRequest<ResponseSuccessBody>(
   uri: string,
-  request: RequestInit
+  request: RequestInit,
 ): Promise<ResponseSuccessResult<ResponseSuccessBody> | ResponseFailureResult> {
   try {
     const callToApi = async () => {
@@ -16,6 +16,7 @@ export async function sendRequest<ResponseSuccessBody>(
           ...(request.headers || {}),
           "Content-Type": "application/json",
           "X-Device-Id": getDeviceId(),
+          "X-Device-Name": getReadableDeviceName(),
         },
         credentials: "include",
       });
@@ -98,7 +99,7 @@ export async function sendRequest<ResponseSuccessBody>(
 
 export async function sendRequestWithoutRefresh<ResponseSuccessBody>(
   uri: string,
-  request: RequestInit
+  request: RequestInit,
 ): Promise<ResponseSuccessResult<ResponseSuccessBody> | ResponseFailureResult> {
   try {
     let response = await fetch(uri, {
@@ -107,6 +108,7 @@ export async function sendRequestWithoutRefresh<ResponseSuccessBody>(
         ...(request.headers || {}),
         "Content-Type": "application/json",
         "X-Device-Id": getDeviceId(),
+        "X-Device-Name": getReadableDeviceName(),
       },
       credentials: "include",
     });

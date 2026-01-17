@@ -4,11 +4,11 @@ import type { ResponseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequestWithoutRefresh } from "./send-request";
 import type { UserRegistrationRequest } from "../dtos/auth/UserRegistrationRequest";
 import type { UserRegistrationResponse } from "../dtos/auth/UserRegistrationResponse";
-import { getDeviceId, getReadableDeviceName } from "./device";
+import { getDeviceId } from "./device";
 import type { SignedInUserSummary } from "../dtos/summary/SignedInUserSummary";
 
 export const sendLoginRequest = async (
-  body: LoginRequest
+  body: LoginRequest,
 ): Promise<
   ResponseSuccessResult<SignedInUserSummary> | ResponseFailureResult
 > => {
@@ -17,8 +17,6 @@ export const sendLoginRequest = async (
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Device-Id": getDeviceId(),
-      "X-Device-Name": getReadableDeviceName(),
     },
     body: JSON.stringify(body),
   };
@@ -26,7 +24,7 @@ export const sendLoginRequest = async (
 };
 
 export const sendUserRegistrationRequest = async (
-  body: UserRegistrationRequest
+  body: UserRegistrationRequest,
 ): Promise<
   ResponseSuccessResult<UserRegistrationResponse> | ResponseFailureResult
 > => {

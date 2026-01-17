@@ -19,7 +19,7 @@ import type { UserSummary } from "../dtos/summary/UserSummary";
 import type { UniversityDetails } from "../dtos/details/UniversityDetails";
 
 export const sendGetUserProfileRequest = async (
-  userId: number | string
+  userId: number | string,
 ): Promise<
   ResponseSuccessResult<GetUserProfileResponse> | ResponseFailureResult
 > => {
@@ -31,7 +31,7 @@ export const sendGetUserProfileRequest = async (
 };
 
 export const sendGetUserReviewsRequest = async (
-  userId: number | string
+  userId: number | string,
 ): Promise<
   | ResponseSuccessResult<Listing<UniversityReviewDetails>>
   | ResponseFailureResult
@@ -44,7 +44,7 @@ export const sendGetUserReviewsRequest = async (
 };
 
 export const sendGetUserExchangesRequest = async (
-  userId: number | string
+  userId: number | string,
 ): Promise<
   ResponseSuccessResult<GetUserExchangeResponse[]> | ResponseFailureResult
 > => {
@@ -56,7 +56,7 @@ export const sendGetUserExchangesRequest = async (
 };
 
 export const sendUpdateDescriptionRequest = async (
-  body: UpdateUserDescriptionRequest
+  body: UpdateUserDescriptionRequest,
 ): Promise<
   ResponseSuccessResult<UpdateUserDescriptionResponse> | ResponseFailureResult
 > => {
@@ -69,7 +69,7 @@ export const sendUpdateDescriptionRequest = async (
 };
 
 export const sendAssignHomeUniversityRequest = async (
-  body: AssignHomeUniversityRequest
+  body: AssignHomeUniversityRequest,
 ): Promise<
   ResponseSuccessResult<AssignHomeUniversityResponse> | ResponseFailureResult
 > => {
@@ -82,7 +82,7 @@ export const sendAssignHomeUniversityRequest = async (
 };
 
 export const sendUpdateStatusRequest = async (
-  body: UpdateUserStatusRequest
+  body: UpdateUserStatusRequest,
 ): Promise<
   ResponseSuccessResult<UpdateUserStatusResponse> | ResponseFailureResult
 > => {
@@ -95,7 +95,7 @@ export const sendUpdateStatusRequest = async (
 };
 
 export const sendAssignCountryOfOriginRequest = async (
-  body: AssignCountryOfOriginRequest
+  body: AssignCountryOfOriginRequest,
 ): Promise<
   ResponseSuccessResult<AssignCountryOfOriginResponse> | ResponseFailureResult
 > => {
@@ -118,7 +118,7 @@ export const getSignedInUserJwtToken = (): string => {
 export const sendGetUsersRequest = async (
   nick: string,
   page: number,
-  size: number
+  size: number,
 ): Promise<
   ResponseSuccessResult<PageResponse<UserDetails>> | ResponseFailureResult
 > => {
@@ -135,7 +135,7 @@ export const sendGetUsersRequest = async (
 };
 
 export const sendGetFolloweesRequest = async (
-  userId: number
+  userId: number,
 ): Promise<
   ResponseSuccessResult<Listing<UserSummary>> | ResponseFailureResult
 > => {
@@ -147,7 +147,7 @@ export const sendGetFolloweesRequest = async (
 };
 
 export const sendGetFollowedUniversitiesRequest = async (
-  userId: number
+  userId: number,
 ): Promise<
   ResponseSuccessResult<Listing<UniversityDetails>> | ResponseFailureResult
 > => {
@@ -158,7 +158,7 @@ export const sendGetFollowedUniversitiesRequest = async (
   return await sendRequest<Listing<UniversityDetails>>(uri, request);
 };
 
-export const sendGetMe = async (): Promise<
+export const sendGetMeRequest = async (): Promise<
   ResponseSuccessResult<UserSummary> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/me`;
