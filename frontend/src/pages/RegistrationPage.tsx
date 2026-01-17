@@ -10,8 +10,11 @@ import {
   Link,
   Button,
   CircularProgress,
+  InputAdornment,
+  Paper,
+  Stack,
+  GlobalStyles,
 } from "@mui/material";
-import { useTheme, useMediaQuery } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
@@ -33,30 +36,34 @@ type InputFieldProps = {
   isRequired: boolean;
   value: string;
   setValue: (value: string) => void;
+  type?: string;
 };
 
 const InputField = (props: InputFieldProps) => {
   return (
-    <Box sx={{ display: "flex", width: "100%", justifyContent: "center" }}>
-      <TextField
-        id={props.id}
-        label={props.label}
-        required={props.isRequired}
-        placeholder={`Enter your ${props.label.toLocaleLowerCase()}`}
-        autoComplete="off"
-        value={props.value}
-        onChange={(e) => props.setValue(e.target.value)}
-        sx={{
-          width: { xs: "80%", sm: "60%", md: "50%" },
-          paddingRight: { lg: 1 },
-        }}
-      />
-      <Tooltip title={props.infoText}>
-        <IconButton>
-          <InfoIcon />
-        </IconButton>
-      </Tooltip>
-    </Box>
+    <TextField
+      id={props.id}
+      label={props.label}
+      required={props.isRequired}
+      placeholder={`Enter your ${props.label.toLocaleLowerCase()}`}
+      autoComplete="off"
+      value={props.value}
+      onChange={(e) => props.setValue(e.target.value)}
+      type={props.type || "text"}
+      fullWidth
+      variant="outlined"
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <Tooltip title={props.infoText} arrow placement="top">
+              <IconButton edge="end" size="small">
+                <InfoIcon color="action" />
+              </IconButton>
+            </Tooltip>
+          </InputAdornment>
+        ),
+      }}
+    />
   );
 };
 
@@ -64,44 +71,63 @@ const SuccessfulRegistrationPanel = () => {
   const navigate = useNavigate();
   return (
     <Container
+      maxWidth="sm"
       sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        height: "100%",
-        paddingY: { xs: 7, sm: 12, lg: 10 },
+        justifyContent: "center",
+        minHeight: "100vh",
+        textAlign: "center",
+        py: 4,
       }}
     >
-      <Typography
-        sx={{ fontSize: { xs: "4rem", sm: "5rem", md: "6rem", lg: "3rem" } }}
+      <Paper
+        elevation={3}
+        sx={{ p: 5, borderRadius: 3, backgroundColor: "white" }}
       >
-        Welcome!
-      </Typography>
-      <Box sx={{ height: { xs: "40%", sm: "50%", md: "60%", lg: "40%" } }}>
-        <img
-          src={registrationSuccessImage}
-          alt="Registration Success Image"
-          style={{ height: "100%", objectFit: "contain" }}
-        />
-      </Box>
-      <Typography sx={{ fontSize: { sm: "2rem", lg: "1.5rem" } }}>
-        Your account was successfully created
-      </Typography>
-      <Button
-        variant="contained"
-        size="large"
-        onClick={() => navigate(`/login`)}
-        sx={{ marginTop: { xs: 3, md: 4, lg: 3 }, marginBottom: 2 }}
-      >
-        Sign In
-      </Button>
+        <Typography
+          variant="h3"
+          component="h1"
+          gutterBottom
+          sx={{ fontWeight: "bold", color: "#182c44" }}
+        >
+          Welcome!
+        </Typography>
+
+        <Box sx={{ maxWidth: "300px", width: "100%", my: 4, mx: "auto" }}>
+          <img
+            src={registrationSuccessImage}
+            alt="Registration Success"
+            style={{ width: "100%", height: "auto", objectFit: "contain" }}
+          />
+        </Box>
+        <Typography variant="h6" color="text.secondary" gutterBottom>
+          Your account was successfully created
+        </Typography>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={() => navigate(`/login`)}
+          sx={{
+            mt: 4,
+            px: 6,
+            py: 1.5,
+            fontSize: "1.1rem",
+            borderRadius: 2,
+            textTransform: "none",
+            backgroundColor: "#182c44",
+            "&:hover": { backgroundColor: "#122133" },
+          }}
+        >
+          Sign In
+        </Button>
+      </Paper>
     </Container>
   );
 };
 
 export const RegistrationPage = () => {
-  const theme = useTheme();
-  const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [nick, setNick] = useState<string>("");
@@ -119,13 +145,13 @@ export const RegistrationPage = () => {
       ...new Set(error.fieldErrors.map((e) => e.field)),
     ];
     const globalErrorsCodes: ApiErrorResponseCode[] = error.globalErrors.map(
-      (e) => e.code
+      (e) => e.code,
     );
     if (errorFieldNames.length != 0) {
       setErrorMessage(
-        "Registration attempt failed. Check requirments for " +
+        "Registration attempt failed. Check requirements for " +
           errorFieldNames.join(", ") +
-          "."
+          ".",
       );
     } else if (globalErrorsCodes.includes("LoginAlreadyTaken")) {
       setErrorMessage("Login is already taken.");
@@ -136,6 +162,8 @@ export const RegistrationPage = () => {
       error.status === "INTERNAL_SERVER_ERROR"
     ) {
       setErrorMessage("An unexpected error occured. Please try again later.");
+    } else if (error.status === "SERVICE_UNAVAILABLE") {
+      setErrorMessage("Connection error occured. Please try again later.");
     }
   };
 
@@ -143,7 +171,7 @@ export const RegistrationPage = () => {
     setErrorMessage(null);
     if (!isAgreementAccepted) {
       setErrorMessage(
-        "Terms and Conditions must be accepted if you want to sign up"
+        "Terms and Conditions must be accepted if you want to sign up",
       );
       return;
     }
@@ -164,189 +192,223 @@ export const RegistrationPage = () => {
   };
 
   return (
-    <Grid container spacing={2}>
-      <Grid size={{ xs: 12, lg: 7 }}>
-        <Container
+    <>
+      <GlobalStyles
+        styles={{ body: { backgroundColor: "#0f1c2e", overflowX: "hidden" } }}
+      />
+      <Grid
+        container
+        component="main"
+        sx={{ minHeight: "100vh", backgroundColor: "#182c44" }}
+      >
+        <Grid
+          size={{ lg: 7 }}
           sx={{
-            backgroundColor: "#182c44",
-            height: { xs: "10vh", lg: "100vh" },
-            display: "flex",
+            display: { xs: "none", lg: "flex" },
             flexDirection: "column",
-            paddingTop: 2,
+            alignItems: "center",
+            justifyContent: "center",
+            p: 4,
+            height: "100vh",
+            position: "sticky",
+            top: 0,
           }}
         >
-          {isLgScreen ? (
-            <>
-              <img
-                src={goExchangeEasierCaptionImage}
-                alt="Go Exchange Easier Caption"
-                style={{ height: "20%", objectFit: "contain" }}
-              />
-              <img
-                src={earthImage}
-                alt="Earth"
-                style={{
-                  height: "50%",
-                  objectFit: "contain",
-                  marginBottom: 20,
-                }}
-              />
-              <img
-                src={registrationPageTextImage}
-                alt="Find people that already were in places you want to go
-                    and pick the best one for you"
-                style={{ height: "20%", objectFit: "contain" }}
-              />
-            </>
+          <Stack spacing={4} alignItems="center" sx={{ maxWidth: "80%" }}>
+            <img
+              src={goExchangeEasierCaptionImage}
+              alt="Go Exchange Easier"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "15vh",
+                objectFit: "contain",
+              }}
+            />
+            <img
+              src={earthImage}
+              alt="Earth"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "40vh",
+                objectFit: "contain",
+                animation: "float 6s ease-in-out infinite",
+              }}
+            />
+            <img
+              src={registrationPageTextImage}
+              alt="Find people..."
+              style={{
+                maxWidth: "100%",
+                maxHeight: "15vh",
+                objectFit: "contain",
+              }}
+            />
+          </Stack>
+        </Grid>
+        <Grid
+          size={{ xs: 12, lg: 5 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            py: 2,
+            minHeight: { lg: "100vh" },
+          }}
+        >
+          {wasRegistrationSuccessful ? (
+            <SuccessfulRegistrationPanel />
           ) : (
-            <>
-              <img
-                src={goExchangeEasierCaptionImage}
-                alt="Go Exchange Easier Caption"
-                style={{
-                  height: "90%",
-                  objectFit: "contain",
-                  paddingBottom: 3,
-                  transform: "rotate(3deg)",
-                }}
-              />
-            </>
-          )}
-        </Container>
-      </Grid>
-      <Grid size={{ xs: 12, lg: 5 }}>
-        {wasRegistrationSuccessful ? (
-          <SuccessfulRegistrationPanel />
-        ) : (
-          <Container
-            sx={{
-              backgroundColor: "white",
-              height: "100vh",
-              paddingY: { lg: 3 },
-            }}
-          >
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Typography
+            <Container maxWidth="sm">
+              <Box
                 sx={{
-                  fontSize: { xs: "1.5rem", sm: "2.3rem", xl: "2rem" },
-                  paddingTop: { xs: 2, sm: 2, xl: 3 },
+                  display: { xs: "block", lg: "none" },
+                  textAlign: "center",
+                  mb: 4,
+                  mt: { xs: 2, sm: 4 },
                 }}
               >
-                REGISTRATION FORM
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "space-around",
-                height: { xs: "55%", lg: "60%" },
-                paddingTop: { xs: 3, lg: 4 },
-              }}
-            >
-              <InputField
-                id="login"
-                label="Login"
-                isRequired={true}
-                infoText="Should have between 6 to 20 characters. Only letters and numbers."
-                value={login}
-                setValue={setLogin}
-              />
-              <InputField
-                id="password"
-                label="Password"
-                isRequired={true}
-                infoText="Should have between 8 to 20 characters. Only letters and numbers."
-                value={password}
-                setValue={setPassword}
-              />
-              <InputField
-                id="nick"
-                label="Nick"
-                isRequired={true}
-                infoText="Should have between 3 to 20 characters. Only letters and numbers. 
-                  Your nick will be shown on your profile. If not provided your login will be used."
-                value={nick}
-                setValue={setNick}
-              />
-              <InputField
-                id="mail"
-                label="Mail"
-                isRequired={false}
-                infoText="Should be a valid email. By giving email you let us notify 
-                  you about new message in the service."
-                value={mail}
-                setValue={setMail}
-              />
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                paddingTop: { lg: 2 },
-              }}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    value={isAgreementAccepted}
-                    onChange={() =>
-                      setIsAgreementAccepted((prevState) => !prevState)
-                    }
-                  />
-                }
-                label={
-                  <Box
-                    sx={{
-                      fontSize: {
-                        xs: "0.7rem",
-                        sm: "1.2rem",
-                        md: "1.3rem",
-                        lg: "0.8rem",
-                      },
-                    }}
-                  >
-                    <span>I read and agree to </span>
-                    <Link
-                      href="/terms-and-conditions"
-                      target="_blank"
-                      rel="noopener"
-                      sx={{ fontWeight: "bold" }}
-                      onClick={() => {}}
-                    >
-                      Terms and Conditions
-                    </Link>
-                  </Box>
-                }
-              />
-              {isWaitingForResponse ? (
-                <CircularProgress sx={{ marginTop: 2 }} />
-              ) : (
-                <Button
-                  variant="contained"
-                  onClick={handleRegistration}
-                  sx={{
-                    marginTop: { xs: 1.5, lg: 2 },
-                    marginBottom: 2,
-                  }}
+                <img
+                  src={goExchangeEasierCaptionImage}
+                  alt="Go Exchange Easier"
+                  style={{ maxWidth: "70%", height: "auto" }}
+                />
+              </Box>
+              <Paper
+                elevation={3}
+                sx={{
+                  p: { xs: 3, sm: 5 },
+                  borderRadius: 3,
+                  backgroundColor: "white",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  component="h1"
+                  variant="h4"
+                  sx={{ mb: 3, fontWeight: 700, color: "#182c44" }}
                 >
                   Sign Up
-                </Button>
-              )}
-              {errorMessage != null ? (
-                <Alert severity="error" variant="filled">
-                  {errorMessage}
-                </Alert>
-              ) : (
-                <></>
-              )}
-            </Box>
-          </Container>
-        )}
+                </Typography>
+                <Stack spacing={2.5} width="100%">
+                  <InputField
+                    id="login"
+                    label="Login"
+                    isRequired={true}
+                    infoText="Should have between 6 to 20 characters. Only letters and numbers."
+                    value={login}
+                    setValue={setLogin}
+                  />
+                  <InputField
+                    id="password"
+                    label="Password"
+                    isRequired={true}
+                    infoText="Should have between 8 to 20 characters. Only letters and numbers."
+                    value={password}
+                    setValue={setPassword}
+                    type="password"
+                  />
+                  <InputField
+                    id="nick"
+                    label="Nick"
+                    isRequired={true}
+                    infoText="Your nick will be shown on your profile. If not provided your login will be used. 3-20 chars."
+                    value={nick}
+                    setValue={setNick}
+                  />
+                  <InputField
+                    id="mail"
+                    label="Email"
+                    isRequired={false}
+                    infoText="Should be a valid email. We use this to notify you about new messages."
+                    value={mail}
+                    setValue={setMail}
+                  />
+
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        value={isAgreementAccepted}
+                        color="primary"
+                        onChange={() => setIsAgreementAccepted((prev) => !prev)}
+                      />
+                    }
+                    label={
+                      <Typography variant="body2" color="text.secondary">
+                        I read and agree to the{" "}
+                        <Link
+                          href="/terms-and-conditions"
+                          target="_blank"
+                          rel="noopener"
+                          underline="hover"
+                          sx={{ fontWeight: "bold", color: "#182c44" }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Terms and Conditions
+                        </Link>
+                      </Typography>
+                    }
+                    sx={{ alignItems: "center", mt: 1 }}
+                  />
+                  {errorMessage && (
+                    <Alert severity="error" sx={{ width: "100%" }}>
+                      {errorMessage}
+                    </Alert>
+                  )}
+                  <Box sx={{ position: "relative", mt: 2 }}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      size="large"
+                      onClick={handleRegistration}
+                      disabled={isWaitingForResponse}
+                      sx={{
+                        py: 1.5,
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                        backgroundColor: "#182c44",
+                        "&:hover": { backgroundColor: "#122133" },
+                      }}
+                    >
+                      Sign Up
+                    </Button>
+                    {isWaitingForResponse && (
+                      <CircularProgress
+                        size={24}
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          marginTop: "-12px",
+                          marginLeft: "-12px",
+                        }}
+                      />
+                    )}
+                  </Box>
+                </Stack>
+              </Paper>
+              <Box sx={{ mt: 3, textAlign: "center" }}>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "rgba(255,255,255,0.7)" }}
+                >
+                  Already have an account?{" "}
+                  <Link
+                    href="/login"
+                    underline="hover"
+                    sx={{ fontWeight: "bold", color: "white" }}
+                  >
+                    Sign in
+                  </Link>
+                </Typography>
+              </Box>
+            </Container>
+          )}
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 
