@@ -80,7 +80,7 @@ public class AuthController {
     @LogoutApiDocs
     public ResponseEntity<Void> logout(
             @AuthenticationPrincipal UserCredentials principal,
-            @CookieValue(name = "refreshToken") String refreshToken) {
+            @CookieValue(name = "refreshToken", required = false) String refreshToken) {
         TokenBundle tokenBundle = authService.logout(refreshToken);
         ResponseCookie accessTokenCookie = ResponseCookie.from(
                         "accessToken", tokenBundle.accessToken())

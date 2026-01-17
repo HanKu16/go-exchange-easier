@@ -90,8 +90,10 @@ public class AuthServiceImpl implements AuthService {
     public TokenBundle logout(String refreshToken) {
         String newAccessToken = "";
         String newRefreshToken = "";
-        refreshTokenRepository.revokeByHashedToken(
-                getHashedToken(refreshToken));
+        if (refreshToken != null) {
+            refreshTokenRepository.revokeByHashedToken(
+                    getHashedToken(refreshToken));
+        }
         return new TokenBundle(newAccessToken, newRefreshToken);
     }
 
