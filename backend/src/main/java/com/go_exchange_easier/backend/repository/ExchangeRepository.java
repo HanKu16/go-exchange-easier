@@ -1,10 +1,16 @@
 package com.go_exchange_easier.backend.repository;
 
 import com.go_exchange_easier.backend.model.Exchange;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -38,5 +44,12 @@ public interface ExchangeRepository extends
             WHERE us.user_id = :userId AND us.deleted_at IS NULL;
         """, nativeQuery = true)
     List<Object[]> findByUserId(@Param("userId") int userId);
+
+    @Override
+    @NonNull
+    @EntityGraph(attributePaths = {"user", "universityMajor", "university", "university.city",
+        "university.city.country"})
+    Page<Exchange> findAll(@Nullable Specification<Exchange> specification,
+            @NonNull Pageable pageable);
 
 }

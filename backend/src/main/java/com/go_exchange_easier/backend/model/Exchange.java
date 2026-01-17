@@ -24,7 +24,7 @@ public class Exchange {
     @Column(name = "end_at")
     private LocalDate endAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -32,7 +32,7 @@ public class Exchange {
     @JoinColumn(name = "university_id")
     private University university;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "university_major_id")
     private UniversityMajor universityMajor;
 
