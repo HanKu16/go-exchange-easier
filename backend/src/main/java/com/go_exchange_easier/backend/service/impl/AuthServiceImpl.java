@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.codec.digest.DigestUtils;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -106,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
                 .plusSeconds(jwtConfig.getRefreshTokenValidityInSeconds()));
         refreshToken.setRevoked(false);
         refreshToken.setDeviceId(UUID.fromString(servletRequest.getHeader("X-Device-Id")));
-        refreshToken.setDeviceName(servletRequest.getHeader("User-Agent"));
+        refreshToken.setDeviceName(servletRequest.getHeader("X-Device-Name"));
         refreshToken.setIpAddress(getClientIp(servletRequest));
         refreshToken.setUser(user);
         return refreshToken;
@@ -114,13 +113,13 @@ public class AuthServiceImpl implements AuthService {
 
     private String getClientIp(HttpServletRequest request) {
         String remoteAddr = request.getHeader("X-Forwarded-For");
-        if (remoteAddr == null || remoteAddr.isEmpty()) {
+        if ((remoteAddr == null) || remoteAddr.isEmpty()) {
             remoteAddr = request.getHeader("X-Real-IP");
         }
-        if (remoteAddr == null || remoteAddr.isEmpty()) {
+        if ((remoteAddr == null) || remoteAddr.isEmpty()) {
             remoteAddr = request.getRemoteAddr();
         }
-        if (remoteAddr != null && remoteAddr.contains(",")) {
+        if ((remoteAddr != null) && remoteAddr.contains(",")) {
             remoteAddr = remoteAddr.split(",")[0].trim();
         }
         return remoteAddr;
@@ -134,7 +133,7 @@ public class AuthServiceImpl implements AuthService {
         String headerDeviceId = request.getHeader("X-Device-Id");
         String tokenDeviceId = (oldToken.getDeviceId() != null) ?
                 oldToken.getDeviceId().toString() : null;
-        if (tokenDeviceId != null && !tokenDeviceId.equals(headerDeviceId)) {
+        if ((tokenDeviceId != null) && !tokenDeviceId.equals(headerDeviceId)) {
             throw new DeviceMismatchException("Token bound to device " + tokenDeviceId +
                     " but request came from " + headerDeviceId);
         }

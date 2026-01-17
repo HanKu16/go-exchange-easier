@@ -49,6 +49,8 @@ public class AuthController {
     @LoginApiDocs
     public ResponseEntity<SignedInUserSummary> login(
             @RequestBody @Valid LoginRequest request,
+            @RequestHeader(value = "X-Device-Id", required = true) String deviceId,
+            @RequestHeader(value = "X-Device-Name", required = true) String deviceName,
             HttpServletRequest servletRequest) {
         LoginSummary loginSummary = authService.login(request, servletRequest);
         TokenBundle tokenBundle = loginSummary.tokenBundle();
@@ -106,6 +108,8 @@ public class AuthController {
     @RefreshApiDocs
     public ResponseEntity<Void> refresh(
             @CookieValue(name = "refreshToken") String refreshToken,
+            @RequestHeader(value = "X-Device-Id", required = true) String deviceId,
+            @RequestHeader(value = "X-Device-Name", required = true) String deviceName,
             HttpServletRequest servletRequest) {
         TokenBundle tokenBundle = authService.refresh(refreshToken, servletRequest);
         ResponseCookie accessTokenCookie = ResponseCookie.from(

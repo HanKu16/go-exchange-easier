@@ -12,6 +12,7 @@ public enum ApiErrorResponseCode {
     InvalidRequestBody,
     ResourceAlreadyExists,
     InternalError,
-    IllegalOperation
+    IllegalOperation,
+    MissingRequestHeader
 
 }

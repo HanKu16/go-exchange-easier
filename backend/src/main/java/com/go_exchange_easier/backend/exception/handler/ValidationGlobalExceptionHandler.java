@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.List;
@@ -39,6 +40,17 @@ public class ValidationGlobalExceptionHandler {
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
                 HttpStatus.BAD_REQUEST, "There was something wrong with " +
                 "request body.", List.of(), globalErrorDetails);
+        return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<Object> handleMissingRequestHeaderException(
+            MissingRequestHeaderException e) {
+        List<GlobalErrorDetail> globalErrorDetails = List.of(new GlobalErrorDetail(
+                ApiErrorResponseCode.MissingRequestHeader.name(), e.getMessage()));
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                HttpStatus.BAD_REQUEST, "There is missing header in your request.",
+                List.of(), globalErrorDetails);
         return new ResponseEntity<>(apiErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
