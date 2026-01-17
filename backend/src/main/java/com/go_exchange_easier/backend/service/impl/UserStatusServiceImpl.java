@@ -7,6 +7,8 @@ import com.go_exchange_easier.backend.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -16,6 +18,7 @@ public class UserStatusServiceImpl implements UserStatusService {
     private final UserStatusRepository userStatusRepository;
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value="user_statuses", key="'all'")
     public List<UserStatusSummary> getAll() {
         List<UserStatus> statuses = userStatusRepository.findAll();

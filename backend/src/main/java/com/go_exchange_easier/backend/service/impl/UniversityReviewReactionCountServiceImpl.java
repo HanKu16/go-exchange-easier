@@ -80,6 +80,7 @@ public class UniversityReviewReactionCountServiceImpl implements
     }
 
     @Override
+    @Transactional
     public void deleteCounts(List<UniversityReviewReactionCount> counts) {
         reactionCountRepository.deleteAll(counts);
     }

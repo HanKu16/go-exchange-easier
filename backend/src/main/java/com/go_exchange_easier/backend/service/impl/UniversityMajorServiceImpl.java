@@ -7,6 +7,8 @@ import com.go_exchange_easier.backend.service.UniversityMajorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -16,6 +18,7 @@ public class UniversityMajorServiceImpl implements UniversityMajorService {
     private final UniversityMajorRepository universityMajorRepository;
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value="university_majors", key="'all'")
     public List<UniversityMajorSummary> getAll() {
         List<UniversityMajor> majors = universityMajorRepository.findAll();

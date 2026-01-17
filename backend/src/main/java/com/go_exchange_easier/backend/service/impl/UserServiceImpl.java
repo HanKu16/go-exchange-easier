@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public GetUserProfileResponse getProfile(int userId, int currentUserId) {
         List<Object[]> rows = userRepository.findProfileById(userId, currentUserId);
         if (rows.isEmpty()) {
@@ -167,6 +168,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserSummary> getFollowees(int userId) {
         User user = userRepository.findWithFollowees(userId)
                 .orElseThrow(() -> new UserNotFoundException(
@@ -179,6 +181,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UniversityDetails> getFollowedUniversities(int userId) {
         User user = userRepository.findWithFollowedUniversities(userId)
                 .orElseThrow(() -> new UserNotFoundException(
@@ -191,6 +194,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserSummary getMe(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User of id " + userId +

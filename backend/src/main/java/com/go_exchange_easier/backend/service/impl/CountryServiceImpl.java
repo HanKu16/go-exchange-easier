@@ -7,6 +7,8 @@ import com.go_exchange_easier.backend.service.CountryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -16,6 +18,7 @@ public class CountryServiceImpl implements CountryService {
     private final CountryRepository countryRepository;
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value="countries", key="'all'")
     public List<CountryDetails> getAll() {
         List<Country> countries = countryRepository.findAll();

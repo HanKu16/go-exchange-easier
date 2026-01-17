@@ -1,10 +1,15 @@
 package com.go_exchange_easier.backend.repository;
 
 import com.go_exchange_easier.backend.model.University;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -20,7 +25,7 @@ public interface UniversityRepository extends
     List<University> findByCountryId(short countryId);
 
     @Query(value = """
-        SELECT\s
+        SELECT
             u.university_id,
             u.original_name,
            	u.english_name,
@@ -49,5 +54,11 @@ public interface UniversityRepository extends
         WHERE c.id = :cityId
         """)
     List<University> findByCityId(@Param("cityId") int cityId);
+
+    @Override
+    @NonNull
+    @EntityGraph(attributePaths = {"city", "city.country"})
+    Page<University> findAll(Specification<University> specification,
+            @NonNull Pageable pageable);
 
 }

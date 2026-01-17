@@ -41,6 +41,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<UniversityReviewDetails> getByAuthorId(
             int authorId, int currentUserId) {
         List<Object[]> rows = universityReviewRepository
@@ -66,6 +67,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UniversityReviewDetails> getByUniversityId(
             int universityId, int currentUserId, int page, int size) {
         int limit = size;
@@ -136,6 +138,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UniversityReviewCountSummary countByUniversityId(int universityId) {
         int count = universityReviewRepository.countReviewsByUniversityId(universityId);
         return new UniversityReviewCountSummary((short) universityId, count);

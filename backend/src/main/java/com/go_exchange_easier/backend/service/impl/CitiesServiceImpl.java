@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
@@ -18,6 +19,7 @@ public class CitiesServiceImpl implements CitiesService {
     private final CitiesRepository citiesRepository;
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value="cities", key="'country:' + #countryId",
             condition="#countryId != null")
     public List<CityDetails> getAll(Short countryId) {
