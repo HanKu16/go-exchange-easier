@@ -10,7 +10,7 @@ import { sendGetMeRequest } from "../utils/user";
 type SignedInUser = {
   id: number;
   avatarUrl?: string;
-  isSignedIn: boolean;
+  isSignedIn: boolean | undefined;
 };
 
 type SignedInUserContextType = {
@@ -27,7 +27,7 @@ export const SignedInUserProvider = ({ children }: { children: ReactNode }) => {
   const [signedInUser, setSignedInUser] = useState<SignedInUser>({
     id: 0,
     avatarUrl: undefined,
-    isSignedIn: false,
+    isSignedIn: undefined,
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,7 +40,19 @@ export const SignedInUserProvider = ({ children }: { children: ReactNode }) => {
           if (result.isSuccess) {
             setSignedInUser({ id: result.data.id, isSignedIn: true });
           } else {
-            setSignedInUser({ id: 0, isSignedIn: false });
+            if (result.error.status === "SERVICE_UNAVAILABLE") {
+              setSignedInUser({
+                id: 0,
+                isSignedIn: undefined,
+                avatarUrl: undefined,
+              });
+            } else {
+              setSignedInUser({
+                id: 0,
+                isSignedIn: false,
+                avatarUrl: undefined,
+              });
+            }
           }
         }
       } catch (error) {

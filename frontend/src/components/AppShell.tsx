@@ -3,11 +3,14 @@ import { useApplicationState } from "../context/ApplicationStateContext";
 import LoadingPage from "../pages/LoadingPage";
 import ServiceUnavailablePage from "../pages/ServiceUnavailablePage";
 import ServerErrorPage from "../pages/ServerErrorPage";
+import { useSignedInUser } from "../context/SignedInUserContext";
 
 const AppShell = () => {
   const { appState } = useApplicationState();
+  const { signedInUser } = useSignedInUser();
 
-  if (appState === "connectionError") return <ServiceUnavailablePage />;
+  if (appState === "connectionError" || signedInUser.isSignedIn === undefined)
+    return <ServiceUnavailablePage />;
   if (appState === "serverError") return <ServerErrorPage />;
 
   return (
