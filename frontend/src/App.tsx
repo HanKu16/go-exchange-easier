@@ -15,6 +15,8 @@ import {
 } from "./context/SignedInUserContext";
 import LoadingPage from "./pages/LoadingPage";
 import RedirectSignedUser from "./components/RedirectSignedUser";
+import { ApplicationStateProvider } from "./context/ApplicationStateContext";
+import AppShell from "./components/AppShell";
 
 const AppContent = () => {
   const { isLoading } = useSignedInUser();
@@ -55,7 +57,13 @@ export const App = () => {
       <CssBaseline />
       <SignedInUserProvider>
         <SnackbarProvider>
-          <AppContent />
+          <ApplicationStateProvider>
+            <Routes>
+              <Route element={<AppShell />}>
+                <Route path="/*" element={<AppContent />}></Route>
+              </Route>
+            </Routes>
+          </ApplicationStateProvider>
         </SnackbarProvider>
       </SignedInUserProvider>
     </BrowserRouter>
