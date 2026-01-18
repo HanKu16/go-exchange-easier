@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useSignedInUser } from "../context/SignedInUserContext";
 import { sendLogoutRequest } from "../utils/auth";
 import { useSnackbar } from "../context/SnackBarContext";
+import { useApplicationState } from "../context/ApplicationStateContext";
 
 type NavbarItem = {
   label: string;
@@ -37,6 +38,7 @@ const Navbar = () => {
   const theme = useTheme();
   const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const { showAlert } = useSnackbar();
+  const { setAppState } = useApplicationState();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -56,7 +58,8 @@ const Navbar = () => {
   const handleLogOut = async () => {
     const result = await sendLogoutRequest();
     if (result.isSuccess) {
-      navigate("/login");
+      setAppState("success");
+      window.dispatchEvent(new Event("auth:logout"));
     } else {
       showAlert("Failed to log out. Please try again later.", "error");
     }
