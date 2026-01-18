@@ -54,12 +54,39 @@ export async function sendRequest<ResponseSuccessBody>(
       };
       return result;
     } else {
-      const error: ApiErrorResponse = await response.json();
-      const result: ResponseFailureResult = {
-        isSuccess: false,
-        error: error,
-      };
-      return result;
+      if (response.status >= 500) {
+        return {
+          isSuccess: false,
+          error: {
+            status: "SERVICE_UNAVAILABLE",
+            message: "Server is not responding (Proxy Error).",
+            fieldErrors: [],
+            globalErrors: [
+              {
+                code: "ConnectionError",
+                message: `Server responded with status ${response.status}`,
+              },
+            ],
+          },
+        };
+      }
+      try {
+        const error: ApiErrorResponse = await response.json();
+        return {
+          isSuccess: false,
+          error: error,
+        };
+      } catch (e) {
+        return {
+          isSuccess: false,
+          error: {
+            status: "INTERNAL_SERVER_ERROR",
+            message: "Unknown error format received from server.",
+            fieldErrors: [],
+            globalErrors: [],
+          },
+        };
+      }
     }
   } catch (error) {
     if (error instanceof TypeError && error.message === "Failed to fetch") {
