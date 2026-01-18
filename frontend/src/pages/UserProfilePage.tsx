@@ -31,15 +31,13 @@ import Exchanges from "../components/Exchanges";
 import { isInteger } from "../utils/number-utils";
 import NotFoundPage from "./NotFoundPage";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
-import ServerErrorPage from "./ServerErrorPage";
-import ServiceUnavailablePage from "./ServiceUnavailablePage";
-import LoadingPage from "./LoadingPage";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import ContentLoadError from "../components/ContentLoadError";
 import LoadingContent from "../components/LoadingContent";
 import { useSnackbar } from "../context/SnackBarContext";
 import { sendGetExchangesRequest } from "../utils/exchange";
 import { useSignedInUser } from "../context/SignedInUserContext";
+import { useApplicationState } from "../context/ApplicationStateContext";
 
 const AddExchangeButton = () => {
   const navigate = useNavigate();
@@ -443,7 +441,7 @@ const FeedPanel = (props: FeedPanelProps) => {
       null,
       null,
       null,
-      Number(props.userId)
+      Number(props.userId),
     );
     if (result.isSuccess) {
       const props: ExchangesProps = {
@@ -623,6 +621,7 @@ const UserProfilePage = () => {
     useState<UserProfileFetchStatus>("loading");
   const [userDataPanelProps, setUserDataPanelProps] =
     useState<UserDataPanelProps>();
+  const { appState, setAppState } = useApplicationState();
 
   if (!userId || !isInteger(userId)) {
     return (
@@ -672,6 +671,19 @@ const UserProfilePage = () => {
   };
 
   useEffect(() => {
+    if (userProfileFetchStatus === "success") {
+      if (appState !== "success") {
+        setAppState("success");
+      }
+    } else if (userProfileFetchStatus === "connectionError") {
+      setAppState("connectionError");
+    } else if (userProfileFetchStatus === "serverError") {
+      setAppState("serverError");
+    }
+  }, [userProfileFetchStatus]);
+
+  useEffect(() => {
+    setAppState("loading");
     getData();
   }, [userId]);
 
@@ -681,18 +693,6 @@ const UserProfilePage = () => {
         icon={PersonOffIcon}
         title="User not found"
         subheader="Profile you are looking for was deleted or does not exist"
-      />
-    );
-  } else if (userProfileFetchStatus === "connectionError") {
-    return <ServiceUnavailablePage />;
-  } else if (userProfileFetchStatus === "serverError") {
-    return <ServerErrorPage />;
-  } else if (userProfileFetchStatus === "loading") {
-    return (
-      <LoadingPage
-        backgroundColor="#eeececff"
-        circularProgressColor="#182c44"
-        text="Loading user profile"
       />
     );
   } else if (

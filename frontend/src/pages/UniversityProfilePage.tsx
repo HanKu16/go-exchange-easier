@@ -33,13 +33,11 @@ import { type DataFetchStatus } from "../types/DataFetchStatus";
 import { isInteger } from "../utils/number-utils";
 import NotFoundPage from "./NotFoundPage";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
-import LoadingPage from "./LoadingPage";
-import ServiceUnavailablePage from "./ServiceUnavailablePage";
-import ServerErrorPage from "./ServerErrorPage";
 import type { GetUniversityProfileResponse } from "../dtos/university/GetUniversityProfileResponse";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
 import { useSignedInUser } from "../context/SignedInUserContext";
+import { useApplicationState } from "../context/ApplicationStateContext";
 
 type FollowButtonProps = {
   universityId: number | string | undefined;
@@ -457,7 +455,7 @@ const FeedPanel = (props: FeedPanelProps) => {
     const result = await sendGetUniversityReviewsRequest(
       props.universityId,
       pageNumber,
-      pageSize
+      pageSize,
     );
     if (result.isSuccess) {
       const props: UniversityReviewProps[] = result.data.content.map((r) => ({
@@ -576,7 +574,7 @@ const FeedPanel = (props: FeedPanelProps) => {
           <ReviewInput
             handleGoBackClick={handleShowingSubmitReviewSection}
             handleSuccessfulCreation={(
-              createdReviewProps: UniversityReviewProps
+              createdReviewProps: UniversityReviewProps,
             ) => setReviewsProps([createdReviewProps, ...reviewProps])}
             universityId={props.universityId}
           />
@@ -614,6 +612,7 @@ const UniversityProfilePage = () => {
     useState<UniversityProfileFetchStatus>("loading");
   const [universityDataPanelProps, setUniversityDataPanelProps] =
     useState<UniversityDataPanelProps>();
+  const { appState, setAppState } = useApplicationState();
 
   if (universityId === undefined || !isInteger(universityId)) {
     return (
@@ -655,22 +654,23 @@ const UniversityProfilePage = () => {
   };
 
   useEffect(() => {
+    if (universityProfileFetchStatus === "success") {
+      if (appState !== "success") {
+        setAppState("success");
+      }
+    } else if (universityProfileFetchStatus === "connectionError") {
+      setAppState("connectionError");
+    } else if (universityProfileFetchStatus === "serverError") {
+      setAppState("serverError");
+    }
+  }, [universityProfileFetchStatus]);
+
+  useEffect(() => {
+    setAppState("loading");
     getProfile();
   }, []);
 
-  if (universityProfileFetchStatus === "loading") {
-    return (
-      <LoadingPage
-        backgroundColor="#eeececff"
-        circularProgressColor="#182c44"
-        text="Loading university profile"
-      />
-    );
-  } else if (universityProfileFetchStatus === "connectionError") {
-    return <ServiceUnavailablePage />;
-  } else if (universityProfileFetchStatus === "serverError") {
-    return <ServerErrorPage />;
-  } else if (universityProfileFetchStatus === "universityNotFound") {
+  if (universityProfileFetchStatus === "universityNotFound") {
     return (
       <NotFoundPage
         icon={SearchOffIcon}

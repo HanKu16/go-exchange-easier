@@ -30,10 +30,8 @@ import {
   sendUnfollowUserRequest,
 } from "../utils/follow";
 import { useSnackbar } from "../context/SnackBarContext";
-import LoadingPage from "./LoadingPage";
-import ServiceUnavailablePage from "./ServiceUnavailablePage";
-import ServerErrorPage from "./ServerErrorPage";
 import { useSignedInUser } from "../context/SignedInUserContext";
+import { useApplicationState } from "../context/ApplicationStateContext";
 
 type FollowBoxProps = {
   id: number;
@@ -108,7 +106,7 @@ const FollowBox = (props: FollowBoxProps) => {
       setIsFollowed(wasFollowed);
       showAlert(
         `Failed to ${wasFollowed ? "unfollow" : " follow back"}.`,
-        "error"
+        "error",
       );
     }
   };
@@ -229,6 +227,7 @@ const FollowPage = () => {
   const [universityFollowsFetchStatus, setUniversityFollowsFetchStatus] =
     useState<DataFetchStatus>("loading");
   const { signedInUser } = useSignedInUser();
+  const { appState, setAppState } = useApplicationState();
 
   const getFollowees = async () => {
     const result = await sendGetFolloweesRequest(signedInUser.id);
@@ -238,7 +237,7 @@ const FollowPage = () => {
           id: u.id,
           nick: u.nick,
           isFollowed: true,
-        }))
+        })),
       );
       setUserFollowsFetchStatus("success");
     } else {
@@ -262,7 +261,7 @@ const FollowPage = () => {
           name: u.englishName || u.nativeName,
           countryName: u.city.country.englishName,
           isFollowed: true,
-        }))
+        })),
       );
       setUniversityFollowsFetchStatus("success");
     } else {
@@ -276,6 +275,33 @@ const FollowPage = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (
+      universityFollowsFetchStatus === "success" &&
+      userFollowsFetchStatus === "success"
+    ) {
+      if (appState !== "success") {
+        setAppState("success");
+      }
+    } else if (
+      universityFollowsFetchStatus === "connectionError" ||
+      userFollowsFetchStatus === "connectionError"
+    ) {
+      setAppState("connectionError");
+    } else if (
+      universityFollowsFetchStatus === "serverError" ||
+      userFollowsFetchStatus === "serverError"
+    ) {
+      setAppState("serverError");
+    }
+  }, [universityFollowsFetchStatus, userFollowsFetchStatus]);
+
+  useEffect(() => {
+    setAppState("loading");
+    getFollowees();
+    getFollowedUniversities();
+  }, []);
 
   const getFollowBoxes = () => {
     if (currentFollowEntity === "user") {
@@ -312,78 +338,40 @@ const FollowPage = () => {
     }
   };
 
-  const getPageContent = () => {
-    if (
-      userFollowsFetchStatus === "success" &&
-      universityFollowsFetchStatus === "success"
-    ) {
-      return (
-        <Box
-          sx={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}
-        >
-          <Navbar />
-          <Container
-            sx={{
-              paddingY: 4,
-              maxWidth: "lg",
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <FollowEntitiesOptions
-              currentFollowEntity={currentFollowEntity}
-              setCurrentFollowEntity={setCurrentFollowEntity}
-            />
-            <Box
-              sx={{
-                display: "grid",
-                width: "100%",
-                marginTop: 4,
-                gap: 2,
-                gridTemplateColumns:
-                  currentFollowEntity === "user"
-                    ? { xs: "minmax(0, 1fr)", xl: "repeat(3, minmax(0, 1fr))" }
-                    : { xs: "minmax(0, 1fr)" },
-              }}
-            >
-              {getFollowBoxes()}
-            </Box>
-          </Container>
-        </Box>
-      );
-    }
-    if (
-      userFollowsFetchStatus === "loading" ||
-      universityFollowsFetchStatus === "loading"
-    ) {
-      return (
-        <LoadingPage
-          backgroundColor="#eeececff"
-          circularProgressColor="#182c44"
-          text={"Loading..."}
+  return (
+    <Box sx={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
+      <Navbar />
+      <Container
+        sx={{
+          paddingY: 4,
+          maxWidth: "lg",
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <FollowEntitiesOptions
+          currentFollowEntity={currentFollowEntity}
+          setCurrentFollowEntity={setCurrentFollowEntity}
         />
-      );
-    } else if (
-      userFollowsFetchStatus === "connectionError" ||
-      universityFollowsFetchStatus === "connectionError"
-    ) {
-      return <ServiceUnavailablePage />;
-    } else if (
-      userFollowsFetchStatus === "serverError" ||
-      universityFollowsFetchStatus === "serverError"
-    ) {
-      return <ServerErrorPage />;
-    }
-  };
-
-  useEffect(() => {
-    getFollowees();
-    getFollowedUniversities();
-  }, []);
-
-  return getPageContent();
+        <Box
+          sx={{
+            display: "grid",
+            width: "100%",
+            marginTop: 4,
+            gap: 2,
+            gridTemplateColumns:
+              currentFollowEntity === "user"
+                ? { xs: "minmax(0, 1fr)", xl: "repeat(3, minmax(0, 1fr))" }
+                : { xs: "minmax(0, 1fr)" },
+          }}
+        >
+          {getFollowBoxes()}
+        </Box>
+      </Container>
+    </Box>
+  );
 };
 
 export default FollowPage;
