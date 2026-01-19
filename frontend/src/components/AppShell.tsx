@@ -7,12 +7,12 @@ import { useSignedInUser } from "../context/SignedInUserContext";
 
 const AppShell = () => {
   const { appState } = useApplicationState();
-  const { signedInUser } = useSignedInUser();
+  const { signedInUser, isLoading } = useSignedInUser();
 
-  if (appState === "connectionError" || signedInUser.isSignedIn === undefined)
-    return <ServiceUnavailablePage />;
+  if (appState === "connectionError") return <ServiceUnavailablePage />;
   if (appState === "serverError") return <ServerErrorPage />;
-
+  if (!isLoading && signedInUser.isSignedIn === undefined)
+    return <ServiceUnavailablePage />;
   return (
     <>
       {appState === "loading" && (
