@@ -32,6 +32,7 @@ import {
 import { useSnackbar } from "../context/SnackBarContext";
 import { useSignedInUser } from "../context/SignedInUserContext";
 import { useApplicationState } from "../context/ApplicationStateContext";
+import NoContent from "../components/NoContent";
 
 type FollowBoxProps = {
   id: number;
@@ -338,6 +339,29 @@ const FollowPage = () => {
     }
   };
 
+  const getContent = () => {
+    if (currentFollowEntity === "university") {
+      return universityFollows.length !== 0 ? (
+        getFollowBoxes()
+      ) : (
+        <NoContent
+          title={"No follows"}
+          subheader={"You don't have any follows on universities."}
+        />
+      );
+    } else if (currentFollowEntity === "user") {
+      return userFollows.length !== 0 ? (
+        getFollowBoxes()
+      ) : (
+        <NoContent
+          title={"No follows"}
+          subheader={"You don't have any follows on users."}
+        />
+      );
+    }
+    return <></>;
+  };
+
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
       <Navbar />
@@ -362,12 +386,13 @@ const FollowPage = () => {
             marginTop: 4,
             gap: 2,
             gridTemplateColumns:
-              currentFollowEntity === "user"
+              currentFollowEntity === "user" && userFollows.length !== 0
                 ? { xs: "minmax(0, 1fr)", xl: "repeat(3, minmax(0, 1fr))" }
                 : { xs: "minmax(0, 1fr)" },
           }}
         >
-          {getFollowBoxes()}
+          {getContent()}
+          {/* {getFollowBoxes()} */}
         </Box>
       </Container>
     </Box>
