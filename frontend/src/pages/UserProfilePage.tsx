@@ -666,6 +666,8 @@ const UserProfilePage = () => {
         setUserProfileFetchStatus("serverError");
       } else if (result.error.status === "SERVICE_UNAVAILABLE") {
         setUserProfileFetchStatus("connectionError");
+      } else if (result.error.status === "NOT_FOUND") {
+        setUserProfileFetchStatus("userNotFound");
       }
     }
   };
@@ -679,6 +681,8 @@ const UserProfilePage = () => {
       setAppState("connectionError");
     } else if (userProfileFetchStatus === "serverError") {
       setAppState("serverError");
+    } else if (userProfileFetchStatus === "userNotFound") {
+      setAppState("success");
     }
   }, [userProfileFetchStatus]);
 
