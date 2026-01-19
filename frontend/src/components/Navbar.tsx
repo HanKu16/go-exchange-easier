@@ -133,7 +133,7 @@ const Navbar = () => {
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="Click to log out">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
                   alt="User avatar"
@@ -151,6 +151,7 @@ const Navbar = () => {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
+              disableScrollLock={true}
             >
               <MenuItem key="Logout" onClick={handleLogOut}>
                 <Typography sx={{ textAlign: "center" }}>Log out</Typography>
