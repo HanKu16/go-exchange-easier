@@ -445,7 +445,11 @@ const FeedPanel = (props: FeedPanelProps) => {
   const [showReviewInput, setShowReviewInput] = useState<boolean>(false);
   const [reviewProps, setReviewsProps] = useState<UniversityReviewProps[]>([]);
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [wasAddedOnFirstPage, setWasAddedOnFirstPage] =
+    useState<boolean>(false);
   const [totalPagesCount, setTotalPagesCount] = useState<number>(0);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const pageSize = 5;
 
   const handleShowingSubmitReviewSection = () =>
@@ -545,9 +549,21 @@ const FeedPanel = (props: FeedPanelProps) => {
   }, []);
 
   useEffect(() => {
+    if (currentPageNumber !== 1 || wasAddedOnFirstPage) {
+      setReviewsFetchStatus("loading");
+      getReviews(currentPageNumber - 1);
+      setWasAddedOnFirstPage(false);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [currentPageNumber, wasAddedOnFirstPage]);
+
+  useEffect(() => {
     setReviewsFetchStatus("loading");
     getReviews(currentPageNumber - 1);
-  }, [currentPageNumber]);
+  }, []);
 
   return (
     <Box
@@ -573,9 +589,10 @@ const FeedPanel = (props: FeedPanelProps) => {
         {showReviewInput ? (
           <ReviewInput
             handleGoBackClick={handleShowingSubmitReviewSection}
-            handleSuccessfulCreation={(
-              createdReviewProps: UniversityReviewProps,
-            ) => setReviewsProps([createdReviewProps, ...reviewProps])}
+            handleSuccessfulCreation={() => {
+              setCurrentPageNumber(1);
+              setWasAddedOnFirstPage(true);
+            }}
             universityId={props.universityId}
           />
         ) : (
@@ -591,8 +608,12 @@ const FeedPanel = (props: FeedPanelProps) => {
         >
           <Pagination
             count={totalPagesCount}
-            showFirstButton
-            showLastButton
+            siblingCount={isMobile ? 0 : 1}
+            boundaryCount={isMobile ? 1 : 2}
+            size={isMobile ? "small" : "medium"}
+            showFirstButton={!isMobile}
+            showLastButton={!isMobile}
+            page={currentPageNumber}
             onChange={(_, value) => setCurrentPageNumber(value)}
           />
         </Container>
