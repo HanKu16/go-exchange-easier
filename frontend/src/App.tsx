@@ -1,6 +1,6 @@
 import { CssBaseline } from "@mui/material";
 import LoginPage from "./pages/LoginPage";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import RegistrationPage from "./pages/RegistrationPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import EditUserPage from "./pages/EditUserPage";
@@ -17,9 +17,12 @@ import LoadingPage from "./pages/LoadingPage";
 import RedirectSignedUser from "./components/RedirectSignedUser";
 import { ApplicationStateProvider } from "./context/ApplicationStateContext";
 import AppShell from "./components/AppShell";
+import NotFoundPage from "./pages/NotFoundPage";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 
 const AppContent = () => {
   const { isLoading } = useSignedInUser();
+  const { signedInUser } = useSignedInUser();
 
   if (isLoading) {
     return (
@@ -46,6 +49,22 @@ const AppContent = () => {
         <Route path="/me" element={<EditUserPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/follows" element={<FollowPage />} />
+        <Route
+          path="*"
+          element={
+            !signedInUser.isSignedIn ? (
+              <Navigate to="/login" replace />
+            ) : (
+              <NotFoundPage
+                icon={SearchOffIcon}
+                title={"Page not found"}
+                subheader={
+                  "The feature you want is not supported by Go Exchange Easier"
+                }
+              />
+            )
+          }
+        />
       </Route>
     </Routes>
   );
