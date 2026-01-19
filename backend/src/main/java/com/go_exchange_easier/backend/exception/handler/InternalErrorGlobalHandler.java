@@ -5,6 +5,8 @@ import com.go_exchange_easier.backend.exception.InvalidPrincipalTypeException;
 import com.go_exchange_easier.backend.exception.domain.MissingDefaultRoleException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.exception.JDBCConnectionException;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,16 @@ public class InternalErrorGlobalHandler {
         ApiErrorResponse response = new ApiErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected " +
                 "server error occurred.", List.of(), List.of());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler({DataAccessResourceFailureException.class, JDBCConnectionException.class})
+    public ResponseEntity<ApiErrorResponse> handleDatabaseConnectionError(
+            Exception e) {
+        logger.error(e.getMessage(), e);
+        ApiErrorResponse response = new ApiErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR, "Database server did not respond.",
+                List.of(), List.of());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
