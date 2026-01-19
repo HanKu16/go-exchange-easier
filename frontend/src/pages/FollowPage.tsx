@@ -41,6 +41,7 @@ type FollowBoxProps = {
   isFollowed: boolean;
   avatarUrl?: string;
   followEntity: FollowEntity;
+  handleChange: (id: number) => void;
 };
 
 type FollowEntity = "user" | "university";
@@ -109,6 +110,8 @@ const FollowBox = (props: FollowBoxProps) => {
         `Failed to ${wasFollowed ? "unfollow" : " follow back"}.`,
         "error",
       );
+    } else {
+      props.handleChange(props.id);
     }
   };
 
@@ -316,6 +319,13 @@ const FollowPage = () => {
               route={route}
               isFollowed={u.isFollowed}
               followEntity="user"
+              handleChange={(id: number) => {
+                setUserFollows((prevFollows) =>
+                  prevFollows.map((f) =>
+                    f.id === id ? { ...f, isFollowed: !f.isFollowed } : f,
+                  ),
+                );
+              }}
             />
           </Box>
         );
@@ -332,6 +342,13 @@ const FollowPage = () => {
               isFollowed={u.isFollowed}
               followEntity="university"
               avatarUrl={`/flags/${u.countryName}.png`}
+              handleChange={(id: number) => {
+                setUniversityFollows((prevFollows) =>
+                  prevFollows.map((f) =>
+                    f.id === id ? { ...f, isFollowed: !f.isFollowed } : f,
+                  ),
+                );
+              }}
             />
           </Box>
         );
@@ -392,7 +409,6 @@ const FollowPage = () => {
           }}
         >
           {getContent()}
-          {/* {getFollowBoxes()} */}
         </Box>
       </Container>
     </Box>
