@@ -16,6 +16,17 @@ services:
     ports:
       - "6379:6379"
     container_name: gee-redis
+    
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000" # API S3
+      - "9001:9001" # Panel WWW
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    container_name: gee-minio
 
   backend:
     build:
