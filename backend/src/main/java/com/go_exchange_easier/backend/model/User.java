@@ -25,6 +25,9 @@ public class User {
     @Column(name = "nick")
     private String nick;
 
+    @Column(name = "avatar_key")
+    private String avatarKey;
+
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 

@@ -8,6 +8,7 @@ import software.amazon.awssdk.services.s3.S3Configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import java.net.URI;
 
 @Configuration
@@ -22,13 +23,28 @@ public class S3Config {
     @Value("${minio.secret-key}")
     private String secretKey;
 
+    private final Region region = Region.US_EAST_1;
+
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
                 .endpointOverride(URI.create(url))
-                .region(Region.US_EAST_1)
+                .region(region)
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)))
+                .serviceConfiguration(S3Configuration.builder()
+                        .pathStyleAccessEnabled(true)
+                        .build())
+                .build();
+    }
+
+    @Bean
+    public S3Presigner s3Presigner() {
+        return S3Presigner.builder()
+                .region(region)
+                .credentialsProvider(StaticCredentialsProvider.create(
+                        AwsBasicCredentials.create(accessKey, secretKey)))
+                .endpointOverride(URI.create(url))
                 .serviceConfiguration(S3Configuration.builder()
                         .pathStyleAccessEnabled(true)
                         .build())
