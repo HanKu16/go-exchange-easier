@@ -50,6 +50,7 @@ Table user_notifications {
 Table users {
   user_id SERIAL [pk]
   nick VARCHAR(20) [not null]
+  avatar_key VARCHAR(255)
   created_at TIMESTAMPTZ [not null]
   deleted_at TIMESTAMPTZ
   user_credential_id INTEGER [ref: - user_credentials.user_credential_id, not null]

@@ -50,6 +50,7 @@ CREATE TABLE user_notifications (
 CREATE TABLE users (
   user_id SERIAL PRIMARY KEY,
   nick VARCHAR(20) NOT NULL,
+  avatar_key VARCHAR(255),
   created_at TIMESTAMPTZ NOT NULL,
   deleted_at TIMESTAMPTZ,
   user_credential_id INTEGER NOT NULL,
