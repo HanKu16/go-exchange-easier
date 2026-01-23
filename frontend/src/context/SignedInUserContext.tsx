@@ -38,7 +38,11 @@ export const SignedInUserProvider = ({ children }: { children: ReactNode }) => {
         const result = await sendGetMeRequest();
         if (isMounted) {
           if (result.isSuccess) {
-            setSignedInUser({ id: result.data.id, isSignedIn: true });
+            setSignedInUser({
+              id: result.data.id,
+              isSignedIn: true,
+              avatarUrl: result.data.avatarUrl,
+            });
           } else {
             if (result.error.status === "SERVICE_UNAVAILABLE") {
               setSignedInUser({

@@ -18,6 +18,7 @@ import { useSignedInUser } from "../context/SignedInUserContext";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { sendGetMeRequest } from "../utils/user";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -38,13 +39,20 @@ const LoginPage = () => {
     const result = await sendLoginRequest(body);
     if (result.isSuccess) {
       const userId = result.data.userId;
-      setSignedInUser({
-        id: userId,
-        avatarUrl: result.data.avatarUrl,
-        isSignedIn: true,
-      });
-      setWasLoginAttemptFailed(false);
-      navigate(`/users/${userId}`);
+      const resultMe = await sendGetMeRequest();
+      if (resultMe.isSuccess) {
+        setSignedInUser({
+          id: userId,
+          avatarUrl: resultMe.data.avatarUrl,
+          isSignedIn: true,
+        });
+        setWasLoginAttemptFailed(false);
+        navigate(`/users/${userId}`);
+      } else {
+        setErrorMessage(
+          "Server error occured while fetching data. Please try again later.",
+        );
+      }
     } else {
       setPassword(() => "");
       setWasLoginAttemptFailed(true);
