@@ -6,7 +6,6 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
-import PersonIcon from "@mui/icons-material/Person";
 import type { ReactElement } from "react";
 import { Collapse } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -19,8 +18,11 @@ import AssignCountryOfOriginPanel from "../panels/AssignCountryOfOriginPanel";
 import AddExchangePanel from "../panels/AddExchangePanel";
 import ManageExchangesPanel from "../panels/ManageExchangesPanel";
 import { useSignedInUser } from "../context/SignedInUserContext";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ChangeAvatarPanel from "../panels/ManageAvatarPanel";
+import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 
-type SectionName = "Informations" | "Exchanges";
+type SectionName = "Profile" | "Informations" | "Exchanges";
 
 type SubsectionName =
   | "Home university"
@@ -28,7 +30,8 @@ type SubsectionName =
   | "Status"
   | "Description"
   | "Add exchange"
-  | "Manage exchanges";
+  | "Manage exchanges"
+  | "Photo";
 
 type Section = {
   name: SectionName;
@@ -46,14 +49,14 @@ type SectionListProps = {
 const SectionsList = (props: SectionListProps) => {
   const sections: Section[] = [
     {
+      name: "Profile",
+      subsections: ["Photo", "Description"],
+      icon: <AccountCircleIcon />,
+    },
+    {
       name: "Informations",
-      subsections: [
-        "Home university",
-        "Country of origin",
-        "Status",
-        "Description",
-      ],
-      icon: <PersonIcon />,
+      subsections: ["Home university", "Country of origin", "Status"],
+      icon: <InfoOutlineIcon />,
     },
     {
       name: "Exchanges",
@@ -189,6 +192,8 @@ const EditUserPage = () => {
       return <AddExchangePanel />;
     } else if (selectedSubsectionPanel === "Manage exchanges") {
       return <ManageExchangesPanel userId={signedInUser.id} />;
+    } else if (selectedSubsectionPanel === "Photo") {
+      return <ChangeAvatarPanel />;
     }
     return <></>;
   };

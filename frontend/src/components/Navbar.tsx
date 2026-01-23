@@ -137,7 +137,7 @@ const Navbar = () => {
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
                   alt="User avatar"
-                  src={basicAvatar}
+                  src={signedInUser ? signedInUser.avatarUrl : basicAvatar}
                   sx={{ width: "2.5rem", height: "2.5rem" }}
                 />
               </IconButton>
