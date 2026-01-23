@@ -6,6 +6,7 @@ import com.go_exchange_easier.backend.dto.summary.UserSummary;
 import com.go_exchange_easier.backend.dto.user.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface UserService {
@@ -23,5 +24,7 @@ public interface UserService {
     List<UserSummary> getFollowees(int userId);
     List<UniversityDetails> getFollowedUniversities(int userId);
     UserSummary getMe(int userId);
+    AvatarUrlSummary addAvatar(int userId, MultipartFile file);
+    AvatarUrlSummary deleteAvatar(int userId);
 
 }
