@@ -8,17 +8,21 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import java.io.InputStream;
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
 public class S3FileStorageService implements FileStorageService {
 
+    private final S3Presigner presigner;
     private final S3Client s3Client;
 
     @Override
-    public String uploadFile(String bucketName, String key,
-            InputStream stream, long size, String contentType) {
+    public String upload(String bucketName, String key,
+                         InputStream stream, long size, String contentType) {
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
@@ -34,7 +38,7 @@ public class S3FileStorageService implements FileStorageService {
     }
 
     @Override
-    public boolean deleteFile(String bucketName, String key) {
+    public boolean delete(String bucketName, String key) {
         try {
             s3Client.deleteObject(DeleteObjectRequest.builder()
                     .bucket(bucketName)
@@ -44,6 +48,15 @@ public class S3FileStorageService implements FileStorageService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String getUrl(String bucketName, String key) {
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(60))
+                .getObjectRequest(b -> b.bucket(bucketName).key(key))
+                .build();
+        return presigner.presignGetObject(presignRequest).url().toString();
     }
 
 }
