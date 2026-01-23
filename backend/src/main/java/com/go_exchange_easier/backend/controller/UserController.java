@@ -5,34 +5,37 @@ import com.go_exchange_easier.backend.dto.common.Listing;
 import com.go_exchange_easier.backend.dto.details.UniversityDetails;
 import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
-import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.dto.summary.UserSummary;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.model.UserCredentials;
-import com.go_exchange_easier.backend.service.ExchangeService;
+import com.go_exchange_easier.backend.service.AvatarService;
 import com.go_exchange_easier.backend.service.UniversityReviewService;
 import com.go_exchange_easier.backend.service.UserService;
+import com.go_exchange_easier.backend.validation.ValidAvatar;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.CacheControl;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Validated
 @Tag(name = "User", description = "Operations related to user.")
 public class UserController {
 
     private final UniversityReviewService universityReviewService;
-    private final ExchangeService exchangeService;
+    private final AvatarService avatarService;
     private final UserService userService;
 
     @GetMapping("/{userId}/profile")
@@ -131,6 +134,21 @@ public class UserController {
         }
         UserSummary user = userService.getMe(principal.getUser().getId());
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AvatarUrlSummary> uploadAvatar(
+            @RequestParam("file") @ValidAvatar MultipartFile file,
+            @AuthenticationPrincipal UserCredentials principal) {
+        AvatarUrlSummary avatarUrl = userService.addAvatar(principal.getUser().getId(), file);
+        return ResponseEntity.ok(avatarUrl);
+    }
+
+    @DeleteMapping("/avatar")
+    public ResponseEntity<AvatarUrlSummary> deleteAvatar(
+            @AuthenticationPrincipal UserCredentials principal) {
+        AvatarUrlSummary avatarUrl = userService.deleteAvatar(principal.getUser().getId());
+        return ResponseEntity.ok(avatarUrl);
     }
 
 }
