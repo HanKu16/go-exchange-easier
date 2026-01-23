@@ -32,7 +32,8 @@ public interface UniversityReviewRepository extends
                     )
                 ) FILTER (WHERE rc.reaction_type_id IS NOT NULL),
                 '[]'
-            ) AS reactions
+            ) AS reactions,
+            us.avatar_key
         FROM university_reviews ur
         LEFT JOIN users us ON us.user_id = ur.author_id
         LEFT JOIN universities un ON un.university_id = ur.university_id
@@ -72,7 +73,8 @@ public interface UniversityReviewRepository extends
                     )
                 ) FILTER (WHERE rc.reaction_type_id IS NOT NULL),
                 '[]'
-            ) AS reactions
+            ) AS reactions,
+            us.avatar_key
             FROM university_reviews ur
             LEFT JOIN users us ON us.user_id = ur.author_id
             LEFT JOIN universities un ON un.university_id = ur.university_id

@@ -6,6 +6,7 @@ import com.go_exchange_easier.backend.dto.details.UniversityDetails;
 import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
 import com.go_exchange_easier.backend.dto.summary.UserSummary;
+import com.go_exchange_easier.backend.dto.summary.UserWithAvatarSummary;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.model.UserCredentials;
 import com.go_exchange_easier.backend.service.AvatarService;
@@ -132,7 +133,7 @@ public class UserController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        UserSummary user = userService.getMe(principal.getUser().getId());
+        UserWithAvatarSummary user = userService.getMe(principal.getUser().getId());
         return ResponseEntity.ok(user);
     }
 

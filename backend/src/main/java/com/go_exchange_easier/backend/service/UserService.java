@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.service;
 import com.go_exchange_easier.backend.dto.details.UniversityDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
 import com.go_exchange_easier.backend.dto.summary.UserSummary;
+import com.go_exchange_easier.backend.dto.summary.UserWithAvatarSummary;
 import com.go_exchange_easier.backend.dto.user.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public interface UserService {
             int userId, AssignCountryOfOriginRequest request);
     List<UserSummary> getFollowees(int userId);
     List<UniversityDetails> getFollowedUniversities(int userId);
-    UserSummary getMe(int userId);
+    UserWithAvatarSummary getMe(int userId);
     AvatarUrlSummary addAvatar(int userId, MultipartFile file);
     AvatarUrlSummary deleteAvatar(int userId);
 

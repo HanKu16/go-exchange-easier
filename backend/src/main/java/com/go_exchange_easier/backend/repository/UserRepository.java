@@ -25,7 +25,8 @@ public interface UserRepository extends
             "co.english_name, " +
             "ust.user_status_id, " +
             "ust.name, " +
-            "(uf.follower_id IS NOT NULL) AS is_followed " +
+            "(uf.follower_id IS NOT NULL) AS is_followed, " +
+            "us.avatar_key " +
             "FROM users us " +
             "LEFT JOIN user_descriptions ud ON ud.user_description_id = us.user_description_id " +
             "LEFT JOIN universities un ON un.university_id = us.home_university_id AND un.deleted_at IS NULL " +

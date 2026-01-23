@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.service.impl;
 import com.go_exchange_easier.backend.dto.details.UniversityDetails;
 import com.go_exchange_easier.backend.dto.details.UserDetails;
 import com.go_exchange_easier.backend.dto.summary.UserSummary;
+import com.go_exchange_easier.backend.dto.summary.UserWithAvatarSummary;
 import com.go_exchange_easier.backend.dto.user.*;
 import com.go_exchange_easier.backend.exception.base.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.exception.domain.UserDescriptionNotFoundException;
@@ -57,6 +58,11 @@ public class UserServiceImpl implements UserService {
         Short statusId = (Short) row[8];
         String statusName = (String) row[9];
         Boolean isFollowed = (Boolean) row[10];
+        String avatarKey = row[11] != null ? (String) row[11] : null;
+        String avatarUrl = null;
+        if (avatarKey != null) {
+            avatarUrl = avatarService.getUrl(avatarKey).original();
+        }
         GetUserProfileResponse.UniversityDto university =
                 universityId != null ?
                 new GetUserProfileResponse.UniversityDto(universityId,
@@ -71,7 +77,7 @@ public class UserServiceImpl implements UserService {
                 statusId != null ?
                 new GetUserProfileResponse.StatusDto(statusId, statusName) :
                 null;
-        return new GetUserProfileResponse(id, nick, description, isFollowed,
+        return new GetUserProfileResponse(id, nick, avatarUrl, description, isFollowed,
                 university, country, status);
     }
 
@@ -202,11 +208,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserSummary getMe(int userId) {
+    public UserWithAvatarSummary getMe(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User of id " + userId +
                         " was not found."));
-        return UserSummary.fromEntity(user);
+        String avatarUrl = user.getAvatarKey() != null ?
+                avatarService.getUrl(user.getAvatarKey()).original() :
+                null;
+        return new UserWithAvatarSummary(user.getId(), user.getNick(), avatarUrl);
     }
 
     @Override

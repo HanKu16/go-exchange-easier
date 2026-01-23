@@ -7,6 +7,7 @@ import com.go_exchange_easier.backend.dto.details.UniversityReviewDetails;
 import com.go_exchange_easier.backend.dto.summary.UniversityReviewCountSummary;
 import com.go_exchange_easier.backend.dto.summary.UniversitySummary;
 import com.go_exchange_easier.backend.dto.summary.UserSummary;
+import com.go_exchange_easier.backend.dto.summary.UserWithAvatarSummary;
 import com.go_exchange_easier.backend.dto.universityReview.CreateUniversityReviewRequest;
 import com.go_exchange_easier.backend.dto.universityReview.UniversityReviewReactionDetail;
 import com.go_exchange_easier.backend.exception.JsonParsingException;
@@ -18,6 +19,7 @@ import com.go_exchange_easier.backend.model.University;
 import com.go_exchange_easier.backend.model.UniversityReview;
 import com.go_exchange_easier.backend.model.User;
 import com.go_exchange_easier.backend.repository.*;
+import com.go_exchange_easier.backend.service.AvatarService;
 import com.go_exchange_easier.backend.service.ResourceOwnershipChecker;
 import com.go_exchange_easier.backend.service.UniversityReviewReactionCountService;
 import com.go_exchange_easier.backend.service.UniversityReviewService;
@@ -39,6 +41,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     private final ResourceOwnershipChecker resourceOwnershipChecker;
     private final UniversityRepository universityRepository;
     private final UserRepository userRepository;
+    private final AvatarService avatarService;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,6 +50,8 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         List<Object[]> rows = universityReviewRepository
                 .findByAuthorId(authorId, currentUserId);
         List<UniversityReviewDetails> reviews = new ArrayList<>();
+        String avatarUrl = null;
+        boolean wasAttemptToSetAvatar = false;
         for (Object[] row : rows) {
             Integer id = (Integer) row[0];
             Integer authorIdRow = (Integer) row[1];
@@ -59,9 +64,18 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             Instant createdAt = (Instant) row[8];
             String reactionsJson = (String) row[9];
             List<ReactionDetails> reactions = parseReactionsJson(reactionsJson);
-            reviews.add(new UniversityReviewDetails(id, new UserSummary(authorIdRow, authorNick),
-                    new UniversitySummary(universityId, universityEnglishName, universityNativeName),
-                    starRating, textContent, createdAt, reactions));
+            if (!wasAttemptToSetAvatar) {
+                String avatarKey = row[10] != null ? (String) row[10] : null;
+                if (avatarKey != null) {
+                    avatarUrl = avatarService.getUrl(avatarKey).thumbnail();
+                }
+                wasAttemptToSetAvatar = true;
+            }
+            reviews.add(new UniversityReviewDetails(id, new UserWithAvatarSummary(
+                    authorIdRow, authorNick, avatarUrl),
+                    new UniversitySummary(universityId, universityEnglishName,
+                            universityNativeName), starRating, textContent,
+                    createdAt, reactions));
         }
         return reviews;
     }
@@ -86,9 +100,14 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             String textContent = (String) row[7];
             Instant createdAt = (Instant) row[8];
             String reactionsJson = (String) row[9];
+            String avatarKey = row[10] != null ? (String) row[10] : null;
+            String avatarUrl = null;
+            if (avatarKey != null) {
+                avatarUrl = avatarService.getUrl(avatarKey).thumbnail();
+            }
             List<ReactionDetails> reactions = parseReactionsJson(reactionsJson);
             reviews.add(new UniversityReviewDetails(id,
-                    new UserSummary(authorId, authorNick),
+                    new UserWithAvatarSummary(authorId, authorNick, avatarUrl),
                     new UniversitySummary(universityIdFromDb, universityNativeName, universityEnglishName),
                     starRating, textContent, createdAt, reactions));
         }
@@ -115,8 +134,13 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         List<ReactionDetails> reactions =  reactionTypes.stream()
                 .map(t -> new ReactionDetails(t.getId(), t.getName(), (short) 0, false))
                 .toList();
+        String avatarKey = user.getAvatarKey();
+        String avatarUrl = null;
+        if (avatarKey != null) {
+            avatarUrl = avatarService.getUrl(avatarKey).thumbnail();
+        }
         return new UniversityReviewDetails(
-                savedReview.getId(), new UserSummary(user.getId(), user.getNick()),
+                savedReview.getId(), new UserWithAvatarSummary(user.getId(), user.getNick(), avatarUrl),
                 new UniversitySummary(university.getId(), university.getOriginalName(),
                         university.getEnglishName()),
                 review.getStarRating(), review.getTextContent(),
