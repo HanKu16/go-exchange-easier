@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.codec.digest.DigestUtils;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -65,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
                         "Token " + refreshToken + " was not found."));
         if (oldToken.isRevoked()) {
             throw new TokenRevokedException("There was attempt of " +
-                    "usage token" + refreshToken + "that is revoked. " +
+                    " usage token " + DigestUtils.sha256Hex(refreshToken) + " that is revoked. " +
                     "Probably someone stole the token.");
         }
         if (oldToken.getExpiresAt().isBefore(OffsetDateTime.now())) {
@@ -80,8 +81,7 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken newToken = createNewRefreshToken(
                 user, newRawRefreshToken, servletRequest);
         oldToken.setRevoked(true);
-        refreshTokenRepository.save(oldToken);
-        refreshTokenRepository.save(newToken);
+        refreshTokenRepository.saveAll(List.of(oldToken, newToken));
         return new TokenBundle(newAccessToken, newRawRefreshToken);
     }
 
