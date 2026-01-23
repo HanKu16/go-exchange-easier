@@ -17,6 +17,7 @@ import type { PageResponse } from "../dtos/common/PageResponse";
 import type { UserDetails } from "../dtos/details/UserDetails";
 import type { UserSummary } from "../dtos/summary/UserSummary";
 import type { UniversityDetails } from "../dtos/details/UniversityDetails";
+import type { AvatarUrlSummary } from "../dtos/summary/AvatarUrlSummary";
 
 export const sendGetUserProfileRequest = async (
   userId: number | string,
@@ -166,4 +167,25 @@ export const sendGetMeRequest = async (): Promise<
     method: "GET",
   };
   return await sendRequest<UserSummary>(uri, request);
+};
+
+export const sendUploadAvatarRequest = async (
+  avatarImage: FormData,
+): Promise<ResponseSuccessResult<AvatarUrlSummary> | ResponseFailureResult> => {
+  const uri: string = `/api/users/avatar`;
+  const request: RequestInit = {
+    method: "POST",
+    body: avatarImage,
+  };
+  return await sendRequest<AvatarUrlSummary>(uri, request);
+};
+
+export const sendDeleteAvatarRequest = async (): Promise<
+  ResponseSuccessResult<AvatarUrlSummary> | ResponseFailureResult
+> => {
+  const uri: string = `/api/users/avatar`;
+  const request: RequestInit = {
+    method: "DELETE",
+  };
+  return await sendRequest<AvatarUrlSummary>(uri, request);
 };
