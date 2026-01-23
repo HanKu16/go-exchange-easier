@@ -18,6 +18,7 @@ import type { UserDetails } from "../dtos/details/UserDetails";
 import type { UserSummary } from "../dtos/summary/UserSummary";
 import type { UniversityDetails } from "../dtos/details/UniversityDetails";
 import type { AvatarUrlSummary } from "../dtos/summary/AvatarUrlSummary";
+import type { UserWithAvatarSummary } from "../dtos/summary/UserWithAvatarSummary";
 
 export const sendGetUserProfileRequest = async (
   userId: number | string,
@@ -160,13 +161,13 @@ export const sendGetFollowedUniversitiesRequest = async (
 };
 
 export const sendGetMeRequest = async (): Promise<
-  ResponseSuccessResult<UserSummary> | ResponseFailureResult
+  ResponseSuccessResult<UserWithAvatarSummary> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/me`;
   const request: RequestInit = {
     method: "GET",
   };
-  return await sendRequest<UserSummary>(uri, request);
+  return await sendRequest<UserWithAvatarSummary>(uri, request);
 };
 
 export const sendUploadAvatarRequest = async (

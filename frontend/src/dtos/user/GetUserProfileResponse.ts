@@ -1,6 +1,7 @@
 export type GetUserProfileResponse = {
   userId: number;
   nick: string;
+  avatarUrl?: string;
   description: string;
   isFollowed: boolean;
   homeUniversity?: {
@@ -9,11 +10,11 @@ export type GetUserProfileResponse = {
     englishName?: string;
   };
   countryOfOrigin?: {
-  id: number;
-  name: string;
+    id: number;
+    name: string;
   };
   status?: {
     id: number;
     name: string;
   };
-}
+};
