@@ -4,6 +4,7 @@ public record GetUserProfileResponse(
 
         Integer userId,
         String nick,
+        String avatarUrl,
         String description,
         Boolean isFollowed,
         UniversityDto homeUniversity,
