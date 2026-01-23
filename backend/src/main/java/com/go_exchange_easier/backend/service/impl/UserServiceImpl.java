@@ -10,13 +10,17 @@ import com.go_exchange_easier.backend.exception.domain.UserNotFoundException;
 import com.go_exchange_easier.backend.model.*;
 import com.go_exchange_easier.backend.repository.*;
 import com.go_exchange_easier.backend.repository.specification.UserSpecification;
+import com.go_exchange_easier.backend.service.AvatarService;
 import com.go_exchange_easier.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -29,6 +33,9 @@ public class UserServiceImpl implements UserService {
     private final CountryRepository countryRepository;
     private final UserStatusRepository userStatusRepository;
     private final UserRepository userRepository;
+    private final AvatarService avatarService;
+    private static final Logger logger = LogManager.getLogger(
+            UserServiceImpl.class);
 
     @Override
     @Transactional(readOnly = true)
@@ -200,6 +207,41 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User of id " + userId +
                         " was not found."));
         return UserSummary.fromEntity(user);
+    }
+
+    @Override
+    @Transactional
+    public AvatarUrlSummary addAvatar(int userId, MultipartFile file) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User of id " + userId +
+                        " was not found."));
+        String oldOriginalKey = user.getAvatarKey();
+        AvatarKeys newKeys = avatarService.add(userId, file);
+        if (oldOriginalKey != null) {
+            boolean wasOldAvatarDeleted = avatarService.delete(oldOriginalKey);
+            if (!wasOldAvatarDeleted) {
+                logger.warn("Failed to delete old avatar from S3 which key is {}", oldOriginalKey);
+            }
+        }
+        user.setAvatarKey(newKeys.original());
+        return avatarService.getUrl(newKeys.original());
+    }
+
+    @Override
+    @Transactional
+    public AvatarUrlSummary deleteAvatar(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User of id " + userId +
+                        " was not found."));
+        String key = user.getAvatarKey();
+        user.setAvatarKey(null);
+        if (key != null) {
+            boolean wasOldAvatarDeleted = avatarService.delete(key);
+            if (!wasOldAvatarDeleted) {
+                logger.warn("Failed to delete avatar from S3 which key is {}", key);
+            }
+        }
+        return new AvatarUrlSummary(null, null);
     }
 
 }
