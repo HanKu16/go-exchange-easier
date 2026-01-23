@@ -14,21 +14,24 @@ import java.net.URI;
 @Configuration
 public class S3Config {
 
-    @Value("${minio.url}")
-    private String url;
-
-    @Value("${minio.access-key}")
+    @Value("${storage.s3.access-key}")
     private String accessKey;
 
-    @Value("${minio.secret-key}")
+    @Value("${storage.s3.secret-key}")
     private String secretKey;
+
+    @Value("${storage.s3.internal-url}")
+    private String internalUrl;
+
+    @Value("${storage.s3.public-url}")
+    private String publicUrl;
 
     private final Region region = Region.US_EAST_1;
 
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
-                .endpointOverride(URI.create(url))
+                .endpointOverride(URI.create(internalUrl))
                 .region(region)
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)))
@@ -44,7 +47,7 @@ public class S3Config {
                 .region(region)
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)))
-                .endpointOverride(URI.create(url))
+                .endpointOverride(URI.create(publicUrl))
                 .serviceConfiguration(S3Configuration.builder()
                         .pathStyleAccessEnabled(true)
                         .build())
