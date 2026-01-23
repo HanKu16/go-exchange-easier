@@ -10,19 +10,23 @@ export async function sendRequest<ResponseSuccessBody>(
 ): Promise<ResponseSuccessResult<ResponseSuccessBody> | ResponseFailureResult> {
   try {
     const callToApi = async () => {
+      const isFormData = request.body instanceof FormData;
+      const headers: Record<string, string> = {
+        ...((request.headers as Record<string, string>) || {}),
+        "X-Device-Id": getDeviceId(),
+        "X-Device-Name": getReadableDeviceName(),
+      };
+      if (!isFormData) {
+        headers["Content-Type"] = "application/json";
+      }
       return await fetch(uri, {
         ...request,
-        headers: {
-          ...(request.headers || {}),
-          "Content-Type": "application/json",
-          "X-Device-Id": getDeviceId(),
-          "X-Device-Name": getReadableDeviceName(),
-        },
+        headers: headers,
         credentials: "include",
       });
     };
     let response = await callToApi();
-    if (response.status === 403 || response.status == 401) {
+    if (response.status === 401) {
       const refreshResponse = await sendRefreshRequest();
       if (!refreshResponse.isSuccess) {
         window.dispatchEvent(new Event("auth:logout"));
