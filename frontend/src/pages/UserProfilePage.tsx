@@ -144,6 +144,7 @@ const ActionButtons = (props: ActionButtonsProps) => {
 type UserDataPanelProps = {
   userId: number | string;
   nick: string;
+  avatarUrl?: string;
   countryName: string | null;
   homeUniversityName?: string;
   description: string;
@@ -176,7 +177,7 @@ const UserDataPanel = (props: UserDataPanelProps) => {
         >
           <Avatar
             alt="User avatar"
-            src={basicAvatar}
+            src={props.avatarUrl ? props.avatarUrl : basicAvatar}
             sx={{
               width: "20vh",
               height: "20vh",
@@ -291,7 +292,7 @@ const UserDataPanel = (props: UserDataPanelProps) => {
           <Box sx={{ display: "flex", flexDirection: "row", paddingLeft: 3 }}>
             <Avatar
               alt="User avatar"
-              src={basicAvatar}
+              src={props.avatarUrl ? props.avatarUrl : basicAvatar}
               sx={{
                 width: "10vh",
                 height: "10vh",
@@ -411,6 +412,7 @@ const FeedPanel = (props: FeedPanelProps) => {
         title: r.university.englishName
           ? r.university.englishName
           : r.university.nativeName,
+        avatarUrl: r.author.avatarUrl,
         subheader: getLocalDate(r.createdAt),
         starRating: r.starRating,
         textContent: r.textContent,
@@ -649,6 +651,7 @@ const UserProfilePage = () => {
       const userDataPanelProps: UserDataPanelProps = {
         userId: data.userId,
         nick: data.nick,
+        avatarUrl: data.avatarUrl,
         countryName: data.countryOfOrigin
           ? data.countryOfOrigin.name
           : "no info about country",
@@ -688,6 +691,7 @@ const UserProfilePage = () => {
 
   useEffect(() => {
     setAppState("loading");
+    setUserProfileFetchStatus("loading");
     getData();
   }, [userId]);
 

@@ -17,6 +17,7 @@ import { useSnackbar } from "../context/SnackBarContext";
 export type UniversityReviewProps = {
   id: number;
   title: string;
+  avatarUrl?: string;
   subheader: string;
   starRating: number;
   textContent: string;
@@ -66,13 +67,18 @@ const UniversityReview = (props: UniversityReviewProps) => {
       name: r.name,
       isSet: r.isSet,
       count: r.count,
-    }))
+    })),
   );
 
   return (
     <Card sx={{ width: "95%" }}>
       <CardHeader
-        avatar={<Avatar aria-label="User avatar" src={basicAvatar} />}
+        avatar={
+          <Avatar
+            aria-label="User avatar"
+            src={props.avatarUrl ? props.avatarUrl : basicAvatar}
+          />
+        }
         action={
           <IconButton aria-label="add to favorites">
             <Rating name="read-only" value={props.starRating} readOnly />

@@ -465,6 +465,7 @@ const FeedPanel = (props: FeedPanelProps) => {
       const props: UniversityReviewProps[] = result.data.content.map((r) => ({
         id: r.id,
         title: r.author.nick,
+        avatarUrl: r.author.avatarUrl,
         subheader: getLocalDate(r.createdAt),
         starRating: r.starRating,
         textContent: r.textContent,
