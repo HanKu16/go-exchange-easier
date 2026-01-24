@@ -33,6 +33,7 @@ import { useSnackbar } from "../context/SnackBarContext";
 import { useSignedInUser } from "../context/SignedInUserContext";
 import { useApplicationState } from "../context/ApplicationStateContext";
 import NoContent from "../components/NoContent";
+import basicAvatar from "../assets/examples/basic-avatar.png";
 
 type FollowBoxProps = {
   id: number;
@@ -115,6 +116,14 @@ const FollowBox = (props: FollowBoxProps) => {
     }
   };
 
+  const getAvatarUrl = () => {
+    if (props.followEntity === "user") {
+      return props.avatarUrl != null ? props.avatarUrl : basicAvatar;
+    } else if (props.followEntity === "university") {
+      return props.avatarUrl;
+    }
+  };
+
   return (
     <Card
       elevation={0}
@@ -150,7 +159,7 @@ const FollowBox = (props: FollowBoxProps) => {
           }}
         >
           <Avatar
-            src={props.avatarUrl}
+            src={getAvatarUrl()}
             sx={{
               bgcolor: deepPurple[500],
               width: { xs: 40, sm: 50, md: 56 },
@@ -209,6 +218,7 @@ const FollowBox = (props: FollowBoxProps) => {
 type UserFollow = {
   id: number;
   nick: string;
+  avatarUrl?: string;
   isFollowed: boolean;
 };
 
@@ -240,6 +250,7 @@ const FollowPage = () => {
         result.data.content.map((u) => ({
           id: u.id,
           nick: u.nick,
+          avatarUrl: u.avatarUrl,
           isFollowed: true,
         })),
       );
@@ -317,6 +328,7 @@ const FollowPage = () => {
               id={u.id}
               name={u.nick}
               route={route}
+              avatarUrl={u.avatarUrl}
               isFollowed={u.isFollowed}
               followEntity="user"
               handleChange={(id: number) => {

@@ -15,7 +15,6 @@ import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDe
 import type { Listing } from "../dtos/common/Listing";
 import type { PageResponse } from "../dtos/common/PageResponse";
 import type { UserDetails } from "../dtos/details/UserDetails";
-import type { UserSummary } from "../dtos/summary/UserSummary";
 import type { UniversityDetails } from "../dtos/details/UniversityDetails";
 import type { AvatarUrlSummary } from "../dtos/summary/AvatarUrlSummary";
 import type { UserWithAvatarSummary } from "../dtos/summary/UserWithAvatarSummary";
@@ -139,13 +138,13 @@ export const sendGetUsersRequest = async (
 export const sendGetFolloweesRequest = async (
   userId: number,
 ): Promise<
-  ResponseSuccessResult<Listing<UserSummary>> | ResponseFailureResult
+  ResponseSuccessResult<Listing<UserWithAvatarSummary>> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/${userId}/followees`;
   const request: RequestInit = {
     method: "GET",
   };
-  return await sendRequest<Listing<UserSummary>>(uri, request);
+  return await sendRequest<Listing<UserWithAvatarSummary>>(uri, request);
 };
 
 export const sendGetFollowedUniversitiesRequest = async (
