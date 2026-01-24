@@ -26,6 +26,11 @@ services:
       MINIO_ROOT_USER: ${STORAGE_S3_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${STORAGE_S3_ROOT_PASSWORD}
     command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "${STORAGE_S3_PUBLIC_URL}/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     container_name: gee-minio
 
   backend:
@@ -36,6 +41,7 @@ services:
     depends_on:
       - database
       - redis
+      - minio
     env_file:
       - ./.env
     environment:
@@ -51,4 +57,17 @@ services:
     env_file:
       - ./.env
     container_name: gee-frontend
-
+    
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set minio_server ${STORAGE_S3_INTERNAL_URL} ${STORAGE_S3_ROOT_USER} ${STORAGE_S3_ROOT_PASSWORD};
+      /usr/bin/mc mb --ignore-existing minio_server/users;
+      /usr/bin/mc anonymous set public minio_server/users;
+      echo '>>> Bucket users został utworzony.';
+      exit 0;
+      "
