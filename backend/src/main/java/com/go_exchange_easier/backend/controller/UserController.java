@@ -112,9 +112,9 @@ public class UserController {
 
     @GetMapping("/{userId}/followees")
     @GetFolloweesApiDocs
-    public ResponseEntity<Listing<UserSummary>> getFollowees(
+    public ResponseEntity<Listing<UserWithAvatarSummary>> getFollowees(
             @PathVariable Integer userId) {
-        List<UserSummary> followees = userService.getFollowees(userId);
+        List<UserWithAvatarSummary> followees = userService.getFollowees(userId);
         return ResponseEntity.ok(Listing.of(followees));
     }
 

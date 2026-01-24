@@ -22,7 +22,7 @@ public interface UserService {
             UpdateUserStatusRequest request);
     AssignCountryOfOriginResponse assignCountryOfOrigin(
             int userId, AssignCountryOfOriginRequest request);
-    List<UserSummary> getFollowees(int userId);
+    List<UserWithAvatarSummary> getFollowees(int userId);
     List<UniversityDetails> getFollowedUniversities(int userId);
     UserWithAvatarSummary getMe(int userId);
     AvatarUrlSummary addAvatar(int userId, MultipartFile file);

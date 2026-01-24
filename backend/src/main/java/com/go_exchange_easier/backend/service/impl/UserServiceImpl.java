@@ -182,14 +182,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserSummary> getFollowees(int userId) {
+    public List<UserWithAvatarSummary> getFollowees(int userId) {
         User user = userRepository.findWithFollowees(userId)
                 .orElseThrow(() -> new UserNotFoundException(
                 "User of id " + userId +
                         " was not found."));
         return user.getUserFollowsSent()
                 .stream()
-                .map(f -> UserSummary.fromEntity(f.getFollowee()))
+                .map(UserFollow::getFollowee)
+                .map(u -> new UserWithAvatarSummary(
+                        u.getId(), u.getNick(),
+                        u.getAvatarKey() != null ?
+                            avatarService.getUrl(u.getAvatarKey()).thumbnail() :
+                            null))
                 .toList();
     }
 
