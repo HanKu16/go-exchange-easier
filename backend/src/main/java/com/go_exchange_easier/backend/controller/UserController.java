@@ -128,6 +128,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
+    @GetMeApiDocs
     public ResponseEntity<?> getMe(
             @AuthenticationPrincipal(errorOnInvalidType = false) UserCredentials principal) {
         if (principal == null) {
@@ -138,14 +139,17 @@ public class UserController {
     }
 
     @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @UploadAvatarApiDocs
     public ResponseEntity<AvatarUrlSummary> uploadAvatar(
             @RequestParam("file") @ValidAvatar MultipartFile file,
             @AuthenticationPrincipal UserCredentials principal) {
-        AvatarUrlSummary avatarUrl = userService.addAvatar(principal.getUser().getId(), file);
+        AvatarUrlSummary avatarUrl = userService.addAvatar(
+                principal.getUser().getId(), file);
         return ResponseEntity.ok(avatarUrl);
     }
 
     @DeleteMapping("/avatar")
+    @DeleteAvatarApiDocs
     public ResponseEntity<AvatarUrlSummary> deleteAvatar(
             @AuthenticationPrincipal UserCredentials principal) {
         AvatarUrlSummary avatarUrl = userService.deleteAvatar(principal.getUser().getId());

@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.exception.handler;
 
 import com.go_exchange_easier.backend.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.exception.InvalidPrincipalTypeException;
+import com.go_exchange_easier.backend.exception.base.FileUploadException;
 import com.go_exchange_easier.backend.exception.domain.MissingDefaultRoleException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +40,16 @@ public class InternalErrorGlobalHandler {
         logger.error(e.getMessage(), e);
         ApiErrorResponse response = new ApiErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR, "Database server did not respond.",
+                List.of(), List.of());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ApiErrorResponse> handleFileUploadException(
+            FileUploadException e) {
+        logger.error(e.getMessage(), e);
+        ApiErrorResponse response = new ApiErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload file.",
                 List.of(), List.of());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
