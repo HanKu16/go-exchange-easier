@@ -1,9 +1,9 @@
 package com.go_exchange_easier.backend.service.impl;
 
-import com.go_exchange_easier.backend.exception.InvalidPrincipalTypeException;
-import com.go_exchange_easier.backend.model.Exchange;
-import com.go_exchange_easier.backend.model.UniversityReview;
-import com.go_exchange_easier.backend.model.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.InvalidPrincipalTypeException;
+import com.go_exchange_easier.backend.domain.exchange.Exchange;
+import com.go_exchange_easier.backend.domain.university.UniversityReview;
+import com.go_exchange_easier.backend.domain.auth.UserCredentials;
 import com.go_exchange_easier.backend.service.ResourceOwnershipChecker;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

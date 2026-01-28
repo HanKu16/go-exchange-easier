@@ -1,0 +1,16 @@
+package com.go_exchange_easier.backend.domain.exchange;
+
+import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeDetails;
+import com.go_exchange_easier.backend.domain.exchange.dto.CreateExchangeRequest;
+import com.go_exchange_easier.backend.domain.exchange.dto.CreateExchangeResponse;
+import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeFilters;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface ExchangeService {
+
+    Page<ExchangeDetails> getPage(ExchangeFilters filters, Pageable pageable);
+    CreateExchangeResponse create(int userId, CreateExchangeRequest request);
+    void delete(int exchangeId);
+
+}
