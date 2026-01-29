@@ -1,18 +1,18 @@
 package com.go_exchange_easier.backend.domain.auth.impl;
 
 import com.go_exchange_easier.backend.domain.auth.AuthService;
-import com.go_exchange_easier.backend.domain.auth.RefreshToken;
+import com.go_exchange_easier.backend.domain.auth.entity.RefreshToken;
 import com.go_exchange_easier.backend.domain.auth.RefreshTokenRepository;
-import com.go_exchange_easier.backend.domain.auth.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.auth.dto.LoginRequest;
 import com.go_exchange_easier.backend.domain.auth.dto.TokenBundle;
 import com.go_exchange_easier.backend.domain.auth.dto.LoginSummary;
-import com.go_exchange_easier.backend.domain.user.dto.SignedInUserSummary;
-import com.go_exchange_easier.backend.domain.auth.InvalidPrincipalTypeException;
-import com.go_exchange_easier.backend.domain.auth.DeviceMismatchException;
-import com.go_exchange_easier.backend.domain.auth.TokenExpiredException;
-import com.go_exchange_easier.backend.domain.auth.TokenNotFoundException;
-import com.go_exchange_easier.backend.domain.auth.TokenRevokedException;
+import com.go_exchange_easier.backend.domain.auth.dto.SignedInUserSummary;
+import com.go_exchange_easier.backend.domain.auth.exception.InvalidPrincipalTypeException;
+import com.go_exchange_easier.backend.domain.auth.exception.DeviceMismatchException;
+import com.go_exchange_easier.backend.domain.auth.exception.TokenExpiredException;
+import com.go_exchange_easier.backend.domain.auth.exception.TokenNotFoundException;
+import com.go_exchange_easier.backend.domain.auth.exception.TokenRevokedException;
 import com.go_exchange_easier.backend.domain.user.User;
 import com.go_exchange_easier.backend.infrastracture.security.config.JwtConfig;
 import com.go_exchange_easier.backend.infrastracture.security.jwt.JwtTokenGenerator;

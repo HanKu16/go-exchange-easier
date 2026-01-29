@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.auth;
+package com.go_exchange_easier.backend.domain.auth.entity;
 
 import com.go_exchange_easier.backend.domain.user.User;
 import jakarta.persistence.*;

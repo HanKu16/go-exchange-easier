@@ -1,16 +1,19 @@
 package com.go_exchange_easier.backend.domain.auth.impl;
 
 import com.go_exchange_easier.backend.domain.auth.*;
+import com.go_exchange_easier.backend.domain.auth.entity.Role;
+import com.go_exchange_easier.backend.domain.auth.entity.RoleName;
+import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.user.*;
-import com.go_exchange_easier.backend.domain.auth.dto.UserRegistrationRequest;
-import com.go_exchange_easier.backend.domain.auth.dto.UserRegistrationResponse;
+import com.go_exchange_easier.backend.domain.auth.dto.RegistrationRequest;
+import com.go_exchange_easier.backend.domain.auth.dto.RegistrationSummary;
 import com.go_exchange_easier.backend.domain.user.description.UserDescription;
 import com.go_exchange_easier.backend.domain.user.description.UserDescriptionRepository;
 import com.go_exchange_easier.backend.domain.user.notification.UserNotification;
 import com.go_exchange_easier.backend.domain.user.notification.UserNotificationRepository;
-import com.go_exchange_easier.backend.domain.auth.MailAlreadyExistsException;
-import com.go_exchange_easier.backend.domain.auth.MissingDefaultRoleException;
-import com.go_exchange_easier.backend.domain.auth.UsernameAlreadyExistsException;
+import com.go_exchange_easier.backend.domain.auth.exception.MailAlreadyExistsException;
+import com.go_exchange_easier.backend.domain.auth.exception.MissingDefaultRoleException;
+import com.go_exchange_easier.backend.domain.auth.exception.UsernameAlreadyExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +34,7 @@ public class UserRegistrarImpl implements UserRegistrar {
 
     @Override
     @Transactional
-    public UserRegistrationResponse register(UserRegistrationRequest request) {
+    public RegistrationSummary register(RegistrationRequest request) {
         boolean doesUserOfGivenUsernameExists = userCredentialsRepository
                 .existsByUsername(request.login());
         if (doesUserOfGivenUsernameExists) {
@@ -54,11 +57,11 @@ public class UserRegistrarImpl implements UserRegistrar {
         User user = buildUser(request, savedCredentials,
                 savedDescription, savedNotification);
         User savedUser = userRepository.save(user);
-        return new UserRegistrationResponse(savedUser.getId(), credentials.getUsername(),
+        return new RegistrationSummary(savedUser.getId(), credentials.getUsername(),
                 savedUser.getNick(), savedUser.getCreatedAt());
     }
 
-    private User buildUser(UserRegistrationRequest request, UserCredentials credentials,
+    private User buildUser(RegistrationRequest request, UserCredentials credentials,
                            UserDescription description, UserNotification notification) {
         User user = new User();
         user.setNick(request.nick() != null ? request.nick() : request.login());
@@ -69,7 +72,7 @@ public class UserRegistrarImpl implements UserRegistrar {
         return user;
     }
 
-    private UserCredentials buildCredentials(UserRegistrationRequest request) {
+    private UserCredentials buildCredentials(RegistrationRequest request) {
         String encodedPassword = passwordEncoder.encode(request.password());
         UserCredentials credentials = new UserCredentials();
         credentials.setUsername(request.login());
@@ -84,7 +87,7 @@ public class UserRegistrarImpl implements UserRegistrar {
         return description;
     }
 
-    private UserNotification buildNotification(UserRegistrationRequest request) {
+    private UserNotification buildNotification(RegistrationRequest request) {
         UserNotification notification = new UserNotification();
         String mail = (request.mail() == null || request.mail().isBlank()) ?
                 null : request.mail();

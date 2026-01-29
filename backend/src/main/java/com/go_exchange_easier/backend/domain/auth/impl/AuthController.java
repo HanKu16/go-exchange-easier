@@ -1,15 +1,15 @@
-package com.go_exchange_easier.backend.domain.auth;
+package com.go_exchange_easier.backend.domain.auth.impl;
 
-import com.go_exchange_easier.backend.domain.auth.annotations.LoginApiDocs;
-import com.go_exchange_easier.backend.domain.auth.annotations.LogoutApiDocs;
-import com.go_exchange_easier.backend.domain.auth.annotations.RefreshApiDocs;
-import com.go_exchange_easier.backend.domain.auth.annotations.RegisterApiDocs;
+import com.go_exchange_easier.backend.domain.auth.AuthApi;
+import com.go_exchange_easier.backend.domain.auth.AuthService;
+import com.go_exchange_easier.backend.domain.auth.UserRegistrar;
 import com.go_exchange_easier.backend.domain.auth.dto.LoginRequest;
 import com.go_exchange_easier.backend.domain.auth.dto.TokenBundle;
-import com.go_exchange_easier.backend.domain.auth.dto.UserRegistrationRequest;
-import com.go_exchange_easier.backend.domain.auth.dto.UserRegistrationResponse;
+import com.go_exchange_easier.backend.domain.auth.dto.RegistrationRequest;
+import com.go_exchange_easier.backend.domain.auth.dto.RegistrationSummary;
 import com.go_exchange_easier.backend.domain.auth.dto.LoginSummary;
-import com.go_exchange_easier.backend.domain.user.dto.SignedInUserSummary;
+import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.dto.SignedInUserSummary;
 import com.go_exchange_easier.backend.infrastracture.security.config.JwtConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,23 +27,21 @@ import java.net.URI;
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Operations related to " +
         "registration and login user for the first time.")
-public class AuthController {
+public class AuthController implements AuthApi {
 
     private final UserRegistrar userRegistrar;
     private final AuthService authService;
     private final JwtConfig jwtConfig;
 
-    @PostMapping("/register")
-    @RegisterApiDocs
-    public ResponseEntity<UserRegistrationResponse> register(
-            @RequestBody @Valid UserRegistrationRequest request) {
-        UserRegistrationResponse response = userRegistrar.register(request);
+    @Override
+    public ResponseEntity<RegistrationSummary> register(
+            @RequestBody @Valid RegistrationRequest request) {
+        RegistrationSummary response = userRegistrar.register(request);
         URI locationUri = URI.create("/api/users/" + response.userId());
         return ResponseEntity.created(locationUri).body(response);
     }
 
-    @PostMapping("/login")
-    @LoginApiDocs
+    @Override
     public ResponseEntity<SignedInUserSummary> login(
             @RequestBody @Valid LoginRequest request,
             @RequestHeader(value = "X-Device-Id", required = true) String deviceId,
@@ -73,8 +71,7 @@ public class AuthController {
                 .body(loginSummary.signedInUserSummary());
     }
 
-    @PostMapping("/logout")
-    @LogoutApiDocs
+    @Override
     public ResponseEntity<Void> logout(
             @AuthenticationPrincipal UserCredentials principal,
             @CookieValue(name = "refreshToken", required = false) String refreshToken) {
@@ -101,8 +98,7 @@ public class AuthController {
                 .build();
     }
 
-    @PostMapping("/refresh")
-    @RefreshApiDocs
+    @Override
     public ResponseEntity<Void> refresh(
             @CookieValue(name = "refreshToken") String refreshToken,
             @RequestHeader(value = "X-Device-Id", required = true) String deviceId,

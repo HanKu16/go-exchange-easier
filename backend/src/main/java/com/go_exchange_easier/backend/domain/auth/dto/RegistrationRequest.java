@@ -3,8 +3,7 @@ package com.go_exchange_easier.backend.domain.auth.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
-@Schema(description = "Request body for user registration")
-public record UserRegistrationRequest(
+public record RegistrationRequest(
 
         @NotNull(message = "Login is needed to register new user.")
         @Size(min = 6, max = 20, message = "Login must have between 6 and 20 characters.")

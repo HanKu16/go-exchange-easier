@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.auth;
+package com.go_exchange_easier.backend.domain.auth.exception;
 
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponseCode;

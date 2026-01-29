@@ -1,10 +1,10 @@
 package com.go_exchange_easier.backend.domain.auth;
 
-import com.go_exchange_easier.backend.domain.auth.dto.UserRegistrationRequest;
-import com.go_exchange_easier.backend.domain.auth.dto.UserRegistrationResponse;
+import com.go_exchange_easier.backend.domain.auth.dto.RegistrationRequest;
+import com.go_exchange_easier.backend.domain.auth.dto.RegistrationSummary;
 
 public interface UserRegistrar {
 
-    UserRegistrationResponse register(UserRegistrationRequest request);
+    RegistrationSummary register(RegistrationRequest request);
 
 }

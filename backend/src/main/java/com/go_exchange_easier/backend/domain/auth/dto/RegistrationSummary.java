@@ -1,10 +1,8 @@
 package com.go_exchange_easier.backend.domain.auth.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 
-@Schema(description = "Response body for a successful user registration")
-public record UserRegistrationResponse(
+public record RegistrationSummary(
 
         Integer userId,
         String login,
