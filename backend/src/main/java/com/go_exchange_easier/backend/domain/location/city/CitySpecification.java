@@ -1,7 +1,6 @@
-package com.go_exchange_easier.backend.domain.location.specification;
+package com.go_exchange_easier.backend.domain.location.city;
 
-import com.go_exchange_easier.backend.domain.location.City;
-import com.go_exchange_easier.backend.domain.location.Country;
+import com.go_exchange_easier.backend.domain.location.country.Country;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 

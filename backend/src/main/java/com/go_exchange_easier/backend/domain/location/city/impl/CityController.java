@@ -1,10 +1,10 @@
-package com.go_exchange_easier.backend.domain.location;
+package com.go_exchange_easier.backend.domain.location.city.impl;
 
-import com.go_exchange_easier.backend.domain.location.annotations.city.GetAllApiDocs;
 import com.go_exchange_easier.backend.common.dto.Listing;
-import com.go_exchange_easier.backend.domain.location.dto.CityDetails;
+import com.go_exchange_easier.backend.domain.location.city.CitiesService;
+import com.go_exchange_easier.backend.domain.location.city.CityApi;
+import com.go_exchange_easier.backend.domain.location.city.CityDetails;
 import com.go_exchange_easier.backend.domain.university.UniversityService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
@@ -13,19 +13,15 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/api/cities")
 @RequiredArgsConstructor
-@Tag(name = "City", description = "Operations related to cities.")
-public class CityController {
+public class CityController implements CityApi {
 
     private final UniversityService universityService;
     private final CitiesService citiesService;
 
-    @GetMapping
-    @GetAllApiDocs
+    @Override
     public ResponseEntity<Listing<CityDetails>> getAll(
-            @RequestParam(value = "countryId", required = false) Short countryId
-    ) {
+            @RequestParam(value = "countryId", required = false) Short countryId) {
         List<CityDetails> cities = citiesService.getAll(countryId);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))

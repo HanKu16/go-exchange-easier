@@ -1,6 +1,6 @@
-package com.go_exchange_easier.backend.domain.location.dto;
+package com.go_exchange_easier.backend.domain.location.city;
 
-import com.go_exchange_easier.backend.domain.location.City;
+import com.go_exchange_easier.backend.domain.location.country.CountryDetails;
 
 import java.io.Serializable;
 

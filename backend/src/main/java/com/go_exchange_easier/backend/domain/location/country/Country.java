@@ -1,6 +1,6 @@
-package com.go_exchange_easier.backend.domain.location;
+package com.go_exchange_easier.backend.domain.location.country;
 
-import com.go_exchange_easier.backend.domain.user.User;
+import com.go_exchange_easier.backend.domain.location.city.City;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.HashSet;
@@ -22,9 +22,6 @@ public class Country {
 
     @Column(name = "english_name")
     private String englishName;
-
-    @OneToMany(mappedBy = "countryOfOrigin")
-    private Set<User> nationals = new HashSet<>();
 
     @OneToMany(mappedBy = "country")
     private Set<City> cities = new HashSet<>();

@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.location;
+package com.go_exchange_easier.backend.domain.location.city;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;

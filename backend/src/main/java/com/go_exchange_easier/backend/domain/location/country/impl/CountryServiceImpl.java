@@ -1,6 +1,9 @@
-package com.go_exchange_easier.backend.domain.location;
+package com.go_exchange_easier.backend.domain.location.country.impl;
 
-import com.go_exchange_easier.backend.domain.location.dto.CountryDetails;
+import com.go_exchange_easier.backend.domain.location.country.Country;
+import com.go_exchange_easier.backend.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.domain.location.country.CountryRepository;
+import com.go_exchange_easier.backend.domain.location.country.CountryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

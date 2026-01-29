@@ -2,8 +2,8 @@ package com.go_exchange_easier.backend.domain.exchange;
 
 import com.go_exchange_easier.backend.common.jpa.SpecificationUtils;
 import com.go_exchange_easier.backend.domain.fieldofstudy.FieldOfStudy;
-import com.go_exchange_easier.backend.domain.location.City;
-import com.go_exchange_easier.backend.domain.location.Country;
+import com.go_exchange_easier.backend.domain.location.city.City;
+import com.go_exchange_easier.backend.domain.location.country.Country;
 import com.go_exchange_easier.backend.domain.university.University;
 import com.go_exchange_easier.backend.domain.user.User;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeFilters;

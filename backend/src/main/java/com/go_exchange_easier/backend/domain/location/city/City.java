@@ -1,5 +1,6 @@
-package com.go_exchange_easier.backend.domain.location;
+package com.go_exchange_easier.backend.domain.location.city;
 
+import com.go_exchange_easier.backend.domain.location.country.Country;
 import com.go_exchange_easier.backend.domain.university.University;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;

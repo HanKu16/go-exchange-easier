@@ -1,7 +1,6 @@
-package com.go_exchange_easier.backend.domain.location;
+package com.go_exchange_easier.backend.domain.location.city.impl;
 
-import com.go_exchange_easier.backend.domain.location.dto.CityDetails;
-import com.go_exchange_easier.backend.domain.location.specification.CitySpecification;
+import com.go_exchange_easier.backend.domain.location.city.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
