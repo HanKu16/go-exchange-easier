@@ -23,10 +23,8 @@ import jakarta.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication", description = "Operations related to " +
-        "registration and login user for the first time.")
+
 public class AuthController implements AuthApi {
 
     private final UserRegistrar userRegistrar;

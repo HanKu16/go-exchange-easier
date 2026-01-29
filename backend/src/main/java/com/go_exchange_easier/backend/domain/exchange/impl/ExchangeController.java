@@ -6,23 +6,18 @@ import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeDetails;
 import com.go_exchange_easier.backend.domain.exchange.dto.CreateExchangeRequest;
 import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeFilters;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/exchanges")
 @RequiredArgsConstructor
-@EnableMethodSecurity
-@Tag(name = "Exchange", description = "Operations related to exchanges.")
 public class ExchangeController implements ExchangeApi {
 
     private final ExchangeService exchangeService;
