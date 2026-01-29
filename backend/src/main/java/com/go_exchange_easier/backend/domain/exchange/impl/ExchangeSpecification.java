@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.exchange.specification;
+package com.go_exchange_easier.backend.domain.exchange.impl;
 
 import com.go_exchange_easier.backend.common.jpa.SpecificationUtils;
 import com.go_exchange_easier.backend.domain.exchange.Exchange;

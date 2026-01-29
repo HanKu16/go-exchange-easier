@@ -1,18 +1,20 @@
-package com.go_exchange_easier.backend.domain.exchange;
+package com.go_exchange_easier.backend.domain.exchange.impl;
 
 import com.go_exchange_easier.backend.common.exception.NotOwnerOfResourceException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.domain.exchange.Exchange;
+import com.go_exchange_easier.backend.domain.exchange.ExchangeRepository;
+import com.go_exchange_easier.backend.domain.exchange.ExchangeService;
 import com.go_exchange_easier.backend.domain.fieldofstudy.UniversityMajor;
 import com.go_exchange_easier.backend.domain.university.University;
 import com.go_exchange_easier.backend.domain.user.User;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeDetails;
 import com.go_exchange_easier.backend.domain.exchange.dto.CreateExchangeRequest;
-import com.go_exchange_easier.backend.domain.exchange.dto.CreateExchangeResponse;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.domain.fieldofstudy.UniversityMajorRepository;
 import com.go_exchange_easier.backend.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.domain.user.UserRepository;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeFilters;
-import com.go_exchange_easier.backend.domain.exchange.specification.ExchangeSpecification;
 import com.go_exchange_easier.backend.service.ResourceOwnershipChecker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,32 +43,30 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     @Transactional
-    public CreateExchangeResponse create(int userId, CreateExchangeRequest request) {
-        if (!universityRepository.existsById(request.universityId())) {
-            throw new ReferencedResourceNotFoundException("University of id " +
-                    request.universityId() + " was not found.");
-        }
-        if (!universityMajorRepository.existsById(request.universityMajorId())) {
-            throw new ReferencedResourceNotFoundException("University major " +
-                    "of id " + request.universityMajorId() + " was not found.");
-        }
-        User user = userRepository.getReferenceById(userId);
+    public ExchangeDetails create(int userId, CreateExchangeRequest request) {
+        User userProxy = userRepository.getReferenceById(userId);
         University university = universityRepository
-                .getReferenceById(request.universityId());
+                .findById(request.universityId())
+                .orElseThrow(() -> new ReferencedResourceNotFoundException(
+                        "University of id " + request.universityId() +
+                                " was not found."));
         UniversityMajor major = universityMajorRepository
-                .getReferenceById(request.universityMajorId());
-        Exchange exchange = buildExchange(request, user, university, major);
+                .findById(request.universityMajorId())
+                .orElseThrow(() -> new ReferencedResourceNotFoundException(
+                        "University major of id " + request.universityMajorId() +
+                                " was not found."));
+        Exchange exchange = buildExchange(request, userProxy, university, major);
         Exchange savedExchange = exchangeRepository.save(exchange);
-        return buildCreateExchangeResponse(savedExchange);
+        return ExchangeDetails.fromEntity(savedExchange);
     }
 
     @Override
     @Transactional
-    public void delete(int exchangeId) {
+    public void delete(int exchangeId, int userId) {
         Exchange exchange = exchangeRepository.findById(exchangeId)
-                .orElseThrow(() -> new ExchangeNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Exchange of id " + exchangeId + " was not found."));
-        if (!resourceOwnershipChecker.isOwner(exchange)) {
+        if (!exchange.getId().equals(userId)) {
             throw new NotOwnerOfResourceException("Authenticated user is not " +
                     "entitled to delete exchange of id " + exchange + ".");
         }
@@ -82,14 +82,6 @@ public class ExchangeServiceImpl implements ExchangeService {
         exchange.setUniversity(university);
         exchange.setUniversityMajor(major);
         return exchange;
-    }
-
-    private CreateExchangeResponse buildCreateExchangeResponse(Exchange exchange) {
-        return new CreateExchangeResponse(exchange.getId(),
-                exchange.getStartedAt(), exchange.getEndAt(),
-                exchange.getUser().getId(),
-                exchange.getUniversity().getId(),
-                exchange.getUniversityMajor().getId());
     }
 
 }
