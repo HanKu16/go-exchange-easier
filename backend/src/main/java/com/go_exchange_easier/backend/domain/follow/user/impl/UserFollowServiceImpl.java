@@ -1,7 +1,10 @@
-package com.go_exchange_easier.backend.domain.follow;
+package com.go_exchange_easier.backend.domain.follow.user.impl;
 
 import com.go_exchange_easier.backend.common.exception.IllegalOperationException;
 import com.go_exchange_easier.backend.common.exception.ResourceAlreadyExistsException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.domain.follow.user.UserFollowRepository;
+import com.go_exchange_easier.backend.domain.follow.user.UserFollowService;
 import com.go_exchange_easier.backend.domain.user.UserNotFoundException;
 import com.go_exchange_easier.backend.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +41,7 @@ public class UserFollowServiceImpl implements UserFollowService {
         int rowsDeleted = userFollowRepository.deleteByFollowerIdAndFolloweeId(
                 followerId, followeeId);
         if (rowsDeleted == 0) {
-            throw new UserFollowNotFoundException("User follow" +
+            throw new ResourceNotFoundException("User follow" +
                     " where follower id " + followerId + " and followee id " +
                     followeeId + " was not found.");
         }

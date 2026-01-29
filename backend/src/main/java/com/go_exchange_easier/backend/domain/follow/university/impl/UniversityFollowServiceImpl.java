@@ -1,7 +1,9 @@
-package com.go_exchange_easier.backend.domain.follow;
+package com.go_exchange_easier.backend.domain.follow.university.impl;
 
 import com.go_exchange_easier.backend.common.exception.ResourceAlreadyExistsException;
-import com.go_exchange_easier.backend.domain.university.UniversityNotFoundException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.domain.follow.university.UniversityFollowRepository;
+import com.go_exchange_easier.backend.domain.follow.university.UniversityFollowService;
 import com.go_exchange_easier.backend.domain.university.UniversityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
     @Transactional
     public void follow(Integer userId, Short universityId) {
         if (!universityRepository.existsById(universityId)) {
-            throw new UniversityNotFoundException("University of id " +
+            throw new ResourceNotFoundException("University of id " +
                     universityId + " was not found.");
         }
         if (doesFollowExist(universityId, userId)) {
@@ -34,7 +36,7 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
         int rowsDeleted = universityFollowRepository.deleteByUniversityIdAndFollowerId(
                 universityId, userId);
         if (rowsDeleted == 0) {
-            throw new UniversityFollowNotFoundException("University follow" +
+            throw new ResourceNotFoundException("University follow" +
                     " where user id " + userId + " and university id " +
                     universityId + " was not found.");
         }

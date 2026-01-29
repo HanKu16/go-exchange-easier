@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.follow;
+package com.go_exchange_easier.backend.domain.follow.user;
 
 public interface UserFollowService {
 

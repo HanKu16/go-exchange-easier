@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.follow;
+package com.go_exchange_easier.backend.domain.follow.university;
 
 import com.go_exchange_easier.backend.domain.university.University;
 import com.go_exchange_easier.backend.domain.user.User;
