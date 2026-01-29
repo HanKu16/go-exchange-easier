@@ -5,13 +5,14 @@ import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException
 import com.go_exchange_easier.backend.domain.exchange.Exchange;
 import com.go_exchange_easier.backend.domain.exchange.ExchangeRepository;
 import com.go_exchange_easier.backend.domain.exchange.ExchangeService;
-import com.go_exchange_easier.backend.domain.fieldofstudy.UniversityMajor;
+import com.go_exchange_easier.backend.domain.exchange.ExchangeSpecification;
+import com.go_exchange_easier.backend.domain.fieldofstudy.FieldOfStudy;
 import com.go_exchange_easier.backend.domain.university.University;
 import com.go_exchange_easier.backend.domain.user.User;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeDetails;
 import com.go_exchange_easier.backend.domain.exchange.dto.CreateExchangeRequest;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
-import com.go_exchange_easier.backend.domain.fieldofstudy.UniversityMajorRepository;
+import com.go_exchange_easier.backend.domain.fieldofstudy.FieldOfStudyRepository;
 import com.go_exchange_easier.backend.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.domain.user.UserRepository;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeFilters;
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Service;
 public class ExchangeServiceImpl implements ExchangeService {
 
     private final ResourceOwnershipChecker resourceOwnershipChecker;
-    private final UniversityMajorRepository universityMajorRepository;
+    private final FieldOfStudyRepository fieldOfStudyRepository;
     private final UniversityRepository universityRepository;
     private final ExchangeRepository exchangeRepository;
     private final UserRepository userRepository;
@@ -50,7 +51,7 @@ public class ExchangeServiceImpl implements ExchangeService {
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
                         "University of id " + request.universityId() +
                                 " was not found."));
-        UniversityMajor major = universityMajorRepository
+        FieldOfStudy major = fieldOfStudyRepository
                 .findById(request.universityMajorId())
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
                         "University major of id " + request.universityMajorId() +
@@ -74,7 +75,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     private Exchange buildExchange(CreateExchangeRequest request, User user,
-            University university, UniversityMajor major) {
+            University university, FieldOfStudy major) {
         Exchange exchange = new Exchange();
         exchange.setStartedAt(request.startedAt());
         exchange.setEndAt(request.endAt());

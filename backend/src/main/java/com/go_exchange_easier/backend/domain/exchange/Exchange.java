@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.domain.exchange;
 
 import com.go_exchange_easier.backend.domain.user.User;
 import com.go_exchange_easier.backend.domain.university.University;
-import com.go_exchange_easier.backend.domain.fieldofstudy.UniversityMajor;
+import com.go_exchange_easier.backend.domain.fieldofstudy.FieldOfStudy;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -37,6 +37,6 @@ public class Exchange {
 
     @ManyToOne
     @JoinColumn(name = "university_major_id")
-    private UniversityMajor universityMajor;
+    private FieldOfStudy universityMajor;
 
 }

@@ -1,10 +1,7 @@
 package com.go_exchange_easier.backend.domain.fieldofstudy;
 
-import com.go_exchange_easier.backend.domain.exchange.Exchange;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "university_majors")
@@ -12,7 +9,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class UniversityMajor {
+public class FieldOfStudy {
 
     @Id
     @Column(name = "university_major_id")
@@ -22,8 +19,5 @@ public class UniversityMajor {
 
     @Column(name = "name")
     private String name;
-
-    @OneToMany(mappedBy = "universityMajor")
-    private List<Exchange> exchanges = new ArrayList<>();
 
 }

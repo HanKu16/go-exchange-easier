@@ -1,8 +1,7 @@
-package com.go_exchange_easier.backend.domain.exchange.impl;
+package com.go_exchange_easier.backend.domain.exchange;
 
 import com.go_exchange_easier.backend.common.jpa.SpecificationUtils;
-import com.go_exchange_easier.backend.domain.exchange.Exchange;
-import com.go_exchange_easier.backend.domain.fieldofstudy.UniversityMajor;
+import com.go_exchange_easier.backend.domain.fieldofstudy.FieldOfStudy;
 import com.go_exchange_easier.backend.domain.location.City;
 import com.go_exchange_easier.backend.domain.location.Country;
 import com.go_exchange_easier.backend.domain.university.University;
@@ -65,7 +64,7 @@ public class ExchangeSpecification {
 
     public static Specification<Exchange> hasMajorId(short majorId) {
         return (root, query, cb) -> {
-            Join<Exchange, UniversityMajor> majorsJoin =
+            Join<Exchange, FieldOfStudy> majorsJoin =
                     root.join("universityMajor");
             return cb.equal(majorsJoin.get("id"), majorId);
         };
