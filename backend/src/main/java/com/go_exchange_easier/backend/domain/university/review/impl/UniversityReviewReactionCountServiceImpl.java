@@ -3,7 +3,7 @@ package com.go_exchange_easier.backend.domain.university.review.impl;
 import com.go_exchange_easier.backend.domain.reaction.ReactionType;
 import com.go_exchange_easier.backend.domain.reaction.ReactionTypeRepository;
 import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReview;
-import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetails;
 import com.go_exchange_easier.backend.domain.university.review.UniversityReviewReactionCountRepository;
 import com.go_exchange_easier.backend.domain.university.review.UniversityReviewReactionCountService;
 import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReviewReactionCount;
@@ -23,7 +23,7 @@ public class UniversityReviewReactionCountServiceImpl implements
 
     @Override
     @Transactional
-    public List<UniversityReviewReactionDetail> decrement(
+    public List<UniversityReviewReactionDetails> decrement(
             int reviewId, short reactionTypeId) {
         List<UniversityReviewReactionCount> allCountsForReview =
                 getAllCountsForReview(reviewId);
@@ -35,7 +35,7 @@ public class UniversityReviewReactionCountServiceImpl implements
 
     @Override
     @Transactional
-    public List<UniversityReviewReactionDetail> increment(
+    public List<UniversityReviewReactionDetails> increment(
             int reviewId, short reactionTypeId) {
         List<UniversityReviewReactionCount> allCountsForReview =
                 getAllCountsForReview(reviewId);
@@ -47,8 +47,8 @@ public class UniversityReviewReactionCountServiceImpl implements
 
     @Override
     @Transactional
-    public List<UniversityReviewReactionDetail> replace(int reviewId,
-            short oldReactionTypeId, short newReactionTypeId) {
+    public List<UniversityReviewReactionDetails> replace(int reviewId,
+                                                         short oldReactionTypeId, short newReactionTypeId) {
         List<UniversityReviewReactionCount> allCountsForReview =
                 getAllCountsForReview(reviewId);
         UniversityReviewReactionCount countForOldType = getCountOfReactionType(
@@ -62,7 +62,7 @@ public class UniversityReviewReactionCountServiceImpl implements
 
     @Override
     @Transactional
-    public List<UniversityReviewReactionDetail> createCounts(UniversityReview review) {
+    public List<UniversityReviewReactionDetails> createCounts(UniversityReview review) {
         short defaultCountValue = (short) 0;
         List<UniversityReviewReactionCount> countsForReview = new ArrayList<>();
 
@@ -104,11 +104,11 @@ public class UniversityReviewReactionCountServiceImpl implements
                                 " all counts for this review should also exist."));
     }
 
-    private List<UniversityReviewReactionDetail> mapToReactionDetails(
+    private List<UniversityReviewReactionDetails> mapToReactionDetails(
             List<UniversityReviewReactionCount> allCountsForReview) {
         return allCountsForReview
                 .stream()
-                .map(c -> new UniversityReviewReactionDetail(
+                .map(c -> new UniversityReviewReactionDetails(
                         c.getReactionType().getId(), c.getCount()))
                 .toList();
     }

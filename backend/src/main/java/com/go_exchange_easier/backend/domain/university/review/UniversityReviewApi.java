@@ -79,7 +79,7 @@ public interface UniversityReviewApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<AddUniversityReviewReactionResponse> addReaction(
+    ResponseEntity<Void> addReaction(
             @PathVariable Integer reviewId,
             @RequestBody @Valid AddUniversityReviewReactionRequest request,
             @AuthenticationPrincipal UserCredentials principal);
@@ -96,7 +96,7 @@ public interface UniversityReviewApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))),
     })
-    ResponseEntity<DeleteUniversityReviewReactionResponse> deleteReaction(
+    ResponseEntity<Void> deleteReaction(
             @PathVariable Integer reviewId,
             @AuthenticationPrincipal UserCredentials principal);
 

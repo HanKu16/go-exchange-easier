@@ -38,22 +38,20 @@ public class UniversityReviewController implements UniversityReviewApi {
     }
 
     @Override
-    public ResponseEntity<AddUniversityReviewReactionResponse> addReaction(
+    public ResponseEntity<Void> addReaction(
             @PathVariable Integer reviewId,
             @RequestBody @Valid AddUniversityReviewReactionRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
-        AddUniversityReviewReactionResponse response = reviewReactionService
-                .add(principal.getUser().getId(), reviewId,request);
-        return ResponseEntity.ok(response);
+        reviewReactionService.add(principal.getUser().getId(), reviewId,request);
+        return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<DeleteUniversityReviewReactionResponse> deleteReaction(
+    public ResponseEntity<Void> deleteReaction(
             @PathVariable Integer reviewId,
             @AuthenticationPrincipal UserCredentials principal) {
-        DeleteUniversityReviewReactionResponse response = reviewReactionService
-                .delete(principal.getUser().getId(), reviewId);
-        return ResponseEntity.ok(response);
+        reviewReactionService.delete(principal.getUser().getId(), reviewId);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -12,9 +12,7 @@ import com.go_exchange_easier.backend.domain.university.review.entity.University
 import com.go_exchange_easier.backend.domain.user.User;
 import com.go_exchange_easier.backend.domain.user.UserRepository;
 import com.go_exchange_easier.backend.domain.university.review.dto.AddUniversityReviewReactionRequest;
-import com.go_exchange_easier.backend.domain.university.review.dto.AddUniversityReviewReactionResponse;
-import com.go_exchange_easier.backend.domain.university.review.dto.DeleteUniversityReviewReactionResponse;
-import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetails;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +32,8 @@ public class UniversityReviewReactionServiceImpl implements UniversityReviewReac
 
     @Override
     @Transactional
-    public AddUniversityReviewReactionResponse add(int userId, int reviewId,
-            AddUniversityReviewReactionRequest request) {
+    public List<UniversityReviewReactionDetails> add(int userId, int reviewId,
+                                                     AddUniversityReviewReactionRequest request) {
         if (!universityReviewRepository.existsById(reviewId)) {
             throw new ReferencedResourceNotFoundException("University review " +
                     "of id " + reviewId + " was not found.");
@@ -44,7 +42,7 @@ public class UniversityReviewReactionServiceImpl implements UniversityReviewReac
             throw new ReferencedResourceNotFoundException("Reaction type " +
                     "of id " + request.reactionTypeId() + " was not found.");
         }
-        List<UniversityReviewReactionDetail> reactionDetails;
+        List<UniversityReviewReactionDetails> reactionDetails;
         Optional<UniversityReviewReaction> oldReaction = reactionRepository
                 .findByAuthorIdAndReviewId(userId, reviewId);
         if (oldReaction.isPresent()) {
@@ -59,12 +57,12 @@ public class UniversityReviewReactionServiceImpl implements UniversityReviewReac
         UniversityReviewReaction reaction = buildReaction(
                 request.reactionTypeId(), reviewId, userId);
         reactionRepository.save(reaction);
-        return new AddUniversityReviewReactionResponse(reviewId, reactionDetails);
+        return reactionDetails;
     }
 
     @Override
     @Transactional
-    public DeleteUniversityReviewReactionResponse delete(int userId, int reviewId) {
+    public List<UniversityReviewReactionDetails> delete(int userId, int reviewId) {
         UniversityReviewReaction reaction = reactionRepository
                 .findByAuthorIdAndReviewId(userId, reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -72,9 +70,7 @@ public class UniversityReviewReactionServiceImpl implements UniversityReviewReac
                                 " and review id " + reviewId + " was not found."));
         short reactionTypeId = reaction.getReactionType().getId();
         reactionRepository.delete(reaction);
-        List<UniversityReviewReactionDetail> reactionDetails =
-                reactionCountService.decrement(reviewId, reactionTypeId);
-        return new DeleteUniversityReviewReactionResponse(reviewId, reactionDetails);
+        return reactionCountService.decrement(reviewId, reactionTypeId);
     }
 
     private UniversityReviewReaction buildReaction(

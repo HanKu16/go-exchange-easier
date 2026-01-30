@@ -17,7 +17,7 @@ import com.go_exchange_easier.backend.domain.university.review.entity.University
 import com.go_exchange_easier.backend.domain.user.UserRepository;
 import com.go_exchange_easier.backend.domain.user.dto.UserWithAvatarSummary;
 import com.go_exchange_easier.backend.domain.university.review.dto.CreateUniversityReviewRequest;
-import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetails;
 import com.go_exchange_easier.backend.common.exception.JsonParsingException;
 import com.go_exchange_easier.backend.common.exception.NotOwnerOfResourceException;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
@@ -127,7 +127,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
                                 " was not found."));
         UniversityReview review = buildUniversityReview(request, user, university);
         UniversityReview savedReview = universityReviewRepository.save(review);
-        List<UniversityReviewReactionDetail> reactionDetails =
+        List<UniversityReviewReactionDetails> reactionDetails =
                 reactionCountService.createCounts(savedReview);
         List<ReactionType> reactionTypes = reactionTypeRepository.findAll();
         List<ReactionDetails> reactions =  reactionTypes.stream()

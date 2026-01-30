@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "Request body for creating university review")
 public record CreateUniversityReviewRequest(
 
         @NotNull(message = "Text is required.")
