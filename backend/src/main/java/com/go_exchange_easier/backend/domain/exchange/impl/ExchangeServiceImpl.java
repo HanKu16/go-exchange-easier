@@ -65,7 +65,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         Exchange exchange = exchangeRepository.findById(exchangeId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Exchange of id " + exchangeId + " was not found."));
-        if (!exchange.getId().equals(userId)) {
+        if (!exchange.getUser().getId().equals(userId)) {
             throw new NotOwnerOfResourceException("Authenticated user is not " +
                     "entitled to delete exchange of id " + exchange + ".");
         }
