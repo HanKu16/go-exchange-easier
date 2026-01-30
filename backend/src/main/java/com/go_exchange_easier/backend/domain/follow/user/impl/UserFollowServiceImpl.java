@@ -5,7 +5,6 @@ import com.go_exchange_easier.backend.common.exception.ResourceAlreadyExistsExce
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.domain.follow.user.UserFollowRepository;
 import com.go_exchange_easier.backend.domain.follow.user.UserFollowService;
-import com.go_exchange_easier.backend.domain.user.UserNotFoundException;
 import com.go_exchange_easier.backend.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class UserFollowServiceImpl implements UserFollowService {
             throw new IllegalOperationException("User can not follow himself.");
         }
         if (!userRepository.existsById(followeeId)) {
-            throw new UserNotFoundException("User of id " +
+            throw new ResourceNotFoundException("User of id " +
                     followeeId + " was not found.");
         }
         if (doesFollowExist(followerId, followeeId)) {

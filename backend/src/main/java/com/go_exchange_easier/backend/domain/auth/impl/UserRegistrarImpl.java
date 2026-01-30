@@ -14,6 +14,7 @@ import com.go_exchange_easier.backend.domain.user.notification.UserNotificationR
 import com.go_exchange_easier.backend.domain.auth.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.domain.auth.exception.MissingDefaultRoleException;
 import com.go_exchange_easier.backend.domain.auth.exception.UsernameAlreadyExistsException;
+import com.go_exchange_easier.backend.domain.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

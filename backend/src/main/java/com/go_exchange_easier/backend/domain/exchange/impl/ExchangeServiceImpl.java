@@ -16,7 +16,6 @@ import com.go_exchange_easier.backend.domain.fieldofstudy.FieldOfStudyRepository
 import com.go_exchange_easier.backend.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.domain.user.UserRepository;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeFilters;
-import com.go_exchange_easier.backend.service.ResourceOwnershipChecker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ExchangeServiceImpl implements ExchangeService {
 
-    private final ResourceOwnershipChecker resourceOwnershipChecker;
     private final FieldOfStudyRepository fieldOfStudyRepository;
     private final UniversityRepository universityRepository;
     private final ExchangeRepository exchangeRepository;
