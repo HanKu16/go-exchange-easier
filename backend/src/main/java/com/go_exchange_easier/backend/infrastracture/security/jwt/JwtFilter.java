@@ -1,8 +1,8 @@
 package com.go_exchange_easier.backend.infrastracture.security.jwt;
 
-import com.go_exchange_easier.backend.domain.auth.Role;
+import com.go_exchange_easier.backend.domain.auth.entity.Role;
 import com.go_exchange_easier.backend.domain.user.User;
-import com.go_exchange_easier.backend.domain.auth.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.auth.RoleRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
