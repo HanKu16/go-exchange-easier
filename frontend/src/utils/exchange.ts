@@ -2,8 +2,7 @@ import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { ResponseFailureResult } from "../types/ResponseFailureResult";
 import { sendRequest } from "./send-request";
 import type { CreateExchangeRequest } from "../dtos/exchange/CreateExchangeRequest";
-import type { CreateExchangeResponse } from "../dtos/exchange/CreateExchangeResponse";
-import type { ExchangeDetails } from "../dtos/details/ExchangeDetails";
+import type { ExchangeDetails } from "../dtos/exchange/ExchangeDetails";
 import type { PageResponse } from "../dtos/common/PageResponse";
 
 export const sendGetExchangesRequest = async (
@@ -16,7 +15,7 @@ export const sendGetExchangesRequest = async (
   majorId: number | undefined | null,
   startDate: string | undefined | null,
   endDate: string | undefined | null,
-  userId: number | undefined | null
+  userId: number | undefined | null,
 ): Promise<
   ResponseSuccessResult<PageResponse<ExchangeDetails>> | ResponseFailureResult
 > => {
@@ -35,14 +34,12 @@ export const sendGetExchangesRequest = async (
   const request: RequestInit = {
     method: "GET",
   };
-  return await sendRequest<PageResponse<ExchangeDetails>>(uri, request);
+  return await sendRequest(uri, request);
 };
 
 export const sendCreateExchangeRequest = async (
-  body: CreateExchangeRequest
-): Promise<
-  ResponseSuccessResult<CreateExchangeResponse> | ResponseFailureResult
-> => {
+  body: CreateExchangeRequest,
+): Promise<ResponseSuccessResult<ExchangeDetails> | ResponseFailureResult> => {
   const uri: string = `/api/exchanges`;
   const request: RequestInit = {
     method: "POST",
@@ -52,7 +49,7 @@ export const sendCreateExchangeRequest = async (
 };
 
 export const sendDeleteExchangeRequest = async (
-  exchangeId: number
+  exchangeId: number,
 ): Promise<ResponseSuccessResult<null> | ResponseFailureResult> => {
   const uri: string = `/api/exchanges/${exchangeId}`;
   const request: RequestInit = {
