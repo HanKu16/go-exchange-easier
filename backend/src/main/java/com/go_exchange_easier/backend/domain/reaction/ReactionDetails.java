@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.university.dto;
+package com.go_exchange_easier.backend.domain.reaction;
 
 public record ReactionDetails(
 

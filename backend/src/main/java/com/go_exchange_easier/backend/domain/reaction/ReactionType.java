@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.reaction;
 
 import jakarta.persistence.*;
 import lombok.*;
