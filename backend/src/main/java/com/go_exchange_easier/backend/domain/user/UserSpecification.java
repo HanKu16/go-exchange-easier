@@ -1,6 +1,5 @@
-package com.go_exchange_easier.backend.domain.user.specification;
+package com.go_exchange_easier.backend.domain.user;
 
-import com.go_exchange_easier.backend.domain.user.User;
 import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
 

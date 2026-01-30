@@ -1,19 +1,25 @@
-package com.go_exchange_easier.backend.domain.user;
+package com.go_exchange_easier.backend.domain.user.impl;
 
-import com.go_exchange_easier.backend.domain.follow.UserFollow;
-import com.go_exchange_easier.backend.domain.location.Country;
-import com.go_exchange_easier.backend.domain.location.CountryRepository;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.domain.follow.user.UserFollow;
+import com.go_exchange_easier.backend.domain.location.country.Country;
+import com.go_exchange_easier.backend.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.domain.location.country.CountryRepository;
 import com.go_exchange_easier.backend.domain.university.University;
 import com.go_exchange_easier.backend.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityDetails;
+import com.go_exchange_easier.backend.domain.university.dto.UniversitySummary;
+import com.go_exchange_easier.backend.domain.user.*;
+import com.go_exchange_easier.backend.domain.user.avatar.AvatarKeys;
 import com.go_exchange_easier.backend.domain.user.avatar.AvatarService;
+import com.go_exchange_easier.backend.domain.user.avatar.AvatarUrlSummary;
+import com.go_exchange_easier.backend.domain.user.description.UpdateUserDescriptionRequest;
+import com.go_exchange_easier.backend.domain.user.description.UserDescriptionDetails;
 import com.go_exchange_easier.backend.domain.user.description.UserDescriptionRepository;
 import com.go_exchange_easier.backend.domain.user.dto.*;
-import com.go_exchange_easier.backend.domain.user.status.UserStatus;
-import com.go_exchange_easier.backend.domain.user.status.UserStatusRepository;
+import com.go_exchange_easier.backend.domain.user.User;
+import com.go_exchange_easier.backend.domain.user.status.*;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
-import com.go_exchange_easier.backend.domain.user.description.UserDescriptionNotFoundException;
-import com.go_exchange_easier.backend.domain.user.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,10 +47,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public GetUserProfileResponse getProfile(int userId, int currentUserId) {
+    public UserProfileDetails getProfile(int userId, int currentUserId) {
         List<Object[]> rows = userRepository.findProfileById(userId, currentUserId);
         if (rows.isEmpty()) {
-            throw new UserNotFoundException("User of id " +
+            throw new ResourceNotFoundException("User of id " +
                     userId + " was not found");
         }
         Object[] row = rows.getFirst();
@@ -64,21 +70,21 @@ public class UserServiceImpl implements UserService {
         if (avatarKey != null) {
             avatarUrl = avatarService.getUrl(avatarKey).original();
         }
-        GetUserProfileResponse.UniversityDto university =
+        UserProfileDetails.UniversityDto university =
                 universityId != null ?
-                new GetUserProfileResponse.UniversityDto(universityId,
+                new UserProfileDetails.UniversityDto(universityId,
                         universityOriginalName, universityEnglishName) :
                 null;
-        GetUserProfileResponse.CountryDto country =
+        UserProfileDetails.CountryDto country =
                 countryId != null ?
-                new GetUserProfileResponse.CountryDto(
+                new UserProfileDetails.CountryDto(
                         countryId, countryName) :
                 null;
-        GetUserProfileResponse.StatusDto status =
+        UserProfileDetails.StatusDto status =
                 statusId != null ?
-                new GetUserProfileResponse.StatusDto(statusId, statusName) :
+                new UserProfileDetails.StatusDto(statusId, statusName) :
                 null;
-        return new GetUserProfileResponse(id, nick, avatarUrl, description, isFollowed,
+        return new UserProfileDetails(id, nick, avatarUrl, description, isFollowed,
                 university, country, status);
     }
 
@@ -97,22 +103,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UpdateUserDescriptionResponse updateDescription(
+    public UserDescriptionDetails updateDescription(
             int userId, UpdateUserDescriptionRequest request) {
         OffsetDateTime updatedAt = OffsetDateTime.now();
         int rowsUpdated = userDescriptionRepository.updateByUserId(
                 userId, request.description(), updatedAt);
         if (rowsUpdated == 0) {
-            throw new UserDescriptionNotFoundException("Description for user of id " +
+            throw new ResourceNotFoundException("Description for user of id " +
                     userId + " was not found.");
         }
-        return new UpdateUserDescriptionResponse(userId,
+        return new UserDescriptionDetails(userId,
                 request.description(), updatedAt);
     }
 
     @Override
     @Transactional
-    public AssignHomeUniversityResponse assignHomeUniversity(
+    public UniversitySummary assignHomeUniversity(
             int userId, AssignHomeUniversityRequest request) {
         University university = universityRepository.findById(request.universityId())
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
@@ -121,16 +127,16 @@ public class UserServiceImpl implements UserService {
         int rowsUpdated = userRepository.updateHomeUniversity(
                 userId, university.getId());
         if (rowsUpdated == 0) {
-            throw new UserNotFoundException("User of id "
+            throw new ResourceNotFoundException("User of id "
                     + userId + " does not exist.");
         }
-        return new AssignHomeUniversityResponse(userId, university.getId(),
+        return new UniversitySummary(university.getId(),
                 university.getOriginalName(), university.getEnglishName());
     }
 
     @Override
     @Transactional
-    public UpdateUserStatusResponse updateStatus(
+    public UserStatusSummary updateStatus(
             int userId, UpdateUserStatusRequest request) {
         if (request.statusId() != null) {
             UserStatus status = userStatusRepository.findById(request.statusId())
@@ -139,23 +145,22 @@ public class UserServiceImpl implements UserService {
                                     " was not found."));
             int rowsUpdated = userRepository.updateStatus(userId, status.getId());
             if (rowsUpdated == 0) {
-                throw new UserNotFoundException("User of id " + userId +
+                throw new ResourceNotFoundException("User of id " + userId +
                         " was not found.");
             }
-            return new UpdateUserStatusResponse(userId,
-                    status.getId(), status.getName());
+            return new UserStatusSummary(status.getId(), status.getName());
         }
         int rowsUpdated = userRepository.updateStatus(userId, null);
         if (rowsUpdated == 0) {
-            throw new UserNotFoundException("User of id " + userId +
+            throw new ResourceNotFoundException("User of id " + userId +
                     " was not found.");
         }
-        return new UpdateUserStatusResponse(userId, null, null);
+        return new UserStatusSummary(null, null);
     }
 
     @Override
     @Transactional
-    public AssignCountryOfOriginResponse assignCountryOfOrigin(
+    public CountryDetails assignCountryOfOrigin(
             int userId, AssignCountryOfOriginRequest request) {
         if (request.countryId() != null) {
             Country country = countryRepository.findById(request.countryId())
@@ -165,19 +170,18 @@ public class UserServiceImpl implements UserService {
             int rowsUpdated = userRepository.assignCountryOfOrigin(
                     userId, request.countryId());
             if (rowsUpdated == 0) {
-                throw new UserNotFoundException("User of id " + userId +
+                throw new ResourceNotFoundException("User of id " + userId +
                         " was not found.");
             }
-            return new AssignCountryOfOriginResponse(userId,
-                    new AssignCountryOfOriginResponse.CountryDto(
-                            country.getId(), country.getEnglishName()));
+            return new CountryDetails(country.getId(), country.getEnglishName());
+
         } else {
             int rowsUpdated = userRepository.assignCountryOfOrigin(userId, null);
             if (rowsUpdated == 0) {
-                throw new UserNotFoundException("User of id " + userId +
+                throw new ResourceNotFoundException("User of id " + userId +
                         " was not found.");
             }
-            return new AssignCountryOfOriginResponse(userId, null);
+            return new CountryDetails(null, null);
         }
     }
 
@@ -185,9 +189,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<UserWithAvatarSummary> getFollowees(int userId) {
         User user = userRepository.findWithFollowees(userId)
-                .orElseThrow(() -> new UserNotFoundException(
-                "User of id " + userId +
-                        " was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                "User of id " + userId + " was not found."));
         return user.getUserFollowsSent()
                 .stream()
                 .map(UserFollow::getFollowee)
@@ -203,9 +206,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<UniversityDetails> getFollowedUniversities(int userId) {
         User user = userRepository.findWithFollowedUniversities(userId)
-                .orElseThrow(() -> new UserNotFoundException(
-                        "User of id " + userId +
-                                " was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User of id " + userId + " was not found."));
         return user.getUniversityFollowsSent()
                 .stream()
                 .map(f -> UniversityDetails.fromEntity(f.getUniversity()))
@@ -216,8 +218,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public UserWithAvatarSummary getMe(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User of id " + userId +
-                        " was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User of id " + userId + " was not found."));
         String avatarUrl = user.getAvatarKey() != null ?
                 avatarService.getUrl(user.getAvatarKey()).original() :
                 null;
@@ -228,8 +230,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public AvatarUrlSummary addAvatar(int userId, MultipartFile file) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User of id " + userId +
-                        " was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User of id " + userId + " was not found."));
         String oldOriginalKey = user.getAvatarKey();
         AvatarKeys newKeys = avatarService.add(userId, file);
         if (oldOriginalKey != null) {
@@ -246,8 +248,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public AvatarUrlSummary deleteAvatar(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User of id " + userId +
-                        " was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User of id " + userId + " was not found."));
         String key = user.getAvatarKey();
         user.setAvatarKey(null);
         if (key != null) {

@@ -1,7 +1,5 @@
 package com.go_exchange_easier.backend.domain.user.avatar;
 
-import com.go_exchange_easier.backend.domain.user.dto.AvatarKeys;
-import com.go_exchange_easier.backend.domain.user.dto.AvatarUrlSummary;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface AvatarService {

@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.domain.user.dto;
 
-import com.go_exchange_easier.backend.domain.location.dto.CountryDetails;
+import com.go_exchange_easier.backend.domain.location.country.CountryDetails;
 import com.go_exchange_easier.backend.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.domain.user.User;
 

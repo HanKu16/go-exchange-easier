@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.domain.user.dto;
 
-public record GetUserProfileResponse(
+public record UserProfileDetails(
 
         Integer userId,
         String nick,

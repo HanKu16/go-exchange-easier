@@ -1,8 +1,6 @@
 package com.go_exchange_easier.backend.domain.user.avatar;
 
 import com.go_exchange_easier.backend.infrastracture.storage.BucketProperties;
-import com.go_exchange_easier.backend.domain.user.dto.AvatarKeys;
-import com.go_exchange_easier.backend.domain.user.dto.AvatarUrlSummary;
 import com.go_exchange_easier.backend.common.exception.FileUploadException;
 import com.go_exchange_easier.backend.infrastracture.storage.FileStorageService;
 import lombok.RequiredArgsConstructor;

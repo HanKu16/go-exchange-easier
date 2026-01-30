@@ -1,13 +1,13 @@
 package com.go_exchange_easier.backend.domain.user;
 
-import com.go_exchange_easier.backend.domain.auth.RefreshToken;
-import com.go_exchange_easier.backend.domain.auth.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.entity.RefreshToken;
+import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.exchange.Exchange;
-import com.go_exchange_easier.backend.domain.follow.UniversityFollow;
-import com.go_exchange_easier.backend.domain.follow.UserFollow;
-import com.go_exchange_easier.backend.domain.location.Country;
+import com.go_exchange_easier.backend.domain.follow.university.UniversityFollow;
+import com.go_exchange_easier.backend.domain.follow.user.UserFollow;
+import com.go_exchange_easier.backend.domain.location.country.Country;
 import com.go_exchange_easier.backend.domain.university.University;
-import com.go_exchange_easier.backend.domain.university.UniversityReview;
+import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReview;
 import com.go_exchange_easier.backend.domain.user.description.UserDescription;
 import com.go_exchange_easier.backend.domain.user.notification.UserNotification;
 import com.go_exchange_easier.backend.domain.user.status.UserStatus;

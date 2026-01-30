@@ -1,8 +1,7 @@
-package com.go_exchange_easier.backend.domain.user.dto;
+package com.go_exchange_easier.backend.domain.user.status;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "Request body for updating user status")
 public record UpdateUserStatusRequest(
 
         @Schema(example = "3")

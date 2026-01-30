@@ -1,21 +1,27 @@
-package com.go_exchange_easier.backend.domain.user;
+package com.go_exchange_easier.backend.domain.user.impl;
 
-import com.go_exchange_easier.backend.domain.user.annotations.*;
-import com.go_exchange_easier.backend.domain.user.avatar.AvatarService;
+import com.go_exchange_easier.backend.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.domain.university.dto.UniversitySummary;
+import com.go_exchange_easier.backend.domain.user.UserApi;
+import com.go_exchange_easier.backend.domain.user.UserService;
+import com.go_exchange_easier.backend.domain.user.avatar.AvatarUrlSummary;
+import com.go_exchange_easier.backend.domain.user.description.UpdateUserDescriptionRequest;
+import com.go_exchange_easier.backend.domain.user.description.UserDescriptionDetails;
 import com.go_exchange_easier.backend.domain.user.dto.*;
 import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityDetails;
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewDetails;
-import com.go_exchange_easier.backend.domain.auth.UserCredentials;
-import com.go_exchange_easier.backend.domain.university.UniversityReviewService;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewDetails;
+import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewService;
 import com.go_exchange_easier.backend.domain.user.avatar.ValidAvatar;
+import com.go_exchange_easier.backend.domain.user.status.UpdateUserStatusRequest;
+import com.go_exchange_easier.backend.domain.user.status.UserStatusSummary;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.CacheControl;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -29,24 +35,21 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "User", description = "Operations related to user.")
-public class UserController {
+public class UserController implements UserApi {
 
     private final UniversityReviewService universityReviewService;
-    private final AvatarService avatarService;
     private final UserService userService;
 
-    @GetMapping("/{userId}/profile")
-    @GetProfileApiDocs
-    public ResponseEntity<GetUserProfileResponse> getProfile(
+    @Override
+    public ResponseEntity<UserProfileDetails> getProfile(
             @PathVariable("userId") int userId,
             @AuthenticationPrincipal UserCredentials principal) {
-        GetUserProfileResponse response = userService.getProfile(
+        UserProfileDetails response = userService.getProfile(
                 userId, principal.getUser().getId());
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    @GetPageApiDocs
+    @Override
     public ResponseEntity<Page<UserDetails>> getPage(
             @RequestParam(value = "nick", required = false) String nick,
             Pageable pageable) {
@@ -56,8 +59,7 @@ public class UserController {
                 .body(page);
     }
 
-    @GetMapping("/{userId}/universityReviews")
-    @GetReviewsApiDocs
+    @Override
     public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
             @PathVariable("userId") Integer userId,
             @AuthenticationPrincipal UserCredentials principal) {
@@ -66,56 +68,50 @@ public class UserController {
         return ResponseEntity.ok(Listing.of(reviews));
     }
 
-    @PatchMapping("/description")
-    @UpdateDescriptionApiDocs
-    public ResponseEntity<UpdateUserDescriptionResponse> updateDescription(
+    @Override
+    public ResponseEntity<UserDescriptionDetails> updateDescription(
             @RequestBody @Valid UpdateUserDescriptionRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
-        UpdateUserDescriptionResponse response = userService
+        UserDescriptionDetails response = userService
                 .updateDescription(principal.getUser().getId(), request);
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/homeUniversity")
-    @AssignHomeUniversityApiDocs
-    public ResponseEntity<AssignHomeUniversityResponse> assignHomeUniversity(
+    @Override
+    public ResponseEntity<UniversitySummary> assignHomeUniversity(
             @RequestBody @Valid AssignHomeUniversityRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
-        AssignHomeUniversityResponse response = userService.assignHomeUniversity(
+        UniversitySummary university = userService.assignHomeUniversity(
                 principal.getUser().getId(), request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(university);
     }
 
-    @PatchMapping("/status")
-    @UpdateStatusApiDocs
-    public ResponseEntity<UpdateUserStatusResponse> updateStatus(
+    @Override
+    public ResponseEntity<UserStatusSummary> updateStatus(
             @RequestBody @Valid UpdateUserStatusRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
-        UpdateUserStatusResponse response = userService.updateStatus(
+        UserStatusSummary status = userService.updateStatus(
                 principal.getUser().getId(), request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(status);
     }
 
-    @PatchMapping("/countryOfOrigin")
-    @AssignCountryOfOriginApiDocs
-    public ResponseEntity<AssignCountryOfOriginResponse> assignCountryOfOrigin(
+    @Override
+    public ResponseEntity<CountryDetails> assignCountryOfOrigin(
             @RequestBody @Valid AssignCountryOfOriginRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
-        AssignCountryOfOriginResponse response = userService.assignCountryOfOrigin(
+        CountryDetails country = userService.assignCountryOfOrigin(
                 principal.getUser().getId(), request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(country);
     }
 
-    @GetMapping("/{userId}/followees")
-    @GetFolloweesApiDocs
+    @Override
     public ResponseEntity<Listing<UserWithAvatarSummary>> getFollowees(
             @PathVariable Integer userId) {
         List<UserWithAvatarSummary> followees = userService.getFollowees(userId);
         return ResponseEntity.ok(Listing.of(followees));
     }
 
-    @GetMapping("/{userId}/followedUniversities")
-    @GetFollowedUniversitiesApiDocs
+    @Override
     public ResponseEntity<Listing<UniversityDetails>> getFollowedUniversities(
             @PathVariable Integer userId) {
         List<UniversityDetails> universities = userService
@@ -123,8 +119,7 @@ public class UserController {
         return ResponseEntity.ok(Listing.of(universities));
     }
 
-    @GetMapping("/me")
-    @GetMeApiDocs
+    @Override
     public ResponseEntity<?> getMe(
             @AuthenticationPrincipal(errorOnInvalidType = false) UserCredentials principal) {
         if (principal == null) {
@@ -134,8 +129,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @UploadAvatarApiDocs
+    @Override
     public ResponseEntity<AvatarUrlSummary> uploadAvatar(
             @RequestParam("file") @ValidAvatar MultipartFile file,
             @AuthenticationPrincipal UserCredentials principal) {
@@ -144,11 +138,11 @@ public class UserController {
         return ResponseEntity.ok(avatarUrl);
     }
 
-    @DeleteMapping("/avatar")
-    @DeleteAvatarApiDocs
+    @Override
     public ResponseEntity<AvatarUrlSummary> deleteAvatar(
             @AuthenticationPrincipal UserCredentials principal) {
-        AvatarUrlSummary avatarUrl = userService.deleteAvatar(principal.getUser().getId());
+        AvatarUrlSummary avatarUrl = userService.deleteAvatar(
+                principal.getUser().getId());
         return ResponseEntity.ok(avatarUrl);
     }
 

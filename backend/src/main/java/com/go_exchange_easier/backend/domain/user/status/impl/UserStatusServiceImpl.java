@@ -1,11 +1,13 @@
-package com.go_exchange_easier.backend.domain.user.status;
+package com.go_exchange_easier.backend.domain.user.status.impl;
 
-import com.go_exchange_easier.backend.domain.user.dto.UserStatusSummary;
+import com.go_exchange_easier.backend.domain.user.status.UserStatus;
+import com.go_exchange_easier.backend.domain.user.status.UserStatusRepository;
+import com.go_exchange_easier.backend.domain.user.status.UserStatusService;
+import com.go_exchange_easier.backend.domain.user.status.UserStatusSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service

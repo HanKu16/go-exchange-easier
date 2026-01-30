@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.user.dto;
+package com.go_exchange_easier.backend.domain.user.status;
 
 import java.io.Serializable;
 

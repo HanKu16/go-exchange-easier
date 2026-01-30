@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.domain.user.dto;
+package com.go_exchange_easier.backend.domain.user.avatar;
 
 public record AvatarKeys(
 

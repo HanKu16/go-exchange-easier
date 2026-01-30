@@ -1,10 +1,9 @@
-package com.go_exchange_easier.backend.domain.user.dto;
+package com.go_exchange_easier.backend.domain.user.description;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Schema(description = "Request body for user description update")
 public record UpdateUserDescriptionRequest(
 
         @NotNull(message = "Description can not be null.")
