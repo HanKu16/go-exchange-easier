@@ -1,8 +1,8 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.university.review;
 
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewDetails;
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewCountSummary;
-import com.go_exchange_easier.backend.domain.university.dto.CreateUniversityReviewRequest;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewDetails;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewCountSummary;
+import com.go_exchange_easier.backend.domain.university.review.dto.CreateUniversityReviewRequest;
 import java.util.List;
 
 public interface UniversityReviewService {
@@ -11,7 +11,7 @@ public interface UniversityReviewService {
     List<UniversityReviewDetails> getByUniversityId(int universityId,
             int currentUserId, int page, int size);
     UniversityReviewDetails create(int userId, CreateUniversityReviewRequest request);
-    void delete(int reviewId);
+    void delete(int reviewId, int userId);
     UniversityReviewCountSummary countByUniversityId(int universityId);
 
 }

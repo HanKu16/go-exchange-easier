@@ -1,12 +1,10 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.university.review.impl;
 
-import com.go_exchange_easier.backend.domain.university.annotations.review.AddReactionApiDocs;
-import com.go_exchange_easier.backend.domain.university.annotations.review.CreateApiDocs;
-import com.go_exchange_easier.backend.domain.university.annotations.review.DeleteApiDocs;
-import com.go_exchange_easier.backend.domain.university.annotations.review.DeleteReactionApiDocs;
-import com.go_exchange_easier.backend.domain.university.dto.*;
-import com.go_exchange_easier.backend.domain.auth.UserCredentials;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewApi;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewReactionService;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewService;
+import com.go_exchange_easier.backend.domain.university.review.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/universityReviews")
 @RequiredArgsConstructor
-@Tag(name = "University Review", description = "Operations related to university review.")
-public class UniversityReviewController {
+public class UniversityReviewController implements UniversityReviewApi {
 
     private final UniversityReviewService universityReviewService;
     private final UniversityReviewReactionService reviewReactionService;
 
-    @PostMapping
-    @CreateApiDocs
+    @Override
     public ResponseEntity<UniversityReviewDetails> create(
             @RequestBody @Valid CreateUniversityReviewRequest request,
             @AuthenticationPrincipal UserCredentials principal) {
@@ -34,16 +29,15 @@ public class UniversityReviewController {
                 .body(review);
     }
 
-    @DeleteMapping("/{reviewId}")
-    @DeleteApiDocs
+    @Override
     public ResponseEntity<Void> delete(
-            @PathVariable Integer reviewId) {
-        universityReviewService.delete(reviewId);
+            @PathVariable Integer reviewId,
+            @AuthenticationPrincipal UserCredentials principal) {
+        universityReviewService.delete(reviewId, principal.getUser().getId());
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{reviewId}/reaction")
-    @AddReactionApiDocs
+    @Override
     public ResponseEntity<AddUniversityReviewReactionResponse> addReaction(
             @PathVariable Integer reviewId,
             @RequestBody @Valid AddUniversityReviewReactionRequest request,
@@ -53,8 +47,7 @@ public class UniversityReviewController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{reviewId}/reaction")
-    @DeleteReactionApiDocs
+    @Override
     public ResponseEntity<DeleteUniversityReviewReactionResponse> deleteReaction(
             @PathVariable Integer reviewId,
             @AuthenticationPrincipal UserCredentials principal) {

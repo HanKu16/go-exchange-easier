@@ -1,6 +1,12 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.university.review.impl;
 
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.domain.reaction.ReactionType;
+import com.go_exchange_easier.backend.domain.reaction.ReactionTypeRepository;
+import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReview;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewReactionCountRepository;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewReactionCountService;
+import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReviewReactionCount;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

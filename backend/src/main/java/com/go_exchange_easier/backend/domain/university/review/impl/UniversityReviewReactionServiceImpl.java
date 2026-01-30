@@ -1,11 +1,20 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.university.review.impl;
 
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.domain.reaction.ReactionType;
+import com.go_exchange_easier.backend.domain.reaction.ReactionTypeRepository;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewReactionCountService;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewReactionRepository;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewReactionService;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewRepository;
+import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReview;
+import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReviewReaction;
 import com.go_exchange_easier.backend.domain.user.User;
 import com.go_exchange_easier.backend.domain.user.UserRepository;
-import com.go_exchange_easier.backend.domain.university.dto.AddUniversityReviewReactionRequest;
-import com.go_exchange_easier.backend.domain.university.dto.AddUniversityReviewReactionResponse;
-import com.go_exchange_easier.backend.domain.university.dto.DeleteUniversityReviewReactionResponse;
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.domain.university.review.dto.AddUniversityReviewReactionRequest;
+import com.go_exchange_easier.backend.domain.university.review.dto.AddUniversityReviewReactionResponse;
+import com.go_exchange_easier.backend.domain.university.review.dto.DeleteUniversityReviewReactionResponse;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetail;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +67,7 @@ public class UniversityReviewReactionServiceImpl implements UniversityReviewReac
     public DeleteUniversityReviewReactionResponse delete(int userId, int reviewId) {
         UniversityReviewReaction reaction = reactionRepository
                 .findByAuthorIdAndReviewId(userId, reviewId)
-                .orElseThrow(() -> new UniversityReviewReactionNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "University review reaction where user id " + userId +
                                 " and review id " + reviewId + " was not found."));
         short reactionTypeId = reaction.getReactionType().getId();

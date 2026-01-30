@@ -1,7 +1,8 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.university.review;
 
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewReactionDetail;
-
+import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReview;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReviewReactionCount;
 import java.util.List;
 
 public interface UniversityReviewReactionCountService {

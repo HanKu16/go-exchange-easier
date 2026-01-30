@@ -1,21 +1,28 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.university.review.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.go_exchange_easier.backend.domain.university.dto.ReactionDetails;
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewDetails;
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewCountSummary;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.domain.reaction.ReactionType;
+import com.go_exchange_easier.backend.domain.reaction.ReactionTypeRepository;
+import com.go_exchange_easier.backend.domain.university.*;
+import com.go_exchange_easier.backend.domain.reaction.ReactionDetails;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewDetails;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewCountSummary;
 import com.go_exchange_easier.backend.domain.university.dto.UniversitySummary;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewReactionCountService;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewRepository;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewService;
+import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReview;
 import com.go_exchange_easier.backend.domain.user.UserRepository;
 import com.go_exchange_easier.backend.domain.user.dto.UserWithAvatarSummary;
-import com.go_exchange_easier.backend.domain.university.dto.CreateUniversityReviewRequest;
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewReactionDetail;
+import com.go_exchange_easier.backend.domain.university.review.dto.CreateUniversityReviewRequest;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetail;
 import com.go_exchange_easier.backend.common.exception.JsonParsingException;
 import com.go_exchange_easier.backend.common.exception.NotOwnerOfResourceException;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.domain.user.User;
 import com.go_exchange_easier.backend.domain.user.avatar.AvatarService;
-import com.go_exchange_easier.backend.service.ResourceOwnershipChecker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +38,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     private final UniversityReviewReactionCountService reactionCountService;
     private final UniversityReviewRepository universityReviewRepository;
     private final ReactionTypeRepository reactionTypeRepository;
-    private final ResourceOwnershipChecker resourceOwnershipChecker;
     private final UniversityRepository universityRepository;
     private final UserRepository userRepository;
     private final AvatarService avatarService;
@@ -142,11 +148,11 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     @Override
     @Transactional
-    public void delete(int reviewId) {
+    public void delete(int reviewId, int userId) {
         UniversityReview review = universityReviewRepository.findById(reviewId)
-                .orElseThrow(() -> new UniversityReviewReactionNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "University " + "review of id " + reviewId + " was not found."));
-        if (!resourceOwnershipChecker.isOwner(review)) {
+        if (!review.getAuthor().getId().equals(userId)) {
             throw new NotOwnerOfResourceException("Authenticated user is not " +
                     "entitled to delete university review of id " + reviewId + ".");
         }

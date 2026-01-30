@@ -1,5 +1,6 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.university.review.entity;
 
+import com.go_exchange_easier.backend.domain.reaction.ReactionType;
 import jakarta.persistence.*;
 import lombok.*;
 
