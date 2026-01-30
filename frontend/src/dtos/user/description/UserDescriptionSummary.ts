@@ -1,5 +1,5 @@
-export type UpdateUserDescriptionResponse = {
+export type UserDescriptionSummary = {
   userId: number;
   description: string;
   updatedAt: string;
-}
+};

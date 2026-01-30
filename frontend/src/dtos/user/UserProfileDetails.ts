@@ -1,4 +1,4 @@
-export type GetUserProfileResponse = {
+export type UserProfileDetails = {
   userId: number;
   nick: string;
   avatarUrl?: string;
