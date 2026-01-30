@@ -1,9 +1,13 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.university.impl;
 
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.domain.university.University;
+import com.go_exchange_easier.backend.domain.university.UniversityRepository;
+import com.go_exchange_easier.backend.domain.university.UniversityService;
+import com.go_exchange_easier.backend.domain.university.UniversitySpecification;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityFilters;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityProfile;
-import com.go_exchange_easier.backend.domain.university.specification.UniversitySpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +30,7 @@ public class UniversityServiceImpl implements UniversityService {
         List<Object[]> rows = universityRepository.findProfileById(
                 universityId, currentUserId);
         if (rows.isEmpty()) {
-            throw new UniversityNotFoundException("University of id " +
+            throw new ResourceNotFoundException("University of id " +
                     universityId + " was not found.");
         }
         Object[] row = rows.getFirst();

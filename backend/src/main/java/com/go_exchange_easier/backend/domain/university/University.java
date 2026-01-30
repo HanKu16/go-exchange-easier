@@ -1,8 +1,9 @@
 package com.go_exchange_easier.backend.domain.university;
 
 import com.go_exchange_easier.backend.domain.exchange.Exchange;
+import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReview;
 import com.go_exchange_easier.backend.domain.user.User;
-import com.go_exchange_easier.backend.domain.location.City;
+import com.go_exchange_easier.backend.domain.location.city.City;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;

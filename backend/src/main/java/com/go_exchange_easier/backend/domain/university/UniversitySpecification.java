@@ -1,9 +1,8 @@
-package com.go_exchange_easier.backend.domain.university.specification;
+package com.go_exchange_easier.backend.domain.university;
 
 import com.go_exchange_easier.backend.common.jpa.SpecificationUtils;
-import com.go_exchange_easier.backend.domain.location.City;
-import com.go_exchange_easier.backend.domain.location.Country;
-import com.go_exchange_easier.backend.domain.university.University;
+import com.go_exchange_easier.backend.domain.location.city.City;
+import com.go_exchange_easier.backend.domain.location.country.Country;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityFilters;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;

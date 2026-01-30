@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.domain.university.dto;
 
-import com.go_exchange_easier.backend.domain.location.dto.CityDetails;
+import com.go_exchange_easier.backend.domain.location.city.CityDetails;
 import com.go_exchange_easier.backend.domain.university.University;
 
 public record UniversityDetails(

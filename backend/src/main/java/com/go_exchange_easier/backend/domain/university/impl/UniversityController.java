@@ -1,17 +1,15 @@
-package com.go_exchange_easier.backend.domain.university;
+package com.go_exchange_easier.backend.domain.university.impl;
 
-import com.go_exchange_easier.backend.domain.university.annotations.GetPageApiDocs;
-import com.go_exchange_easier.backend.domain.university.annotations.GetCountApiDocs;
-import com.go_exchange_easier.backend.domain.university.annotations.GetProfileApiDocs;
-import com.go_exchange_easier.backend.domain.university.annotations.GetReviewsApiDocs;
 import com.go_exchange_easier.backend.common.dto.Listing;
+import com.go_exchange_easier.backend.domain.university.UniversityApi;
+import com.go_exchange_easier.backend.domain.university.UniversityService;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityDetails;
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewDetails;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewDetails;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityFilters;
-import com.go_exchange_easier.backend.domain.university.dto.UniversityReviewCountSummary;
+import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewCountSummary;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityProfile;
-import com.go_exchange_easier.backend.domain.auth.UserCredentials;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.university.review.UniversityReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -24,16 +22,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/api/universities")
 @RequiredArgsConstructor
-@Tag(name = "University", description = "Operations related to universities.")
-public class UniversityController {
+public class UniversityController implements UniversityApi {
 
     private final UniversityReviewService universityReviewService;
     private final UniversityService universityService;
 
-    @GetMapping
-    @GetPageApiDocs
+    @Override
     public ResponseEntity<Page<UniversityDetails>> getPage(
             @ParameterObject @ModelAttribute UniversityFilters filters,
             @ParameterObject Pageable pageable) {
@@ -44,8 +39,7 @@ public class UniversityController {
                 .body(page);
     }
 
-    @GetMapping("/{universityId}/profile")
-    @GetProfileApiDocs
+    @Override
     public ResponseEntity<UniversityProfile> getProfile(
             @PathVariable Integer universityId,
             @AuthenticationPrincipal UserCredentials principal) {
@@ -54,8 +48,7 @@ public class UniversityController {
         return ResponseEntity.ok(profile);
     }
 
-    @GetMapping("/{universityId}/reviews")
-    @GetReviewsApiDocs
+    @Override
     public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
             @PathVariable Integer universityId,
             @AuthenticationPrincipal UserCredentials principal,
@@ -66,8 +59,7 @@ public class UniversityController {
         return ResponseEntity.ok(Listing.of(reviews));
     }
 
-    @GetMapping("/{universityId}/reviews/count")
-    @GetCountApiDocs
+    @Override
     public ResponseEntity<UniversityReviewCountSummary> getCount(
             @PathVariable Integer universityId) {
         UniversityReviewCountSummary reviewCount = universityReviewService
