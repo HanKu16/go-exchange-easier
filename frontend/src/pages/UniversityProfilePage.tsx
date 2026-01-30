@@ -550,21 +550,14 @@ const FeedPanel = (props: FeedPanelProps) => {
   }, []);
 
   useEffect(() => {
-    if (currentPageNumber !== 1 || wasAddedOnFirstPage) {
-      setReviewsFetchStatus("loading");
-      getReviews(currentPageNumber - 1);
-      setWasAddedOnFirstPage(false);
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  }, [currentPageNumber, wasAddedOnFirstPage]);
-
-  useEffect(() => {
     setReviewsFetchStatus("loading");
     getReviews(currentPageNumber - 1);
-  }, []);
+    setWasAddedOnFirstPage(false);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [currentPageNumber, wasAddedOnFirstPage]);
 
   return (
     <Box
