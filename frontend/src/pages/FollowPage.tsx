@@ -24,11 +24,13 @@ import {
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import { useNavigate } from "react-router-dom";
 import {
-  sendFollowUniversityRequest,
   sendFollowUserRequest,
-  sendUnfollowUniversityRequest,
   sendUnfollowUserRequest,
-} from "../utils/follow";
+} from "../utils/api/user-follow";
+import {
+  sendFollowUniversityRequest,
+  sendUnfollowUniversityRequest,
+} from "../utils/api/university-follow";
 import { useSnackbar } from "../context/SnackBarContext";
 import { useSignedInUser } from "../context/SignedInUserContext";
 import { useApplicationState } from "../context/ApplicationStateContext";

@@ -1,11 +1,11 @@
-import type { LoginRequest } from "../dtos/auth/LoginRequest";
-import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-import type { ResponseFailureResult } from "../types/ResponseFailureResult";
-import { sendRequestWithoutRefresh } from "./send-request";
-import type { UserRegistrationRequest } from "../dtos/auth/UserRegistrationRequest";
-import type { RegistrationSummary } from "../dtos/auth/RegistratationSummary";
-import { getDeviceId } from "./device";
-import type { SignedInUserSummary } from "../dtos/auth/SignedInUserSummary";
+import type { LoginRequest } from "../../dtos/auth/LoginRequest";
+import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
+import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
+import { sendRequestWithoutRefresh } from "../send-request";
+import type { UserRegistrationRequest } from "../../dtos/auth/UserRegistrationRequest";
+import type { RegistrationSummary } from "../../dtos/auth/RegistratationSummary";
+import { getDeviceId } from "../device";
+import type { SignedInUserSummary } from "../../dtos/auth/SignedInUserSummary";
 
 export const sendLoginRequest = async (
   body: LoginRequest,

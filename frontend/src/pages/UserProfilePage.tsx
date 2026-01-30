@@ -17,12 +17,12 @@ import {
   sendGetUserReviewsRequest,
 } from "../utils/user";
 import { useEffect, useState } from "react";
-import type { GetUserProfileResponse } from "../dtos/user/GetUserProfileResponse";
+import type { UserProfileDetails } from "../dtos/user/UserProfileDetails";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   sendFollowUserRequest,
   sendUnfollowUserRequest,
-} from "../utils/follow";
+} from "../utils/api/user-follow";
 import { getLocalDate } from "../utils/date-utils";
 import NoContent from "../components/NoContent";
 import AddIcon from "@mui/icons-material/Add";
@@ -35,7 +35,7 @@ import type { DataFetchStatus } from "../types/DataFetchStatus";
 import ContentLoadError from "../components/ContentLoadError";
 import LoadingContent from "../components/LoadingContent";
 import { useSnackbar } from "../context/SnackBarContext";
-import { sendGetExchangesRequest } from "../utils/exchange";
+import { sendGetExchangesRequest } from "../utils/api/exchange";
 import { useSignedInUser } from "../context/SignedInUserContext";
 import { useApplicationState } from "../context/ApplicationStateContext";
 
@@ -642,7 +642,7 @@ const UserProfilePage = () => {
     }
     const result = await sendGetUserProfileRequest(userId);
     if (result.isSuccess) {
-      const data: GetUserProfileResponse = result.data;
+      const data: UserProfileDetails = result.data;
       const universityName = data.homeUniversity
         ? data.homeUniversity.englishName
           ? data.homeUniversity.englishName

@@ -14,7 +14,7 @@ import basicAvatar from "../assets/examples/basic-avatar.png";
 import { useTheme, useMediaQuery } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSignedInUser } from "../context/SignedInUserContext";
-import { sendLogoutRequest } from "../utils/auth";
+import { sendLogoutRequest } from "../utils/api/auth";
 import { useSnackbar } from "../context/SnackBarContext";
 import { useApplicationState } from "../context/ApplicationStateContext";
 

@@ -4,8 +4,8 @@ import type { ReactElement } from "react";
 import { InputLabel, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
 import { FormControl, Button } from "@mui/material";
 import { FormControlLabel } from "@mui/material";
-import { sendGetUniversityMajorsRequest } from "../utils/university-major";
-import type { UniversityMajorSummary } from "../dtos/summary/UniversityMajorSummary";
+import { sendGetFieldsOfStudiesRequest } from "../utils/api/field-of-study";
+import type { FieldOfStudySummary } from "../dtos/field-of-study/FieldOfStudySummary";
 import type { UniversityNameLanguage } from "../types/UniversityNameLanguage";
 import type { University } from "../types/University";
 import type { Country } from "../types/Country";
@@ -15,16 +15,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type { Dayjs } from "dayjs";
 import type { CreateExchangeRequest } from "../dtos/exchange/CreateExchangeRequest";
-import { sendCreateExchangeRequest } from "../utils/exchange";
+import { sendCreateExchangeRequest } from "../utils/api/exchange";
 import { getGlobalErrorCodes } from "../utils/error";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
 import { useSnackbar } from "../context/SnackBarContext";
-import { sendGetUniversitiesRequest } from "../utils/university";
-import { sendGetCountriesRequest } from "../utils/country";
+import { sendGetUniversitiesRequest } from "../utils/api/university";
+import { sendGetCountriesRequest } from "../utils/api/country";
 
-type Major = UniversityMajorSummary;
+type Major = FieldOfStudySummary;
 
 type AddExchangeStage =
   | "Choose university"
@@ -50,7 +50,7 @@ type ChooseTimeRangeSubpanel = {
 
 const ChooseUniversitySubpanel = (props: ChooseUniversitySubpanelProps) => {
   const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
-    null
+    null,
   );
   const [selectedUniversityNameLanguage, setSelectedUniversityNameLanguage] =
     useState<UniversityNameLanguage>("english");
@@ -96,7 +96,7 @@ const ChooseUniversitySubpanel = (props: ChooseUniversitySubpanelProps) => {
       selectedCountryId,
       0,
       1000,
-      "englishName,asc"
+      "englishName,asc",
     );
     if (result.isSuccess) {
       setUniversities(result.data.content);
@@ -218,7 +218,7 @@ const ChooseUniversitySubpanel = (props: ChooseUniversitySubpanelProps) => {
                           style={{ height: "0.8rem", marginLeft: 3 }}
                         />
                       </MenuItem>
-                    ) : null
+                    ) : null,
                   )}
                 </Select>
               </FormControl>
@@ -233,7 +233,7 @@ const ChooseUniversitySubpanel = (props: ChooseUniversitySubpanelProps) => {
                   value={selectedUniversityNameLanguage}
                   onChange={() =>
                     setSelectedUniversityNameLanguage((prevState) =>
-                      prevState === "english" ? "native" : "english"
+                      prevState === "english" ? "native" : "english",
                     )
                   }
                 >
@@ -309,7 +309,7 @@ const ChooseMajorSubpanel = (props: ChooseMajorSubpanelProps) => {
   };
 
   const getMajors = async () => {
-    const result = await sendGetUniversityMajorsRequest();
+    const result = await sendGetFieldsOfStudiesRequest();
     if (result.isSuccess) {
       const majors = result.data;
       setMajors(majors.content);
@@ -482,7 +482,7 @@ const AddExchangePanel = () => {
     number | undefined
   >(undefined);
   const [selectedMajorId, setSelectedMajorId] = useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const getStagePanel = () => {

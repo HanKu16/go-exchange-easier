@@ -11,7 +11,7 @@ import {
   sendGetReviewsCountRequest,
   sendGetUniversityProfileRequest,
   sendGetUniversityReviewsRequest,
-} from "../utils/university";
+} from "../utils/api/university";
 import { Container } from "@mui/material";
 import Link from "@mui/material/Link";
 import { Pagination } from "@mui/material";
@@ -22,8 +22,8 @@ import UniversityReview from "../components/UniversityReview";
 import {
   sendFollowUniversityRequest,
   sendUnfollowUniversityRequest,
-} from "../utils/follow";
-import { sendCreateReviewRequest } from "../utils/review";
+} from "../utils/api/university-follow";
+import { sendCreateReviewRequest } from "../utils/api/university-review";
 import { TextField, Rating, Stack } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import StarIcon from "@mui/icons-material/Star";
@@ -33,7 +33,7 @@ import { type DataFetchStatus } from "../types/DataFetchStatus";
 import { isInteger } from "../utils/number-utils";
 import NotFoundPage from "./NotFoundPage";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
-import type { GetUniversityProfileResponse } from "../dtos/university/GetUniversityProfileResponse";
+import type { UniversityProfile } from "../dtos/university/UniversityProfile";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
 import { useSignedInUser } from "../context/SignedInUserContext";
@@ -642,7 +642,7 @@ const UniversityProfilePage = () => {
   const getProfile = async () => {
     const result = await sendGetUniversityProfileRequest(universityId);
     if (result.isSuccess) {
-      const data: GetUniversityProfileResponse = result.data;
+      const data: UniversityProfile = result.data;
       const universityDataPanelProps: UniversityDataPanelProps = {
         userId: signedInUser.id,
         university: {

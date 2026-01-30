@@ -13,13 +13,13 @@ import { useSnackbar } from "../context/SnackBarContext";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
-import { sendGetUniversitiesRequest } from "../utils/university";
-import { sendGetCountriesRequest } from "../utils/country";
+import { sendGetUniversitiesRequest } from "../utils/api/university";
+import { sendGetCountriesRequest } from "../utils/api/country";
 
 const AssignHomeUniversityPanel = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
-    null
+    null,
   );
   const [selectedUniversityId, setSelectedUniversityId] = useState<
     number | null
@@ -69,7 +69,7 @@ const AssignHomeUniversityPanel = () => {
       selectedCountryId,
       0,
       1000,
-      "englishName,asc"
+      "englishName,asc",
     );
     if (result.isSuccess) {
       setUniversities(result.data.content);
@@ -90,7 +90,7 @@ const AssignHomeUniversityPanel = () => {
     } else {
       showAlert(
         "Assigning user to university failed. Please try again later.",
-        "error"
+        "error",
       );
       setShowConfirmButton(true);
     }
@@ -208,7 +208,7 @@ const AssignHomeUniversityPanel = () => {
                           style={{ height: "0.8rem", marginLeft: 3 }}
                         />
                       </MenuItem>
-                    ) : null
+                    ) : null,
                   )}
                 </Select>
               </FormControl>
@@ -223,7 +223,7 @@ const AssignHomeUniversityPanel = () => {
                   value={selectedUniversityNameLanguage}
                   onChange={() =>
                     setSelectedUniversityNameLanguage((prevState) =>
-                      prevState === "english" ? "native" : "english"
+                      prevState === "english" ? "native" : "english",
                     )
                   }
                 >

@@ -27,24 +27,23 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 import SearchIcon from "@mui/icons-material/Search";
-
 import type { Country } from "../types/Country";
-import { sendGetCountriesRequest } from "../utils/country";
-import { sendGetUniversityMajorsRequest } from "../utils/university-major";
-import type { UniversityMajorSummary } from "../dtos/summary/UniversityMajorSummary";
+import { sendGetCountriesRequest } from "../utils/api/country";
+import { sendGetFieldsOfStudiesRequest } from "../utils/api/field-of-study";
+import type { FieldOfStudySummary } from "../dtos/field-of-study/FieldOfStudySummary";
 import type { City } from "../types/City";
-import { sendGetCitiesRequest } from "../utils/city";
-import { sendGetUniversitiesRequest } from "../utils/university";
-import type { UniversityDetails } from "../dtos/details/UniversityDetails";
+import { sendGetCitiesRequest } from "../utils/api/city";
+import { sendGetUniversitiesRequest } from "../utils/api/university";
+import type { UniversityDetails } from "../dtos/university/UniversityDetails";
 import SearchResultTable from "../components/SearchResult";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
 import ContentEmpty from "../components/ContentEmpty";
 import { sendGetUsersRequest } from "../utils/user";
-import { type UserDetails } from "../dtos/details/UserDetails";
-import { sendGetExchangesRequest } from "../utils/exchange";
-import type { ExchangeDetails } from "../dtos/details/ExchangeDetails";
+import { type UserDetails } from "../dtos/user/UserDetails";
+import { sendGetExchangesRequest } from "../utils/api/exchange";
+import type { ExchangeDetails } from "../dtos/exchange/ExchangeDetails";
 import { useSnackbar } from "../context/SnackBarContext";
 
 type SearchEntity = "user" | "university";
@@ -66,7 +65,7 @@ type UniversityFilterState = {
   cityId: number | null;
 };
 
-type Major = UniversityMajorSummary;
+type Major = FieldOfStudySummary;
 
 const PageHeaders = () => (
   <>
@@ -144,7 +143,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
   const { showAlert } = useSnackbar();
 
   const getMajors = async () => {
-    const result = await sendGetUniversityMajorsRequest();
+    const result = await sendGetFieldsOfStudiesRequest();
     if (result.isSuccess) {
       setMajors(result.data.content);
       setShowMajorsDropdown(true);
@@ -171,7 +170,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
       null,
       0,
       100,
-      "englishName,asc"
+      "englishName,asc",
     );
     if (result.isSuccess) {
       setUniversities(result.data.content);
@@ -388,7 +387,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
               value={selectedMinYear ?? ""}
               onChange={(e) =>
                 setSelectedMinYear(
-                  e.target.value ? Number(e.target.value) : null
+                  e.target.value ? Number(e.target.value) : null,
                 )
               }
               sx={{ width: "50%" }}
@@ -399,7 +398,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
               value={selectedMaxYear ?? ""}
               onChange={(e) =>
                 setSelectedMaxYear(
-                  e.target.value ? Number(e.target.value) : null
+                  e.target.value ? Number(e.target.value) : null,
                 )
               }
               sx={{ width: "50%" }}
@@ -598,11 +597,11 @@ const UserSearchSection = (props: SearchSectionProps) => {
   const [users, setUsers] = useState<UserDetails[] | null>(null);
   const [exchanges, setExchanges] = useState<ExchangeDetails[]>([]);
   const [totalPagesCount, setTotalPagesCount] = useState<number | undefined>(
-    undefined
+    undefined,
   );
   const previousPage = useRef(props.currentPage);
   const [fetchStatus, setFetchStatus] = useState<SearchResultFetchStatus>(
-    "fetchingWasNotStarted"
+    "fetchingWasNotStarted",
   );
 
   const handleModeChange = (e: SelectChangeEvent) => {
@@ -616,7 +615,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
       const result = await sendGetUsersRequest(
         searchNick,
         props.currentPage,
-        props.pageSize
+        props.pageSize,
       );
       if (result.isSuccess) {
         setFetchStatus("success");
@@ -644,7 +643,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
         userFilters.majorId,
         userFilters.minYear === null ? null : `${userFilters.minYear}-01-01`,
         userFilters.maxYear === null ? null : `${userFilters.maxYear}-12-31`,
-        null
+        null,
       );
       if (result.isSuccess) {
         setFetchStatus("success");
@@ -933,7 +932,7 @@ type SearchResultFetchStatus = DataFetchStatus | "fetchingWasNotStarted";
 const UniversitySearchSection = (props: SearchSectionProps) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [uniNameType, setUniNameType] = useState<"english" | "native">(
-    "english"
+    "english",
   );
   const [searchName, setSearchName] = useState("");
   const [universities, setUniversities] = useState<UniversityDetails[]>([]);
@@ -946,7 +945,7 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
   const [universitiesFetchStatus, setUniversitiesFetchStatus] =
     useState<SearchResultFetchStatus>("fetchingWasNotStarted");
   const [totalPagesCount, setTotalPagesCount] = useState<number | undefined>(
-    undefined
+    undefined,
   );
   const previousPage = useRef(props.currentPage);
 
@@ -959,7 +958,7 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
       uniFilters.countryId,
       props.currentPage,
       props.pageSize,
-      "englishName,asc"
+      "englishName,asc",
     );
     if (result.isSuccess) {
       setUniversities(result.data.content);

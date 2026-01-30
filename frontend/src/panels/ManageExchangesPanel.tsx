@@ -20,7 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   sendDeleteExchangeRequest,
   sendGetExchangesRequest,
-} from "../utils/exchange";
+} from "../utils/api/exchange";
 import type { AlertMessage } from "../types/AlertMessage";
 import { useSnackbar } from "../context/SnackBarContext";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
@@ -208,7 +208,7 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
     useState<ActionExchangeTableProps | null>(null);
   const [message, setMessage] = useState<AlertMessage | null>(null);
   const [deletedExchangeId, setDeletedExchangeId] = useState<number | null>(
-    null
+    null,
   );
   const [exchangesFetchStatus, setExchangesFetchStatus] =
     useState<DataFetchStatus>(exchangesProps != null ? "success" : "loading");
@@ -227,7 +227,7 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
       null,
       null,
       null,
-      Number(props.userId)
+      Number(props.userId),
     );
     if (result.isSuccess) {
       const props: ActionExchangeTableProps = {
@@ -273,7 +273,7 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
     } else {
       setExchangesProps({
         exchanges: exchangesProps.exchanges.filter(
-          (e) => e.id !== deletedExchangeId
+          (e) => e.id !== deletedExchangeId,
         ),
         message: message,
         setMessage: setMessage,

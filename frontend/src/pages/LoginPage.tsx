@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { LoginRequest } from "../dtos/auth/LoginRequest";
-import { sendLoginRequest } from "../utils/auth";
+import { sendLoginRequest } from "../utils/api/auth";
 import { useNavigate } from "react-router-dom";
 import { useSignedInUser } from "../context/SignedInUserContext";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";

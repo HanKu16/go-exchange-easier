@@ -1,7 +1,7 @@
 import type { ApiErrorResponse } from "../dtos/error/ApiErrorResponse";
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { ResponseFailureResult } from "../types/ResponseFailureResult";
-import { sendRefreshRequest } from "./auth";
+import { sendRefreshRequest } from "./api/auth";
 import { getDeviceId, getReadableDeviceName } from "./device";
 
 export async function sendRequest<ResponseSuccessBody>(

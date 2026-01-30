@@ -1,9 +1,9 @@
-import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-import type { ResponseFailureResult } from "../types/ResponseFailureResult";
-import { sendRequest } from "./send-request";
-import type { CreateExchangeRequest } from "../dtos/exchange/CreateExchangeRequest";
-import type { ExchangeDetails } from "../dtos/exchange/ExchangeDetails";
-import type { PageResponse } from "../dtos/common/PageResponse";
+import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
+import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
+import { sendRequest } from "../send-request";
+import type { CreateExchangeRequest } from "../../dtos/exchange/CreateExchangeRequest";
+import type { ExchangeDetails } from "../../dtos/exchange/ExchangeDetails";
+import type { PageResponse } from "../../dtos/common/PageResponse";
 
 export const sendGetExchangesRequest = async (
   page: number,

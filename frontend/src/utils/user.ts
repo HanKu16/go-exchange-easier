@@ -1,34 +1,33 @@
-import type { GetUserProfileResponse } from "../dtos/user/GetUserProfileResponse";
+import type { UserProfileDetails } from "../dtos/user/UserProfileDetails";
 import { sendRequest } from "./send-request";
 import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
 import type { ResponseFailureResult } from "../types/ResponseFailureResult";
-import type { GetUserExchangeResponse } from "../dtos/user/GetUserExchangeResponse";
-import type { UpdateUserDescriptionRequest } from "../dtos/user/UpdateUserDescriptionRequest";
-import type { UpdateUserDescriptionResponse } from "../dtos/user/UpdateUserDescriptionResponse";
+import type { UpdateUserDescriptionRequest } from "../dtos/user/description/UpdateUserDescriptionRequest";
+import type { UserDescriptionSummary } from "../dtos/user/description/UserDescriptionSummary";
 import type { AssignHomeUniversityRequest } from "../dtos/user/AssignHomeUniversityRequest";
-import type { AssignHomeUniversityResponse } from "../dtos/user/AssignHomeUniversityResponse";
-import type { UpdateUserStatusRequest } from "../dtos/user/UpdateUserStatusRequest";
-import type { UpdateUserStatusResponse } from "../dtos/user/UpdateUserStatusResponse";
+import type { UpdateUserStatusRequest } from "../dtos/user/status/UpdateUserStatusRequest";
 import type { AssignCountryOfOriginRequest } from "../dtos/user/AssignCountryOfOriginRequest";
-import type { AssignCountryOfOriginResponse } from "../dtos/user/AssignCountryOfOriginResponse";
-import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
+import type { UniversityReviewDetails } from "../dtos/university/review/UniversityReviewDetails";
 import type { Listing } from "../dtos/common/Listing";
 import type { PageResponse } from "../dtos/common/PageResponse";
-import type { UserDetails } from "../dtos/details/UserDetails";
-import type { UniversityDetails } from "../dtos/details/UniversityDetails";
-import type { AvatarUrlSummary } from "../dtos/summary/AvatarUrlSummary";
-import type { UserWithAvatarSummary } from "../dtos/summary/UserWithAvatarSummary";
+import type { UserDetails } from "../dtos/user/UserDetails";
+import type { UniversityDetails } from "../dtos/university/UniversityDetails";
+import type { AvatarUrlSummary } from "../dtos/user/avatar/AvatarUrlSummary";
+import type { UserWithAvatarSummary } from "../dtos/user/UserWithAvatarSummary";
+import type { UserStatusSummary } from "../dtos/user/status/UserStatusSummary";
+import type { CountryDetails } from "../dtos/location/CountryDetails";
+import type { UniversitySummary } from "../dtos/university/UniversitySummary";
 
 export const sendGetUserProfileRequest = async (
   userId: number | string,
 ): Promise<
-  ResponseSuccessResult<GetUserProfileResponse> | ResponseFailureResult
+  ResponseSuccessResult<UserProfileDetails> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/${userId}/profile`;
   const request: RequestInit = {
     method: "GET",
   };
-  return await sendRequest<GetUserProfileResponse>(uri, request);
+  return await sendRequest<UserProfileDetails>(uri, request);
 };
 
 export const sendGetUserReviewsRequest = async (
@@ -44,76 +43,54 @@ export const sendGetUserReviewsRequest = async (
   return await sendRequest<Listing<UniversityReviewDetails>>(uri, request);
 };
 
-export const sendGetUserExchangesRequest = async (
-  userId: number | string,
-): Promise<
-  ResponseSuccessResult<GetUserExchangeResponse[]> | ResponseFailureResult
-> => {
-  const uri: string = `/api/users/${userId}/exchanges`;
-  const request: RequestInit = {
-    method: "GET",
-  };
-  return await sendRequest<GetUserExchangeResponse[]>(uri, request);
-};
-
 export const sendUpdateDescriptionRequest = async (
   body: UpdateUserDescriptionRequest,
 ): Promise<
-  ResponseSuccessResult<UpdateUserDescriptionResponse> | ResponseFailureResult
+  ResponseSuccessResult<UserDescriptionSummary> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/description`;
   const request: RequestInit = {
     method: "PATCH",
     body: JSON.stringify(body),
   };
-  return await sendRequest<UpdateUserDescriptionResponse>(uri, request);
+  return await sendRequest<UserDescriptionSummary>(uri, request);
 };
 
 export const sendAssignHomeUniversityRequest = async (
   body: AssignHomeUniversityRequest,
 ): Promise<
-  ResponseSuccessResult<AssignHomeUniversityResponse> | ResponseFailureResult
+  ResponseSuccessResult<UniversitySummary> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/homeUniversity`;
   const request: RequestInit = {
     method: "PATCH",
     body: JSON.stringify(body),
   };
-  return await sendRequest<AssignHomeUniversityResponse>(uri, request);
+  return await sendRequest<UniversitySummary>(uri, request);
 };
 
 export const sendUpdateStatusRequest = async (
   body: UpdateUserStatusRequest,
 ): Promise<
-  ResponseSuccessResult<UpdateUserStatusResponse> | ResponseFailureResult
+  ResponseSuccessResult<UserStatusSummary> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/status`;
   const request: RequestInit = {
     method: "PATCH",
     body: JSON.stringify(body),
   };
-  return await sendRequest<UpdateUserStatusResponse>(uri, request);
+  return await sendRequest<UserStatusSummary>(uri, request);
 };
 
 export const sendAssignCountryOfOriginRequest = async (
   body: AssignCountryOfOriginRequest,
-): Promise<
-  ResponseSuccessResult<AssignCountryOfOriginResponse> | ResponseFailureResult
-> => {
+): Promise<ResponseSuccessResult<CountryDetails> | ResponseFailureResult> => {
   const uri: string = `/api/users/countryOfOrigin`;
   const request: RequestInit = {
     method: "PATCH",
     body: JSON.stringify(body),
   };
-  return await sendRequest<AssignCountryOfOriginResponse>(uri, request);
-};
-
-export const getSignedInUserJwtToken = (): string => {
-  const token: string | null = localStorage.getItem("jwtToken");
-  if (token === null) {
-    throw new Error("Did not found jwt token");
-  }
-  return token;
+  return await sendRequest<CountryDetails>(uri, request);
 };
 
 export const sendGetUsersRequest = async (

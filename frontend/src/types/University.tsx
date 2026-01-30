@@ -1,3 +1,3 @@
-import type { UniversityDetails } from "../dtos/details/UniversityDetails";
+import type { UniversityDetails } from "../dtos/university/UniversityDetails";
 
 export type University = UniversityDetails;

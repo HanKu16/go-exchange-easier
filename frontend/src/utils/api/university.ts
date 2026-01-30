@@ -1,12 +1,12 @@
-import type { Listing } from "../dtos/common/Listing";
-import type { PageResponse } from "../dtos/common/PageResponse";
-import type { UniversityDetails } from "../dtos/details/UniversityDetails";
-import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
-import type { UniversityReviewCountSummary } from "../dtos/summary/UniversityReviewCountSummary";
-import type { GetUniversityProfileResponse } from "../dtos/university/GetUniversityProfileResponse";
-import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-import type { ResponseFailureResult } from "../types/ResponseFailureResult";
-import { sendRequest } from "./send-request";
+import type { Listing } from "../../dtos/common/Listing";
+import type { PageResponse } from "../../dtos/common/PageResponse";
+import type { UniversityDetails } from "../../dtos/university/UniversityDetails";
+import type { UniversityReviewDetails } from "../../dtos/university/review/UniversityReviewDetails";
+import type { UniversityReviewCountSummary } from "../../dtos/university/review/UniversityReviewCountSummary";
+import type { UniversityProfile } from "../../dtos/university/UniversityProfile";
+import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
+import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
+import { sendRequest } from "../send-request";
 
 export const sendGetUniversitiesRequest = async (
   englishName: string | undefined | null,
@@ -15,7 +15,7 @@ export const sendGetUniversitiesRequest = async (
   countryId: number | undefined | null,
   page: number,
   size: number,
-  sort: string
+  sort: string,
 ): Promise<
   ResponseSuccessResult<PageResponse<UniversityDetails>> | ResponseFailureResult
 > => {
@@ -30,32 +30,26 @@ export const sendGetUniversitiesRequest = async (
   const uri = url.toString();
   const request: RequestInit = {
     method: "GET",
-    // headers: {
-    //   "Content-Type": "application/json",
-    // },
   };
   return await sendRequest<PageResponse<UniversityDetails>>(uri, request);
 };
 
 export const sendGetUniversityProfileRequest = async (
-  universityId: number | string
+  universityId: number | string,
 ): Promise<
-  ResponseSuccessResult<GetUniversityProfileResponse> | ResponseFailureResult
+  ResponseSuccessResult<UniversityProfile> | ResponseFailureResult
 > => {
   const uri: string = `/api/universities/${universityId}/profile`;
   const request: RequestInit = {
     method: "GET",
-    // headers: {
-    //   "Content-Type": "application/json",
-    // },
   };
-  return await sendRequest<GetUniversityProfileResponse>(uri, request);
+  return await sendRequest<UniversityProfile>(uri, request);
 };
 
 export const sendGetUniversityReviewsRequest = async (
   universityId: number | string,
   page: number,
-  size: number
+  size: number,
 ): Promise<
   | ResponseSuccessResult<Listing<UniversityReviewDetails>>
   | ResponseFailureResult
@@ -70,7 +64,7 @@ export const sendGetUniversityReviewsRequest = async (
 };
 
 export const sendGetReviewsCountRequest = async (
-  universityId: number | string
+  universityId: number | string,
 ): Promise<
   ResponseSuccessResult<UniversityReviewCountSummary> | ResponseFailureResult
 > => {

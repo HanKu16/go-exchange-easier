@@ -1,21 +1,18 @@
-import type { AddUniversityReviewReactionRequest } from "../dtos/university-review/AddUniversityReviewReactionRequest";
-import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-import type { ResponseFailureResult } from "../types/ResponseFailureResult";
-import { sendRequest } from "./send-request";
-import type { CreateUniversityReviewRequest } from "../dtos/university-review/CreateUniversityReviewRequest";
-import type { UniversityReviewDetails } from "../dtos/details/UniversityReviewDetails";
+import type { AddUniversityReviewReactionRequest } from "../../dtos/university/review/AddUniversityReviewReactionRequest";
+import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
+import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
+import { sendRequest } from "../send-request";
+import type { CreateUniversityReviewRequest } from "../../dtos/university/review/CreateUniversityReviewRequest";
+import type { UniversityReviewDetails } from "../../dtos/university/review/UniversityReviewDetails";
 
 export const sendCreateReviewRequest = async (
-  body: CreateUniversityReviewRequest
+  body: CreateUniversityReviewRequest,
 ): Promise<
   ResponseSuccessResult<UniversityReviewDetails> | ResponseFailureResult
 > => {
   const uri: string = `/api/universityReviews`;
   const request: RequestInit = {
     method: "POST",
-    // headers: {
-    //   "Content-Type": "application/json",
-    // },
     body: JSON.stringify(body),
   };
   return await sendRequest<UniversityReviewDetails>(uri, request);
@@ -23,7 +20,7 @@ export const sendCreateReviewRequest = async (
 
 export const sendAddUniversityReviewReactionRequest = async (
   reviewId: number,
-  body: AddUniversityReviewReactionRequest
+  body: AddUniversityReviewReactionRequest,
 ): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
   const uri: string = `/api/universityReviews/${reviewId}/reaction`;
   const request: RequestInit = {
@@ -35,7 +32,7 @@ export const sendAddUniversityReviewReactionRequest = async (
 
 export const sendDeleteUniversityReviewReactionRequest = async (
   reviewId: number,
-  body: AddUniversityReviewReactionRequest
+  body: AddUniversityReviewReactionRequest,
 ): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
   const uri: string = `/api/universityReviews/${reviewId}/reaction`;
   const request: RequestInit = {

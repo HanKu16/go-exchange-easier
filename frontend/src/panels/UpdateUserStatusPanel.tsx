@@ -4,16 +4,14 @@ import type { ReactElement } from "react";
 import { Radio, RadioGroup } from "@mui/material";
 import { FormControl, Button } from "@mui/material";
 import { sendUpdateStatusRequest } from "../utils/user";
-import { sendGetUserStatusesRequest } from "../utils/user-status";
+import { sendGetUserStatusesRequest } from "../utils/api/user-status";
 import { FormControlLabel } from "@mui/material";
-import type { UserStatusSummary } from "../dtos/summary/UserStatusSummary";
+import type { UserStatusSummary } from "../dtos/user/status/UserStatusSummary";
 import PanelHeader from "../components/PanelHeader";
 import { useSnackbar } from "../context/SnackBarContext";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
-
-// type UserStatus = GetUserStatusResponse;
 
 const UpdateUserStatusPanel = () => {
   const [statuses, setStatuses] = useState<UserStatusSummary[]>([]);

@@ -1,4 +1,4 @@
-export type GetUniversityProfileResponse = {
+export type UniversityProfile = {
   id: number;
   nativeName: string;
   englishName: string | null;
@@ -6,4 +6,4 @@ export type GetUniversityProfileResponse = {
   cityName: string;
   countryName: string;
   isFollowed: boolean;
-}
+};

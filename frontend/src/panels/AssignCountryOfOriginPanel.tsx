@@ -11,13 +11,13 @@ import { useSnackbar } from "../context/SnackBarContext";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
-import { sendGetCountriesRequest } from "../utils/country";
+import { sendGetCountriesRequest } from "../utils/api/country";
 
 const AssignCountryOfOriginPanel = () => {
   const [countriesFetchStatus, setCountriesFetchStatus] =
     useState<DataFetchStatus>("loading");
   const [selectedCountryId, setSelectedCountryId] = useState<number | null>(
-    null
+    null,
   );
   const [showConfirmButton, setShowConfirmButton] = useState<boolean>(false);
   const [countries, setCountries] = useState<Country[]>([]);
