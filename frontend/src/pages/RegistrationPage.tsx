@@ -24,7 +24,7 @@ import registrationPageTextImage from "../assets/registration_page/text.png";
 import registrationSuccessImage from "../assets/registration_page/registration-success.png";
 import type { UserRegistrationRequest } from "../dtos/auth/UserRegistrationRequest";
 import { useState } from "react";
-import { sendUserRegistrationRequest } from "../utils/auth";
+import { sendRegistrationRequest } from "../utils/auth";
 import type { ApiErrorResponseCode } from "../dtos/error/ApiErrorResponseCode";
 import type { ApiErrorResponse } from "../dtos/error/ApiErrorResponse";
 import { useNavigate } from "react-router-dom";
@@ -182,7 +182,7 @@ export const RegistrationPage = () => {
       nick,
       mail,
     };
-    const result = await sendUserRegistrationRequest(request);
+    const result = await sendRegistrationRequest(request);
     setIsWaitingForResponse(false);
     if (result.isSuccess) {
       setWasRegistrationSuccessful(true);

@@ -1,4 +1,4 @@
-export interface UserRegistrationResponse {
+export interface RegistrationSummary {
   userId: number;
   login: string;
   nick: string;
