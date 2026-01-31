@@ -1,4 +1,4 @@
-import type { CityDetails } from "./CityDetails";
+import type { CityDetails } from "../location/CityDetails";
 
 export type UniversityDetails = {
   id: number;

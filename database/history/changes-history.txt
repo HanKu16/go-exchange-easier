@@ -43,3 +43,4 @@ v1.4
 v1.5
 
 1. Add 'refresh_tokens' table.
+2. Add 'avatar_key' column to 'users' table.
