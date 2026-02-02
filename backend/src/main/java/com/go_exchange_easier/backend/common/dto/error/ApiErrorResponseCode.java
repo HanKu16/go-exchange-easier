@@ -4,7 +4,7 @@ public enum ApiErrorResponseCode {
 
     ResourceNotFound,
     ReferencedResourceNotFound,
-    DeletePermissionDenied,
+    PermissionDenied,
     AuthenticationFailed,
     InvalidToken,
     LoginAlreadyTaken,
@@ -13,6 +13,8 @@ public enum ApiErrorResponseCode {
     ResourceAlreadyExists,
     InternalError,
     IllegalOperation,
-    MissingRequestHeader
+    MissingRequestHeader,
+    InvalidParameterType,
+    MethodNotSupported
 
 }

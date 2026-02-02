@@ -18,7 +18,7 @@ import com.go_exchange_easier.backend.domain.user.UserRepository;
 import com.go_exchange_easier.backend.domain.user.dto.UserWithAvatarSummary;
 import com.go_exchange_easier.backend.domain.university.review.dto.CreateUniversityReviewRequest;
 import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetails;
-import com.go_exchange_easier.backend.common.exception.JsonParsingException;
+import com.go_exchange_easier.backend.common.exception.DataCorruptionException;
 import com.go_exchange_easier.backend.common.exception.NotOwnerOfResourceException;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.domain.user.User;
@@ -186,7 +186,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             return mapper.readValue(json, new TypeReference
                     <List<ReactionDetails>>() {});
         } catch (Exception e) {
-            throw new JsonParsingException("Parsing " + json + " to " +
+            throw new DataCorruptionException("Parsing " + json + " to " +
                     "List<ReactionDetails> failed.");
         }
     }

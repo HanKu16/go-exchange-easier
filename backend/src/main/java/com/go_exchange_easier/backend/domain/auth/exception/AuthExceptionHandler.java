@@ -17,48 +17,5 @@ public class AuthExceptionHandler {
     private static final Logger logger = LogManager.getLogger(
             AuthExceptionHandler.class);
 
-    @ExceptionHandler(TokenNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleTokenNotFoundException(
-            TokenNotFoundException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(), e.getMessage());
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Authentication failed.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(TokenRevokedException.class)
-    public ResponseEntity<ApiErrorResponse> handleTokenRevokedException(
-            TokenRevokedException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(), e.getMessage());
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Authentication failed.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(TokenExpiredException.class)
-    public ResponseEntity<ApiErrorResponse> handleTokenExpiredException(
-            TokenExpiredException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(), e.getMessage());
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Authentication failed.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(DeviceMismatchException.class)
-    public ResponseEntity<ApiErrorResponse> handleDeviceMismatchException(
-            DeviceMismatchException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(), e.getMessage());
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Authentication failed.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
 
 }
