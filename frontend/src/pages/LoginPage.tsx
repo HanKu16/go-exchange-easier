@@ -38,9 +38,9 @@ const LoginPage = () => {
     };
     const result = await sendLoginRequest(body);
     if (result.isSuccess) {
-      const userId = result.data.userId;
       const resultMe = await sendGetMeRequest();
       if (resultMe.isSuccess) {
+        const userId = resultMe.data.id;
         setSignedInUser({
           id: userId,
           avatarUrl: resultMe.data.avatarUrl,

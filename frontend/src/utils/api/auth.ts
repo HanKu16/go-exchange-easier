@@ -5,13 +5,10 @@ import { sendRequestWithoutRefresh } from "../send-request";
 import type { UserRegistrationRequest } from "../../dtos/auth/UserRegistrationRequest";
 import type { RegistrationSummary } from "../../dtos/auth/RegistratationSummary";
 import { getDeviceId } from "../device";
-import type { SignedInUserSummary } from "../../dtos/auth/SignedInUserSummary";
 
 export const sendLoginRequest = async (
   body: LoginRequest,
-): Promise<
-  ResponseSuccessResult<SignedInUserSummary> | ResponseFailureResult
-> => {
+): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
   const uri: string = `/api/auth/login`;
   const request: RequestInit = {
     method: "POST",
