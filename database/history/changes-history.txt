@@ -44,3 +44,12 @@ v1.5
 
 1. Add 'refresh_tokens' table.
 2. Add 'avatar_key' column to 'users' table.
+
+
+
+v1.6
+
+1. Add enum type 'role'.
+2. Remove table 'roles'
+3. Change and rename type from table 'user_roles' from 'role_id' (SMALLINT) to 'role' (ROLE).
+4. Delete column 'is_enabled' from 'user_credentials'.

@@ -1,3 +1,8 @@
+CREATE TYPE role AS ENUM (
+  'role_user',
+  'role_admin'
+);
+
 CREATE TABLE countries (
   country_id SMALLSERIAL PRIMARY KEY,
   english_name VARCHAR(60) UNIQUE NOT NULL
@@ -31,8 +36,7 @@ CREATE TABLE user_statuses (
 CREATE TABLE user_credentials (
   user_credential_id SERIAL PRIMARY KEY,
   username VARCHAR(20) UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  is_enabled BOOLEAN NOT NULL
+  password TEXT NOT NULL
 );
 
 CREATE TABLE user_descriptions (
@@ -61,16 +65,10 @@ CREATE TABLE users (
   country_of_origin_id SMALLINT
 );
 
-CREATE TABLE roles (
-  role_id SMALLSERIAL PRIMARY KEY,
-  name VARCHAR(20) UNIQUE NOT NULL,
-  description VARCHAR(200)
-);
-
 CREATE TABLE user_roles (
   user_credential_id INTEGER,
-  role_id SMALLINT,
-  PRIMARY KEY (user_credential_id, role_id)
+  role ROLE,
+  PRIMARY KEY (user_credential_id, role)
 );
 
 CREATE TABLE university_reviews (
@@ -152,8 +150,6 @@ ALTER TABLE users ADD FOREIGN KEY (home_university_id) REFERENCES universities (
 ALTER TABLE users ADD FOREIGN KEY (country_of_origin_id) REFERENCES countries (country_id);
 
 ALTER TABLE user_roles ADD FOREIGN KEY (user_credential_id) REFERENCES user_credentials (user_credential_id);
-
-ALTER TABLE user_roles ADD FOREIGN KEY (role_id) REFERENCES roles (role_id);
 
 ALTER TABLE university_reviews ADD FOREIGN KEY (author_id) REFERENCES users (user_id);
 

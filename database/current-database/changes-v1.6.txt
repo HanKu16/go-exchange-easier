@@ -1,0 +1,4 @@
+1. Add enum type 'role'.
+2. Remove table 'roles'
+3. Change and rename type from table 'user_roles' from 'role_id' (SMALLINT) to 'role' (ROLE).
+4. Delete column 'is_enabled' from 'user_credentials'.

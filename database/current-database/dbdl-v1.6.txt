@@ -1,15 +1,20 @@
-Table countries {
+ENUM role {
+  role_user
+  role_admin
+}
+
+TABLE countries {
   country_id SMALLSERIAL [pk]
   english_name VARCHAR(60) [not null, unique]
 }
 
-Table cities {
+TABLE cities {
   city_id SERIAL [pk]
   english_name VARCHAR(60) [not null]
   country_id SMALLINT [ref: > countries.country_id, not null]
 }
 
-Table universities {
+TABLE universities {
   university_id SMALLSERIAL [pk]
   original_name VARCHAR(500) [not null]
   english_name VARCHAR(255)
@@ -18,36 +23,35 @@ Table universities {
   city_id INTEGER [ref: > cities.city_id, not null]
 }
 
-Table university_majors {
+TABLE university_majors {
   university_major_id SMALLSERIAL [pk]
   name VARCHAR(50) [unique, not null]
 }
 
-Table user_statuses {
+TABLE user_statuses {
   user_status_id SMALLSERIAL [pk]
   name VARCHAR(20) [not null]
 }
 
-Table user_credentials {
+TABLE user_credentials {
   user_credential_id SERIAL [pk]
   username VARCHAR(20) [unique, not null]
   password TEXT [not null]
-  is_enabled BOOLEAN [not null]
 }
 
-Table user_descriptions {
+TABLE user_descriptions {
   user_description_id SERIAL [pk]
   text_content VARCHAR(500) [not null]
   updated_at TIMESTAMPTZ 
 }
 
-Table user_notifications {
+TABLE user_notifications {
   user_notification_id SERIAL [pk]
   mail VARCHAR(254) [unique]
   is_mail_notification_enabled BOOLEAN [not null]
 }
 
-Table users {
+TABLE users {
   user_id SERIAL [pk]
   nick VARCHAR(20) [not null]
   avatar_key VARCHAR(255)
@@ -59,21 +63,14 @@ Table users {
   user_status_id SMALLINT [ref: > user_statuses.user_status_id]
   home_university_id SMALLINT [ref: > universities.university_id]
   country_of_origin_id SMALLINT [ref: > countries.country_id]
-
 }
 
-Table roles {
-  role_id SMALLSERIAL [pk]
-  name VARCHAR(20) [not null, unique]
-  description VARCHAR(200)
-}
-
-Table user_roles {
+TABLE user_roles {
   user_credential_id INTEGER [pk, ref: > user_credentials.user_credential_id]
-  role_id SMALLINT [pk, ref: > roles.role_id]
+  role ROLE [pk]
 }
 
-Table university_reviews {
+TABLE university_reviews {
   university_review_id SERIAL [pk]
   text_content VARCHAR(1000) [not null]
   star_rating SMALLINT [not null]
@@ -83,35 +80,35 @@ Table university_reviews {
   university_id SMALLINT [ref: > universities.university_id, not null]
 }
 
-Table reaction_types {
+TABLE reaction_types {
   reaction_type_id SMALLSERIAL [pk]
   name VARCHAR(20) [unique, not null]
 }
 
-Table university_review_reactions {
+TABLE university_review_reactions {
   university_review_reaction_id BIGSERIAL [pk]
   reaction_type_id SMALLINT [ref: > reaction_types.reaction_type_id, not null]
   university_review_id INTEGER [ref: > university_reviews.university_review_id, not null]
   author_id INTEGER [ref: > users.user_id, not null]
 }
 
-Table university_reviews_reaction_counts {
+TABLE university_reviews_reaction_counts {
   university_review_id INTEGER [pk, ref: > university_reviews.university_review_id]
   reaction_type_id SMALLINT [pk, ref: > reaction_types.reaction_type_id]
   count SMALLINT [not null]
 }
 
-Table user_follows {
+TABLE user_follows {
   follower_id INTEGER [pk, ref: > users.user_id, not null]
   followee_id INTEGER [pk, ref: > users.user_id, not null]
 }
 
-Table university_follows {
+TABLE university_follows {
   follower_id INTEGER [pk, ref: > users.user_id, not null]
   university_id SMALLINT [pk, ref: > universities.university_id, not null]
 }
 
-Table exchanges {
+TABLE exchanges {
   exchange_id SERIAL [pk]
   started_at DATE [not null]
   end_at DATE [not null]
@@ -120,7 +117,7 @@ Table exchanges {
   university_id SMALLINT [ref: > universities.university_id, not null]
 }
 
-Table refresh_tokens {
+TABLE refresh_tokens {
   refresh_token_id UUID [pk]
   hashed_token TEXT [not null]
   created_at TIMESTAMPTZ [not null]
