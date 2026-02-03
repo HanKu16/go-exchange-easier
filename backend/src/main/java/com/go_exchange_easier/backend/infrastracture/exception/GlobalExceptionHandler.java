@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -194,7 +195,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleDatabaseConnectionError(Exception e) {
         logger.error(e.getMessage(), e);
         ApiErrorResponse response = new ApiErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR, "Database server did not respond.",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Database server did not respond.",
                 List.of(), List.of());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -254,18 +256,12 @@ public class GlobalExceptionHandler {
                 List.of(), List.of(error)), HttpStatus.METHOD_NOT_ALLOWED);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ApiErrorResponse> handle(AuthenticationException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(ApiErrorResponseCode
-                .AuthenticationFailed.name(), e.getMessage());
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Authentication failed.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler({SignatureException.class, MissingJwtClaimException.class})
-    public ResponseEntity<ApiErrorResponse> handleJwtException(Exception e) {
+    @ExceptionHandler({
+            SignatureException.class,
+            MissingJwtClaimException.class,
+            AuthenticationException.class,
+            UsernameNotFoundException.class})
+    public ResponseEntity<ApiErrorResponse> handleAuthenticationException(Exception e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(ApiErrorResponseCode
                 .InvalidToken.name(), "Failed to authenticate user.");

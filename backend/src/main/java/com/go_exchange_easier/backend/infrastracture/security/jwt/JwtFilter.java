@@ -9,21 +9,22 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.security.SignatureException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.NonNull;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 /**
  * {@code JwtFilter} is a custom Spring Security filter responsible for authenticating
@@ -34,13 +35,24 @@ import lombok.NonNull;
  * Spring Security filter chain.</p>
  */
 @Component
-@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LogManager.getLogger(JwtFilter.class);
     private final JwtClaimsExtractor jwtClaimsExtractor;
     private final JwtTokenValidator jwtTokenValidator;
+    private final HandlerExceptionResolver resolver;
     private final RoleRepository roleRepository;
+
+    public JwtFilter(
+            JwtClaimsExtractor jwtClaimsExtractor,
+            JwtTokenValidator jwtTokenValidator,
+            RoleRepository roleRepository,
+            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
+        this.jwtClaimsExtractor = jwtClaimsExtractor;
+        this.jwtTokenValidator = jwtTokenValidator;
+        this.roleRepository = roleRepository;
+        this.resolver = resolver;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -55,14 +67,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             tryDoFilterInternal(request);
-        } catch (MissingJwtClaimException e) {
-            logger.error("Missing username claim in the token: {}", e.getMessage());
-        } catch (UsernameNotFoundException e) {
-            logger.error("User of given username does not exist: {}", e.getMessage());
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
-            logger.error("An error occurred: {}", e.getMessage());
+            resolver.resolveException(request, response, null, e);
+            return;
         }
-        filterChain.doFilter(request, response);
     }
 
     private void tryDoFilterInternal(HttpServletRequest request) {
