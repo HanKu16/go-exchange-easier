@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.domain.user;
 
 import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.location.country.CountryDetails;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.domain.university.dto.UniversitySummary;
@@ -46,8 +46,8 @@ public interface UserApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<UserProfileDetails> getProfile(
-            @PathVariable("userId") int userId,
-            @AuthenticationPrincipal UserCredentials principal);
+            @PathVariable("userId") Integer userId,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @GetMapping
     @Operation(summary = "Get page of users")
@@ -69,7 +69,7 @@ public interface UserApi {
     })
     ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
             @PathVariable("userId") Integer userId,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @PatchMapping("/description")
     @Operation(summary = "Update user description")
@@ -95,7 +95,7 @@ public interface UserApi {
     })
     ResponseEntity<UserDescriptionDetails> updateDescription(
             @RequestBody @Valid UpdateUserDescriptionRequest request,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @PatchMapping("/homeUniversity")
     @Operation(summary = "Assign home university to user")
@@ -127,7 +127,7 @@ public interface UserApi {
     })
     ResponseEntity<UniversitySummary> assignHomeUniversity(
             @RequestBody @Valid AssignHomeUniversityRequest request,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @PatchMapping("/status")
     @Operation(summary = "Update user status")
@@ -159,7 +159,7 @@ public interface UserApi {
     })
     ResponseEntity<UserStatusSummary> updateStatus(
             @RequestBody @Valid UpdateUserStatusRequest request,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @PatchMapping("/countryOfOrigin")
     @Operation(summary = "Assign country of origin to user")
@@ -186,7 +186,7 @@ public interface UserApi {
     })
     ResponseEntity<CountryDetails> assignCountryOfOrigin(
             @RequestBody @Valid AssignCountryOfOriginRequest request,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @GetMapping("/{userId}/followees")
     @Operation(summary = "Get followees")
@@ -236,7 +236,7 @@ public interface UserApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<?> getMe(
-            @AuthenticationPrincipal(errorOnInvalidType = false) UserCredentials principal);
+            @AuthenticationPrincipal(errorOnInvalidType = false) AuthenticatedUser authenticatedUser);
 
     @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Upload user avatar")
@@ -257,7 +257,7 @@ public interface UserApi {
     })
     ResponseEntity<AvatarUrlSummary> uploadAvatar(
             @RequestParam("file") @ValidAvatar MultipartFile file,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @DeleteMapping("/avatar")
     @Operation(summary = "Delete user avatar")
@@ -272,6 +272,6 @@ public interface UserApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<AvatarUrlSummary> deleteAvatar(
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
 }

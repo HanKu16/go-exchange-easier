@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.domain.university;
 
 import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.university.dto.*;
 import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewCountSummary;
 import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewDetails;
@@ -49,7 +49,7 @@ public interface UniversityApi {
     })
     ResponseEntity<UniversityProfile> getProfile(
             @PathVariable Integer universityId,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @GetMapping("/{universityId}/reviews")
     @Operation(summary = "Get reviews about particular university")
@@ -60,7 +60,7 @@ public interface UniversityApi {
     })
     ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
             @PathVariable Integer universityId,
-            @AuthenticationPrincipal UserCredentials principal,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             int page, int size);
 
     @GetMapping("/{universityId}/reviews/count")

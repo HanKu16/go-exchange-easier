@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.domain.university.review;
 
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.university.review.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,7 +38,7 @@ public interface UniversityReviewApi {
     })
     ResponseEntity<UniversityReviewDetails> create(
             @RequestBody @Valid CreateUniversityReviewRequest request,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @DeleteMapping("/{reviewId}")
     @Operation(summary = "Delete university review")
@@ -59,7 +59,7 @@ public interface UniversityReviewApi {
     })
     ResponseEntity<Void> delete(
             @PathVariable Integer reviewId,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @PutMapping("/{reviewId}/reaction")
     @Operation(summary = "Create university review reaction")
@@ -82,7 +82,7 @@ public interface UniversityReviewApi {
     ResponseEntity<Void> addReaction(
             @PathVariable Integer reviewId,
             @RequestBody @Valid AddUniversityReviewReactionRequest request,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @DeleteMapping("/{reviewId}/reaction")
     @Operation(summary = "Delete university review reaction")
@@ -98,6 +98,6 @@ public interface UniversityReviewApi {
     })
     ResponseEntity<Void> deleteReaction(
             @PathVariable Integer reviewId,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
 }

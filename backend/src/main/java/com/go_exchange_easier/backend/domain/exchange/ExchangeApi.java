@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.domain.exchange;
 
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.exchange.dto.CreateExchangeRequest;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeDetails;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeFilters;
@@ -55,7 +55,7 @@ public interface ExchangeApi {
     })
     ResponseEntity<ExchangeDetails> create(
             @RequestBody @Valid CreateExchangeRequest request,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @DeleteMapping("/{exchangeId}")
     @Operation(summary = "Delete exchange")
@@ -76,6 +76,6 @@ public interface ExchangeApi {
     })
     ResponseEntity<Void> delete(
             @PathVariable Integer exchangeId,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
 }

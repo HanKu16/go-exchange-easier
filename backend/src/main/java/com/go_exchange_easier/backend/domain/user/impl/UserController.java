@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.domain.user.impl;
 
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.location.country.CountryDetails;
 import com.go_exchange_easier.backend.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.domain.user.UserApi;
@@ -11,12 +12,10 @@ import com.go_exchange_easier.backend.domain.user.dto.*;
 import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewDetails;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.university.review.UniversityReviewService;
 import com.go_exchange_easier.backend.domain.user.avatar.ValidAvatar;
 import com.go_exchange_easier.backend.domain.user.status.UpdateUserStatusRequest;
 import com.go_exchange_easier.backend.domain.user.status.UserStatusSummary;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,10 +30,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "User", description = "Operations related to user.")
 public class UserController implements UserApi {
 
     private final UniversityReviewService universityReviewService;
@@ -43,9 +40,9 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<UserProfileDetails> getProfile(
             @PathVariable("userId") int userId,
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         UserProfileDetails response = userService.getProfile(
-                userId, principal.getUser().getId());
+                userId, authenticatedUser.getId());
         return ResponseEntity.ok(response);
     }
 
@@ -62,45 +59,45 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
             @PathVariable("userId") Integer userId,
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         List<UniversityReviewDetails> reviews = universityReviewService
-                .getByAuthorId(userId, principal.getUser().getId());
+                .getByAuthorId(userId, authenticatedUser.getId());
         return ResponseEntity.ok(Listing.of(reviews));
     }
 
     @Override
     public ResponseEntity<UserDescriptionDetails> updateDescription(
             @RequestBody @Valid UpdateUserDescriptionRequest request,
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         UserDescriptionDetails response = userService
-                .updateDescription(principal.getUser().getId(), request);
+                .updateDescription(authenticatedUser.getId(), request);
         return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<UniversitySummary> assignHomeUniversity(
             @RequestBody @Valid AssignHomeUniversityRequest request,
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         UniversitySummary university = userService.assignHomeUniversity(
-                principal.getUser().getId(), request);
+                authenticatedUser.getId(), request);
         return ResponseEntity.ok(university);
     }
 
     @Override
     public ResponseEntity<UserStatusSummary> updateStatus(
             @RequestBody @Valid UpdateUserStatusRequest request,
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         UserStatusSummary status = userService.updateStatus(
-                principal.getUser().getId(), request);
+                authenticatedUser.getId(), request);
         return ResponseEntity.ok(status);
     }
 
     @Override
     public ResponseEntity<CountryDetails> assignCountryOfOrigin(
             @RequestBody @Valid AssignCountryOfOriginRequest request,
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         CountryDetails country = userService.assignCountryOfOrigin(
-                principal.getUser().getId(), request);
+                authenticatedUser.getId(), request);
         return ResponseEntity.ok(country);
     }
 
@@ -121,28 +118,28 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<?> getMe(
-            @AuthenticationPrincipal(errorOnInvalidType = false) UserCredentials principal) {
-        if (principal == null) {
+            @AuthenticationPrincipal(errorOnInvalidType = false) AuthenticatedUser authenticatedUser) {
+        if (authenticatedUser == null) {
             return ResponseEntity.status(401).build();
         }
-        UserWithAvatarSummary user = userService.getMe(principal.getUser().getId());
+        UserWithAvatarSummary user = userService.getMe(authenticatedUser.getId());
         return ResponseEntity.ok(user);
     }
 
     @Override
     public ResponseEntity<AvatarUrlSummary> uploadAvatar(
             @RequestParam("file") @ValidAvatar MultipartFile file,
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         AvatarUrlSummary avatarUrl = userService.addAvatar(
-                principal.getUser().getId(), file);
+                authenticatedUser.getId(), file);
         return ResponseEntity.ok(avatarUrl);
     }
 
     @Override
     public ResponseEntity<AvatarUrlSummary> deleteAvatar(
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         AvatarUrlSummary avatarUrl = userService.deleteAvatar(
-                principal.getUser().getId());
+                authenticatedUser.getId());
         return ResponseEntity.ok(avatarUrl);
     }
 

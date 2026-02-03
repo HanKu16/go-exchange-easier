@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.domain.follow.university;
 
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +35,7 @@ public interface UniversityFollowApi {
     })
     ResponseEntity<Void> create(
             @PathVariable Short universityId,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @DeleteMapping
     @Operation(summary = "Delete university follow")
@@ -51,6 +51,6 @@ public interface UniversityFollowApi {
     })
     ResponseEntity<Void> delete(
             @PathVariable Short universityId,
-            @AuthenticationPrincipal UserCredentials principal);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
 }

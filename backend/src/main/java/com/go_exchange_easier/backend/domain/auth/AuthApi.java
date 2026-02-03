@@ -1,11 +1,8 @@
 package com.go_exchange_easier.backend.domain.auth;
 
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.domain.auth.dto.LoginRequest;
-import com.go_exchange_easier.backend.domain.auth.dto.RegistrationRequest;
-import com.go_exchange_easier.backend.domain.auth.dto.RegistrationSummary;
+import com.go_exchange_easier.backend.domain.auth.dto.*;
 import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
-import com.go_exchange_easier.backend.domain.auth.dto.SignedInUserSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -73,7 +70,6 @@ public interface AuthApi {
                     description = "User successfully logout from device")
     })
     ResponseEntity<Void> logout(
-            @AuthenticationPrincipal UserCredentials principal,
             @CookieValue(name = "refreshToken", required = false) String refreshToken);
 
     @PostMapping("/refresh")

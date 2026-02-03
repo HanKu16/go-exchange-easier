@@ -3,13 +3,8 @@ package com.go_exchange_easier.backend.domain.auth.impl;
 import com.go_exchange_easier.backend.domain.auth.AuthApi;
 import com.go_exchange_easier.backend.domain.auth.AuthService;
 import com.go_exchange_easier.backend.domain.auth.UserRegistrar;
-import com.go_exchange_easier.backend.domain.auth.dto.LoginRequest;
-import com.go_exchange_easier.backend.domain.auth.dto.TokenBundle;
-import com.go_exchange_easier.backend.domain.auth.dto.RegistrationRequest;
-import com.go_exchange_easier.backend.domain.auth.dto.RegistrationSummary;
-import com.go_exchange_easier.backend.domain.auth.dto.LoginSummary;
+import com.go_exchange_easier.backend.domain.auth.dto.*;
 import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
-import com.go_exchange_easier.backend.domain.auth.dto.SignedInUserSummary;
 import com.go_exchange_easier.backend.infrastracture.security.config.JwtConfig;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,7 +66,6 @@ public class AuthController implements AuthApi {
 
     @Override
     public ResponseEntity<Void> logout(
-            @AuthenticationPrincipal UserCredentials principal,
             @CookieValue(name = "refreshToken", required = false) String refreshToken) {
         TokenBundle tokenBundle = authService.logout(refreshToken);
         ResponseCookie accessTokenCookie = ResponseCookie.from(

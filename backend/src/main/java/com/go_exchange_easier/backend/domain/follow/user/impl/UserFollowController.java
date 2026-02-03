@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.domain.follow.user.impl;
 
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.follow.user.UserFollowApi;
 import com.go_exchange_easier.backend.domain.follow.user.UserFollowService;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +17,16 @@ public class UserFollowController implements UserFollowApi {
     @Override
     public ResponseEntity<Void> create(
             @PathVariable Integer followeeId,
-            @AuthenticationPrincipal UserCredentials principal) {
-        userFollowService.follow(principal.getUser().getId(), followeeId);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+        userFollowService.follow(authenticatedUser.getId(), followeeId);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<Void> delete(
             @PathVariable Integer followeeId,
-            @AuthenticationPrincipal UserCredentials principal) {
-        userFollowService.unfollow(principal.getUser().getId(), followeeId);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+        userFollowService.unfollow(authenticatedUser.getId(), followeeId);
         return ResponseEntity.noContent().build();
     }
 

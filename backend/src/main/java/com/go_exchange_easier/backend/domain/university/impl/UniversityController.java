@@ -1,6 +1,7 @@
 package com.go_exchange_easier.backend.domain.university.impl;
 
 import com.go_exchange_easier.backend.common.dto.Listing;
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.university.UniversityApi;
 import com.go_exchange_easier.backend.domain.university.UniversityService;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityDetails;
@@ -8,7 +9,6 @@ import com.go_exchange_easier.backend.domain.university.review.dto.UniversityRev
 import com.go_exchange_easier.backend.domain.university.dto.UniversityFilters;
 import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewCountSummary;
 import com.go_exchange_easier.backend.domain.university.dto.UniversityProfile;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.university.review.UniversityReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -42,19 +42,19 @@ public class UniversityController implements UniversityApi {
     @Override
     public ResponseEntity<UniversityProfile> getProfile(
             @PathVariable Integer universityId,
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         UniversityProfile profile = universityService.getProfile(
-                universityId, principal.getUser().getId());
+                universityId, authenticatedUser.getId());
         return ResponseEntity.ok(profile);
     }
 
     @Override
     public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
             @PathVariable Integer universityId,
-            @AuthenticationPrincipal UserCredentials principal,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             int page, int size) {
         List<UniversityReviewDetails> reviews = universityReviewService
-                .getByUniversityId(universityId, principal.getUser().getId(),
+                .getByUniversityId(universityId, authenticatedUser.getId(),
                         page, size);
         return ResponseEntity.ok(Listing.of(reviews));
     }

@@ -2,7 +2,6 @@ package com.go_exchange_easier.backend.domain.auth.impl;
 
 import com.go_exchange_easier.backend.domain.auth.*;
 import com.go_exchange_easier.backend.domain.auth.entity.Role;
-import com.go_exchange_easier.backend.domain.auth.entity.RoleName;
 import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.user.*;
 import com.go_exchange_easier.backend.domain.auth.dto.RegistrationRequest;
@@ -12,7 +11,6 @@ import com.go_exchange_easier.backend.domain.user.description.UserDescriptionRep
 import com.go_exchange_easier.backend.domain.user.notification.UserNotification;
 import com.go_exchange_easier.backend.domain.user.notification.UserNotificationRepository;
 import com.go_exchange_easier.backend.domain.auth.exception.MailAlreadyExistsException;
-import com.go_exchange_easier.backend.domain.auth.exception.MissingDefaultRoleException;
 import com.go_exchange_easier.backend.domain.auth.exception.UsernameAlreadyExistsException;
 import com.go_exchange_easier.backend.domain.user.User;
 import jakarta.transaction.Transactional;
@@ -20,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +27,6 @@ public class UserRegistrarImpl implements UserRegistrar {
     private final UserDescriptionRepository userDescriptionRepository;
     private final UserNotificationRepository userNotificationRepository;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -49,7 +45,7 @@ public class UserRegistrarImpl implements UserRegistrar {
                     request.mail() + " already exists.");
         }
         UserCredentials credentials = buildCredentials(request);
-        assignRoles(credentials);
+        credentials.getRoles().add(Role.role_user);
         UserCredentials savedCredentials = userCredentialsRepository.save(credentials);
         UserDescription description = buildDescription();
         UserDescription savedDescription = userDescriptionRepository.save(description);
@@ -78,7 +74,6 @@ public class UserRegistrarImpl implements UserRegistrar {
         UserCredentials credentials = new UserCredentials();
         credentials.setUsername(request.login());
         credentials.setPassword(encodedPassword);
-        credentials.setEnabled(true);
         return credentials;
     }
 
@@ -97,15 +92,6 @@ public class UserRegistrarImpl implements UserRegistrar {
         notification.setMail(mail);
         notification.setMailNotificationEnabled(isMailNotificationEnabled);
         return notification;
-    }
-
-    private void assignRoles(UserCredentials credentials) {
-        Optional<Role> role = roleRepository.findByName(RoleName.ROLE_USER.name());
-        if (role.isEmpty()) {
-            throw new MissingDefaultRoleException("Default role of name " +
-                    RoleName.ROLE_USER.name() + " was not found.");
-        }
-        credentials.getRoles().add(role.get());
     }
 
 }

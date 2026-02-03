@@ -1,10 +1,10 @@
 package com.go_exchange_easier.backend.domain.exchange.impl;
 
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.exchange.ExchangeApi;
 import com.go_exchange_easier.backend.domain.exchange.ExchangeService;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeDetails;
 import com.go_exchange_easier.backend.domain.exchange.dto.CreateExchangeRequest;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.exchange.dto.ExchangeFilters;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +34,9 @@ public class ExchangeController implements ExchangeApi {
     @Override
     public ResponseEntity<ExchangeDetails> create(
             @RequestBody @Valid CreateExchangeRequest request,
-            @AuthenticationPrincipal UserCredentials principal) {
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         ExchangeDetails response = exchangeService
-                .create(principal.getUser().getId(), request);
+                .create(authenticatedUser.getId(), request);
         return ResponseEntity.created(URI.create(
                 "/api/exchange/" + response.id()))
                 .body(response);
@@ -45,8 +45,8 @@ public class ExchangeController implements ExchangeApi {
     @Override
     public ResponseEntity<Void> delete(
             @PathVariable Integer exchangeId,
-            @AuthenticationPrincipal UserCredentials principal) {
-        exchangeService.delete(exchangeId, principal.getUser().getId());
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+        exchangeService.delete(exchangeId, authenticatedUser.getId());
         return ResponseEntity.noContent().build();
     }
 
