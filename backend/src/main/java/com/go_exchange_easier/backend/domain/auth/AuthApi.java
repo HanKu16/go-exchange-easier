@@ -43,7 +43,7 @@ public interface AuthApi {
     @Operation(summary = "Login user for the first time")
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200",
+                    responseCode = "204",
                     description = "User successfully signed in"),
             @ApiResponse(
                     responseCode = "400",

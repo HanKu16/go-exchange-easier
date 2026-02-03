@@ -260,7 +260,8 @@ public class GlobalExceptionHandler {
             SignatureException.class,
             MissingJwtClaimException.class,
             AuthenticationException.class,
-            UsernameNotFoundException.class})
+            UsernameNotFoundException.class,
+            UserAccountRevokedException.class})
     public ResponseEntity<ApiErrorResponse> handleAuthenticationException(Exception e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(ApiErrorResponseCode

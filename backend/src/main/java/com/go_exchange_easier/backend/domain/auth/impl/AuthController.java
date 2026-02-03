@@ -40,8 +40,7 @@ public class AuthController implements AuthApi {
             @RequestHeader(value = "X-Device-Id", required = true) String deviceId,
             @RequestHeader(value = "X-Device-Name", required = true) String deviceName,
             HttpServletRequest servletRequest) {
-        LoginSummary loginSummary = authService.login(request, servletRequest);
-        TokenBundle tokenBundle = loginSummary.tokenBundle();
+        TokenBundle tokenBundle = authService.login(request, servletRequest);
         ResponseCookie accessTokenCookie = ResponseCookie.from(
                 "accessToken", tokenBundle.accessToken())
                 .httpOnly(true)
@@ -58,10 +57,10 @@ public class AuthController implements AuthApi {
                 .maxAge(jwtConfig.getRefreshTokenValidityInSeconds())
                 .sameSite("Lax")
                 .build();
-        return ResponseEntity.ok()
+        return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-                .body(loginSummary.signedInUserSummary());
+                .build();
     }
 
     @Override

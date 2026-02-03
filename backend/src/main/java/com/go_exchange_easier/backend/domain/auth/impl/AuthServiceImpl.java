@@ -5,11 +5,7 @@ import com.go_exchange_easier.backend.domain.auth.dto.*;
 import com.go_exchange_easier.backend.domain.auth.entity.RefreshToken;
 import com.go_exchange_easier.backend.domain.auth.RefreshTokenRepository;
 import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
-import com.go_exchange_easier.backend.domain.auth.exception.InvalidPrincipalTypeException;
-import com.go_exchange_easier.backend.domain.auth.exception.DeviceMismatchException;
-import com.go_exchange_easier.backend.domain.auth.exception.TokenExpiredException;
-import com.go_exchange_easier.backend.domain.auth.exception.TokenNotFoundException;
-import com.go_exchange_easier.backend.domain.auth.exception.TokenRevokedException;
+import com.go_exchange_easier.backend.domain.auth.exception.*;
 import com.go_exchange_easier.backend.domain.user.User;
 import com.go_exchange_easier.backend.infrastracture.security.config.JwtConfig;
 import com.go_exchange_easier.backend.infrastracture.security.jwt.JwtTokenGenerator;
@@ -17,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public LoginSummary login(LoginRequest request, HttpServletRequest servletRequest) {
+    public TokenBundle login(LoginRequest request, HttpServletRequest servletRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.login(), request.password()));
@@ -49,13 +46,10 @@ public class AuthServiceImpl implements AuthService {
             user.setId(authenticatedUser.getId());
             refreshTokenRepository.save(createNewRefreshToken(
                     user, refreshToken, servletRequest));
-            return new LoginSummary(
-                    new SignedInUserSummary(authenticatedUser.getId(), ""),
-                    new TokenBundle(accessToken, refreshToken)
-            );
+            return new TokenBundle(accessToken, refreshToken);
         }
         throw new InvalidPrincipalTypeException("Principal was expected to be of " +
-                "type UserCredentials but was not.");
+                "type AuthenticatedUser but was not.");
     }
 
     @Override
@@ -76,6 +70,9 @@ public class AuthServiceImpl implements AuthService {
         }
         validateDeviceMatch(oldToken, servletRequest);
         User user = oldToken.getUser();
+        if (user.getDeletedAt() != null) {
+            throw new UserAccountRevokedException("User account is revoked.");
+        }
         UserCredentials credentials = user.getCredentials();
         String newAccessToken = jwtTokenGenerator.generateAccessToken(
                 credentials.getUser().getId(), credentials.getUsername(),
