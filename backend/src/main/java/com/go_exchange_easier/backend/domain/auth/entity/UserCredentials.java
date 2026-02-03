@@ -3,6 +3,8 @@ package com.go_exchange_easier.backend.domain.auth.entity;
 import com.go_exchange_easier.backend.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,22 +34,24 @@ public class UserCredentials implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "is_enabled")
-    private boolean isEnabled;
-
     @OneToOne(mappedBy = "credentials")
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_credential_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Column(name = "role", columnDefinition = "role")
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_credential_id")
+    )
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private Set<Role> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles
                 .stream()
-                .map(r -> new SimpleGrantedAuthority(r.getName()))
+                .map(r -> new SimpleGrantedAuthority(r.toString()))
                 .collect(Collectors.toSet());
     }
 
@@ -78,7 +82,7 @@ public class UserCredentials implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return true;
     }
 
 }
