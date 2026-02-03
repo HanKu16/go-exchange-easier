@@ -1,13 +1,10 @@
 package com.go_exchange_easier.backend.domain.auth.impl;
 
 import com.go_exchange_easier.backend.domain.auth.AuthService;
+import com.go_exchange_easier.backend.domain.auth.dto.*;
 import com.go_exchange_easier.backend.domain.auth.entity.RefreshToken;
 import com.go_exchange_easier.backend.domain.auth.RefreshTokenRepository;
 import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
-import com.go_exchange_easier.backend.domain.auth.dto.LoginRequest;
-import com.go_exchange_easier.backend.domain.auth.dto.TokenBundle;
-import com.go_exchange_easier.backend.domain.auth.dto.LoginSummary;
-import com.go_exchange_easier.backend.domain.auth.dto.SignedInUserSummary;
 import com.go_exchange_easier.backend.domain.auth.exception.InvalidPrincipalTypeException;
 import com.go_exchange_easier.backend.domain.auth.exception.DeviceMismatchException;
 import com.go_exchange_easier.backend.domain.auth.exception.TokenExpiredException;
@@ -43,13 +40,17 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.login(), request.password()));
-        if (authentication.getPrincipal() instanceof UserCredentials credentials) {
-            String accessToken = jwtTokenGenerator.generateAccessToken(credentials);
+        if (authentication.getPrincipal() instanceof AuthenticatedUser authenticatedUser) {
+            String accessToken = jwtTokenGenerator.generateAccessToken(
+                    authenticatedUser.getId(), authenticatedUser.getUsername(),
+                    authenticatedUser.getRoles());
             String refreshToken = jwtTokenGenerator.generateRefreshToken();
+            User user = new User();
+            user.setId(authenticatedUser.getId());
             refreshTokenRepository.save(createNewRefreshToken(
-                    credentials.getUser(), refreshToken, servletRequest));
+                    user, refreshToken, servletRequest));
             return new LoginSummary(
-                    new SignedInUserSummary(credentials.getUser().getId(), ""),
+                    new SignedInUserSummary(authenticatedUser.getId(), ""),
                     new TokenBundle(accessToken, refreshToken)
             );
         }
@@ -76,7 +77,9 @@ public class AuthServiceImpl implements AuthService {
         validateDeviceMatch(oldToken, servletRequest);
         User user = oldToken.getUser();
         UserCredentials credentials = user.getCredentials();
-        String newAccessToken = jwtTokenGenerator.generateAccessToken(credentials);
+        String newAccessToken = jwtTokenGenerator.generateAccessToken(
+                credentials.getUser().getId(), credentials.getUsername(),
+                credentials.getRoles());
         String newRawRefreshToken = jwtTokenGenerator.generateRefreshToken();
         RefreshToken newToken = createNewRefreshToken(
                 user, newRawRefreshToken, servletRequest);

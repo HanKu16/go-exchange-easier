@@ -1,16 +1,12 @@
 package com.go_exchange_easier.backend.infrastracture.security.jwt;
 
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.auth.entity.Role;
-import com.go_exchange_easier.backend.domain.user.User;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
-import com.go_exchange_easier.backend.domain.auth.RoleRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,9 +14,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
-import java.security.SignatureException;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.NonNull;
@@ -37,20 +30,16 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LogManager.getLogger(JwtFilter.class);
     private final JwtClaimsExtractor jwtClaimsExtractor;
     private final JwtTokenValidator jwtTokenValidator;
     private final HandlerExceptionResolver resolver;
-    private final RoleRepository roleRepository;
 
     public JwtFilter(
             JwtClaimsExtractor jwtClaimsExtractor,
             JwtTokenValidator jwtTokenValidator,
-            RoleRepository roleRepository,
             @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
         this.jwtClaimsExtractor = jwtClaimsExtractor;
         this.jwtTokenValidator = jwtTokenValidator;
-        this.roleRepository = roleRepository;
         this.resolver = resolver;
     }
 
@@ -86,19 +75,13 @@ public class JwtFilter extends OncePerRequestFilter {
         if ((accessToken != null) && jwtTokenValidator.validate(accessToken)) {
             int userId = jwtClaimsExtractor.extractUserId(accessToken);
             String username = jwtClaimsExtractor.extractUsername(accessToken);
-            List<String> authorities = jwtClaimsExtractor.extractRoles(accessToken);
-            UserCredentials userDetails = new UserCredentials();
-            userDetails.setUser(buildUserProxy(userId));
-            userDetails.setUsername(username);
-            Set<Role> roles = authorities.stream()
-                    .map(roleRepository::findByName)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .collect(Collectors.toSet());
-            userDetails.setRoles(roles);
+            Set<Role> roles = jwtClaimsExtractor.extractRoles(accessToken)
+                    .stream().map(Role::valueOf).collect(Collectors.toSet());
+            AuthenticatedUser authenticatedUser = new AuthenticatedUser(
+                    userId, username, null, true, roles);
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
+                            authenticatedUser, null, authenticatedUser.getAuthorities());
             authToken.setDetails(new WebAuthenticationDetailsSource()
                     .buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -108,12 +91,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private boolean isUserAlreadyAuthenticated() {
         return SecurityContextHolder.getContext()
                 .getAuthentication() != null;
-    }
-
-    private User buildUserProxy(int userId) {
-        User userProxy = new User();
-        userProxy.setId(userId);
-        return userProxy;
     }
 
 }

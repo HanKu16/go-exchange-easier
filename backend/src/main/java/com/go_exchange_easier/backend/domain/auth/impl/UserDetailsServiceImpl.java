@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.domain.auth.impl;
 
+import com.go_exchange_easier.backend.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.auth.UserCredentialsRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,11 +10,9 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
-public class UserCredentialsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserCredentialsRepository userCredentialsRepository;
 
@@ -21,10 +20,14 @@ public class UserCredentialsServiceImpl implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        Optional<UserCredentials> userCredentials = userCredentialsRepository
-                .findByUsername(username);
-        return userCredentials.orElseThrow(() -> new UsernameNotFoundException(
-                "User of username (" + username + ") not found."));
+        UserCredentials credentials = userCredentialsRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "User of username " + username + " was not found."));
+        int userId = credentials.getUser().getId();
+        boolean enabled = credentials.getUser().getDeletedAt() == null;
+        return new AuthenticatedUser(userId, credentials.getUsername(),
+                credentials.getPassword(), enabled, credentials.getRoles());
     }
 
 }

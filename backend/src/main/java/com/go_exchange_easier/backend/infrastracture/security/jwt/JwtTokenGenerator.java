@@ -1,7 +1,6 @@
 package com.go_exchange_easier.backend.infrastracture.security.jwt;
 
 import com.go_exchange_easier.backend.domain.auth.entity.Role;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.infrastracture.security.config.JwtConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,13 +23,13 @@ public class JwtTokenGenerator {
 
     private final JwtConfig jwtConfig;
 
-    public String generateAccessToken(UserCredentials credentials) {
-        Map<String, Object> claims = getClaims(credentials);
+    public String generateAccessToken(int userId, String username, Set<Role> roles) {
+        Map<String, Object> claims = getClaims(userId, username, roles);
         TokenLifetime tokenLifetime = getAccessTokenLifetime();
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(String.valueOf(credentials.getId()))
+                .subject(String.valueOf(userId))
                 .issuedAt(tokenLifetime.issuedAt)
                 .expiration(tokenLifetime.expirationAt)
                 .and()
@@ -42,12 +41,14 @@ public class JwtTokenGenerator {
         return UUID.randomUUID().toString();
     }
 
-    private Map<String, Object> getClaims(UserCredentials credentials) {
+    private Map<String, Object> getClaims(
+            int userId, String username, Set<Role> roles) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", credentials.getUser().getId());
-        claims.put("username", credentials.getUsername());
-        Set<String> roleNames = credentials.getRoles().stream()
-                .map(Role::getName)
+        claims.put("userId", userId);
+        claims.put("username", username);
+        Set<String> roleNames = roles
+                .stream()
+                .map(Enum::toString)
                 .collect(Collectors.toSet());
         claims.put("roles", roleNames);
         return claims;
