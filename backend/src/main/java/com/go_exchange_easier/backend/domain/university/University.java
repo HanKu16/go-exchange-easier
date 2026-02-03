@@ -42,13 +42,4 @@ public class University {
     @JoinColumn(name = "city_id")
     private City city;
 
-    @OneToMany(mappedBy = "university")
-    private Set<UniversityReview> reviews = new HashSet<>();
-
-    @OneToMany(mappedBy = "university")
-    private Set<Exchange> exchanges = new HashSet<>();
-
-    @OneToMany(mappedBy = "homeUniversity")
-    private Set<User> homeStudents = new HashSet<>();
-
 }

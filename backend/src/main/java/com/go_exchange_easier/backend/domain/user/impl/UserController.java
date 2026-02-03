@@ -39,7 +39,7 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<UserProfileDetails> getProfile(
-            @PathVariable("userId") int userId,
+            @PathVariable("userId") Integer userId,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
         UserProfileDetails response = userService.getProfile(
                 userId, authenticatedUser.getId());

@@ -84,7 +84,4 @@ public class User {
     @OneToMany(mappedBy = "follower")
     private Set<UniversityFollow> universityFollowsSent = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<RefreshToken> refreshTokens = new HashSet<>();
-
 }

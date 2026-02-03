@@ -50,7 +50,4 @@ public class UniversityReview {
     @OneToMany(mappedBy = "review", fetch = FetchType.EAGER)
     private Set<UniversityReviewReactionCount> reactionCounts = new HashSet<>();
 
-    @OneToMany(mappedBy = "review")
-    private Set<UniversityReviewReaction> reactions = new HashSet<>();
-
 }
