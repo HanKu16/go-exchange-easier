@@ -3,6 +3,11 @@ ENUM role {
   role_admin
 }
 
+ENUM reaction_type {
+  like
+  dislike
+}
+
 TABLE countries {
   country_id SMALLSERIAL [pk]
   english_name VARCHAR(60) [not null, unique]
@@ -80,21 +85,16 @@ TABLE university_reviews {
   university_id SMALLINT [ref: > universities.university_id, not null]
 }
 
-TABLE reaction_types {
-  reaction_type_id SMALLSERIAL [pk]
-  name VARCHAR(20) [unique, not null]
-}
-
 TABLE university_review_reactions {
   university_review_reaction_id BIGSERIAL [pk]
-  reaction_type_id SMALLINT [ref: > reaction_types.reaction_type_id, not null]
+  reaction_type REACTION_TYPE [not null]
   university_review_id INTEGER [ref: > university_reviews.university_review_id, not null]
   author_id INTEGER [ref: > users.user_id, not null]
 }
 
 TABLE university_reviews_reaction_counts {
   university_review_id INTEGER [pk, ref: > university_reviews.university_review_id]
-  reaction_type_id SMALLINT [pk, ref: > reaction_types.reaction_type_id]
+  reaction_type REACTION_TYPE [pk]
   count SMALLINT [not null]
 }
 

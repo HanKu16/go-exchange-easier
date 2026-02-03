@@ -3,6 +3,11 @@ CREATE TYPE role AS ENUM (
   'role_admin'
 );
 
+CREATE TYPE reaction_type AS ENUM (
+  'like',
+  'dislike'
+);
+
 CREATE TABLE countries (
   country_id SMALLSERIAL PRIMARY KEY,
   english_name VARCHAR(60) UNIQUE NOT NULL
@@ -81,23 +86,18 @@ CREATE TABLE university_reviews (
   university_id SMALLINT NOT NULL
 );
 
-CREATE TABLE reaction_types (
-  reaction_type_id SMALLSERIAL PRIMARY KEY,
-  name VARCHAR(20) UNIQUE NOT NULL
-);
-
 CREATE TABLE university_review_reactions (
   university_review_reaction_id BIGSERIAL PRIMARY KEY,
-  reaction_type_id SMALLINT NOT NULL,
+  reaction_type REACTION_TYPE NOT NULL,
   university_review_id INTEGER NOT NULL,
   author_id INTEGER NOT NULL
 );
 
 CREATE TABLE university_reviews_reaction_counts (
   university_review_id INTEGER,
-  reaction_type_id SMALLINT,
+  reaction_type REACTION_TYPE,
   count SMALLINT NOT NULL,
-  PRIMARY KEY (university_review_id, reaction_type_id)
+  PRIMARY KEY (university_review_id, reaction_type)
 );
 
 CREATE TABLE user_follows (
@@ -155,15 +155,11 @@ ALTER TABLE university_reviews ADD FOREIGN KEY (author_id) REFERENCES users (use
 
 ALTER TABLE university_reviews ADD FOREIGN KEY (university_id) REFERENCES universities (university_id);
 
-ALTER TABLE university_review_reactions ADD FOREIGN KEY (reaction_type_id) REFERENCES reaction_types (reaction_type_id);
-
 ALTER TABLE university_review_reactions ADD FOREIGN KEY (university_review_id) REFERENCES university_reviews (university_review_id);
 
 ALTER TABLE university_review_reactions ADD FOREIGN KEY (author_id) REFERENCES users (user_id);
 
 ALTER TABLE university_reviews_reaction_counts ADD FOREIGN KEY (university_review_id) REFERENCES university_reviews (university_review_id);
-
-ALTER TABLE university_reviews_reaction_counts ADD FOREIGN KEY (reaction_type_id) REFERENCES reaction_types (reaction_type_id);
 
 ALTER TABLE user_follows ADD FOREIGN KEY (follower_id) REFERENCES users (user_id);
 

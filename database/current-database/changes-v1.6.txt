@@ -1,4 +1,8 @@
 1. Add enum type 'role'.
 2. Remove table 'roles'
-3. Change and rename type from table 'user_roles' from 'role_id' (SMALLINT) to 'role' (ROLE).
-4. Delete column 'is_enabled' from 'user_credentials'.
+3. Change type and rename column from table 'user_roles' from 'role_id' (SMALLINT) to 'role' (ROLE).
+4. Remove column 'is_enabled' from 'user_credentials'.
+5. Add enum type 'reaction_type'.
+6. Change and rename column 'reaction_type_id' (SMALLINT) from 'university_review_reactions' to 'reaction_type' (REACTION_TYPE).
+7. Change and rename column 'reaction_type_id' (SMALLINT) from 'university_reviews_reaction_counts' to 'reaction_type' (REACTION_TYPE).
+8. Remove table 'reaction_types'.
