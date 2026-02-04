@@ -20,6 +20,7 @@ import AppShell from "./components/AppShell";
 import NotFoundPage from "./pages/NotFoundPage";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
+import { ConfirmationDialogProvider } from "./context/ConfirmationDialogContext";
 
 const AppContent = () => {
   const { isLoading } = useSignedInUser();
@@ -81,13 +82,15 @@ export const App = () => {
       <CssBaseline />
       <SignedInUserProvider>
         <SnackbarProvider>
-          <ApplicationStateProvider>
-            <Routes>
-              <Route element={<AppShell />}>
-                <Route path="/*" element={<AppContent />}></Route>
-              </Route>
-            </Routes>
-          </ApplicationStateProvider>
+          <ConfirmationDialogProvider>
+            <ApplicationStateProvider>
+              <Routes>
+                <Route element={<AppShell />}>
+                  <Route path="/*" element={<AppContent />}></Route>
+                </Route>
+              </Routes>
+            </ApplicationStateProvider>
+          </ConfirmationDialogProvider>
         </SnackbarProvider>
       </SignedInUserProvider>
     </BrowserRouter>

@@ -169,6 +169,7 @@ const ReviewInput = (props: ReviewInput) => {
         starRating: result.data.starRating,
         textContent: result.data.textContent,
         reactions: result.data.reactions,
+        showDeleteButton: false,
       };
       props.handleSuccessfulCreation(reviewProps);
       props.handleGoBackClick();
@@ -474,6 +475,7 @@ const FeedPanel = (props: FeedPanelProps) => {
         starRating: r.starRating,
         textContent: r.textContent,
         reactions: r.reactions,
+        showDeleteButton: false,
       }));
       setReviewsProps(props);
       setReviewsFetchStatus("success");

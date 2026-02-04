@@ -407,18 +407,22 @@ const FeedPanel = (props: FeedPanelProps) => {
   const getReviews = async () => {
     const result = await sendGetUserReviewsRequest(props.userId);
     if (result.isSuccess) {
-      const props: UniversityReviewProps[] = result.data.content.map((r) => ({
-        id: r.id,
-        title: r.university.englishName
-          ? r.university.englishName
-          : r.university.nativeName,
-        avatarUrl: r.author.avatarUrl,
-        subheader: getLocalDate(r.createdAt),
-        starRating: r.starRating,
-        textContent: r.textContent,
-        reactions: r.reactions,
-      }));
-      setReviewsProps(props);
+      const reviewProps: UniversityReviewProps[] = result.data.content.map(
+        (r) => ({
+          id: r.id,
+          title: r.university.englishName
+            ? r.university.englishName
+            : r.university.nativeName,
+          avatarUrl: r.author.avatarUrl,
+          subheader: getLocalDate(r.createdAt),
+          starRating: r.starRating,
+          textContent: r.textContent,
+          reactions: r.reactions,
+          showDeleteButton: props.isOwnProfile,
+          removeFromPage: () => removeFromPage(r.id),
+        }),
+      );
+      setReviewsProps(reviewProps);
       setReviewsFetchStatus("success");
     } else {
       switch (result.error.status) {
@@ -482,6 +486,10 @@ const FeedPanel = (props: FeedPanelProps) => {
           break;
       }
     }
+  };
+
+  const removeFromPage = (reviewId: number) => {
+    setReviewsProps((prev) => prev.filter((rp) => rp.id !== reviewId));
   };
 
   const getReviewsContent = () => {
