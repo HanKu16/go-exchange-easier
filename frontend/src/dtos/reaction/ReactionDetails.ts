@@ -1,8 +1,7 @@
-import type { ReactionName } from "../../types/ReactionName";
+import type { ReactionType } from "../../types/ReactionType";
 
 export type ReactionDetails = {
-  typeId: number;
-  name: ReactionName;
+  type: ReactionType;
   count: number;
   isSet: boolean;
 };

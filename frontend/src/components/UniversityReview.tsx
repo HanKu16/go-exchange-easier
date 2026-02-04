@@ -10,9 +10,15 @@ import basicAvatar from "../assets/examples/basic-avatar.png";
 import { useState } from "react";
 import { sendDeleteUniversityReviewReactionRequest } from "../utils/api/university-review";
 import { sendAddUniversityReviewReactionRequest } from "../utils/api/university-review";
-import type { ReactionDetails } from "../types/ReactionDetails";
+import type { ReactionDetails } from "../dtos/reaction/ReactionDetails";
 import Reaction from "./Reaction";
 import { useSnackbar } from "../context/SnackBarContext";
+import type { ReactionType } from "../types/ReactionType";
+
+const reactionOrder = {
+  Like: 1,
+  Dislike: 2,
+};
 
 export type UniversityReviewProps = {
   id: number;
@@ -28,7 +34,7 @@ const UniversityReview = (props: UniversityReviewProps) => {
   const [canChangeReaction, setCanChangeReaction] = useState<boolean>(true);
   const { showAlert } = useSnackbar();
 
-  const handleReactionChange = async (activeReactionId: number) => {
+  const handleReactionChange = async (activeReaction: ReactionType) => {
     if (!canChangeReaction) {
       showAlert("You have to wait to update reaction again.", "warning");
       return;
@@ -37,22 +43,20 @@ const UniversityReview = (props: UniversityReviewProps) => {
     const newReactionProps = reactionsProps.map((rp) => ({ ...rp }));
     for (let i = 0; i < newReactionProps.length; ++i) {
       const wasSetBefore = newReactionProps[i].isSet;
-      if (newReactionProps[i].typeId === activeReactionId) {
+      if (newReactionProps[i].type === activeReaction) {
         if (newReactionProps[i].isSet) {
           newReactionProps[i].isSet = false;
           newReactionProps[i].count = newReactionProps[i].count - 1;
-          await sendDeleteUniversityReviewReactionRequest(props.id, {
-            reactionTypeId: newReactionProps[i].typeId,
-          });
+          await sendDeleteUniversityReviewReactionRequest(props.id);
         } else {
           newReactionProps[i].isSet = true;
           newReactionProps[i].count = newReactionProps[i].count + 1;
           await sendAddUniversityReviewReactionRequest(props.id, {
-            reactionTypeId: newReactionProps[i].typeId,
+            reactionType: newReactionProps[i].type,
           });
         }
       }
-      if (wasSetBefore && newReactionProps[i].typeId !== activeReactionId) {
+      if (wasSetBefore && newReactionProps[i].type !== activeReaction) {
         newReactionProps[i].isSet = false;
         newReactionProps[i].count = newReactionProps[i].count - 1;
       }
@@ -63,8 +67,7 @@ const UniversityReview = (props: UniversityReviewProps) => {
 
   const [reactionsProps, setReactionsProps] = useState<ReactionDetails[]>(
     props.reactions.map((r) => ({
-      typeId: r.typeId,
-      name: r.name,
+      type: r.type,
       isSet: r.isSet,
       count: r.count,
     })),
@@ -94,7 +97,11 @@ const UniversityReview = (props: UniversityReviewProps) => {
       </CardContent>
       <CardActions disableSpacing>
         {reactionsProps
-          .sort((a, b) => a.typeId - b.typeId)
+          .sort((a, b) => {
+            const priorityA = reactionOrder[a.type];
+            const priorityB = reactionOrder[b.type];
+            return priorityA - priorityB;
+          })
           .map((r) => (
             <Reaction {...r} handleReactionChange={handleReactionChange} />
           ))}

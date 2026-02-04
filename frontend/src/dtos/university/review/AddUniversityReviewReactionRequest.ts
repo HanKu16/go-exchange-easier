@@ -1,3 +1,5 @@
+import type { ReactionType } from "../../../types/ReactionType";
+
 export type AddUniversityReviewReactionRequest = {
-  reactionTypeId: number;
-}
+  reactionType: ReactionType;
+};

@@ -32,12 +32,10 @@ export const sendAddUniversityReviewReactionRequest = async (
 
 export const sendDeleteUniversityReviewReactionRequest = async (
   reviewId: number,
-  body: AddUniversityReviewReactionRequest,
 ): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
   const uri: string = `/api/universityReviews/${reviewId}/reaction`;
   const request: RequestInit = {
     method: "DELETE",
-    body: JSON.stringify(body),
   };
   return await sendRequest(uri, request);
 };
