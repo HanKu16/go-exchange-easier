@@ -1,11 +1,11 @@
 CREATE TYPE role AS ENUM (
-  'role_user',
-  'role_admin'
+  'RoleUser',
+  'RoleAdmin'
 );
 
 CREATE TYPE reaction_type AS ENUM (
-  'like',
-  'dislike'
+  'Like',
+  'Dislike'
 );
 
 CREATE TABLE countries (

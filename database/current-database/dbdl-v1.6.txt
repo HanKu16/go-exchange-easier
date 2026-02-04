@@ -1,11 +1,11 @@
 ENUM role {
-  role_user
-  role_admin
+  RoleUser
+  RoleAdmin
 }
 
 ENUM reaction_type {
-  like
-  dislike
+  Like
+  Dislike
 }
 
 TABLE countries {
