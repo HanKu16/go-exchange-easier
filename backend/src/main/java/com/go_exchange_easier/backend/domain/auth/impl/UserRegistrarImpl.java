@@ -45,7 +45,7 @@ public class UserRegistrarImpl implements UserRegistrar {
                     request.mail() + " already exists.");
         }
         UserCredentials credentials = buildCredentials(request);
-        credentials.getRoles().add(Role.role_user);
+        credentials.getRoles().add(Role.RoleUser);
         UserCredentials savedCredentials = userCredentialsRepository.save(credentials);
         UserDescription description = buildDescription();
         UserDescription savedDescription = userDescriptionRepository.save(description);

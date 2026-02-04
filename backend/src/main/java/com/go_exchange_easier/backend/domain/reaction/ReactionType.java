@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.domain.reaction;
 
 public enum ReactionType {
 
-    like,
-    dislike;
+    Like,
+    Dislike
 
 }
