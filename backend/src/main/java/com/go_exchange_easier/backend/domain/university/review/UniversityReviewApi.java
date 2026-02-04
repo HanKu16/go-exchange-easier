@@ -28,12 +28,6 @@ public interface UniversityReviewApi {
                     responseCode = "400",
                     description = "Validation failed - invalid request body",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorResponse.class))),
-            @ApiResponse(
-                    responseCode = "422",
-                    description = "There is something wrong with resources that " +
-                            "are referenced in request body",
-                    content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<UniversityReviewDetails> create(
