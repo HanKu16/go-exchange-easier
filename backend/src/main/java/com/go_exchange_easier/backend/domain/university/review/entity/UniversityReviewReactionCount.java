@@ -3,6 +3,8 @@ package com.go_exchange_easier.backend.domain.university.review.entity;
 import com.go_exchange_easier.backend.domain.reaction.ReactionType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(name = "university_reviews_reaction_counts")
@@ -20,10 +22,11 @@ public class UniversityReviewReactionCount {
     private UniversityReview review;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "reaction_type_id")
     @EqualsAndHashCode.Include
-    private ReactionType reactionType;
+    @Column(name = "reaction_type", columnDefinition = "reaction_type")
+    @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    private ReactionType type;
 
     @Column(name = "count")
     private short count;

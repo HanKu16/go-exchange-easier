@@ -4,6 +4,8 @@ import com.go_exchange_easier.backend.domain.reaction.ReactionType;
 import com.go_exchange_easier.backend.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(name = "university_review_reactions")
@@ -19,9 +21,10 @@ public class UniversityReviewReaction {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "reaction_type_id")
-    private ReactionType reactionType;
+    @Column(name = "reaction_type", columnDefinition = "reaction_type")
+    @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    private ReactionType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_review_id")

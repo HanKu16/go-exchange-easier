@@ -2,8 +2,7 @@ package com.go_exchange_easier.backend.domain.reaction;
 
 public record ReactionDetails(
 
-        Short typeId,
-        String name,
+        ReactionType type,
         Short count,
         Boolean isSet
 

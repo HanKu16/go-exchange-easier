@@ -1,12 +1,13 @@
 package com.go_exchange_easier.backend.domain.university.review.dto;
 
+import com.go_exchange_easier.backend.domain.reaction.ReactionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 public record AddUniversityReviewReactionRequest(
 
-        @NotNull(message = "Reaction type id is required.")
-        @Schema(example = "1")
-        Short reactionTypeId
+        @NotNull(message = "Reaction type is required.")
+        @Schema(example = "like")
+        ReactionType reactionType
 
 ) { }

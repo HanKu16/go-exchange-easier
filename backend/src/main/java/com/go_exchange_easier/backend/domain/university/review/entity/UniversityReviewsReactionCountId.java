@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.domain.university.review.entity;
 
+import com.go_exchange_easier.backend.domain.reaction.ReactionType;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 import java.io.Serializable;
@@ -13,6 +14,6 @@ import java.io.Serializable;
 public class UniversityReviewsReactionCountId implements Serializable {
 
     private Integer review;
-    private Short reactionType;
+    private ReactionType type;
 
 }
