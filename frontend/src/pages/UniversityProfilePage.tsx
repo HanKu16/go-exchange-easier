@@ -334,6 +334,8 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
               <Box sx={{ display: "flex", marginTop: 1, marginLeft: 0.5 }}>
                 <LanguageIcon sx={{ color: "white", fontSize: "1.7rem" }} />
                 <Link
+                  target="_blank"
+                  rel="noopener noreferrer"
                   href={props.university.linkToWebsite}
                   underline="hover"
                   color="primary"
@@ -408,6 +410,8 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
                     />
                     <Link
                       href={props.university.linkToWebsite}
+                      target="_blank"
+                      rel="noopener"
                       underline="hover"
                       color="primary"
                       sx={{

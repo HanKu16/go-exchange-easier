@@ -19,6 +19,7 @@ import { ApplicationStateProvider } from "./context/ApplicationStateContext";
 import AppShell from "./components/AppShell";
 import NotFoundPage from "./pages/NotFoundPage";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
+import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
 
 const AppContent = () => {
   const { isLoading } = useSignedInUser();
@@ -39,6 +40,10 @@ const AppContent = () => {
       <Route element={<RedirectSignedUser />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegistrationPage />} />
+        <Route
+          path="/terms-and-conditions"
+          element={<TermsAndConditionsPage />}
+        />
       </Route>
       <Route element={<RequireAuth />}>
         <Route path="/users/:userId" element={<UserProfilePage />} />
