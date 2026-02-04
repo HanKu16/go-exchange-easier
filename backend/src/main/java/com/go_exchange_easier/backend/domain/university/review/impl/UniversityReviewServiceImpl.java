@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.domain.reaction.ReactionType;
-import com.go_exchange_easier.backend.domain.reaction.ReactionTypeRepository;
 import com.go_exchange_easier.backend.domain.university.*;
 import com.go_exchange_easier.backend.domain.reaction.ReactionDetails;
 import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewDetails;
@@ -17,7 +16,6 @@ import com.go_exchange_easier.backend.domain.university.review.entity.University
 import com.go_exchange_easier.backend.domain.user.UserRepository;
 import com.go_exchange_easier.backend.domain.user.dto.UserWithAvatarSummary;
 import com.go_exchange_easier.backend.domain.university.review.dto.CreateUniversityReviewRequest;
-import com.go_exchange_easier.backend.domain.university.review.dto.UniversityReviewReactionDetails;
 import com.go_exchange_easier.backend.common.exception.DataCorruptionException;
 import com.go_exchange_easier.backend.common.exception.NotOwnerOfResourceException;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
@@ -29,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -37,7 +36,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     private final UniversityReviewReactionCountService reactionCountService;
     private final UniversityReviewRepository universityReviewRepository;
-    private final ReactionTypeRepository reactionTypeRepository;
     private final UniversityRepository universityRepository;
     private final UserRepository userRepository;
     private final AvatarService avatarService;
@@ -107,7 +105,8 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             List<ReactionDetails> reactions = parseReactionsJson(reactionsJson);
             reviews.add(new UniversityReviewDetails(id,
                     new UserWithAvatarSummary(authorId, authorNick, avatarUrl),
-                    new UniversitySummary(universityIdFromDb, universityNativeName, universityEnglishName),
+                    new UniversitySummary(universityIdFromDb, universityNativeName,
+                            universityEnglishName),
                     starRating, textContent, createdAt, reactions));
         }
         return reviews;
@@ -127,11 +126,11 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
                                 " was not found."));
         UniversityReview review = buildUniversityReview(request, user, university);
         UniversityReview savedReview = universityReviewRepository.save(review);
-        List<UniversityReviewReactionDetails> reactionDetails =
-                reactionCountService.createCounts(savedReview);
-        List<ReactionType> reactionTypes = reactionTypeRepository.findAll();
-        List<ReactionDetails> reactions =  reactionTypes.stream()
-                .map(t -> new ReactionDetails(t.getId(), t.getName(), (short) 0, false))
+        reactionCountService.createCounts(savedReview);
+        List<ReactionDetails> reactions =  Arrays.stream(ReactionType.values())
+                .toList()
+                .stream()
+                .map(t -> new ReactionDetails(t, (short) 0, false))
                 .toList();
         String avatarKey = user.getAvatarKey();
         String avatarUrl = null;
@@ -139,8 +138,10 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             avatarUrl = avatarService.getUrl(avatarKey).thumbnail();
         }
         return new UniversityReviewDetails(
-                savedReview.getId(), new UserWithAvatarSummary(user.getId(), user.getNick(), avatarUrl),
-                new UniversitySummary(university.getId(), university.getOriginalName(),
+                savedReview.getId(), new UserWithAvatarSummary(
+                        user.getId(), user.getNick(), avatarUrl),
+                new UniversitySummary(university.getId(),
+                        university.getOriginalName(),
                         university.getEnglishName()),
                 review.getStarRating(), review.getTextContent(),
                 review.getCreatedAt().toInstant(), reactions);
@@ -151,7 +152,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     public void delete(int reviewId, int userId) {
         UniversityReview review = universityReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "University " + "review of id " + reviewId + " was not found."));
+                        "University review of id " + reviewId + " was not found."));
         if (!review.getAuthor().getId().equals(userId)) {
             throw new NotOwnerOfResourceException("Authenticated user is not " +
                     "entitled to delete university review of id " + reviewId + ".");

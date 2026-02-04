@@ -25,12 +25,11 @@ public interface UniversityReviewRepository extends
             COALESCE(
                 json_agg(
                     json_build_object(
-                        'typeId', rc.reaction_type_id,
-                        'name', rt.name,
+                        'type', rc.reaction_type,
                         'count', rc.count,
-                        'isSet',  COALESCE((rc.reaction_type_id = urr.reaction_type_id), FALSE)
+                        'isSet',  COALESCE((rc.reaction_type = urr.reaction_type), FALSE)
                     )
-                ) FILTER (WHERE rc.reaction_type_id IS NOT NULL),
+                ) FILTER (WHERE rc.reaction_type IS NOT NULL),
                 '[]'
             ) AS reactions,
             us.avatar_key
@@ -38,11 +37,10 @@ public interface UniversityReviewRepository extends
         LEFT JOIN users us ON us.user_id = ur.author_id
         LEFT JOIN universities un ON un.university_id = ur.university_id
         LEFT JOIN university_reviews_reaction_counts rc ON rc.university_review_id = ur.university_review_id
-        LEFT JOIN reaction_types rt ON rt.reaction_type_id = rc.reaction_type_id
         LEFT JOIN university_review_reactions urr ON
             urr.university_review_id = ur.university_review_id AND
-            urr.author_id = :currentUserId
-        WHERE us.user_id = :authorId AND us.deleted_at IS NULL AND
+            urr.author_id = :authorId
+        WHERE us.user_id = :currentUserId AND us.deleted_at IS NULL AND
             un.deleted_at IS NULL AND ur.deleted_at IS NULL
         GROUP BY ur.university_review_id, us.user_id, us.nick,
             un.university_id, un.english_name, un.original_name,
@@ -66,33 +64,31 @@ public interface UniversityReviewRepository extends
             COALESCE(
                 json_agg(
                    	json_build_object(
-                        'typeId', rc.reaction_type_id,
-                        'name', rt.name,
+                        'type', rc.reaction_type,
                         'count', rc.count,
-                        'isSet',  COALESCE((rc.reaction_type_id = urr.reaction_type_id), FALSE)
+                        'isSet',  COALESCE((rc.reaction_type = urr.reaction_type), FALSE)
                     )
-                ) FILTER (WHERE rc.reaction_type_id IS NOT NULL),
+                ) FILTER (WHERE rc.reaction_type IS NOT NULL),
                 '[]'
             ) AS reactions,
             us.avatar_key
-            FROM university_reviews ur
-            LEFT JOIN users us ON us.user_id = ur.author_id
-            LEFT JOIN universities un ON un.university_id = ur.university_id
-            LEFT JOIN university_reviews_reaction_counts rc ON
-                rc.university_review_id = ur.university_review_id
-            LEFT JOIN reaction_types rt ON rt.reaction_type_id = rc.reaction_type_id
-            LEFT JOIN university_review_reactions urr ON
-            	urr.university_review_id = ur.university_review_id AND
-                urr.author_id = :currentUserId
-            WHERE un.university_id = :universityId AND
-                un.deleted_at IS NULL AND us.deleted_at IS NULL AND
-                ur.deleted_at IS NULL
-            GROUP BY ur.university_review_id, us.user_id, us.nick,
-            	un.university_id, un.english_name, un.original_name,
-                ur.star_rating, ur.text_content, ur.created_at
-            ORDER BY ur.created_at DESC
-            LIMIT :limit
-            OFFSET :offset
+        FROM university_reviews ur
+        LEFT JOIN users us ON us.user_id = ur.author_id
+        LEFT JOIN universities un ON un.university_id = ur.university_id
+        LEFT JOIN university_reviews_reaction_counts rc ON
+            rc.university_review_id = ur.university_review_id
+        LEFT JOIN university_review_reactions urr ON
+           	urr.university_review_id = ur.university_review_id AND
+            urr.author_id = :currentUserId
+        WHERE un.university_id = :universityId AND
+            un.deleted_at IS NULL AND us.deleted_at IS NULL AND
+            ur.deleted_at IS NULL
+        GROUP BY ur.university_review_id, us.user_id, us.nick,
+           	un.university_id, un.english_name, un.original_name,
+            ur.star_rating, ur.text_content, ur.created_at
+        ORDER BY ur.created_at DESC
+        LIMIT :limit
+        OFFSET :offset;
         """, nativeQuery = true)
     List<Object[]> findByUniversityId(@Param("universityId") int universityId,
             @Param("currentUserId") int currentUserId, @Param("limit") int limit,
