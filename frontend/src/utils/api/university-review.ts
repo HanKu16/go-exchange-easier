@@ -18,6 +18,16 @@ export const sendCreateReviewRequest = async (
   return await sendRequest<UniversityReviewDetails>(uri, request);
 };
 
+export const sendDeleteReviewRequest = async (
+  reviewId: number,
+): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
+  const uri: string = `/api/universityReviews/${reviewId}`;
+  const request: RequestInit = {
+    method: "DELETE",
+  };
+  return await sendRequest(uri, request);
+};
+
 export const sendAddUniversityReviewReactionRequest = async (
   reviewId: number,
   body: AddUniversityReviewReactionRequest,

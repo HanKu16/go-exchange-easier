@@ -3,21 +3,63 @@ import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
+import IconButton, { type IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { Rating } from "@mui/material";
 import basicAvatar from "../assets/examples/basic-avatar.png";
 import { useState } from "react";
-import { sendDeleteUniversityReviewReactionRequest } from "../utils/api/university-review";
+import {
+  sendDeleteReviewRequest,
+  sendDeleteUniversityReviewReactionRequest,
+} from "../utils/api/university-review";
 import { sendAddUniversityReviewReactionRequest } from "../utils/api/university-review";
 import type { ReactionDetails } from "../dtos/reaction/ReactionDetails";
 import Reaction from "./Reaction";
 import { useSnackbar } from "../context/SnackBarContext";
 import type { ReactionType } from "../types/ReactionType";
+import ClearIcon from "@mui/icons-material/Clear";
+import React from "react";
+import { Tooltip } from "@mui/material";
+import { useConfirmation } from "../context/ConfirmationDialogContext";
 
 const reactionOrder = {
   Like: 1,
   Dislike: 2,
+};
+
+type DeleteCircleButtonProps = IconButtonProps & {
+  onDelete: () => void;
+  tooltipText?: string;
+};
+
+const DeleteCircleButton: React.FC<DeleteCircleButtonProps> = ({
+  onDelete,
+  tooltipText = "Delete",
+  ...props
+}) => {
+  return (
+    <Tooltip title={tooltipText} arrow>
+      <IconButton
+        onClick={onDelete}
+        size="small"
+        {...props}
+        sx={{
+          bgcolor: "rgba(0, 0, 0, 0.04)",
+          color: "text.secondary",
+          transition: "all 0.2s ease-in-out",
+          "&:hover": {
+            bgcolor: "error.lighter",
+            color: "error.main",
+            backgroundColor: "#fee2e2",
+            transform: "scale(1.1)",
+          },
+          ...props.sx,
+        }}
+      >
+        <ClearIcon sx={{ fontSize: 18 }} />
+      </IconButton>
+    </Tooltip>
+  );
 };
 
 export type UniversityReviewProps = {
@@ -28,11 +70,14 @@ export type UniversityReviewProps = {
   starRating: number;
   textContent: string;
   reactions: ReactionDetails[];
+  showDeleteButton: boolean;
+  removeFromPage?: () => void;
 };
 
 const UniversityReview = (props: UniversityReviewProps) => {
   const [canChangeReaction, setCanChangeReaction] = useState<boolean>(true);
   const { showAlert } = useSnackbar();
+  const { showConfirmation } = useConfirmation();
 
   const handleReactionChange = async (activeReaction: ReactionType) => {
     if (!canChangeReaction) {
@@ -73,6 +118,16 @@ const UniversityReview = (props: UniversityReviewProps) => {
     })),
   );
 
+  const handleDeletion = async () => {
+    const result = await sendDeleteReviewRequest(props.id);
+    if (result.isSuccess) {
+      showAlert("Review deleted successfully.", "success");
+      props.removeFromPage?.();
+    } else {
+      showAlert("Failed to delete the review.", "error");
+    }
+  };
+
   return (
     <Card sx={{ width: "95%" }}>
       <CardHeader
@@ -83,12 +138,27 @@ const UniversityReview = (props: UniversityReviewProps) => {
           />
         }
         action={
-          <IconButton aria-label="add to favorites">
-            <Rating name="read-only" value={props.starRating} readOnly />
-          </IconButton>
+          <>
+            <IconButton aria-label="add to favorites">
+              <Rating name="read-only" value={props.starRating} readOnly />
+            </IconButton>
+            {props.showDeleteButton && (
+              <DeleteCircleButton
+                onDelete={() => {
+                  showConfirmation({
+                    title: "Are you sure you want to delete this review?",
+                    message: "This action cannot be undone.",
+                    onConfirm: handleDeletion,
+                    confirmColor: "error",
+                  });
+                }}
+              />
+            )}
+          </>
         }
         title={props.title}
         subheader={props.subheader}
+        sx={{ marginRight: 1 }}
       />
       <CardContent>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
