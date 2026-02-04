@@ -9,6 +9,7 @@ import {
   InputAdornment,
   Paper,
   GlobalStyles,
+  CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { LoginRequest } from "../dtos/auth/LoginRequest";
@@ -30,8 +31,16 @@ const LoginPage = () => {
     undefined,
   );
   const { setSignedInUser } = useSignedInUser();
+  const [isWaitingForResponse, setIsWaitingForResponse] =
+    useState<boolean>(false);
 
   const handleLogin = async () => {
+    if (login.trim() === "" || password.trim() === "") {
+      setErrorMessage("Please fill in both login and password fields.");
+      setWasLoginAttemptFailed(true);
+      return;
+    }
+    setIsWaitingForResponse(true);
     const body: LoginRequest = {
       login,
       password,
@@ -68,6 +77,7 @@ const LoginPage = () => {
           break;
       }
     }
+    setIsWaitingForResponse(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -195,27 +205,42 @@ const LoginPage = () => {
                   </Typography>
                 </Stack>
               )}
-              <Button
-                variant="contained"
-                size="large"
-                onClick={handleLogin}
-                fullWidth
-                sx={{
-                  py: 1.5,
-                  mt: 1,
-                  backgroundColor: "#182c44",
-                  fontWeight: "bold",
-                  textTransform: "none",
-                  fontSize: "1rem",
-                  boxShadow: "0 4px 12px rgba(24, 44, 68, 0.3)",
-                  "&:hover": {
-                    backgroundColor: "#2c4866",
-                    boxShadow: "0 6px 16px rgba(24, 44, 68, 0.4)",
-                  },
-                }}
-              >
-                Sign In
-              </Button>
+              <Box sx={{ position: "relative", mt: 2 }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={handleLogin}
+                  fullWidth
+                  disabled={isWaitingForResponse}
+                  sx={{
+                    py: 1.5,
+                    mt: 1,
+                    backgroundColor: "#182c44",
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    boxShadow: "0 4px 12px rgba(24, 44, 68, 0.3)",
+                    "&:hover": {
+                      backgroundColor: "#2c4866",
+                      boxShadow: "0 6px 16px rgba(24, 44, 68, 0.4)",
+                    },
+                  }}
+                >
+                  Sign In
+                </Button>
+                {isWaitingForResponse && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      marginTop: "-12px",
+                      marginLeft: "-12px",
+                    }}
+                  />
+                )}
+              </Box>
             </Stack>
             <Box sx={{ mt: 4, width: "100%" }}>
               <Divider sx={{ mb: 2 }}>
