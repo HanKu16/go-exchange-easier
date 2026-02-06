@@ -38,42 +38,39 @@ CREATE TABLE user_statuses (
   name VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE user_credentials (
-  user_credential_id SERIAL PRIMARY KEY,
-  username VARCHAR(20) UNIQUE NOT NULL,
-  password TEXT NOT NULL
-);
-
-CREATE TABLE user_descriptions (
-  user_description_id SERIAL PRIMARY KEY,
-  text_content VARCHAR(500) NOT NULL,
-  updated_at TIMESTAMPTZ
-);
-
-CREATE TABLE user_notifications (
-  user_notification_id SERIAL PRIMARY KEY,
-  mail VARCHAR(254) UNIQUE,
-  is_mail_notification_enabled BOOLEAN NOT NULL
-);
-
 CREATE TABLE users (
   user_id SERIAL PRIMARY KEY,
   nick VARCHAR(20) NOT NULL,
   avatar_key VARCHAR(255),
   created_at TIMESTAMPTZ NOT NULL,
   deleted_at TIMESTAMPTZ,
-  user_credential_id INTEGER NOT NULL,
-  user_description_id INTEGER NOT NULL,
-  user_notification_id INTEGER NOT NULL,
   user_status_id SMALLINT,
   home_university_id SMALLINT,
   country_of_origin_id SMALLINT
 );
 
+CREATE TABLE user_descriptions (
+  user_id INTEGER PRIMARY KEY,
+  text_content VARCHAR(500) NOT NULL,
+  updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE user_notifications (
+  user_id INTEGER PRIMARY KEY,
+  mail VARCHAR(254) UNIQUE,
+  is_mail_notification_enabled BOOLEAN NOT NULL
+);
+
+CREATE TABLE user_credentials (
+  user_id INTEGER PRIMARY KEY,
+  username VARCHAR(20) UNIQUE NOT NULL,
+  password TEXT NOT NULL
+);
+
 CREATE TABLE user_roles (
-  user_credential_id INTEGER,
+  user_id INTEGER,
   role ROLE,
-  PRIMARY KEY (user_credential_id, role)
+  PRIMARY KEY (user_id, role)
 );
 
 CREATE TABLE university_reviews (
@@ -137,11 +134,11 @@ ALTER TABLE cities ADD FOREIGN KEY (country_id) REFERENCES countries (country_id
 
 ALTER TABLE universities ADD FOREIGN KEY (city_id) REFERENCES cities (city_id);
 
-ALTER TABLE users ADD FOREIGN KEY (user_credential_id) REFERENCES user_credentials (user_credential_id);
+ALTER TABLE user_credentials ADD FOREIGN KEY (user_id) REFERENCES users (user_id);
 
-ALTER TABLE users ADD FOREIGN KEY (user_description_id) REFERENCES user_descriptions (user_description_id);
+ALTER TABLE user_descriptions ADD FOREIGN KEY (user_id) REFERENCES users (user_id);
 
-ALTER TABLE users ADD FOREIGN KEY (user_notification_id) REFERENCES user_notifications (user_notification_id);
+ALTER TABLE user_notifications ADD FOREIGN KEY (user_id) REFERENCES users (user_id);
 
 ALTER TABLE users ADD FOREIGN KEY (user_status_id) REFERENCES user_statuses (user_status_id);
 
@@ -149,7 +146,7 @@ ALTER TABLE users ADD FOREIGN KEY (home_university_id) REFERENCES universities (
 
 ALTER TABLE users ADD FOREIGN KEY (country_of_origin_id) REFERENCES countries (country_id);
 
-ALTER TABLE user_roles ADD FOREIGN KEY (user_credential_id) REFERENCES user_credentials (user_credential_id);
+ALTER TABLE user_roles ADD FOREIGN KEY (user_id) REFERENCES user_credentials (user_id);
 
 ALTER TABLE university_reviews ADD FOREIGN KEY (author_id) REFERENCES users (user_id);
 

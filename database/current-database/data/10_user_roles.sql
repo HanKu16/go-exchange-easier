@@ -1,4 +1,4 @@
-INSERT INTO user_roles(user_credential_id, role) VALUES
+INSERT INTO user_roles(user_id, role) VALUES
 	(1, 'RoleUser'),
 	(2, 'RoleUser'),
 	(3, 'RoleUser'),
