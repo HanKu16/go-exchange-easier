@@ -1,4 +1,4 @@
-INSERT INTO university_majors(name)
+INSERT INTO fields_of_study(name)
 VALUES
 	('Computer Science'),
 	('Law'),

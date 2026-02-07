@@ -28,8 +28,8 @@ CREATE TABLE universities (
   city_id INTEGER NOT NULL
 );
 
-CREATE TABLE university_majors (
-  university_major_id SMALLSERIAL PRIMARY KEY,
+CREATE TABLE fields_of_study (
+  field_of_study_id SMALLSERIAL PRIMARY KEY,
   name VARCHAR(50) UNIQUE NOT NULL
 );
 
@@ -114,7 +114,7 @@ CREATE TABLE exchanges (
   started_at DATE NOT NULL,
   end_at DATE NOT NULL,
   user_id INTEGER NOT NULL,
-  university_major_id SMALLINT NOT NULL,
+  field_of_study_id SMALLINT NOT NULL,
   university_id SMALLINT NOT NULL
 );
 
@@ -168,7 +168,7 @@ ALTER TABLE university_follows ADD FOREIGN KEY (university_id) REFERENCES univer
 
 ALTER TABLE exchanges ADD FOREIGN KEY (user_id) REFERENCES users (user_id);
 
-ALTER TABLE exchanges ADD FOREIGN KEY (university_major_id) REFERENCES university_majors (university_major_id);
+ALTER TABLE exchanges ADD FOREIGN KEY (field_of_study_id) REFERENCES fields_of_study (field_of_study_id);
 
 ALTER TABLE exchanges ADD FOREIGN KEY (university_id) REFERENCES universities (university_id);
 

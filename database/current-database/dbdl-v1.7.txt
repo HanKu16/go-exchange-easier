@@ -28,8 +28,8 @@ TABLE universities {
   city_id INTEGER [ref: > cities.city_id, not null]
 }
 
-TABLE university_majors {
-  university_major_id SMALLSERIAL [pk]
+TABLE fields_of_study {
+  field_of_study_id SMALLSERIAL [pk]
   name VARCHAR(50) [unique, not null]
 }
 
@@ -110,7 +110,7 @@ TABLE exchanges {
   started_at DATE [not null]
   end_at DATE [not null]
   user_id INTEGER [ref: > users.user_id, not null]
-  university_major_id SMALLINT [ref: > university_majors.university_major_id, not null]
+  field_of_study_id SMALLINT [ref: > fields_of_study.field_of_study_id, not null]
   university_id SMALLINT [ref: > universities.university_id, not null]
 }
 

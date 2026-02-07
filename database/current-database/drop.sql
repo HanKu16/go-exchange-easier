@@ -11,7 +11,7 @@ DROP TABLE user_descriptions;
 DROP TABLE user_credentials;
 DROP TABLE users;
 DROP TABLE user_statuses;
-DROP TABLE university_majors;
+DROP TABLE fields_of_study;
 DROP TABLE universities;
 DROP TABLE cities;
 DROP TABLE countries;
