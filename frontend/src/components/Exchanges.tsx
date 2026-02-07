@@ -36,11 +36,11 @@ export type ExchangesProps = {
 
 const Exchanges = (props: ExchangesProps) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMdSizeDevice = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <Box sx={{ display: "flex", margin: "auto", width: "91%" }}>
-      {!isMobile ? (
+      {!isMdSizeDevice ? (
         <TableContainer
           component={Paper}
           sx={{ boxShadow: 4, borderRadius: 3, overflow: "hidden" }}
@@ -63,7 +63,7 @@ const Exchanges = (props: ExchangesProps) => {
                     >
                       {header}
                     </TableCell>
-                  )
+                  ),
                 )}
               </TableRow>
             </TableHead>

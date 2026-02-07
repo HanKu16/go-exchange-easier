@@ -23,13 +23,15 @@ import ContentLoadError from "../components/ContentLoadError";
 import { useSnackbar } from "../context/SnackBarContext";
 import { sendGetUniversitiesRequest } from "../utils/api/university";
 import { sendGetCountriesRequest } from "../utils/api/country";
+import Exchanges, { type ExchangesProps } from "../components/Exchanges";
 
 type Major = FieldOfStudySummary;
 
 type AddExchangeStage =
   | "Choose university"
   | "Choose major"
-  | "Choose time range";
+  | "Choose time range"
+  | "Exchange added successfully";
 
 type ChooseUniversitySubpanelProps = {
   selectedUniversityId: number | undefined;
@@ -46,6 +48,13 @@ type ChooseMajorSubpanelProps = {
 type ChooseTimeRangeSubpanel = {
   selectedUniversityId: number | undefined;
   selectedMajorId: number | undefined;
+  setCurrentStage: (stage: AddExchangeStage) => void;
+  setExchangesProps: (props: ExchangesProps) => void;
+};
+
+type ExchangeAddedSuccessfullySubpanelProps = {
+  exchangesProps: ExchangesProps | undefined;
+  setCurrentStage: (stage: AddExchangeStage) => void;
 };
 
 const ChooseUniversitySubpanel = (props: ChooseUniversitySubpanelProps) => {
@@ -418,8 +427,36 @@ const ChooseTimeRangeSubpanel = (props: ChooseTimeRangeSubpanel) => {
     setShouldButtonBeShown(false);
     const response = await sendCreateExchangeRequest(request);
     if (response.isSuccess) {
+      const exchandeDetails = response.data;
       showAlert("Exchange was successfully added.", "success");
       setWasExchangeAddedSuccessfully(true);
+      props.setCurrentStage("Exchange added successfully");
+      props.setExchangesProps({
+        exchanges: [
+          {
+            id: exchandeDetails.id,
+            timeRange: {
+              startedAt: exchandeDetails.timeRange.startedAt,
+              endAt: exchandeDetails.timeRange.endAt,
+            },
+            university: {
+              id: exchandeDetails.university.id,
+              name: exchandeDetails.university.englishName
+                ? exchandeDetails.university.englishName
+                : exchandeDetails.university.nativeName,
+            },
+            universityMajorName: exchandeDetails.fieldOfStudy.name,
+            city: {
+              name: exchandeDetails.university.city.name,
+              countryName: exchandeDetails.university.city.country.englishName,
+            },
+            user: {
+              id: exchandeDetails.user.id,
+              nick: exchandeDetails.user.nick,
+            },
+          },
+        ],
+      });
     } else {
       const globalErrorsCodes = getGlobalErrorCodes(response.error);
       if (globalErrorsCodes.length !== 0) {
@@ -475,6 +512,36 @@ const ChooseTimeRangeSubpanel = (props: ChooseTimeRangeSubpanel) => {
   );
 };
 
+const ExchangeAddedSuccessfullySubpanel = (
+  props: ExchangeAddedSuccessfullySubpanelProps,
+) => {
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <PanelHeader label="Added exchange details" />
+      <br></br>
+      {props.exchangesProps && <Exchanges {...props.exchangesProps} />}
+      <Button
+        variant="contained"
+        size="medium"
+        sx={{
+          marginLeft: 2,
+          marginTop: 4,
+          width: { xs: "50%", md: "20%" },
+          backgroundColor: "#04315f",
+          "&:hover": {
+            backgroundColor: "#064080",
+          },
+        }}
+        onClick={() => {
+          props.setCurrentStage("Choose university");
+        }}
+      >
+        Add next exchange
+      </Button>
+    </Box>
+  );
+};
+
 const AddExchangePanel = () => {
   const [currentStage, setCurrentStage] =
     useState<AddExchangeStage>("Choose university");
@@ -484,6 +551,16 @@ const AddExchangePanel = () => {
   const [selectedMajorId, setSelectedMajorId] = useState<number | undefined>(
     undefined,
   );
+  const [exchangesProps, setExchangesProps] = useState<
+    ExchangesProps | undefined
+  >(undefined);
+
+  useEffect(() => {
+    if (currentStage === "Exchange added successfully") {
+      setSelectedUniversityId(undefined);
+      setSelectedMajorId(undefined);
+    }
+  }, [currentStage]);
 
   const getStagePanel = () => {
     if (currentStage === "Choose university") {
@@ -507,6 +584,15 @@ const AddExchangePanel = () => {
         <ChooseTimeRangeSubpanel
           selectedMajorId={selectedMajorId}
           selectedUniversityId={selectedUniversityId}
+          setCurrentStage={setCurrentStage}
+          setExchangesProps={setExchangesProps}
+        />
+      );
+    } else if (currentStage === "Exchange added successfully") {
+      return (
+        <ExchangeAddedSuccessfullySubpanel
+          exchangesProps={exchangesProps}
+          setCurrentStage={setCurrentStage}
         />
       );
     }
