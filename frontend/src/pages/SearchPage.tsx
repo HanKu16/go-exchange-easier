@@ -735,7 +735,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
               route: `/universities/${e.university.id}`,
             },
             {
-              toShow: e.major.name,
+              toShow: e.fieldOfStudy.name,
               route: undefined,
             },
             {

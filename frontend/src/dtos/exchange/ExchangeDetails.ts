@@ -8,5 +8,5 @@ export type ExchangeDetails = {
   timeRange: TimeRangeSummary;
   user: UserSummary;
   university: UniversityDetails;
-  major: FieldOfStudySummary;
+  fieldOfStudy: FieldOfStudySummary;
 };

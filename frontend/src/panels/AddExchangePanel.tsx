@@ -412,7 +412,7 @@ const ChooseTimeRangeSubpanel = (props: ChooseTimeRangeSubpanel) => {
       startedAt: formattedStartDate,
       endAt: formattedEndDate,
       universityId: props.selectedUniversityId,
-      universityMajorId: props.selectedMajorId,
+      fieldOfStudyId: props.selectedMajorId,
     };
     showAlert("Waiting for server response.", "info");
     setShouldButtonBeShown(false);

@@ -12,7 +12,7 @@ export const sendGetExchangesRequest = async (
   countryId: number | undefined | null,
   universityId: number | undefined | null,
   cityId: number | undefined | null,
-  majorId: number | undefined | null,
+  fieldOfStudyId: number | undefined | null,
   startDate: string | undefined | null,
   endDate: string | undefined | null,
   userId: number | undefined | null,
@@ -23,7 +23,8 @@ export const sendGetExchangesRequest = async (
   if (countryId) url.searchParams.append("countryId", `${countryId}`);
   if (universityId) url.searchParams.append("universityId", `${universityId}`);
   if (cityId) url.searchParams.append("cityId", `${cityId}`);
-  if (majorId) url.searchParams.append("majorId", `${majorId}`);
+  if (fieldOfStudyId)
+    url.searchParams.append("fieldOfStudyId", `${fieldOfStudyId}`);
   if (startDate) url.searchParams.append("startDate", startDate);
   if (endDate) url.searchParams.append("endDate", endDate);
   if (userId) url.searchParams.append("userId", `${userId}`);

@@ -246,7 +246,7 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
               ? e.university.englishName
               : e.university.nativeName,
           },
-          universityMajorName: e.major.name,
+          universityMajorName: e.fieldOfStudy.name,
           city: {
             name: e.university.city.name,
             countryName: e.university.city.country.englishName,
