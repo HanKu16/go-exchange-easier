@@ -26,6 +26,7 @@ import { useSnackbar } from "../context/SnackBarContext";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
+import { useConfirmation } from "../context/ConfirmationDialogContext";
 
 type ActionExchangeTableProps = {
   exchanges: {
@@ -57,16 +58,24 @@ const ActionExchangeTableProps = (props: ActionExchangeTableProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const { showAlert } = useSnackbar();
+  const { showConfirmation } = useConfirmation();
 
   const handleDeletion = async (exchangeId: number) => {
-    showAlert("Waiting for server response.", "info");
-    const response = await sendDeleteExchangeRequest(exchangeId);
-    if (response.isSuccess) {
-      showAlert("Exchange was deleted successfully.", "success");
-      props.setDeletedExchangeId(exchangeId);
-    } else {
-      showAlert("Failed to delete exchange.", "error");
-    }
+    showConfirmation({
+      title: "Are you sure you want to delete this exchange?",
+      message: "This action cannot be undone.",
+      onConfirm: async () => {
+        showAlert("Waiting for server response.", "info");
+        const response = await sendDeleteExchangeRequest(exchangeId);
+        if (response.isSuccess) {
+          showAlert("Exchange was deleted successfully.", "success");
+          props.setDeletedExchangeId(exchangeId);
+        } else {
+          showAlert("Failed to delete exchange.", "error");
+        }
+      },
+      confirmColor: "error",
+    });
   };
 
   return (
