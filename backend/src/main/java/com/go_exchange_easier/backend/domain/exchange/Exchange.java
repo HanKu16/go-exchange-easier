@@ -36,7 +36,7 @@ public class Exchange {
     private University university;
 
     @ManyToOne
-    @JoinColumn(name = "university_major_id")
-    private FieldOfStudy universityMajor;
+    @JoinColumn(name = "field_of_study_id")
+    private FieldOfStudy fieldOfStudy;
 
 }

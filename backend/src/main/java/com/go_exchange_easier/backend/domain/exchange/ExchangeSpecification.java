@@ -23,8 +23,8 @@ public class ExchangeSpecification {
                 ExchangeSpecification::hasCountryId);
         spec = SpecificationUtils.append(spec, filter.cityId(),
                 ExchangeSpecification::hasCityId);
-        spec = SpecificationUtils.append(spec, filter.majorId(),
-                ExchangeSpecification::hasMajorId);
+        spec = SpecificationUtils.append(spec, filter.fieldOfStudyId(),
+                ExchangeSpecification::hasFieldOfStudyId);
         spec = SpecificationUtils.append(spec, filter.startDate(),
                 ExchangeSpecification::hasStartDateAtLeast);
         spec = SpecificationUtils.append(spec, filter.endDate(),
@@ -62,11 +62,11 @@ public class ExchangeSpecification {
         };
     }
 
-    public static Specification<Exchange> hasMajorId(short majorId) {
+    public static Specification<Exchange> hasFieldOfStudyId(short fieldOfStudyId) {
         return (root, query, cb) -> {
-            Join<Exchange, FieldOfStudy> majorsJoin =
-                    root.join("universityMajor");
-            return cb.equal(majorsJoin.get("id"), majorId);
+            Join<Exchange, FieldOfStudy> fieldsOfStudy =
+                    root.join("fieldOfStudy");
+            return cb.equal(fieldsOfStudy.get("id"), fieldOfStudyId);
         };
     }
 

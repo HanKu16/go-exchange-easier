@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "university_majors")
+@Table(name = "fields_of_study")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,7 +12,7 @@ import lombok.*;
 public class FieldOfStudy {
 
     @Id
-    @Column(name = "university_major_id")
+    @Column(name = "field_of_study_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Short id;

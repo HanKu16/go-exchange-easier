@@ -49,12 +49,12 @@ public class ExchangeServiceImpl implements ExchangeService {
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
                         "University of id " + request.universityId() +
                                 " was not found."));
-        FieldOfStudy major = fieldOfStudyRepository
-                .findById(request.universityMajorId())
+        FieldOfStudy fieldOfStudy = fieldOfStudyRepository
+                .findById(request.fieldOfStudyId())
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
-                        "University major of id " + request.universityMajorId() +
+                        "Field of study of id " + request.fieldOfStudyId() +
                                 " was not found."));
-        Exchange exchange = buildExchange(request, userProxy, university, major);
+        Exchange exchange = buildExchange(request, userProxy, university, fieldOfStudy);
         Exchange savedExchange = exchangeRepository.save(exchange);
         return ExchangeDetails.fromEntity(savedExchange);
     }
@@ -73,13 +73,13 @@ public class ExchangeServiceImpl implements ExchangeService {
     }
 
     private Exchange buildExchange(CreateExchangeRequest request, User user,
-            University university, FieldOfStudy major) {
+            University university, FieldOfStudy fieldOfStudy) {
         Exchange exchange = new Exchange();
         exchange.setStartedAt(request.startedAt());
         exchange.setEndAt(request.endAt());
         exchange.setUser(user);
         exchange.setUniversity(university);
-        exchange.setUniversityMajor(major);
+        exchange.setFieldOfStudy(fieldOfStudy);
         return exchange;
     }
 

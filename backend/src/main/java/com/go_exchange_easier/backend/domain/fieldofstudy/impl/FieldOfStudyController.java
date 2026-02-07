@@ -21,10 +21,10 @@ public class FieldOfStudyController implements FieldOfStudyApi {
     @GetMapping
     @Override
     public ResponseEntity<Listing<FieldOfStudySummary>> getAll() {
-        List<FieldOfStudySummary> majors = fieldOfStudyService.getAll();
+        List<FieldOfStudySummary> fieldsOfStudy = fieldOfStudyService.getAll();
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
-                .body(Listing.of(majors));
+                .body(Listing.of(fieldsOfStudy));
     }
 
 }

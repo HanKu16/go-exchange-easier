@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -19,11 +18,11 @@ public class FieldOfStudyServiceImpl implements FieldOfStudyService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value="university_majors", key="'all'")
+    @Cacheable(value="fields_of_study", key="'all'")
     public List<FieldOfStudySummary> getAll() {
-        List<FieldOfStudy> majors = fieldOfStudyRepository.findAll();
-        return majors.stream()
-                .map(m -> new FieldOfStudySummary(m.getId(), m.getName()))
+        List<FieldOfStudy> fieldsOfStudy = fieldOfStudyRepository.findAll();
+        return fieldsOfStudy.stream()
+                .map(f -> new FieldOfStudySummary(f.getId(), f.getName()))
                 .toList();
     }
 

@@ -23,8 +23,8 @@ public record CreateExchangeRequest(
         @Schema(example = "9")
         Short universityId,
 
-        @NotNull(message = "University major id can not be null.")
+        @NotNull(message = "Field of study id can not be null.")
         @Schema(example = "20")
-        Short universityMajorId
+        Short fieldOfStudyId
 
 ) { }

@@ -11,7 +11,7 @@ public record ExchangeDetails(
         TimeRangeSummary timeRange,
         UserSummary user,
         UniversityDetails university,
-        FieldOfStudySummary major
+        FieldOfStudySummary fieldOfStudy
 ) {
 
     public static ExchangeDetails fromEntity(Exchange e) {
@@ -20,7 +20,7 @@ public record ExchangeDetails(
                 new TimeRangeSummary(e.getStartedAt(), e.getEndAt()),
                 UserSummary.fromEntity(e.getUser()),
                 UniversityDetails.fromEntity(e.getUniversity()),
-                FieldOfStudySummary.fromEntity(e.getUniversityMajor())
+                FieldOfStudySummary.fromEntity(e.getFieldOfStudy())
         );
     }
 
