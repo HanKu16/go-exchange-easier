@@ -17,8 +17,7 @@ import java.util.Set;
 public class UserCredentials {
 
     @Id
-    @Column(name = "user_credential_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     @EqualsAndHashCode.Include
     private Integer id;
 
@@ -29,7 +28,9 @@ public class UserCredentials {
     @Column(name = "password")
     private String password;
 
-    @OneToOne(mappedBy = "credentials")
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "role", columnDefinition = "role")
@@ -37,7 +38,7 @@ public class UserCredentials {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_credential_id")
+            joinColumns = @JoinColumn(name = "user_id")
     )
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private Set<Role> roles = new HashSet<>();

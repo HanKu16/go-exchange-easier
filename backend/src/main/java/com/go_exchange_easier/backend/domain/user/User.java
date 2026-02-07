@@ -1,15 +1,11 @@
 package com.go_exchange_easier.backend.domain.user;
 
-import com.go_exchange_easier.backend.domain.auth.entity.RefreshToken;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import com.go_exchange_easier.backend.domain.exchange.Exchange;
 import com.go_exchange_easier.backend.domain.follow.university.UniversityFollow;
 import com.go_exchange_easier.backend.domain.follow.user.UserFollow;
 import com.go_exchange_easier.backend.domain.location.country.Country;
 import com.go_exchange_easier.backend.domain.university.University;
 import com.go_exchange_easier.backend.domain.university.review.entity.UniversityReview;
-import com.go_exchange_easier.backend.domain.user.description.UserDescription;
-import com.go_exchange_easier.backend.domain.user.notification.UserNotification;
 import com.go_exchange_easier.backend.domain.user.status.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,18 +40,6 @@ public class User {
 
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_credential_id")
-    private UserCredentials credentials;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_description_id")
-    private UserDescription description;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_notification_id")
-    private UserNotification notification;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_status_id")

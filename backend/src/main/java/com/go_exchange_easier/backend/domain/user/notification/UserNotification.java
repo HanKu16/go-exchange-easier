@@ -13,8 +13,7 @@ import lombok.*;
 public class UserNotification {
 
     @Id
-    @Column(name = "user_notification_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     @EqualsAndHashCode.Include
     private Integer id;
 
@@ -24,7 +23,9 @@ public class UserNotification {
     @Column(name = "is_mail_notification_enabled")
     private boolean isMailNotificationEnabled;
 
-    @OneToOne(mappedBy = "notification")
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "user_id")
     private User user;
 
 }
