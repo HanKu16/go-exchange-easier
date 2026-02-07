@@ -82,11 +82,6 @@ const SearchResultTable = (props: SearchResultTableProps) => {
                       }}
                       sx={{
                         cursor: cell.route ? "pointer" : "default",
-                        // "&:hover": cell.route
-                        //   ? {
-                        //       textDecoration: "underline",
-                        //     }
-                        //   : {},
                         "&:hover > span": {
                           textDecoration: "underline",
                         },

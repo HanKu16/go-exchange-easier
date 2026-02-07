@@ -476,6 +476,7 @@ const FeedPanel = (props: FeedPanelProps) => {
         textContent: r.textContent,
         reactions: r.reactions,
         showDeleteButton: false,
+        route: `/users/${r.author.id}`,
       }));
       setReviewsProps(props);
       setReviewsFetchStatus("success");

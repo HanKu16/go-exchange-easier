@@ -21,6 +21,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import React from "react";
 import { Tooltip } from "@mui/material";
 import { useConfirmation } from "../context/ConfirmationDialogContext";
+import { useNavigate } from "react-router-dom";
 
 const reactionOrder = {
   Like: 1,
@@ -71,6 +72,7 @@ export type UniversityReviewProps = {
   textContent: string;
   reactions: ReactionDetails[];
   showDeleteButton: boolean;
+  route?: string;
   removeFromPage?: () => void;
 };
 
@@ -78,6 +80,7 @@ const UniversityReview = (props: UniversityReviewProps) => {
   const [canChangeReaction, setCanChangeReaction] = useState<boolean>(true);
   const { showAlert } = useSnackbar();
   const { showConfirmation } = useConfirmation();
+  const navigate = useNavigate();
 
   const handleReactionChange = async (activeReaction: ReactionType) => {
     if (!canChangeReaction) {
@@ -156,7 +159,24 @@ const UniversityReview = (props: UniversityReviewProps) => {
             )}
           </>
         }
-        title={props.title}
+        title={
+          <Typography
+            onClick={() => {
+              if (props.route) navigate(props.route);
+            }}
+            variant="body2"
+            sx={{
+              cursor: props.route ? "pointer" : "default",
+              "&:hover": props.route
+                ? {
+                    textDecoration: "underline",
+                  }
+                : {},
+            }}
+          >
+            {props.title}
+          </Typography>
+        }
         subheader={props.subheader}
         sx={{ marginRight: 1 }}
       />
