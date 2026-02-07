@@ -170,7 +170,12 @@ const FollowBox = (props: FollowBoxProps) => {
               flexShrink: 0,
             }}
           >
-            {props.name.charAt(0).toUpperCase()}
+            <img
+              src={basicAvatar}
+              alt="Default user avatar"
+              style={{ width: "100%", height: "100%" }}
+            />
+            {/* {props.name.charAt(0).toUpperCase()} */}
           </Avatar>
           <Box sx={{ minWidth: 0 }}>
             <Typography
