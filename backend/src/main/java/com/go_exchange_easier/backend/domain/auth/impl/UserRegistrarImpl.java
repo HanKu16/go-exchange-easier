@@ -44,46 +44,43 @@ public class UserRegistrarImpl implements UserRegistrar {
             throw new MailAlreadyExistsException("User of mail " +
                     request.mail() + " already exists.");
         }
-        UserCredentials credentials = buildCredentials(request);
+        User user = buildUser(request);
+        User savedUser = userRepository.save(user);
+        UserCredentials credentials = buildCredentials(request, user);
         credentials.getRoles().add(Role.RoleUser);
         UserCredentials savedCredentials = userCredentialsRepository.save(credentials);
-        UserDescription description = buildDescription();
+        UserDescription description = buildDescription(user);
         UserDescription savedDescription = userDescriptionRepository.save(description);
-        UserNotification notification = buildNotification(request);
+        UserNotification notification = buildNotification(request, user);
         UserNotification savedNotification = userNotificationRepository.save(notification);
-        User user = buildUser(request, savedCredentials,
-                savedDescription, savedNotification);
-        User savedUser = userRepository.save(user);
         return new RegistrationSummary(savedUser.getId(), credentials.getUsername(),
                 savedUser.getNick(), savedUser.getCreatedAt());
     }
 
-    private User buildUser(RegistrationRequest request, UserCredentials credentials,
-                           UserDescription description, UserNotification notification) {
+    private User buildUser(RegistrationRequest request) {
         User user = new User();
         user.setNick(request.nick() != null ? request.nick() : request.login());
         user.setCreatedAt(OffsetDateTime.now());
-        user.setCredentials(credentials);
-        user.setDescription(description);
-        user.setNotification(notification);
         return user;
     }
 
-    private UserCredentials buildCredentials(RegistrationRequest request) {
+    private UserCredentials buildCredentials(RegistrationRequest request, User user) {
         String encodedPassword = passwordEncoder.encode(request.password());
         UserCredentials credentials = new UserCredentials();
         credentials.setUsername(request.login());
         credentials.setPassword(encodedPassword);
+        credentials.setUser(user);
         return credentials;
     }
 
-    private UserDescription buildDescription() {
+    private UserDescription buildDescription(User user) {
         UserDescription description = new UserDescription();
         description.setTextContent("");
+        description.setUser(user);
         return description;
     }
 
-    private UserNotification buildNotification(RegistrationRequest request) {
+    private UserNotification buildNotification(RegistrationRequest request, User user) {
         UserNotification notification = new UserNotification();
         String mail = (request.mail() == null || request.mail().isBlank()) ?
                 null : request.mail();
@@ -91,6 +88,7 @@ public class UserRegistrarImpl implements UserRegistrar {
         boolean isMailNotificationEnabled = mail != null;
         notification.setMail(mail);
         notification.setMailNotificationEnabled(isMailNotificationEnabled);
+        notification.setUser(user);
         return notification;
     }
 

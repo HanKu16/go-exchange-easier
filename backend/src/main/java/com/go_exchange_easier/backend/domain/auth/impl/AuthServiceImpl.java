@@ -1,6 +1,7 @@
 package com.go_exchange_easier.backend.domain.auth.impl;
 
 import com.go_exchange_easier.backend.domain.auth.AuthService;
+import com.go_exchange_easier.backend.domain.auth.UserCredentialsRepository;
 import com.go_exchange_easier.backend.domain.auth.dto.*;
 import com.go_exchange_easier.backend.domain.auth.entity.RefreshToken;
 import com.go_exchange_easier.backend.domain.auth.RefreshTokenRepository;
@@ -13,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    private final UserCredentialsRepository credentialsRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenGenerator jwtTokenGenerator;
@@ -73,7 +74,8 @@ public class AuthServiceImpl implements AuthService {
         if (user.getDeletedAt() != null) {
             throw new UserAccountRevokedException("User account is revoked.");
         }
-        UserCredentials credentials = user.getCredentials();
+        UserCredentials credentials = credentialsRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("XXDDD"));
         String newAccessToken = jwtTokenGenerator.generateAccessToken(
                 credentials.getUser().getId(), credentials.getUsername(),
                 credentials.getRoles());
