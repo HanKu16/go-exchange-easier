@@ -182,7 +182,13 @@ const UserDataPanel = (props: UserDataPanelProps) => {
               width: "20vh",
               height: "20vh",
             }}
-          />
+          >
+            <img
+              src={basicAvatar}
+              alt="Default user avatar"
+              style={{ width: "100%", height: "100%" }}
+            />
+          </Avatar>
           <Typography
             sx={{
               color: "white",
@@ -299,7 +305,13 @@ const UserDataPanel = (props: UserDataPanelProps) => {
                 marginRight: 3,
                 marginTop: 1,
               }}
-            />
+            >
+              <img
+                src={basicAvatar}
+                alt="Default user avatar"
+                style={{ width: "100%", height: "100%" }}
+              />
+            </Avatar>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography
                 sx={{

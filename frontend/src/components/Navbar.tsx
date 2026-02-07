@@ -139,7 +139,13 @@ const Navbar = () => {
                   alt="User avatar"
                   src={signedInUser ? signedInUser.avatarUrl : basicAvatar}
                   sx={{ width: "2.5rem", height: "2.5rem" }}
-                />
+                >
+                  <img
+                    src={basicAvatar}
+                    alt="Default user avatar"
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </Avatar>
               </IconButton>
             </Tooltip>
             <Menu
