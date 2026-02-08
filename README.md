@@ -122,3 +122,17 @@ To stop all running containers and remove the created networks, run:
 ```bash
 docker-compose down
 ```
+
+## 📄 License & Copyright
+
+© 2026 Jakub Pietrzykowski. All rights reserved.
+
+This project is intended for **educational and portfolio purposes only**.
+
+You are permitted to:
+* View the code.
+* Clone and run the project locally for evaluation or recruitment purposes.
+
+You are **NOT** permitted to:
+* Use this code for commercial purposes.
+* Modify, distribute, or sub-license the code without prior written permission from the author.
