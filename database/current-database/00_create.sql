@@ -173,3 +173,36 @@ ALTER TABLE exchanges ADD FOREIGN KEY (field_of_study_id) REFERENCES fields_of_s
 ALTER TABLE exchanges ADD FOREIGN KEY (university_id) REFERENCES universities (university_id);
 
 ALTER TABLE refresh_tokens ADD FOREIGN KEY (user_id) REFERENCES users (user_id);
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+CREATE INDEX idx_cities_country_id ON cities (country_id);
+
+CREATE INDEX idx_universities_city_id ON universities (city_id);
+
+CREATE INDEX idx_universities_original_name_trgm ON universities 
+USING GIN (lower(original_name) gin_trgm_ops);
+
+CREATE INDEX idx_universities_english_name_trgm ON universities
+USING GIN (lower(english_name) gin_trgm_ops);
+
+CREATE INDEX idx_users_nick ON users (nick);
+
+CREATE INDEX idx_user_notifications_mail ON user_notifications (mail);
+
+CREATE INDEX idx_user_credentials ON user_credentials (username);
+
+CREATE INDEX idx_university_reviews_author_id ON university_reviews (author_id);
+
+CREATE INDEX idx_university_reviews_university_id ON university_reviews (university_id);
+
+CREATE INDEX idx_university_reviews_reaction_counts_university_review_id ON university_reviews_reaction_counts (university_review_id);
+
+CREATE INDEX idx_exchanges_started_at ON exchanges (started_at);
+
+CREATE INDEX idx_exchanges_end_at ON exchanges (end_at);
+
+CREATE INDEX idx_exchanges_field_of_study_id ON exchanges (field_of_study_id);
+
+CREATE INDEX idx_exchanges_university_id ON exchanges (university_id);
+
