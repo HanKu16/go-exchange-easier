@@ -114,7 +114,7 @@ With the containers running, the environment is fully initialized. The database 
 
 #### 🔐 Demo Credentials
 Use these credentials to log in as a pre-existing user without registration:
-* **Email:** `DemoUser` 
+* **Login:** `DemoUser` 
 * **Password:** `DemoUserPassword`
 
 ### 6. Stop the application
