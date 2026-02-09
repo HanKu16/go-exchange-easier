@@ -4,8 +4,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,16 +17,11 @@ public class JwtConfig {
 
     private long accessTokenValidityInSeconds;
     private long refreshTokenValidityInSeconds;
-    private String jwtSecretKey;
-
-    @Autowired
-    public JwtConfig(@Value("${JWT_SECRET_KEY}") String secretKey) {
-        this.jwtSecretKey = secretKey;
-    }
+    private String secretKey;
 
     @Bean
     public SecretKey signingKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
