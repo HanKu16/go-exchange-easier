@@ -2,7 +2,6 @@ package com.go_exchange_easier.backend.domain.auth;
 
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.domain.auth.dto.*;
-import com.go_exchange_easier.backend.domain.auth.entity.UserCredentials;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/auth")
@@ -56,7 +54,7 @@ public interface AuthApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<SignedInUserSummary> login(
+    ResponseEntity<Void> login(
             @RequestBody @Valid LoginRequest request,
             @RequestHeader(value = "X-Device-Id", required = true) String deviceId,
             @RequestHeader(value = "X-Device-Name", required = true) String deviceName,

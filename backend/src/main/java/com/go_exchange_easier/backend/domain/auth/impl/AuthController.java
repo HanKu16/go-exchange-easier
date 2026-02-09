@@ -19,7 +19,6 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
-
 public class AuthController implements AuthApi {
 
     private final UserRegistrar userRegistrar;
@@ -35,7 +34,7 @@ public class AuthController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<SignedInUserSummary> login(
+    public ResponseEntity<Void> login(
             @RequestBody @Valid LoginRequest request,
             @RequestHeader(value = "X-Device-Id", required = true) String deviceId,
             @RequestHeader(value = "X-Device-Name", required = true) String deviceName,
