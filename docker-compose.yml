@@ -10,12 +10,24 @@ services:
     ports:
       - "5431:5432"
     container_name: gee-database
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
     container_name: gee-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
     
   minio:
     image: minio/minio
@@ -38,16 +50,17 @@ services:
       context: ./backend
     ports:
       - "8080:8080"
-    depends_on:
-      - database
-      - redis
-      - minio
     env_file:
       - ./.env
     environment:
       STORAGE_S3_ACCESS_KEY: ${STORAGE_S3_ROOT_USER}
       STORAGE_S3_SECRET_KEY: ${STORAGE_S3_ROOT_PASSWORD}
     container_name: gee-backend
+    depends_on:
+      database: 
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     
   frontend:
     build:
@@ -68,6 +81,6 @@ services:
       /usr/bin/mc alias set minio_server ${STORAGE_S3_INTERNAL_URL} ${STORAGE_S3_ROOT_USER} ${STORAGE_S3_ROOT_PASSWORD};
       /usr/bin/mc mb --ignore-existing minio_server/users;
       /usr/bin/mc anonymous set public minio_server/users;
-      echo '>>> Bucket users został utworzony.';
+      echo '>>> Bucket users was created.';
       exit 0;
       "
