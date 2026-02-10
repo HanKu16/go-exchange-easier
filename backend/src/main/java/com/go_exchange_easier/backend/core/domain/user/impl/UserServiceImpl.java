@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.user.impl;
 
+import com.go_exchange_easier.backend.core.api.CoreUser;
 import com.go_exchange_easier.backend.core.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollow;
 import com.go_exchange_easier.backend.core.domain.location.country.Country;
@@ -36,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -264,6 +266,25 @@ public class UserServiceImpl implements UserService {
             }
         }
         return new AvatarUrlSummary(null, null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CoreUser getUser(int userId) {
+        String thumbnailAvatarUrl = null;
+        String originalAvatarUrl = null;
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            return CoreUser.UNKNOWN;
+        }
+        User user = optionalUser.get();
+        if (user.getAvatarKey() != null) {
+            AvatarUrlSummary avatarUrls = avatarService.getUrl(user.getAvatarKey());
+            thumbnailAvatarUrl = avatarUrls.thumbnail();
+            originalAvatarUrl = avatarUrls.original();
+        }
+        return new CoreUser(user.getId(), user.getNick(),
+                thumbnailAvatarUrl, originalAvatarUrl);
     }
 
 }

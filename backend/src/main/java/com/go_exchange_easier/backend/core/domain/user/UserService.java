@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.user;
 
+import com.go_exchange_easier.backend.core.api.CoreUser;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
@@ -30,5 +31,6 @@ public interface UserService {
     UserWithAvatarSummary getMe(int userId);
     AvatarUrlSummary addAvatar(int userId, MultipartFile file);
     AvatarUrlSummary deleteAvatar(int userId);
+    CoreUser getUser(int userId);
 
 }
