@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_credentials")
+@Table(name = "user_credentials", schema = "core")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,6 +38,7 @@ public class UserCredentials {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_roles",
+            schema = "core",
             joinColumns = @JoinColumn(name = "user_id")
     )
     @JdbcType(PostgreSQLEnumJdbcType.class)

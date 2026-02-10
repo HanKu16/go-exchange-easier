@@ -8,7 +8,7 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
-@Table(name = "university_review_reactions")
+@Table(name = "university_review_reactions", schema = "core")
 @Getter
 @Setter
 @NoArgsConstructor

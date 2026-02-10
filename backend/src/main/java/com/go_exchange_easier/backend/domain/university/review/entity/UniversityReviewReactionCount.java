@@ -8,7 +8,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.domain.Persistable;
 
 @Entity
-@Table(name = "university_reviews_reaction_counts")
+@Table(name = "university_reviews_reaction_counts", schema = "core")
 @Getter
 @Setter
 @NoArgsConstructor

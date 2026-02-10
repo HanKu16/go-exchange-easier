@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "refresh_tokens")
+@Table(name = "refresh_tokens", schema = "core")
 @Getter
 @Setter
 @NoArgsConstructor
