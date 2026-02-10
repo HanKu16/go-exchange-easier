@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.chat.room;
+package com.go_exchange_easier.backend.chat.room.entity;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;

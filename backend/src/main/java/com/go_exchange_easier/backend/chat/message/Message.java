@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.chat.message;
 
-import com.go_exchange_easier.backend.chat.room.Room;
+import com.go_exchange_easier.backend.chat.room.entity.Room;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
