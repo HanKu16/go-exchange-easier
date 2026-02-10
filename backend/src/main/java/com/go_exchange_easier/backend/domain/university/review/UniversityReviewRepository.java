@@ -33,11 +33,11 @@ public interface UniversityReviewRepository extends
                 '[]'
             ) AS reactions,
             us.avatar_key
-        FROM university_reviews ur
-        LEFT JOIN users us ON us.user_id = ur.author_id
-        LEFT JOIN universities un ON un.university_id = ur.university_id
-        LEFT JOIN university_reviews_reaction_counts rc ON rc.university_review_id = ur.university_review_id
-        LEFT JOIN university_review_reactions urr ON
+        FROM core.university_reviews ur
+        LEFT JOIN core.users us ON us.user_id = ur.author_id
+        LEFT JOIN core.universities un ON un.university_id = ur.university_id
+        LEFT JOIN core.university_reviews_reaction_counts rc ON rc.university_review_id = ur.university_review_id
+        LEFT JOIN core.university_review_reactions urr ON
             urr.university_review_id = ur.university_review_id AND
             urr.author_id = :currentUserId
         WHERE us.user_id = :authorId AND us.deleted_at IS NULL AND
@@ -72,12 +72,12 @@ public interface UniversityReviewRepository extends
                 '[]'
             ) AS reactions,
             us.avatar_key
-        FROM university_reviews ur
-        LEFT JOIN users us ON us.user_id = ur.author_id
-        LEFT JOIN universities un ON un.university_id = ur.university_id
-        LEFT JOIN university_reviews_reaction_counts rc ON
+        FROM core.university_reviews ur
+        LEFT JOIN core.users us ON us.user_id = ur.author_id
+        LEFT JOIN core.universities un ON un.university_id = ur.university_id
+        LEFT JOIN core.university_reviews_reaction_counts rc ON
             rc.university_review_id = ur.university_review_id
-        LEFT JOIN university_review_reactions urr ON
+        LEFT JOIN core.university_review_reactions urr ON
            	urr.university_review_id = ur.university_review_id AND
             urr.author_id = :currentUserId
         WHERE un.university_id = :universityId AND

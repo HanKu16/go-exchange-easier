@@ -17,12 +17,12 @@ public interface UniversityFollowRepository extends
             @Param("followerId") int followerId);
 
     @Modifying
-    @Query(value = "INSERT INTO university_follows (follower_id, university_id)" +
+    @Query(value = "INSERT INTO core.university_follows (follower_id, university_id)" +
             "VALUES (:followerId, :universityId)", nativeQuery = true)
     int insertByNativeQuery(@Param("universityId") short universityId,
             @Param("followerId") int followerId);
 
-    @Query(value = "SELECT COUNT(*) FROM university_follows " +
+    @Query(value = "SELECT COUNT(*) FROM core.university_follows " +
             "WHERE university_id = :universityId AND follower_id = :followerId",
             nativeQuery = true)
     int countByUniversityIdAndFollowerIdNativeQuery(

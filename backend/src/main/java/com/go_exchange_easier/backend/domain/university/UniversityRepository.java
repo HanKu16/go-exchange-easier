@@ -17,12 +17,6 @@ public interface UniversityRepository extends
         JpaRepository<University, Short>,
         JpaSpecificationExecutor<University> {
 
-    @Query("SELECT u FROM University u " +
-            "JOIN FETCH u.city c " +
-            "JOIN FETCH c.country " +
-            "WHERE c.country.id = :countryId")
-    List<University> findByCountryId(short countryId);
-
     @Query(value = """
         SELECT
             u.university_id,
@@ -32,19 +26,16 @@ public interface UniversityRepository extends
            	ci.english_name,
            	co.english_name,
            	(uf.follower_id IS NOT NULL) AS is_followed
-        FROM universities u
-        JOIN cities ci ON ci.city_id = u.city_id
-        JOIN countries co ON co.country_id = ci.country_id
-        LEFT JOIN university_follows uf ON
+        FROM core.universities u
+        JOIN core.cities ci ON ci.city_id = u.city_id
+        JOIN core.countries co ON co.country_id = ci.country_id
+        LEFT JOIN core.university_follows uf ON
             uf.university_id = u.university_id AND
           	uf.follower_id = :currentUserId
         WHERE u.university_id = :universityId AND u.deleted_at IS NULL
        """, nativeQuery = true)
     List<Object[]> findProfileById(@Param("universityId") int universityId,
             @Param("currentUserId") int currentUserId);
-
-    List<University> findByOriginalName(String originalName);
-    List<University> findByEnglishName(String englishName);
 
     @Query("""
         SELECT u FROM University u

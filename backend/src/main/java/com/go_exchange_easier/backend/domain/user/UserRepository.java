@@ -1,7 +1,5 @@
 package com.go_exchange_easier.backend.domain.user;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -26,12 +24,12 @@ public interface UserRepository extends
             "ust.name, " +
             "(uf.follower_id IS NOT NULL) AS is_followed, " +
             "us.avatar_key " +
-            "FROM users us " +
-            "LEFT JOIN user_descriptions ud ON ud.user_id = us.user_id " +
-            "LEFT JOIN universities un ON un.university_id = us.home_university_id AND un.deleted_at IS NULL " +
-            "LEFT JOIN countries co ON co.country_id = us.country_of_origin_id " +
-            "LEFT JOIN user_statuses ust ON ust.user_status_id = us.user_status_id " +
-            "LEFT JOIN user_follows uf ON uf.follower_id = :currentUserId " +
+            "FROM core.users us " +
+            "LEFT JOIN core.user_descriptions ud ON ud.user_id = us.user_id " +
+            "LEFT JOIN core.universities un ON un.university_id = us.home_university_id AND un.deleted_at IS NULL " +
+            "LEFT JOIN core.countries co ON co.country_id = us.country_of_origin_id " +
+            "LEFT JOIN core.user_statuses ust ON ust.user_status_id = us.user_status_id " +
+            "LEFT JOIN core.user_follows uf ON uf.follower_id = :currentUserId " +
             "AND uf.followee_id = :userId " +
             "WHERE us.user_id = :userId AND us.deleted_at IS NULL " +
             "LIMIT 1", nativeQuery = true)
@@ -54,10 +52,6 @@ public interface UserRepository extends
             "WHERE u.id = :userId")
     int assignCountryOfOrigin(@Param("userId") int userId,
             @Param("countryId") Short countryOfOriginId);
-
-    @Query("SELECT u FROM User u WHERE u.nick = :nick")
-    @EntityGraph(attributePaths = {"countryOfOrigin", "homeUniversity"})
-    Page<User> findByNick(@Param("nick") String nick , Pageable pageable);
 
     @EntityGraph(attributePaths = {"userFollowsSent", "userFollowsSent.followee"},
             type = EntityGraph.EntityGraphType.LOAD)

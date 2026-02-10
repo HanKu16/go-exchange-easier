@@ -16,12 +16,12 @@ public interface UserFollowRepository extends JpaRepository<UserFollow, UserFoll
             @Param("followeeId") int followeeId);
 
     @Modifying
-    @Query(value = "INSERT INTO user_follows (follower_id, followee_id)" +
+    @Query(value = "INSERT INTO core.user_follows (follower_id, followee_id)" +
             "VALUES (:followerId, :followeeId)", nativeQuery = true)
     int insertByNativeQuery(@Param("followerId") int followerId,
             @Param("followeeId") int followeeId);
 
-    @Query(value = "SELECT COUNT(*) FROM user_follows WHERE " +
+    @Query(value = "SELECT COUNT(*) FROM core.user_follows WHERE " +
             "follower_id = :followerId AND followee_id = :followeeId",
             nativeQuery = true)
     int countByFollowerIdAndFolloweeId(@Param("followerId") int followerId,
