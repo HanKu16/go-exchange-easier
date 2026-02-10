@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @ValidDateRange(startDateField = "startedAt", endDateField = "endAt")
-@Schema(description = "Request body for create exchange")
 public record CreateExchangeRequest(
 
         @NotNull(message = "Start date of exchange can not be null. If exchange " +

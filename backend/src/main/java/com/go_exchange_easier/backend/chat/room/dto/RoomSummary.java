@@ -6,6 +6,8 @@ import java.util.UUID;
 public record RoomSummary(
 
         UUID id,
+        String name,
+        String imageUrl,
         MessageSummary lastMessage
 
 ) { }
