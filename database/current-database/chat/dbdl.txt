@@ -1,0 +1,26 @@
+TABLE chat.rooms {
+  room_id UUID [pk]
+  created_at TIMESTAMPTZ [not null]
+  last_message_at TIMESTAMPTZ 
+  last_message_text_content TEXT
+  last_message_author_id INTEGER
+  last_message_author_nick VARCHAR(20)
+  last_message_author_avatar_key VARCHAR(255)
+}
+
+TABLE chat.user_in_rooms {
+  room_id UUID [pk, ref: > chat.rooms.room_id]
+  user_id INTEGER [pk]
+  last_read_at TIMESTAMPTZ
+}
+
+TABLE chat.messages {
+  message_id UUID [pk]
+  text_content TEXT [not null]
+  avatar_key VARCHAR(255)
+  nick VARCHAR(20) [not null]
+  created_at TIMESTAMPTZ [not null]
+  deleted_at TIMESTAMPTZ 
+  room_id UUID [ref: > chat.rooms.room_id, not null]
+  author_id INTEGER [not null]
+}

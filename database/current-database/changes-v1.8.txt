@@ -1,0 +1,2 @@
+1. Create and define new schema 'chat' for chat feature.
+2. Create schema 'core' and put everything that exists before there.

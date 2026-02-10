@@ -1,4 +1,0 @@
-1. Change tables 'user_descriptions', 'user_credentials' and 'user_notifications' to use 'user_id' as primary key.
-2. Remove 'user_description_id', 'user_credential_id' and 'user_notification_id' from table 'users'.
-3. Rename table 'university_majors' to 'fields_of_study' and primary key from this table from 'university_major_id' to 'field_of_study_id'.
-4. Rename column 'university_major_id' from 'exchanges' to 'field_of_study_id'.

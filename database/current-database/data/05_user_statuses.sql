@@ -1,6 +1,0 @@
-INSERT INTO user_statuses(name) VALUES
-	('READY TO HELP'),
-	('WILLING TO GO'),
-	('JUST WATCHING'),
-	('EXPERIENCED'),
-	('LOOKING FOR HELP');
