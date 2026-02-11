@@ -1,6 +1,8 @@
 package com.go_exchange_easier.backend.chat.room.impl;
 
+import com.go_exchange_easier.backend.chat.message.MessageService;
 import com.go_exchange_easier.backend.chat.message.dto.AuthorSummary;
+import com.go_exchange_easier.backend.chat.message.dto.MessageDetails;
 import com.go_exchange_easier.backend.chat.message.dto.MessageSummary;
 import com.go_exchange_easier.backend.chat.room.RoomRepository;
 import com.go_exchange_easier.backend.chat.room.RoomService;
@@ -14,6 +16,8 @@ import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.core.api.CoreFacade;
 import com.go_exchange_easier.backend.core.api.CoreUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
@@ -25,6 +29,7 @@ public class RoomServiceImpl implements RoomService {
 
     private final UserInRoomRepository userInRoomRepository;
     private final RoomRepository roomRepository;
+    private final MessageService messageService;
     private final CoreFacade coreFacade;
 
     @Override
@@ -66,8 +71,11 @@ public class RoomServiceImpl implements RoomService {
         Optional<UUID> optionalRoomId = roomRepository
                 .findRoomIdWithParticipants(userId, request.targetUserId());
         UUID roomId;
+        SimplePage<MessageDetails> pageOfMessages = SimplePage.empty(30);
         if (optionalRoomId.isPresent()) {
             roomId = optionalRoomId.get();
+            pageOfMessages = messageService.getPage(roomId, PageRequest.of(
+                    0, 30, Sort.by(Sort.Direction.DESC, "createdAt")));
         } else {
             Room createdRoom = createRoom(userId, request.targetUserId());
             roomId = createdRoom.getId();
@@ -76,7 +84,7 @@ public class RoomServiceImpl implements RoomService {
         return new RoomDetails(roomId, targetUser.nick(),
                 targetUser.avatar() != null ?
                         targetUser.avatar().thumbnailUrl() : null,
-                SimplePage.empty(20));
+                pageOfMessages);
     }
 
     private Room createRoom(int userId, int targetUserId) {
