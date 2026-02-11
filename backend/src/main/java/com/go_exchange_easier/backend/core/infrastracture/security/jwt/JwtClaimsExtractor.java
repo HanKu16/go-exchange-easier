@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.List;
 import java.util.Date;
@@ -40,6 +41,12 @@ public class JwtClaimsExtractor {
                     "no claim 'username' in the token.");
         }
         return username;
+    }
+
+    public Optional<String> extractAvatarKey(String token) {
+        String avatarKey = extractClaim(token,
+                claims -> (String) claims.get("avatarKey"));
+        return avatarKey != null ? Optional.of(avatarKey) : Optional.empty();
     }
 
     public List<String> extractRoles(String token) {

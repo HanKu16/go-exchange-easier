@@ -23,8 +23,9 @@ public class JwtTokenGenerator {
 
     private final JwtConfig jwtConfig;
 
-    public String generateAccessToken(int userId, String username, Set<Role> roles) {
-        Map<String, Object> claims = getClaims(userId, username, roles);
+    public String generateAccessToken(int userId, String username,
+            String avatarKey, Set<Role> roles) {
+        Map<String, Object> claims = getClaims(userId, username, avatarKey, roles);
         TokenLifetime tokenLifetime = getAccessTokenLifetime();
         return Jwts.builder()
                 .claims()
@@ -42,10 +43,11 @@ public class JwtTokenGenerator {
     }
 
     private Map<String, Object> getClaims(
-            int userId, String username, Set<Role> roles) {
+            int userId, String username, String avatarKey, Set<Role> roles) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("username", username);
+        claims.put("avatarKey", avatarKey);
         Set<String> roleNames = roles
                 .stream()
                 .map(Enum::toString)

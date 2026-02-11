@@ -25,6 +25,9 @@ public class AuthenticatedUser implements UserDetails, Serializable {
     private boolean enabled;
 
     @Getter
+    private String avatarKey;
+
+    @Getter
     private Set<Role> roles = new HashSet<>();
 
     @Override

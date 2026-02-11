@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.NonNull;
@@ -77,8 +78,9 @@ public class JwtFilter extends OncePerRequestFilter {
             String username = jwtClaimsExtractor.extractUsername(accessToken);
             Set<Role> roles = jwtClaimsExtractor.extractRoles(accessToken)
                     .stream().map(Role::valueOf).collect(Collectors.toSet());
+            Optional<String> avatarKey = jwtClaimsExtractor.extractAvatarKey(accessToken);
             AuthenticatedUser authenticatedUser = new AuthenticatedUser(
-                    userId, username, null, true, roles);
+                    userId, username, null, true, avatarKey.orElse(null), roles);
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
                             authenticatedUser, null, authenticatedUser.getAuthorities());

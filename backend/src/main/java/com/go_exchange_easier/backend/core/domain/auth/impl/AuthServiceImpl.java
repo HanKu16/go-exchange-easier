@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
         if (authentication.getPrincipal() instanceof AuthenticatedUser authenticatedUser) {
             String accessToken = jwtTokenGenerator.generateAccessToken(
                     authenticatedUser.getId(), authenticatedUser.getUsername(),
-                    authenticatedUser.getRoles());
+                    authenticatedUser.getAvatarKey(), authenticatedUser.getRoles());
             String refreshToken = jwtTokenGenerator.generateRefreshToken();
             User user = new User();
             user.setId(authenticatedUser.getId());
@@ -77,10 +77,11 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAccountRevokedException("User account is revoked.");
         }
         UserCredentials credentials = credentialsRepository.findById(user.getId())
-                .orElseThrow(() -> new RuntimeException("XXDDD"));
+                .orElseThrow(() -> new IllegalStateException("User exists but does" +
+                        " not have associated credentials record."));
         String newAccessToken = jwtTokenGenerator.generateAccessToken(
                 credentials.getUser().getId(), credentials.getUsername(),
-                credentials.getRoles());
+                credentials.getUser().getAvatarKey(), credentials.getRoles());
         String newRawRefreshToken = jwtTokenGenerator.generateRefreshToken();
         RefreshToken newToken = createNewRefreshToken(
                 user, newRawRefreshToken, servletRequest);

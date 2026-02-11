@@ -27,7 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         int userId = credentials.getUser().getId();
         boolean enabled = credentials.getUser().getDeletedAt() == null;
         return new AuthenticatedUser(userId, credentials.getUsername(),
-                credentials.getPassword(), enabled, credentials.getRoles());
+                credentials.getPassword(), enabled, credentials.getUser().getAvatarKey(),
+                credentials.getRoles());
     }
 
 }
