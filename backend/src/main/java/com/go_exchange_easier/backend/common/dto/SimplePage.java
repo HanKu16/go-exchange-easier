@@ -19,4 +19,8 @@ public record SimplePage<T>(
                 totalElements, Math.ceilDiv(totalElements, pageSize));
     }
 
+    public static <T> SimplePage<T> empty(Integer requestedPageSize) {
+        return new SimplePage<>(List.of(), 0, requestedPageSize, 0, 0);
+    }
+
 }

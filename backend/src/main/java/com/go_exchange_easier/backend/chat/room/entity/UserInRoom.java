@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Persistable;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -14,7 +15,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @IdClass(UserInRoomId.class)
-public class UserInRoom {
+public class UserInRoom implements Persistable<UserInRoomId> {
 
     @Id
     @ManyToOne
@@ -29,6 +30,20 @@ public class UserInRoom {
 
     @Column(name = "last_read_at")
     private OffsetDateTime lastReadAt;
+
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public UserInRoomId getId() {
+        return new UserInRoomId(room, userId);
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        this.isNew = false;
+    }
 
 }
 

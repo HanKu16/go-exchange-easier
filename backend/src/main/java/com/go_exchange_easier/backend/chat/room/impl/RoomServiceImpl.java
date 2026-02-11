@@ -5,7 +5,11 @@ import com.go_exchange_easier.backend.chat.message.dto.MessageSummary;
 import com.go_exchange_easier.backend.chat.room.RoomRepository;
 import com.go_exchange_easier.backend.chat.room.RoomService;
 import com.go_exchange_easier.backend.chat.room.UserInRoomRepository;
+import com.go_exchange_easier.backend.chat.room.dto.CreateRoomRequest;
+import com.go_exchange_easier.backend.chat.room.dto.RoomDetails;
 import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
+import com.go_exchange_easier.backend.chat.room.entity.Room;
+import com.go_exchange_easier.backend.chat.room.entity.UserInRoom;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.core.api.CoreFacade;
 import com.go_exchange_easier.backend.core.api.CoreUser;
@@ -54,6 +58,37 @@ public class RoomServiceImpl implements RoomService {
                                     lastMessageAuthorAvatarKey))));
         }
         return SimplePage.of(rooms, page, size, totalElements);
+    }
+
+    @Override
+    @Transactional
+    public RoomDetails getOrCreate(int userId, CreateRoomRequest request) {
+        Optional<UUID> optionalRoomId = roomRepository
+                .findRoomIdWithParticipants(userId, request.targetUserId());
+        UUID roomId;
+        if (optionalRoomId.isPresent()) {
+            roomId = optionalRoomId.get();
+        } else {
+            Room createdRoom = createRoom(userId, request.targetUserId());
+            roomId = createdRoom.getId();
+        }
+        CoreUser targetUser = coreFacade.getUser(request.targetUserId());
+        return new RoomDetails(roomId, targetUser.nick(),
+                targetUser.avatar() != null ?
+                        targetUser.avatar().thumbnailUrl() : null,
+                SimplePage.empty(20));
+    }
+
+    private Room createRoom(int userId, int targetUserId) {
+        Room createdRoom = roomRepository.save(new Room());
+        UserInRoom creatorUserInRoom = new UserInRoom();
+        creatorUserInRoom.setRoom(createdRoom);
+        creatorUserInRoom.setUserId(userId);
+        UserInRoom targetUserInRoom = new UserInRoom();
+        targetUserInRoom.setRoom(createdRoom);
+        targetUserInRoom.setUserId(targetUserId);
+        userInRoomRepository.saveAll(List.of(targetUserInRoom, creatorUserInRoom));
+        return createdRoom;
     }
 
     private <T> T handleCastAndNullCheck(Object obj, Class<T> clazz) {

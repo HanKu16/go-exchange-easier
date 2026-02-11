@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -39,5 +40,18 @@ public interface RoomRepository extends
         WHERE u.user_id = :userId AND r.last_message_at IS NOT NULL
     """, nativeQuery = true)
     int countUserRoomsThatContainsAnyMessage(@Param("userId") int userId);
+
+    @Query(value = """
+        SELECT
+            r.room_id
+        FROM chat.user_in_rooms me
+        JOIN chat.user_in_rooms others ON me.room_id = others.room_id
+        JOIN chat.rooms r ON r.room_id = me.room_id
+        WHERE me.user_id = :userId AND others.user_id = :targetUserId
+        AND me.user_id != others.user_id
+    """, nativeQuery = true)
+    Optional<UUID> findRoomIdWithParticipants(
+            @Param("userId") int userId,
+            @Param("targetUserId") int targetUserId);
 
 }
