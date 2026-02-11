@@ -6,6 +6,7 @@ import com.go_exchange_easier.backend.chat.room.RoomRepository;
 import com.go_exchange_easier.backend.chat.room.RoomService;
 import com.go_exchange_easier.backend.chat.room.UserInRoomRepository;
 import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
+import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.core.api.CoreFacade;
 import com.go_exchange_easier.backend.core.api.CoreUser;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RoomSummary> getUserRooms(int userId, int page, int size) {
+    public SimplePage<RoomSummary> getUserRooms(int userId, int page, int size) {
         int offset = page * size;
+        int totalElements = roomRepository.countUserRoomsThatContainsAnyMessage(userId);
         List<Object[]> rows = roomRepository.findRoomWithOtherParticipant(
                 userId, size, offset);
         Set<Integer> otherUserIds = new HashSet<>(size);
@@ -51,7 +53,7 @@ public class RoomServiceImpl implements RoomService {
                             new AuthorSummary(lastMessageAuthorNick,
                                     lastMessageAuthorAvatarKey))));
         }
-        return rooms;
+        return SimplePage.of(rooms, page, size, totalElements);
     }
 
     private <T> T handleCastAndNullCheck(Object obj, Class<T> clazz) {

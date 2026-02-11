@@ -24,11 +24,20 @@ public interface RoomRepository extends
         JOIN chat.user_in_rooms others ON me.room_id = others.room_id
         JOIN chat.rooms r ON r.room_id = me.room_id
         WHERE r.last_message_at IS NOT NULL AND me.user_id = :userId AND others.user_id != :userId
-        ORDER BY last_message_at DESC
+        ORDER BY r.last_message_at DESC
         LIMIT :limit
-        OFFSET :offset;
+        OFFSET :offset
     """, nativeQuery = true)
     List<Object[]> findRoomWithOtherParticipant(@Param("userId") int userId,
             @Param("limit") int limit, @Param("offset") int offset);
+
+    @Query(value = """
+        SELECT
+            COUNT(*)
+        FROM chat.user_in_rooms u
+        JOIN chat.rooms r ON r.room_id = u.room_id
+        WHERE u.user_id = :userId AND r.last_message_at IS NOT NULL
+    """, nativeQuery = true)
+    int countUserRoomsThatContainsAnyMessage(@Param("userId") int userId);
 
 }
