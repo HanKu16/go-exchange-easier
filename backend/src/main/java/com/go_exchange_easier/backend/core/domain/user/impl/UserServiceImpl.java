@@ -241,14 +241,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User of id " + userId + " was not found."));
-        String oldOriginalKey = user.getAvatarKey();
         AvatarKeys newKeys = avatarService.add(userId, file);
-        if (oldOriginalKey != null) {
-            boolean wasOldAvatarDeleted = avatarService.delete(oldOriginalKey);
-            if (!wasOldAvatarDeleted) {
-                logger.warn("Failed to delete old avatar from S3 which key is {}", oldOriginalKey);
-            }
-        }
         user.setAvatarKey(newKeys.original());
         return avatarService.getUrl(newKeys.original());
     }
@@ -259,14 +252,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User of id " + userId + " was not found."));
-        String key = user.getAvatarKey();
         user.setAvatarKey(null);
-        if (key != null) {
-            boolean wasOldAvatarDeleted = avatarService.delete(key);
-            if (!wasOldAvatarDeleted) {
-                logger.warn("Failed to delete avatar from S3 which key is {}", key);
-            }
-        }
         return new AvatarUrlSummary(null, null);
     }
 
