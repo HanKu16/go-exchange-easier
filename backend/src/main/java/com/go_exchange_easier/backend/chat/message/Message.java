@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "messages", schema = "chat")
@@ -12,6 +13,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@SQLRestriction("deleted_at IS NULL")
 public class Message {
 
     @Id
