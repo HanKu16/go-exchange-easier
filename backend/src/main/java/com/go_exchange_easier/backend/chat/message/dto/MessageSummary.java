@@ -1,10 +1,10 @@
 package com.go_exchange_easier.backend.chat.message.dto;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 public record MessageSummary(
 
-        OffsetDateTime createdAt,
+        Instant createdAt,
         String textContent,
         AuthorSummary author
 
