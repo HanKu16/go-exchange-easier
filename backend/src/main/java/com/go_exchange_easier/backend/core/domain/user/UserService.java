@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface UserService {
 
@@ -32,5 +34,6 @@ public interface UserService {
     AvatarUrlSummary addAvatar(int userId, MultipartFile file);
     AvatarUrlSummary deleteAvatar(int userId);
     CoreUser getUser(int userId);
+    Map<Integer, CoreUser> getUsers(Set<Integer> userIds);
 
 }

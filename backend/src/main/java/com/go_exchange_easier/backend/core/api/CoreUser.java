@@ -4,15 +4,13 @@ public record CoreUser(
 
         Integer id,
         String nick,
-        String originalAvatarUrl,
-        String thumbnailAvatarUrl
+        CoreAvatar avatar
 
 ) {
 
     public static final CoreUser UNKNOWN = new CoreUser(
             null,
             "Unknown user",
-            null,
             null
     );
 

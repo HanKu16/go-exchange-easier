@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.user.impl;
 
+import com.go_exchange_easier.backend.core.api.CoreAvatar;
 import com.go_exchange_easier.backend.core.api.CoreUser;
 import com.go_exchange_easier.backend.core.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollow;
@@ -36,8 +37,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -271,20 +273,50 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public CoreUser getUser(int userId) {
-        String thumbnailAvatarUrl = null;
-        String originalAvatarUrl = null;
+        String thumbnailUrl = null;
+        String originalUrl = null;
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
             return CoreUser.UNKNOWN;
         }
         User user = optionalUser.get();
         if (user.getAvatarKey() != null) {
-            AvatarUrlSummary avatarUrls = avatarService.getUrl(user.getAvatarKey());
-            thumbnailAvatarUrl = avatarUrls.thumbnail();
-            originalAvatarUrl = avatarUrls.original();
+            AvatarUrlSummary avatar = avatarService.getUrl(user.getAvatarKey());
+            thumbnailUrl = avatar.thumbnail();
+            originalUrl = avatar.original();
         }
         return new CoreUser(user.getId(), user.getNick(),
-                thumbnailAvatarUrl, originalAvatarUrl);
+                new CoreAvatar(thumbnailUrl, originalUrl));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<Integer, CoreUser> getUsers(Set<Integer> userIds) {
+        if (userIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        List<User> entities = userRepository.findAllById(userIds);
+        Map<Integer, User> entitiesMap = entities.stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+        Map<Integer, CoreUser> result = new HashMap<>();
+        for (Integer id : userIds) {
+            User user = entitiesMap.get(id);
+            if (user == null) {
+                result.put(id, CoreUser.UNKNOWN);
+            } else {
+                CoreAvatar userAvatar = null;
+                if (user.getAvatarKey() != null) {
+                    AvatarUrlSummary avatar = avatarService.getUrl(user.getAvatarKey());
+                    userAvatar = new CoreAvatar(avatar.original(), avatar.thumbnail());
+                }
+                result.put(id, new CoreUser(
+                        user.getId(),
+                        user.getNick(),
+                        userAvatar
+                ));
+            }
+        }
+        return result;
     }
 
 }
