@@ -39,7 +39,7 @@ public class MessageServiceImpl implements MessageService {
                     new AuthorSummary(message.getNick(), avatars.get(avatarKey))));
         }
         return SimplePage.of(messages, pageOfMessages.getNumber(),
-                pageOfMessages.getSize(), pageOfMessages.getNumberOfElements());
+                pageOfMessages.getSize(), pageOfMessages.getTotalElements());
     }
 
 }

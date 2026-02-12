@@ -62,7 +62,7 @@ public class RoomServiceImpl implements RoomService {
                             new AuthorSummary(lastMessageAuthorNick,
                                     lastMessageAuthorAvatarKey))));
         }
-        return SimplePage.of(rooms, page, size, totalElements);
+        return SimplePage.of(rooms, page, size, (long) totalElements);
     }
 
     @Override
