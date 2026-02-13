@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.infrastracture.security.config;
+package com.go_exchange_easier.backend.common.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
