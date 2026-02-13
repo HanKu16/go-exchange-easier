@@ -25,6 +25,9 @@ public class AuthenticatedUser implements UserDetails, Serializable {
     private boolean enabled;
 
     @Getter
+    private String nick;
+
+    @Getter
     private String avatarKey;
 
     @Getter

@@ -43,6 +43,16 @@ public class JwtClaimsExtractor {
         return username;
     }
 
+    public String extractNick(String token) {
+        String nick = extractClaim(token,
+                claims -> (String) claims.get("nick"));
+        if (nick == null) {
+            throw new MissingJwtClaimException("There is " +
+                    "no claim 'nick' in the token.");
+        }
+        return nick;
+    }
+
     public Optional<String> extractAvatarKey(String token) {
         String avatarKey = extractClaim(token,
                 claims -> (String) claims.get("avatarKey"));

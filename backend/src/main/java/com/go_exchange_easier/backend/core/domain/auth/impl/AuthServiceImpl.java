@@ -43,7 +43,8 @@ public class AuthServiceImpl implements AuthService {
         if (authentication.getPrincipal() instanceof AuthenticatedUser authenticatedUser) {
             String accessToken = jwtTokenGenerator.generateAccessToken(
                     authenticatedUser.getId(), authenticatedUser.getUsername(),
-                    authenticatedUser.getAvatarKey(), authenticatedUser.getRoles());
+                    authenticatedUser.getNick(), authenticatedUser.getAvatarKey(),
+                    authenticatedUser.getRoles());
             String refreshToken = jwtTokenGenerator.generateRefreshToken();
             User user = new User();
             user.setId(authenticatedUser.getId());
@@ -64,8 +65,8 @@ public class AuthServiceImpl implements AuthService {
                         "Token " + refreshToken + " was not found."));
         if (oldToken.isRevoked()) {
             throw new TokenRevokedException("There was attempt of " +
-                    " usage token " + DigestUtils.sha256Hex(refreshToken) + " that is revoked. " +
-                    "Probably someone stole the token.");
+                    " usage token that is revoked. Probably someone " +
+                    "stole the token.");
         }
         if (oldToken.getExpiresAt().isBefore(OffsetDateTime.now())) {
             throw new TokenExpiredException("Token " + refreshToken +
@@ -81,7 +82,8 @@ public class AuthServiceImpl implements AuthService {
                         " not have associated credentials record."));
         String newAccessToken = jwtTokenGenerator.generateAccessToken(
                 credentials.getUser().getId(), credentials.getUsername(),
-                credentials.getUser().getAvatarKey(), credentials.getRoles());
+                credentials.getUser().getNick(), credentials.getUser().getAvatarKey(),
+                credentials.getRoles());
         String newRawRefreshToken = jwtTokenGenerator.generateRefreshToken();
         RefreshToken newToken = createNewRefreshToken(
                 user, newRawRefreshToken, servletRequest);

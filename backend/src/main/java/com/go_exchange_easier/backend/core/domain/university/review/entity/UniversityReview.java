@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @SQLRestriction("deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE university_reviews " +
+@SQLDelete(sql = "UPDATE core.university_reviews " +
         "SET deleted_at = CURRENT_TIMESTAMP WHERE university_review_id = ?")
 public class UniversityReview {
 
