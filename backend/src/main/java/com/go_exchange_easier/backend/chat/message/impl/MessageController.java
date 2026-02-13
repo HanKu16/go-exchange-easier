@@ -18,17 +18,11 @@ public class MessageController implements MessageApi {
 
     @Override
     public ResponseEntity<MessageDetails> create(
-            CreateMessageRequest request,
+            UUID roomId, CreateMessageRequest request,
             AuthenticatedUser authenticatedUser) {
-        MessageDetails message = messageService.create(request, authenticatedUser);
+        MessageDetails message = messageService.create(
+                roomId, request, authenticatedUser);
         return ResponseEntity.ok(message);
-    }
-
-    @Override
-    public ResponseEntity<Void> delete(UUID messageId,
-            AuthenticatedUser authenticatedUser) {
-        messageService.delete(messageId, authenticatedUser.getId());
-        return ResponseEntity.noContent().build();
     }
 
 }

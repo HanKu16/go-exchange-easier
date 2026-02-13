@@ -25,6 +25,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RoomServiceImpl implements RoomService {
 
     private final UserInRoomRepository userInRoomRepository;
@@ -33,7 +34,6 @@ public class RoomServiceImpl implements RoomService {
     private final CoreFacade coreFacade;
 
     @Override
-    @Transactional(readOnly = true)
     public SimplePage<RoomSummary> getUserRooms(int userId, int page, int size) {
         int offset = page * size;
         int totalElements = roomRepository.countUserRoomsThatContainsAnyMessage(userId);
@@ -107,7 +107,8 @@ public class RoomServiceImpl implements RoomService {
             return clazz.cast(obj);
         }
         throw new ClassCastException("Cast error, expected type was: " +
-                clazz.getSimpleName() + ", but get: " + obj.getClass().getSimpleName());
+                clazz.getSimpleName() + ", but get: " +
+                obj.getClass().getSimpleName());
     }
 
 }

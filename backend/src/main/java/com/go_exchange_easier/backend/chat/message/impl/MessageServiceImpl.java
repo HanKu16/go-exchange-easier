@@ -12,7 +12,6 @@ import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.core.api.CoreAvatar;
 import com.go_exchange_easier.backend.core.api.CoreFacade;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
-import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,13 +20,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
@@ -35,7 +32,6 @@ public class MessageServiceImpl implements MessageService {
     private final CoreFacade coreFacade;
 
     @Override
-    @Transactional(readOnly = true)
     public SimplePage<MessageDetails> getPage(UUID roomId, Pageable pageable) {
         Page<Message> pageOfMessages = messageRepository.findByRoomId(roomId, pageable);
         HashMap<String, String> avatars = new HashMap<>();
@@ -56,7 +52,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public MessageDetails create(CreateMessageRequest request, AuthenticatedUser user) {
+    public MessageDetails create(UUID roomId,
+            CreateMessageRequest request,
+            AuthenticatedUser user) {
         Message message = new Message();
         message.setTextContent(request.textContent());
         message.setAvatarKey(user.getAvatarKey());
@@ -64,33 +62,23 @@ public class MessageServiceImpl implements MessageService {
         message.setCreatedAt(OffsetDateTime.now());
         message.setDeletedAt(null);
         message.setAuthorId(user.getId());
-        Room room = roomRepository.getReferenceById(request.roomId());
+        Room room = roomRepository.getReferenceById(roomId);
         message.setRoom(room);
         Message createdMessage;
         try {
             createdMessage = messageRepository.saveAndFlush(message);
         } catch (DataIntegrityViolationException e) {
             throw new ReferencedResourceNotFoundException("Room of id " +
-                    request.roomId() + " was not found.");
+                    roomId + " was not found.");
+        }
+        String avatarUrl = null;
+        if (user.getAvatarKey() != null) {
+            avatarUrl = coreFacade.getAvatar(user.getAvatarKey()).thumbnailUrl();
         }
         return new MessageDetails(createdMessage.getId(),
                 createdMessage.getCreatedAt().toInstant(),
                 createdMessage.getTextContent(),
-                new AuthorSummary(user.getNick(), user.getAvatarKey()));
-    }
-
-    @Override
-    @Transactional
-    public void delete(UUID messageId, int userId) {
-        int rowsUpdated = messageRepository.deleteById(
-                messageId, userId, OffsetDateTime.now());
-        if (rowsUpdated == 0) {
-            throw new ResourceNotFoundException("Message of id " +
-                    messageId + " and author if " + userId +
-                    " was not found.");
-        }
-//        handle situation when last message in conversation is deleted
-//        and it should be updated in rooms table
+                new AuthorSummary(user.getNick(), avatarUrl));
     }
 
 }

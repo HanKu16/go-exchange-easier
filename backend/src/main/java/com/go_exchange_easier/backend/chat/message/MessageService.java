@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface MessageService {
 
     SimplePage<MessageDetails> getPage(UUID roomId, Pageable pageable);
-    MessageDetails create(CreateMessageRequest request, AuthenticatedUser user);
-    void delete(UUID messageId, int userId);
+    MessageDetails create(UUID roomId, CreateMessageRequest request,
+            AuthenticatedUser user);
 
 }

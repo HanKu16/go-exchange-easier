@@ -16,7 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
-@RequestMapping("/api/chat/messages")
+@RequestMapping("/api/chat/rooms/{roomId}/messages")
 @Tag(name = "Message")
 public interface MessageApi {
 
@@ -39,24 +39,8 @@ public interface MessageApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<MessageDetails> create(
+            @PathVariable UUID roomId,
             @RequestBody @Valid CreateMessageRequest request,
-            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
-
-    @DeleteMapping("/{messageId}")
-    @Operation(summary = "Delete message")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "Message was successfully deleted"),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Message of given id was not found or user " +
-                            "authenticated user is not author of the message",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorResponse.class)))
-    })
-    ResponseEntity<Void> delete(
-            @PathVariable UUID messageId,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
 }
