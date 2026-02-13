@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.university.review.impl;
 
-import com.go_exchange_easier.backend.core.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.reaction.ReactionType;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionCountService;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionRepository;

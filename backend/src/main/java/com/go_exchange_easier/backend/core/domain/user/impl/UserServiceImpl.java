@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.core.domain.user.impl;
 
 import com.go_exchange_easier.backend.core.api.CoreAvatar;
 import com.go_exchange_easier.backend.core.api.CoreUser;
-import com.go_exchange_easier.backend.core.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollow;
 import com.go_exchange_easier.backend.core.domain.location.country.Country;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
@@ -26,7 +26,7 @@ import com.go_exchange_easier.backend.core.domain.user.description.UpdateUserDes
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionDetails;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionRepository;
 import com.go_exchange_easier.backend.core.domain.user.User;
-import com.go_exchange_easier.backend.core.common.exception.ReferencedResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

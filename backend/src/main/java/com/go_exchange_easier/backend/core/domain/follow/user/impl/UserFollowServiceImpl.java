@@ -1,8 +1,8 @@
 package com.go_exchange_easier.backend.core.domain.follow.user.impl;
 
-import com.go_exchange_easier.backend.core.common.exception.IllegalOperationException;
-import com.go_exchange_easier.backend.core.common.exception.ResourceAlreadyExistsException;
-import com.go_exchange_easier.backend.core.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.IllegalOperationException;
+import com.go_exchange_easier.backend.common.exception.ResourceAlreadyExistsException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollowRepository;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollowService;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;

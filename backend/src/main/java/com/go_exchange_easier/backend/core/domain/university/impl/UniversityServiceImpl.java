@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.university.impl;
 
-import com.go_exchange_easier.backend.core.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.university.UniversityService;

@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.infrastracture.storage;
 
-import com.go_exchange_easier.backend.core.common.exception.FileUploadException;
+import com.go_exchange_easier.backend.common.exception.FileUploadException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;

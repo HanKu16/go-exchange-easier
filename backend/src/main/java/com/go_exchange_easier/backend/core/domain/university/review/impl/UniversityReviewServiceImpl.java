@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.core.domain.university.review.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.go_exchange_easier.backend.core.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.reaction.ReactionType;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
@@ -17,9 +17,9 @@ import com.go_exchange_easier.backend.core.domain.university.review.entity.Unive
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;
 import com.go_exchange_easier.backend.core.domain.user.dto.UserWithAvatarSummary;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.CreateUniversityReviewRequest;
-import com.go_exchange_easier.backend.core.common.exception.DataCorruptionException;
-import com.go_exchange_easier.backend.core.common.exception.NotOwnerOfResourceException;
-import com.go_exchange_easier.backend.core.common.exception.ReferencedResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.DataCorruptionException;
+import com.go_exchange_easier.backend.common.exception.NotOwnerOfResourceException;
+import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
 import lombok.RequiredArgsConstructor;

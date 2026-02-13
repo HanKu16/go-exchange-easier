@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.core.domain.user.avatar;
 
 import com.go_exchange_easier.backend.core.infrastracture.storage.BucketProperties;
-import com.go_exchange_easier.backend.core.common.exception.FileUploadException;
+import com.go_exchange_easier.backend.common.exception.FileUploadException;
 import com.go_exchange_easier.backend.core.infrastracture.storage.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

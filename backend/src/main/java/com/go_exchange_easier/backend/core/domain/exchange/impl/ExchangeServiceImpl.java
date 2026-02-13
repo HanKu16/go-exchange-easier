@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.core.domain.exchange.impl;
 
-import com.go_exchange_easier.backend.core.common.exception.NotOwnerOfResourceException;
-import com.go_exchange_easier.backend.core.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.NotOwnerOfResourceException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.exchange.Exchange;
 import com.go_exchange_easier.backend.core.domain.exchange.ExchangeRepository;
 import com.go_exchange_easier.backend.core.domain.exchange.ExchangeService;
@@ -11,7 +11,7 @@ import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.core.domain.exchange.dto.ExchangeDetails;
 import com.go_exchange_easier.backend.core.domain.exchange.dto.CreateExchangeRequest;
-import com.go_exchange_easier.backend.core.common.exception.ReferencedResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.fieldofstudy.FieldOfStudyRepository;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;

@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.core.domain.follow.university.impl;
 
-import com.go_exchange_easier.backend.core.common.exception.ResourceAlreadyExistsException;
-import com.go_exchange_easier.backend.core.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.ResourceAlreadyExistsException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.follow.university.UniversityFollowRepository;
 import com.go_exchange_easier.backend.core.domain.follow.university.UniversityFollowService;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
