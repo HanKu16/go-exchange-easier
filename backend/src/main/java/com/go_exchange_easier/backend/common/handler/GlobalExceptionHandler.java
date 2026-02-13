@@ -5,8 +5,6 @@ import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponseCode;
 import com.go_exchange_easier.backend.common.dto.error.FieldErrorDetail;
 import com.go_exchange_easier.backend.common.dto.error.GlobalErrorDetail;
 import com.go_exchange_easier.backend.common.exception.*;
-import com.go_exchange_easier.backend.core.domain.auth.exception.*;
-import com.go_exchange_easier.backend.core.infrastracture.security.jwt.MissingJwtClaimException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.exception.JDBCConnectionException;
@@ -89,76 +87,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(DeviceMismatchException.class)
-    public ResponseEntity<ApiErrorResponse> handle(DeviceMismatchException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(),
-                "Token came for device that he was not bound to.");
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Authentication failed.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(MailAlreadyExistsException.class)
-    public ResponseEntity<ApiErrorResponse> handle(MailAlreadyExistsException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.MailAlreadyTaken.name(),
-                "This mail is already taken and can not be used.");
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.CONFLICT,
-                "Mail is already taken.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(TokenExpiredException.class)
-    public ResponseEntity<ApiErrorResponse> handle(TokenExpiredException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(),
-                "Token expired.");
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Authentication failed.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(TokenNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handle(TokenNotFoundException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(),
-                "Token was not found.");
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Authentication failed.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(TokenRevokedException.class)
-    public ResponseEntity<ApiErrorResponse> handle(TokenRevokedException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(),
-                "Token is revoked.");
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
-                "Authentication failed.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public ResponseEntity<ApiErrorResponse> handle(UsernameAlreadyExistsException e) {
-        logger.error(e.getMessage(), e);
-        GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.LoginAlreadyTaken.name(),
-                "Login is already taken and can not be used again.");
-        ApiErrorResponse response = new ApiErrorResponse(HttpStatus.CONFLICT,
-                "Login is already taken.", List.of(), List.of(globalError));
-        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
-    }
-
     @ExceptionHandler({
             DataCorruptionException.class,
-            InvalidPrincipalTypeException.class,
-            MissingDefaultRoleException.class,
             IllegalStateException.class,
             DataIntegrityViolationException.class,
             NullPointerException.class,
@@ -236,7 +166,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiErrorResponse> handle(MethodArgumentTypeMismatchException e) {
+    public ResponseEntity<ApiErrorResponse> handle(
+            MethodArgumentTypeMismatchException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail error = new GlobalErrorDetail(
                 ApiErrorResponseCode.InvalidParameterType.name(),
@@ -247,7 +178,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiErrorResponse> handle(HttpRequestMethodNotSupportedException e) {
+    public ResponseEntity<ApiErrorResponse> handle(
+            HttpRequestMethodNotSupportedException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail error = new GlobalErrorDetail(
                 ApiErrorResponseCode.MethodNotSupported.name(), e.getMessage());
@@ -258,10 +190,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             SignatureException.class,
-            MissingJwtClaimException.class,
             AuthenticationException.class,
-            UsernameNotFoundException.class,
-            UserAccountRevokedException.class})
+            UsernameNotFoundException.class
+    })
     public ResponseEntity<ApiErrorResponse> handleAuthenticationException(Exception e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(ApiErrorResponseCode
