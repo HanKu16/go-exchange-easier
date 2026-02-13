@@ -6,11 +6,11 @@ import jakarta.validation.constraints.NotNull;
 public record LoginRequest(
 
         @NotNull(message = "Login can not be blank.")
-        @Schema(example = "DuckyKentucky1")
+        @Schema(example = "DemoUser")
         String login,
 
         @NotNull(message = "Password can not be blank.")
-        @Schema(example = "Basketball23")
+        @Schema(example = "DemoUserPassword")
         String password
 
 ) { }

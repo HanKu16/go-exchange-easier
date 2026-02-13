@@ -7,10 +7,8 @@ import com.go_exchange_easier.backend.core.domain.university.review.UniversityRe
 import com.go_exchange_easier.backend.core.domain.university.review.dto.AddUniversityReviewReactionRequest;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.CreateUniversityReviewRequest;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewDetails;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
@@ -23,8 +21,8 @@ public class UniversityReviewController implements UniversityReviewApi {
 
     @Override
     public ResponseEntity<UniversityReviewDetails> create(
-            @RequestBody @Valid CreateUniversityReviewRequest request,
-            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+            CreateUniversityReviewRequest request,
+            AuthenticatedUser authenticatedUser) {
         UniversityReviewDetails review = universityReviewService
                 .create(authenticatedUser.getId(), request);
         return ResponseEntity.created(URI.create("/api/universityReviews" + review.id()))
@@ -32,26 +30,23 @@ public class UniversityReviewController implements UniversityReviewApi {
     }
 
     @Override
-    public ResponseEntity<Void> delete(
-            @PathVariable Integer reviewId,
-            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+    public ResponseEntity<Void> delete(Integer reviewId,
+            AuthenticatedUser authenticatedUser) {
         universityReviewService.delete(reviewId, authenticatedUser.getId());
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<Void> addReaction(
-            @PathVariable Integer reviewId,
-            @RequestBody @Valid AddUniversityReviewReactionRequest request,
-            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+    public ResponseEntity<Void> addReaction(Integer reviewId,
+            AddUniversityReviewReactionRequest request,
+            AuthenticatedUser authenticatedUser) {
         reviewReactionService.add(authenticatedUser.getId(), reviewId,request);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<Void> deleteReaction(
-            @PathVariable Integer reviewId,
-            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+    public ResponseEntity<Void> deleteReaction(Integer reviewId,
+            AuthenticatedUser authenticatedUser) {
         reviewReactionService.delete(authenticatedUser.getId(), reviewId);
         return ResponseEntity.noContent().build();
     }

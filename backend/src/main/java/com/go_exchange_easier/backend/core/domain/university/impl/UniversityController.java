@@ -11,12 +11,10 @@ import com.go_exchange_easier.backend.core.domain.university.review.dto.Universi
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityProfile;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -30,8 +28,7 @@ public class UniversityController implements UniversityApi {
 
     @Override
     public ResponseEntity<Page<UniversityDetails>> getPage(
-            @ParameterObject @ModelAttribute UniversityFilters filters,
-            @ParameterObject Pageable pageable) {
+            UniversityFilters filters, Pageable pageable) {
         Page<UniversityDetails> page = universityService
                 .getPage(filters, pageable);
         return ResponseEntity.ok()
@@ -41,8 +38,7 @@ public class UniversityController implements UniversityApi {
 
     @Override
     public ResponseEntity<UniversityProfile> getProfile(
-            @PathVariable Integer universityId,
-            @AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+            Integer universityId, AuthenticatedUser authenticatedUser) {
         UniversityProfile profile = universityService.getProfile(
                 universityId, authenticatedUser.getId());
         return ResponseEntity.ok(profile);
@@ -50,8 +46,7 @@ public class UniversityController implements UniversityApi {
 
     @Override
     public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
-            @PathVariable Integer universityId,
-            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            Integer universityId, AuthenticatedUser authenticatedUser,
             int page, int size) {
         List<UniversityReviewDetails> reviews = universityReviewService
                 .getByUniversityId(universityId, authenticatedUser.getId(),
@@ -60,8 +55,7 @@ public class UniversityController implements UniversityApi {
     }
 
     @Override
-    public ResponseEntity<UniversityReviewCountSummary> getCount(
-            @PathVariable Integer universityId) {
+    public ResponseEntity<UniversityReviewCountSummary> getCount(Integer universityId) {
         UniversityReviewCountSummary reviewCount = universityReviewService
                 .countByUniversityId(universityId);
         return ResponseEntity.ok(reviewCount);

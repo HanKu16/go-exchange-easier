@@ -14,7 +14,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import lombok.RequiredArgsConstructor;
-import jakarta.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -27,18 +26,15 @@ public class AuthController implements AuthApi {
 
     @Override
     public ResponseEntity<RegistrationSummary> register(
-            @RequestBody @Valid RegistrationRequest request) {
+            RegistrationRequest request) {
         RegistrationSummary response = userRegistrar.register(request);
         URI locationUri = URI.create("/api/users/" + response.userId());
         return ResponseEntity.created(locationUri).body(response);
     }
 
     @Override
-    public ResponseEntity<Void> login(
-            @RequestBody @Valid LoginRequest request,
-            @RequestHeader(value = "X-Device-Id", required = true) String deviceId,
-            @RequestHeader(value = "X-Device-Name", required = true) String deviceName,
-            HttpServletRequest servletRequest) {
+    public ResponseEntity<Void> login(LoginRequest request, String deviceId,
+            String deviceName, HttpServletRequest servletRequest) {
         TokenBundle tokenBundle = authService.login(request, servletRequest);
         ResponseCookie accessTokenCookie = ResponseCookie.from(
                 "accessToken", tokenBundle.accessToken())
@@ -63,8 +59,7 @@ public class AuthController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<Void> logout(
-            @CookieValue(name = "refreshToken", required = false) String refreshToken) {
+    public ResponseEntity<Void> logout(String refreshToken) {
         TokenBundle tokenBundle = authService.logout(refreshToken);
         ResponseCookie accessTokenCookie = ResponseCookie.from(
                         "accessToken", tokenBundle.accessToken())
@@ -89,11 +84,8 @@ public class AuthController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<Void> refresh(
-            @CookieValue(name = "refreshToken") String refreshToken,
-            @RequestHeader(value = "X-Device-Id", required = true) String deviceId,
-            @RequestHeader(value = "X-Device-Name", required = true) String deviceName,
-            HttpServletRequest servletRequest) {
+    public ResponseEntity<Void> refresh(String refreshToken, String deviceId,
+            String deviceName, HttpServletRequest servletRequest) {
         TokenBundle tokenBundle = authService.refresh(refreshToken, servletRequest);
         ResponseCookie accessTokenCookie = ResponseCookie.from(
                         "accessToken", tokenBundle.accessToken())

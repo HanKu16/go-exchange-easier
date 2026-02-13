@@ -61,7 +61,7 @@ public interface ExchangeApi {
     @Operation(summary = "Delete exchange")
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200",
+                    responseCode = "204",
                     description = "Exchange was successfully deleted"),
             @ApiResponse(
                     responseCode = "403",

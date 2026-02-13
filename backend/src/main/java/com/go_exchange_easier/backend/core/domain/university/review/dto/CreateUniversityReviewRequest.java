@@ -1,14 +1,11 @@
 package com.go_exchange_easier.backend.core.domain.university.review.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record CreateUniversityReviewRequest(
 
-        @NotNull(message = "Text is required.")
+        @NotBlank(message = "Text can not be null, empty or whitespace only.")
         @Size(max = 1000, message = "Text max size is 1000 characters.")
         @Schema(example = "This university was real great. I like teaching staff " +
                 "like also the campus.")
