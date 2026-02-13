@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.common.dto.error;
+package com.go_exchange_easier.backend.common.dto.error;
 
 import org.springframework.http.HttpStatus;
 import java.util.List;

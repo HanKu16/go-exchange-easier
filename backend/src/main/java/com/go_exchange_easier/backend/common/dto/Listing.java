@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.common.dto;
+package com.go_exchange_easier.backend.common.dto;
 
 import java.util.List;
 

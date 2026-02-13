@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.location.city.impl;
 
-import com.go_exchange_easier.backend.core.common.dto.Listing;
+import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.core.domain.location.city.CitiesService;
 import com.go_exchange_easier.backend.core.domain.location.city.CityApi;
 import com.go_exchange_easier.backend.core.domain.location.city.CityDetails;

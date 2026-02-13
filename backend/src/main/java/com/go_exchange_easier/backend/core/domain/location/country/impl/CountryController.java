@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.location.country.impl;
 
-import com.go_exchange_easier.backend.core.common.dto.Listing;
+import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryApi;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryService;

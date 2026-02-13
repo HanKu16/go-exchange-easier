@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.chat.message;
 
 import com.go_exchange_easier.backend.chat.message.dto.CreateMessageRequest;
 import com.go_exchange_easier.backend.chat.message.dto.MessageDetails;
-import com.go_exchange_easier.backend.core.common.dto.error.ApiErrorResponse;
+import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

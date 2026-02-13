@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.university.impl;
 
-import com.go_exchange_easier.backend.core.common.dto.Listing;
+import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.university.UniversityApi;
 import com.go_exchange_easier.backend.core.domain.university.UniversityService;

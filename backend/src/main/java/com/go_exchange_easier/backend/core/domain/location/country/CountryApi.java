@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.location.country;
 
-import com.go_exchange_easier.backend.core.common.dto.Listing;
+import com.go_exchange_easier.backend.common.dto.Listing;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.user.status.impl;
 
-import com.go_exchange_easier.backend.core.common.dto.Listing;
+import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusApi;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusService;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;

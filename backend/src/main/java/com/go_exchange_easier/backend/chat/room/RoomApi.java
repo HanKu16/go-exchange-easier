@@ -4,7 +4,7 @@ import com.go_exchange_easier.backend.chat.room.dto.CreateRoomRequest;
 import com.go_exchange_easier.backend.chat.room.dto.RoomDetails;
 import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
-import com.go_exchange_easier.backend.core.common.dto.error.ApiErrorResponse;
+import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

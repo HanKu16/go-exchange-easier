@@ -1,9 +1,9 @@
 package com.go_exchange_easier.backend.core.infrastracture.exception;
 
-import com.go_exchange_easier.backend.core.common.dto.error.ApiErrorResponse;
-import com.go_exchange_easier.backend.core.common.dto.error.ApiErrorResponseCode;
-import com.go_exchange_easier.backend.core.common.dto.error.FieldErrorDetail;
-import com.go_exchange_easier.backend.core.common.dto.error.GlobalErrorDetail;
+import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
+import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponseCode;
+import com.go_exchange_easier.backend.common.dto.error.FieldErrorDetail;
+import com.go_exchange_easier.backend.common.dto.error.GlobalErrorDetail;
 import com.go_exchange_easier.backend.core.common.exception.*;
 import com.go_exchange_easier.backend.core.domain.auth.exception.*;
 import com.go_exchange_easier.backend.core.infrastracture.security.jwt.MissingJwtClaimException;

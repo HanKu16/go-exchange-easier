@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.auth;
 
-import com.go_exchange_easier.backend.core.common.dto.error.ApiErrorResponse;
+import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.LoginRequest;
 import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationRequest;
 import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationSummary;

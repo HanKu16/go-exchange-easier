@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.core.domain.university;
 
-import com.go_exchange_easier.backend.core.common.dto.Listing;
-import com.go_exchange_easier.backend.core.common.dto.error.ApiErrorResponse;
+import com.go_exchange_easier.backend.common.dto.Listing;
+import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityFilters;

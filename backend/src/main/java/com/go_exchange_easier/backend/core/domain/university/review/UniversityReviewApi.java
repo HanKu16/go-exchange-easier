@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.university.review;
 
-import com.go_exchange_easier.backend.core.common.dto.error.ApiErrorResponse;
+import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.AddUniversityReviewReactionRequest;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.CreateUniversityReviewRequest;

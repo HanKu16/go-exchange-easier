@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.fieldofstudy.impl;
 
-import com.go_exchange_easier.backend.core.common.dto.Listing;
+import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.core.domain.fieldofstudy.FieldOfStudyApi;
 import com.go_exchange_easier.backend.core.domain.fieldofstudy.FieldOfStudyService;
 import com.go_exchange_easier.backend.core.domain.fieldofstudy.FieldOfStudySummary;
