@@ -74,7 +74,7 @@ public class RoomServiceImpl implements RoomService {
         SimplePage<MessageDetails> pageOfMessages = SimplePage.empty(30);
         if (optionalRoomId.isPresent()) {
             roomId = optionalRoomId.get();
-            pageOfMessages = messageService.getPage(roomId, PageRequest.of(
+            pageOfMessages = messageService.getPage(roomId, userId, PageRequest.of(
                     0, 30, Sort.by(Sort.Direction.DESC, "createdAt")));
         } else {
             Room createdRoom = createRoom(userId, request.targetUserId());

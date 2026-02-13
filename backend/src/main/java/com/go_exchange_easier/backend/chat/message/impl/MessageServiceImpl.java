@@ -7,6 +7,7 @@ import com.go_exchange_easier.backend.chat.message.dto.AuthorSummary;
 import com.go_exchange_easier.backend.chat.message.dto.CreateMessageRequest;
 import com.go_exchange_easier.backend.chat.message.dto.MessageDetails;
 import com.go_exchange_easier.backend.chat.room.RoomRepository;
+import com.go_exchange_easier.backend.chat.room.UserInRoomRepository;
 import com.go_exchange_easier.backend.chat.room.entity.Room;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.core.api.CoreAvatar;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
@@ -27,20 +29,30 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class MessageServiceImpl implements MessageService {
 
+    private final UserInRoomRepository userInRoomRepository;
     private final MessageRepository messageRepository;
     private final RoomRepository roomRepository;
     private final CoreFacade coreFacade;
 
     @Override
-    public SimplePage<MessageDetails> getPage(UUID roomId, Pageable pageable) {
+    public SimplePage<MessageDetails> getPage(
+            UUID roomId, int userId, Pageable pageable) {
+        if (!userInRoomRepository.isUserMemberOfRoom(roomId, userId)) {
+            throw new AuthorizationDeniedException("Authenticated user " +
+                    "is not member of room that he is trying to access.");
+        }
         Page<Message> pageOfMessages = messageRepository.findByRoomId(roomId, pageable);
         HashMap<String, String> avatars = new HashMap<>();
         List<MessageDetails> messages = new ArrayList<>(pageOfMessages.getSize());
         for (Message message : pageOfMessages.getContent()) {
             String avatarKey = message.getAvatarKey();
             if (!avatars.containsKey(avatarKey)) {
-                CoreAvatar avatar = coreFacade.getAvatar(message.getAvatarKey());
-                avatars.put(avatarKey, avatarKey != null ? avatar.thumbnailUrl() : null);
+                String avatarUrl = null;
+                if (avatarKey != null) {
+                    CoreAvatar avatar = coreFacade.getAvatar(message.getAvatarKey());
+                    avatarUrl = avatar.thumbnailUrl();
+                }
+                avatars.put(avatarKey, avatarUrl);
             }
             messages.add(new MessageDetails(message.getId(),
                     message.getCreatedAt().toInstant(), message.getTextContent(),
