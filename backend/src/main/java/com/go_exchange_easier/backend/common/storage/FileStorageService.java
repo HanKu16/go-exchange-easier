@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.infrastracture.storage;
+package com.go_exchange_easier.backend.common.storage;
 
 import java.io.InputStream;
 

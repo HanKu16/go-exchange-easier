@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.infrastracture.config;
+package com.go_exchange_easier.backend.common.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

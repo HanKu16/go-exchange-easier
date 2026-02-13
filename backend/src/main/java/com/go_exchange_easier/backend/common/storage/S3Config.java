@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.infrastracture.storage;
+package com.go_exchange_easier.backend.common.storage;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
