@@ -1,20 +1,14 @@
+import type { CountryDetails } from "../location/CountryDetails";
+import type { UniversitySummary } from "../university/UniversitySummary";
+import type { UserStatusSummary } from "./status/UserStatusSummary";
+
 export type UserProfileDetails = {
   userId: number;
   nick: string;
   avatarUrl?: string;
   description: string;
   isFollowed: boolean;
-  homeUniversity?: {
-    id: number;
-    nativeName: string;
-    englishName?: string;
-  };
-  countryOfOrigin?: {
-    id: number;
-    name: string;
-  };
-  status?: {
-    id: number;
-    name: string;
-  };
+  homeUniversity?: UniversitySummary;
+  countryOfOrigin?: CountryDetails;
+  status?: UserStatusSummary;
 };

@@ -1,5 +1,9 @@
 package com.go_exchange_easier.backend.core.domain.user.dto;
 
+import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
+import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
+
 public record UserProfileDetails(
 
         Integer userId,
@@ -7,32 +11,8 @@ public record UserProfileDetails(
         String avatarUrl,
         String description,
         Boolean isFollowed,
-        UniversityDto homeUniversity,
-        CountryDto countryOfOrigin,
-        StatusDto status
+        UniversitySummary homeUniversity,
+        CountryDetails countryOfOrigin,
+        UserStatusSummary status
 
-) {
-
-    public record UniversityDto(
-
-            Short id,
-            String nativeName,
-            String englishName
-
-    ) {}
-
-    public record CountryDto(
-
-            Short id,
-            String name
-
-    ) {}
-
-    public record StatusDto(
-
-            Short id,
-            String name
-
-    ) {}
-
-}
+) { }

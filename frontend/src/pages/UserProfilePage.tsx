@@ -674,7 +674,7 @@ const UserProfilePage = () => {
         nick: data.nick,
         avatarUrl: data.avatarUrl,
         countryName: data.countryOfOrigin
-          ? data.countryOfOrigin.name
+          ? data.countryOfOrigin.englishName
           : "no info about country",
         homeUniversityName: universityName,
         description: data.description,

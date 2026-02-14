@@ -28,8 +28,6 @@ import com.go_exchange_easier.backend.core.domain.user.description.UserDescripti
 import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -43,6 +41,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserDescriptionRepository userDescriptionRepository;
@@ -51,11 +50,8 @@ public class UserServiceImpl implements UserService {
     private final UserStatusRepository userStatusRepository;
     private final UserRepository userRepository;
     private final AvatarService avatarService;
-    private static final Logger logger = LogManager.getLogger(
-            UserServiceImpl.class);
 
     @Override
-    @Transactional(readOnly = true)
     public UserProfileDetails getProfile(int userId, int currentUserId) {
         List<Object[]> rows = userRepository.findProfileById(userId, currentUserId);
         if (rows.isEmpty()) {
@@ -79,26 +75,21 @@ public class UserServiceImpl implements UserService {
         if (avatarKey != null) {
             avatarUrl = avatarService.getUrl(avatarKey).original();
         }
-        UserProfileDetails.UniversityDto university =
-                universityId != null ?
-                new UserProfileDetails.UniversityDto(universityId,
-                        universityOriginalName, universityEnglishName) :
+        UniversitySummary university = universityId != null ?
+                new UniversitySummary(universityId, universityOriginalName,
+                        universityEnglishName) :
                 null;
-        UserProfileDetails.CountryDto country =
-                countryId != null ?
-                new UserProfileDetails.CountryDto(
-                        countryId, countryName) :
+        CountryDetails country = countryId != null ?
+                new CountryDetails(countryId, countryName) :
                 null;
-        UserProfileDetails.StatusDto status =
-                statusId != null ?
-                new UserProfileDetails.StatusDto(statusId, statusName) :
+        UserStatusSummary status = statusId != null ?
+                new UserStatusSummary(statusId, statusName) :
                 null;
         return new UserProfileDetails(id, nick, avatarUrl, description, isFollowed,
                 university, country, status);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<UserDetails> getPage(String nick, Pageable pageable) {
         Page<User> users;
         Specification<User> spec = UserSpecification.fetchCountryOfOrigin()
@@ -183,7 +174,6 @@ public class UserServiceImpl implements UserService {
                         " was not found.");
             }
             return new CountryDetails(country.getId(), country.getEnglishName());
-
         } else {
             int rowsUpdated = userRepository.assignCountryOfOrigin(userId, null);
             if (rowsUpdated == 0) {
@@ -195,7 +185,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<UserWithAvatarSummary> getFollowees(int userId) {
         User user = userRepository.findWithFollowees(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -212,7 +201,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<UniversityDetails> getFollowedUniversities(int userId) {
         User user = userRepository.findWithFollowedUniversities(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -224,7 +212,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public UserWithAvatarSummary getMe(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -257,7 +244,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public CoreUser getUser(int userId) {
         String thumbnailUrl = null;
         String originalUrl = null;
@@ -276,7 +262,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Map<Integer, CoreUser> getUsers(Set<Integer> userIds) {
         if (userIds.isEmpty()) {
             return Collections.emptyMap();
