@@ -14,7 +14,7 @@ import com.go_exchange_easier.backend.core.domain.user.notification.UserNotifica
 import com.go_exchange_easier.backend.core.domain.auth.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.core.domain.auth.exception.UsernameAlreadyExistsException;
 import com.go_exchange_easier.backend.core.domain.user.User;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,7 @@ import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserRegistrarImpl implements UserRegistrar {
 
     private final UserCredentialsRepository userCredentialsRepository;

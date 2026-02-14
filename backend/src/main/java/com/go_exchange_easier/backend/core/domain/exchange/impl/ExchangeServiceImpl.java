@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ExchangeServiceImpl implements ExchangeService {
 
     private final FieldOfStudyRepository fieldOfStudyRepository;
@@ -33,7 +34,6 @@ public class ExchangeServiceImpl implements ExchangeService {
     private final UserRepository userRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public Page<ExchangeDetails> getPage(ExchangeFilters filters, Pageable pageable) {
         Specification<Exchange> spec = ExchangeSpecification.fromFilter(filters);
         Page<Exchange> exchanges = exchangeRepository.findAll(spec, pageable);

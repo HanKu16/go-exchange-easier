@@ -6,14 +6,15 @@ import com.go_exchange_easier.backend.core.domain.university.review.dto.Universi
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionCountRepository;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionCountService;
 import com.go_exchange_easier.backend.core.domain.university.review.entity.UniversityReviewReactionCount;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UniversityReviewReactionCountServiceImpl implements
         UniversityReviewReactionCountService {
 

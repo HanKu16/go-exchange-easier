@@ -12,14 +12,15 @@ import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.AddUniversityReviewReactionRequest;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewReactionDetails;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UniversityReviewReactionServiceImpl implements UniversityReviewReactionService {
 
     private final UniversityReviewReactionCountService reactionCountService;

@@ -33,6 +33,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     private final UniversityReviewReactionCountService reactionCountService;
@@ -42,7 +43,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     private final AvatarService avatarService;
 
     @Override
-    @Transactional(readOnly = true)
     public List<UniversityReviewDetails> getByAuthorId(
             int authorId, int currentUserId) {
         List<Object[]> rows = universityReviewRepository
@@ -79,7 +79,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<UniversityReviewDetails> getByUniversityId(
             int universityId, int currentUserId, int page, int size) {
         int limit = size;
@@ -163,7 +162,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public UniversityReviewCountSummary countByUniversityId(int universityId) {
         int count = universityReviewRepository.countReviewsByUniversityId(universityId);
         return new UniversityReviewCountSummary((short) universityId, count);

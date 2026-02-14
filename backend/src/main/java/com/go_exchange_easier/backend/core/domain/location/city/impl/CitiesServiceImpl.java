@@ -10,12 +10,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CitiesServiceImpl implements CitiesService {
 
     private final CitiesRepository citiesRepository;
 
     @Override
-    @Transactional(readOnly = true)
     @Cacheable(value="cities", key="'country:' + #countryId",
             condition="#countryId != null")
     public List<CityDetails> getAll(Short countryId) {

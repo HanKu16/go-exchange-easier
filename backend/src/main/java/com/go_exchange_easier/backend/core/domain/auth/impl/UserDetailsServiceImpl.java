@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserCredentialsRepository userCredentialsRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
         UserCredentials credentials = userCredentialsRepository

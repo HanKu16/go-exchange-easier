@@ -13,12 +13,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CountryServiceImpl implements CountryService {
 
     private final CountryRepository countryRepository;
 
     @Override
-    @Transactional(readOnly = true)
     @Cacheable(value="countries", key="'all'")
     public List<CountryDetails> getAll() {
         List<Country> countries = countryRepository.findAll();

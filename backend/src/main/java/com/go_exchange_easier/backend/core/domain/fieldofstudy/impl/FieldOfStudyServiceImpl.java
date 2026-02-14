@@ -12,12 +12,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FieldOfStudyServiceImpl implements FieldOfStudyService {
 
     private final FieldOfStudyRepository fieldOfStudyRepository;
 
     @Override
-    @Transactional(readOnly = true)
     @Cacheable(value="fields_of_study", key="'all'")
     public List<FieldOfStudySummary> getAll() {
         List<FieldOfStudy> fieldsOfStudy = fieldOfStudyRepository.findAll();

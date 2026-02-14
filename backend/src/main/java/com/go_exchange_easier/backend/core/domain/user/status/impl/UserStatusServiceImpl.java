@@ -12,12 +12,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserStatusServiceImpl implements UserStatusService {
 
     private final UserStatusRepository userStatusRepository;
 
     @Override
-    @Transactional(readOnly = true)
     @Cacheable(value="user_statuses", key="'all'")
     public List<UserStatusSummary> getAll() {
         List<UserStatus> statuses = userStatusRepository.findAll();
