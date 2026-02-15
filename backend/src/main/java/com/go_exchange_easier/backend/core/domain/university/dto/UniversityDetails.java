@@ -1,7 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.university.dto;
 
 import com.go_exchange_easier.backend.core.domain.location.city.CityDetails;
-import com.go_exchange_easier.backend.core.domain.university.University;
 
 public record UniversityDetails(
 
@@ -10,17 +9,4 @@ public record UniversityDetails(
         String englishName,
         CityDetails city
 
-) {
-
-    public static UniversityDetails fromEntity(University u) {
-        return new UniversityDetails(
-                u.getId(),
-                u.getOriginalName(),
-                u.getEnglishName(),
-                u.getCity() != null ?
-                        CityDetails.fromEntity(u.getCity()) :
-                        null
-        );
-    }
-
-}
+) { }

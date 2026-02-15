@@ -26,4 +26,11 @@ public class CountryMapper {
         );
     }
 
+    public CountrySummary toSummary(Country country) {
+        return new CountrySummary(
+                country.getId(),
+                country.getEnglishName()
+        );
+    }
+
 }

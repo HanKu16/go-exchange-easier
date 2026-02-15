@@ -7,13 +7,4 @@ public record CountrySummary(
         Short id,
         String englishName
 
-) implements Serializable {
-
-    public static CountrySummary fromEntity(Country c) {
-        return new CountrySummary(
-                c.getId(),
-                c.getEnglishName()
-        );
-    }
-
-}
+) implements Serializable { }
