@@ -32,12 +32,13 @@ public class ExchangeServiceImpl implements ExchangeService {
     private final UniversityRepository universityRepository;
     private final ExchangeRepository exchangeRepository;
     private final UserRepository userRepository;
+    private final ExchangeMapper exchangeMapper;
 
     @Override
     public Page<ExchangeDetails> getPage(ExchangeFilters filters, Pageable pageable) {
         Specification<Exchange> spec = ExchangeSpecification.fromFilter(filters);
         Page<Exchange> exchanges = exchangeRepository.findAll(spec, pageable);
-        return exchanges.map(ExchangeDetails::fromEntity);
+        return exchanges.map(exchangeMapper::toDetails);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ExchangeServiceImpl implements ExchangeService {
                                 " was not found."));
         Exchange exchange = buildExchange(request, userProxy, university, fieldOfStudy);
         Exchange savedExchange = exchangeRepository.save(exchange);
-        return ExchangeDetails.fromEntity(savedExchange);
+        return exchangeMapper.toDetails(savedExchange);
     }
 
     @Override

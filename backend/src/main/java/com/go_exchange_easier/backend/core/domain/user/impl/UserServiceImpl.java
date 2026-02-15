@@ -9,6 +9,7 @@ import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
+import com.go_exchange_easier.backend.core.domain.university.impl.UniversityMapper;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;
 import com.go_exchange_easier.backend.core.domain.user.UserService;
 import com.go_exchange_easier.backend.core.domain.user.UserSpecification;
@@ -46,9 +47,11 @@ public class UserServiceImpl implements UserService {
     private final UniversityRepository universityRepository;
     private final CountryRepository countryRepository;
     private final UserStatusRepository userStatusRepository;
+    private final UniversityMapper universityMapper;
     private final CountryService countryService;
     private final UserRepository userRepository;
     private final AvatarService avatarService;
+    private final UserMapper userMapper;
 
     @Override
     public UserProfileDetails getProfile(int userId, int currentUserId) {
@@ -99,7 +102,7 @@ public class UserServiceImpl implements UserService {
             spec = UserSpecification.hasNick(nick);
         }
         users = userRepository.findAll(spec, pageable);
-        return users.map(UserDetails::fromEntity);
+        return users.map(userMapper::toDetails);
     }
 
     @Override
@@ -208,7 +211,7 @@ public class UserServiceImpl implements UserService {
                         "User of id " + userId + " was not found."));
         return user.getUniversityFollowsSent()
                 .stream()
-                .map(f -> UniversityDetails.fromEntity(f.getUniversity()))
+                .map(f -> universityMapper.toDetails(f.getUniversity()))
                 .toList();
     }
 

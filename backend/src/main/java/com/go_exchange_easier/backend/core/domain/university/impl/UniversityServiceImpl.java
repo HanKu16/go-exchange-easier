@@ -22,6 +22,7 @@ import java.util.List;
 public class UniversityServiceImpl implements UniversityService {
 
     private final UniversityRepository universityRepository;
+    private final UniversityMapper universityMapper;
 
     @Override
     public UniversityProfile getProfile(
@@ -46,11 +47,13 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public Page<UniversityDetails> getPage(UniversityFilters filters, Pageable pageable) {
-        Specification<University> specification = UniversitySpecification.fromFilter(filters);
+    public Page<UniversityDetails> getPage(
+            UniversityFilters filters, Pageable pageable) {
+        Specification<University> specification =
+                UniversitySpecification.fromFilter(filters);
         Page<University> universities = universityRepository
                 .findAll(specification, pageable);
-        return universities.map(UniversityDetails::fromEntity);
+        return universities.map(universityMapper::toDetails);
     }
 
 }

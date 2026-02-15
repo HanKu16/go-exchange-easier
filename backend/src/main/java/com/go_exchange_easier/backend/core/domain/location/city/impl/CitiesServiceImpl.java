@@ -14,6 +14,7 @@ import java.util.List;
 public class CitiesServiceImpl implements CitiesService {
 
     private final CitiesRepository citiesRepository;
+    private final CityMapper cityMapper;
 
     @Override
     @Cacheable(value="cities", key="'country:' + #countryId",
@@ -25,7 +26,7 @@ public class CitiesServiceImpl implements CitiesService {
                     .hasCountryId(countryId));
         }
         List<City> cities = citiesRepository.findAll(specification);
-        return cities.stream().map(CityDetails::fromEntity).toList();
+        return cities.stream().map(cityMapper::toDetails).toList();
     }
 
 }
