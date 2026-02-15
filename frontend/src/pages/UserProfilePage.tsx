@@ -156,9 +156,6 @@ type UserDataPanelProps = {
 const UserDataPanel = (props: UserDataPanelProps) => {
   const theme = useTheme();
   const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
-  // const countryFlag = props.countryName
-  //   ? `/flags/${props.countryName}.png`
-  //   : null;
   const [isFollowed, setIsFollowed] = useState<boolean>(props.isFollowed);
 
   return (
@@ -426,6 +423,7 @@ const FeedPanel = (props: FeedPanelProps) => {
   const getReviews = async () => {
     const result = await sendGetUserReviewsRequest(props.userId);
     if (result.isSuccess) {
+      console.log(result.data.content);
       const reviewProps: UniversityReviewProps[] = result.data.content.map(
         (r) => ({
           id: r.id,
@@ -470,7 +468,6 @@ const FeedPanel = (props: FeedPanelProps) => {
       Number(props.userId),
     );
     if (result.isSuccess) {
-      console.log(result.data.content);
       const props: ExchangesProps = {
         exchanges: result.data.content.map((e) => ({
           id: e.id,

@@ -262,8 +262,14 @@ type UniversityDataPanelProps = {
     nativeName: string;
     englishName: string | null;
     linkToWebsite: string | null;
-    cityName: string;
-    countryName: string;
+    city: {
+      id: number;
+      name: string;
+      country: {
+        name: string;
+        flagUrl?: string;
+      };
+    };
   };
   isFollowed: boolean;
 };
@@ -289,9 +295,9 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
           }}
         >
           <img
-            alt="Country flag"
-            src={`/flags/${props.university.countryName}.png`}
+            src={props.university.city.country.flagUrl}
             style={{ height: "8rem", marginBottom: 8 }}
+            onError={(event) => (event.currentTarget.style.display = "none")}
           />
           <Typography
             sx={{
@@ -328,7 +334,8 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
                   marginLeft: 1,
                 }}
               >
-                {props.university.cityName}, {props.university.countryName}
+                {props.university.city.name},{" "}
+                {props.university.city.country.name}
               </Typography>
             </Box>
             {props.university.linkToWebsite && (
@@ -372,9 +379,11 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
           >
             <Box>
               <img
-                alt="Country flag"
-                src={`/flags/${props.university.countryName}.png`}
+                src={props.university.city.country.flagUrl}
                 style={{ height: "3.5rem", marginBottom: 8 }}
+                onError={(event) =>
+                  (event.currentTarget.style.display = "none")
+                }
               />
             </Box>
             <Container sx={{ display: "flex", flexDirection: "column" }}>
@@ -401,7 +410,8 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
                       marginLeft: 1,
                     }}
                   >
-                    {props.university.cityName}, {props.university.countryName}
+                    {props.university.city.name},{" "}
+                    {props.university.city.country.name}
                   </Typography>
                 </Box>
                 {props.university.linkToWebsite && (
@@ -657,8 +667,14 @@ const UniversityProfilePage = () => {
           nativeName: data.nativeName,
           englishName: data.englishName,
           linkToWebsite: data.linkToWebsite,
-          cityName: data.cityName,
-          countryName: data.countryName,
+          city: {
+            id: data.city.id,
+            name: data.city.name,
+            country: {
+              name: data.city.country.englishName,
+              flagUrl: data.city.country.flagUrl,
+            },
+          },
         },
         isFollowed: data.isFollowed,
       };

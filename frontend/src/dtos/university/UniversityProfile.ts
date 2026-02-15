@@ -1,9 +1,10 @@
+import type { CityDetails } from "../location/CityDetails";
+
 export type UniversityProfile = {
   id: number;
   nativeName: string;
   englishName: string | null;
   linkToWebsite: string | null;
-  cityName: string;
-  countryName: string;
+  city: CityDetails;
   isFollowed: boolean;
 };
