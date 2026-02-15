@@ -1,9 +1,9 @@
 import type { UniversitySummary } from "../university/UniversitySummary";
-import type { CountryDetails } from "../location/CountryDetails";
+import type { CountrySummary } from "../location/CountrySummary";
 
 export type UserDetails = {
   id: number;
   nick: string;
-  country?: CountryDetails;
+  country?: CountrySummary;
   university?: UniversitySummary;
 };

@@ -1,4 +1,4 @@
-import type { CountryDetails } from "../location/CountryDetails";
+import type { CountrySummary } from "../location/CountrySummary";
 import type { UniversitySummary } from "../university/UniversitySummary";
 import type { UserStatusSummary } from "./status/UserStatusSummary";
 
@@ -9,6 +9,6 @@ export type UserProfileDetails = {
   description: string;
   isFollowed: boolean;
   homeUniversity?: UniversitySummary;
-  countryOfOrigin?: CountryDetails;
+  countryOfOrigin?: CountrySummary;
   status?: UserStatusSummary;
 };

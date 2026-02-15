@@ -15,7 +15,7 @@ import type { UniversityDetails } from "../dtos/university/UniversityDetails";
 import type { AvatarUrlSummary } from "../dtos/user/avatar/AvatarUrlSummary";
 import type { UserWithAvatarSummary } from "../dtos/user/UserWithAvatarSummary";
 import type { UserStatusSummary } from "../dtos/user/status/UserStatusSummary";
-import type { CountryDetails } from "../dtos/location/CountryDetails";
+import type { CountrySummary } from "../dtos/location/CountrySummary";
 import type { UniversitySummary } from "../dtos/university/UniversitySummary";
 
 export const sendGetUserProfileRequest = async (
@@ -84,13 +84,13 @@ export const sendUpdateStatusRequest = async (
 
 export const sendAssignCountryOfOriginRequest = async (
   body: AssignCountryOfOriginRequest,
-): Promise<ResponseSuccessResult<CountryDetails> | ResponseFailureResult> => {
+): Promise<ResponseSuccessResult<CountrySummary> | ResponseFailureResult> => {
   const uri: string = `/api/users/countryOfOrigin`;
   const request: RequestInit = {
     method: "PATCH",
     body: JSON.stringify(body),
   };
-  return await sendRequest<CountryDetails>(uri, request);
+  return await sendRequest<CountrySummary>(uri, request);
 };
 
 export const sendGetUsersRequest = async (
