@@ -20,6 +20,6 @@ public interface CountryApi {
                     responseCode = "200",
                     description = "Countries were successfully returned"),
     })
-    ResponseEntity<Listing<CountryDetails>> getAll();
+    ResponseEntity<Listing<CountrySummary>> getAll();
 
 }

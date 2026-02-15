@@ -3,7 +3,7 @@ package com.go_exchange_easier.backend.core.domain.user;
 import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewDetails;
@@ -184,7 +184,7 @@ public interface UserApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<CountryDetails> assignCountryOfOrigin(
+    ResponseEntity<CountrySummary> assignCountryOfOrigin(
             @RequestBody @Valid AssignCountryOfOriginRequest request,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 

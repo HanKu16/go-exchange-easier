@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.core.domain.user.impl;
 
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.core.domain.user.UserApi;
 import com.go_exchange_easier.backend.core.domain.user.UserService;
@@ -87,10 +87,10 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<CountryDetails> assignCountryOfOrigin(
+    public ResponseEntity<CountrySummary> assignCountryOfOrigin(
             AssignCountryOfOriginRequest request,
             AuthenticatedUser authenticatedUser) {
-        CountryDetails country = userService.assignCountryOfOrigin(
+        CountrySummary country = userService.assignCountryOfOrigin(
                 authenticatedUser.getId(), request);
         return ResponseEntity.ok(country);
     }

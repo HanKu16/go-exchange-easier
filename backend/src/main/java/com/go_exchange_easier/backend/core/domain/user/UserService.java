@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.core.domain.user;
 
 import com.go_exchange_easier.backend.core.api.CoreUser;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarUrlSummary;
@@ -26,7 +26,7 @@ public interface UserService {
     UniversitySummary assignHomeUniversity(
             int userId, AssignHomeUniversityRequest request);
     UserStatusSummary updateStatus(int userId, UpdateUserStatusRequest request);
-    CountryDetails assignCountryOfOrigin(
+    CountrySummary assignCountryOfOrigin(
             int userId, AssignCountryOfOriginRequest request);
     List<UserWithAvatarSummary> getFollowees(int userId);
     List<UniversityDetails> getFollowedUniversities(int userId);

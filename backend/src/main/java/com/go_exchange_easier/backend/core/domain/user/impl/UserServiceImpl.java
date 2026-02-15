@@ -5,7 +5,7 @@ import com.go_exchange_easier.backend.core.api.CoreUser;
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollow;
 import com.go_exchange_easier.backend.core.domain.location.country.Country;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryRepository;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
@@ -79,8 +79,8 @@ public class UserServiceImpl implements UserService {
                 new UniversitySummary(universityId, universityOriginalName,
                         universityEnglishName) :
                 null;
-        CountryDetails country = countryId != null ?
-                new CountryDetails(countryId, countryName) :
+        CountrySummary country = countryId != null ?
+                new CountrySummary(countryId, countryName) :
                 null;
         UserStatusSummary status = statusId != null ?
                 new UserStatusSummary(statusId, statusName) :
@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public CountryDetails assignCountryOfOrigin(
+    public CountrySummary assignCountryOfOrigin(
             int userId, AssignCountryOfOriginRequest request) {
         if (request.countryId() != null) {
             Country country = countryRepository.findById(request.countryId())
@@ -173,14 +173,14 @@ public class UserServiceImpl implements UserService {
                 throw new ResourceNotFoundException("User of id " + userId +
                         " was not found.");
             }
-            return new CountryDetails(country.getId(), country.getEnglishName());
+            return new CountrySummary(country.getId(), country.getEnglishName());
         } else {
             int rowsUpdated = userRepository.assignCountryOfOrigin(userId, null);
             if (rowsUpdated == 0) {
                 throw new ResourceNotFoundException("User of id " + userId +
                         " was not found.");
             }
-            return new CountryDetails(null, null);
+            return new CountrySummary(null, null);
         }
     }
 
