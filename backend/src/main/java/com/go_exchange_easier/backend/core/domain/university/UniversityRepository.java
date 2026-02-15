@@ -25,7 +25,10 @@ public interface UniversityRepository extends
            	u.link_to_website,
            	ci.english_name,
            	co.english_name,
-           	(uf.follower_id IS NOT NULL) AS is_followed
+           	(uf.follower_id IS NOT NULL) AS is_followed,
+           	ci.city_id,
+           	co.country_id,
+           	co.flag_key
         FROM core.universities u
         JOIN core.cities ci ON ci.city_id = u.city_id
         JOIN core.countries co ON co.country_id = ci.country_id

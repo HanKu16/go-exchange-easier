@@ -1,6 +1,9 @@
 package com.go_exchange_easier.backend.core.domain.university.impl;
 
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.core.domain.location.city.CityDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.CountryService;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.university.UniversityService;
@@ -23,6 +26,7 @@ public class UniversityServiceImpl implements UniversityService {
 
     private final UniversityRepository universityRepository;
     private final UniversityMapper universityMapper;
+    private final CountryService countryService;
 
     @Override
     public UniversityProfile getProfile(
@@ -41,9 +45,17 @@ public class UniversityServiceImpl implements UniversityService {
         String cityName = (String) row[4];
         String countryName = (String) row[5];
         Boolean isFollowed = (Boolean) row[6];
+        Integer cityId = (Integer) row[7];
+        Short countryId = (Short) row[8];
+        String countryFlagKey = row[9] != null ? (String) row[9] : null;
         return new UniversityProfile(id,
                 originalName, englishName, linkToWebsite,
-                cityName, countryName, isFollowed);
+                new CityDetails(cityId, cityName, new CountryDetails(
+                        countryId, countryName,
+                        countryFlagKey != null ?
+                        countryService.getFlagUrl(countryFlagKey) :
+                                null)),
+                 isFollowed);
     }
 
     @Override
