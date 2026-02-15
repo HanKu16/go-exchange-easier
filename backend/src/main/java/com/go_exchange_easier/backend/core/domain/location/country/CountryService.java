@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface CountryService {
 
-    List<CountrySummary> getAll();
+    List<CountryDetails> getAll();
 
 }

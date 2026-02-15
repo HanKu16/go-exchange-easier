@@ -23,6 +23,9 @@ public class Country {
     @Column(name = "english_name")
     private String englishName;
 
+    @Column(name = "flag_key")
+    private String flagKey;
+
     @OneToMany(mappedBy = "country")
     private Set<City> cities = new HashSet<>();
 
