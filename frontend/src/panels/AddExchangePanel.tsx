@@ -451,7 +451,10 @@ const ChooseTimeRangeSubpanel = (props: ChooseTimeRangeSubpanel) => {
             universityMajorName: exchandeDetails.fieldOfStudy.name,
             city: {
               name: exchandeDetails.university.city.name,
-              countryName: exchandeDetails.university.city.country.englishName,
+              country: {
+                name: exchandeDetails.university.city.country.englishName,
+                flagUrl: exchandeDetails.university.city.country.flagUrl,
+              },
             },
             user: {
               id: exchandeDetails.user.id,

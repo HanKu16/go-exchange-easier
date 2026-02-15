@@ -42,7 +42,10 @@ type ActionExchangeTableProps = {
     universityMajorName: string;
     city: {
       name: string;
-      countryName: string;
+      country: {
+        name: string;
+        flagUrl?: string;
+      };
     };
   }[];
   message: AlertMessage | null;
@@ -134,11 +137,15 @@ const ActionExchangeTableProps = (props: ActionExchangeTableProps) => {
                   <TableCell align="center">{e.universityMajorName}</TableCell>
                   <TableCell align="center">
                     {e.city.name}
-                    <img
-                      src={`/flags/${e.city.countryName}.png`}
-                      alt={`${e.city.countryName} flag`}
-                      style={{ height: "0.8rem", marginLeft: 2 }}
-                    />
+                    {e.city.country.flagUrl && (
+                      <img
+                        src={e.city.country.flagUrl}
+                        style={{ height: "0.8rem", marginLeft: 2 }}
+                        onError={(event) =>
+                          (event.currentTarget.style.display = "none")
+                        }
+                      />
+                    )}
                   </TableCell>
                   <TableCell align="center">{e.timeRange.startedAt}</TableCell>
                   <TableCell align="center">{e.timeRange.endAt}</TableCell>
@@ -180,11 +187,15 @@ const ActionExchangeTableProps = (props: ActionExchangeTableProps) => {
               </Typography>
               <Typography variant="body2">
                 <strong>City:</strong> {e.city.name}
-                <img
-                  src={`/flags/${e.city.countryName}.png`}
-                  alt={`${e.city.countryName} flag`}
-                  style={{ height: "0.8rem", marginLeft: 2 }}
-                />
+                {e.city.country.flagUrl && (
+                  <img
+                    src={e.city.country.flagUrl}
+                    style={{ height: "0.8rem", marginLeft: 2 }}
+                    onError={(event) =>
+                      (event.currentTarget.style.display = "none")
+                    }
+                  />
+                )}
               </Typography>
               <Typography variant="body2">
                 <strong>Started:</strong> {e.timeRange.startedAt}
@@ -258,7 +269,10 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
           universityMajorName: e.fieldOfStudy.name,
           city: {
             name: e.university.city.name,
-            countryName: e.university.city.country.englishName,
+            country: {
+              name: e.university.city.country.englishName,
+              flagUrl: e.university.city.country.flagUrl,
+            },
           },
         })),
       };

@@ -226,6 +226,9 @@ const UserDataPanel = (props: UserDataPanelProps) => {
                   src={props.countryFlagUrl}
                   alt=""
                   style={{ height: "1rem", marginTop: 4 }}
+                  onError={(event) =>
+                    (event.currentTarget.style.display = "none")
+                  }
                 />
               ) : (
                 <></>
@@ -342,6 +345,9 @@ const UserDataPanel = (props: UserDataPanelProps) => {
                   <img
                     src={props.countryFlagUrl}
                     style={{ height: "1rem", marginTop: 4 }}
+                    onError={(event) =>
+                      (event.currentTarget.style.display = "none")
+                    }
                   />
                 ) : (
                   <></>
@@ -464,6 +470,7 @@ const FeedPanel = (props: FeedPanelProps) => {
       Number(props.userId),
     );
     if (result.isSuccess) {
+      console.log(result.data.content);
       const props: ExchangesProps = {
         exchanges: result.data.content.map((e) => ({
           id: e.id,
@@ -480,7 +487,10 @@ const FeedPanel = (props: FeedPanelProps) => {
           universityMajorName: e.fieldOfStudy.name,
           city: {
             name: e.university.city.name,
-            countryName: e.university.city.country.englishName,
+            country: {
+              name: e.university.city.country.englishName,
+              flagUrl: e.university.city.country.flagUrl,
+            },
           },
           user: {
             id: e.user.id,

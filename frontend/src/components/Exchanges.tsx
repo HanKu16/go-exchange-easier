@@ -25,7 +25,10 @@ export type ExchangesProps = {
     universityMajorName: string;
     city: {
       name: string;
-      countryName: string;
+      country: {
+        name: string;
+        flagUrl?: string;
+      };
     };
     user: {
       id: number;
@@ -89,11 +92,15 @@ const Exchanges = (props: ExchangesProps) => {
                   <TableCell align="center">{e.universityMajorName}</TableCell>
                   <TableCell align="center">
                     {e.city.name}
-                    <img
-                      src={`/flags/${e.city.countryName}.png`}
-                      alt={`${e.city.countryName} flag`}
-                      style={{ height: "0.8rem", marginLeft: 2 }}
-                    />
+                    {e.city.country.flagUrl && (
+                      <img
+                        src={e.city.country.flagUrl}
+                        style={{ height: "0.8rem", marginLeft: 2 }}
+                        onError={(event) =>
+                          (event.currentTarget.style.display = "none")
+                        }
+                      />
+                    )}
                   </TableCell>
                   <TableCell align="center">{e.timeRange.startedAt}</TableCell>
                   <TableCell align="center">{e.timeRange.endAt}</TableCell>
@@ -122,11 +129,15 @@ const Exchanges = (props: ExchangesProps) => {
               </Typography>
               <Typography variant="body2">
                 <strong>City:</strong> {e.city.name}
-                <img
-                  src={`/flags/${e.city.countryName}.png`}
-                  alt={`${e.city.countryName} flag`}
-                  style={{ height: "0.8rem", marginLeft: 2 }}
-                />
+                {e.city.country.flagUrl && (
+                  <img
+                    src={e.city.country.flagUrl}
+                    style={{ height: "0.8rem", marginLeft: 2 }}
+                    onError={(event) =>
+                      (event.currentTarget.style.display = "none")
+                    }
+                  />
+                )}
               </Typography>
               <Typography variant="body2">
                 <strong>Started:</strong> {e.timeRange.startedAt}

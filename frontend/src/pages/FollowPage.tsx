@@ -170,12 +170,15 @@ const FollowBox = (props: FollowBoxProps) => {
               flexShrink: 0,
             }}
           >
-            <img
-              src={basicAvatar}
-              alt="Default user avatar"
-              style={{ width: "100%", height: "100%" }}
-            />
-            {/* {props.name.charAt(0).toUpperCase()} */}
+            {props.followEntity === "user" ? (
+              <img
+                src={basicAvatar}
+                alt="Default user avatar"
+                style={{ width: "100%", height: "100%" }}
+              />
+            ) : (
+              <Box sx={{ bgcolor: "#d1d1d1", width: "100%", height: "100%" }} />
+            )}
           </Avatar>
           <Box sx={{ minWidth: 0 }}>
             <Typography
@@ -232,7 +235,10 @@ type UserFollow = {
 type UniversityFollow = {
   id: number;
   name: string;
-  countryName: string;
+  country: {
+    name: string;
+    flagUrl?: string;
+  };
   isFollowed: boolean;
 };
 
@@ -281,7 +287,10 @@ const FollowPage = () => {
         result.data.content.map((u) => ({
           id: u.id,
           name: u.englishName || u.nativeName,
-          countryName: u.city.country.englishName,
+          country: {
+            name: u.city.country.englishName,
+            flagUrl: u.city.country.flagUrl,
+          },
           isFollowed: true,
         })),
       );
@@ -360,7 +369,7 @@ const FollowPage = () => {
               route={route}
               isFollowed={u.isFollowed}
               followEntity="university"
-              avatarUrl={`/flags/${u.countryName}.png`}
+              avatarUrl={u.country.flagUrl}
               handleChange={(id: number) => {
                 setUniversityFollows((prevFollows) =>
                   prevFollows.map((f) =>
