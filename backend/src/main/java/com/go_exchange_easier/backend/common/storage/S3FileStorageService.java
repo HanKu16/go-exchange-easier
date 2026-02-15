@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.common.storage;
 
 import com.go_exchange_easier.backend.common.exception.FileUploadException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -17,7 +18,10 @@ import java.time.Duration;
 public class S3FileStorageService implements FileStorageService {
 
     private final S3Presigner presigner;
-    private final S3Client s3Client;
+    private final S3Client client;
+
+    @Value("${storage.s3.public-url}")
+    private String publicUrl;
 
     @Override
     public String upload(String bucketName, String key,
@@ -29,7 +33,7 @@ public class S3FileStorageService implements FileStorageService {
                 .contentLength(size)
                 .build();
         try {
-            s3Client.putObject(request, RequestBody.fromInputStream(stream, size));
+            client.putObject(request, RequestBody.fromInputStream(stream, size));
             return key;
         } catch (software.amazon.awssdk.core.exception.SdkException e) {
             throw new FileUploadException("AWS S3 error: " + e.getMessage());
@@ -39,7 +43,7 @@ public class S3FileStorageService implements FileStorageService {
     @Override
     public boolean delete(String bucketName, String key) {
         try {
-            s3Client.deleteObject(DeleteObjectRequest.builder()
+            client.deleteObject(DeleteObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
                     .build());
@@ -56,6 +60,14 @@ public class S3FileStorageService implements FileStorageService {
                 .getObjectRequest(b -> b.bucket(bucketName).key(key))
                 .build();
         return presigner.presignGetObject(presignRequest).url().toString();
+    }
+
+    @Override
+    public String getPublicUrl(String bucketName, String key) {
+        String baseUrl = publicUrl.endsWith("/")
+                ? publicUrl.substring(0, publicUrl.length() - 1)
+                : publicUrl;
+        return String.format("%s/%s/%s", baseUrl, bucketName, key);
     }
 
 }

@@ -8,5 +8,6 @@ public interface FileStorageService {
                   long size, String contentType);
     boolean delete(String bucketName, String key);
     String getUrl(String bucketName, String key);
+    String getPublicUrl(String bucketName, String key);
 
 }

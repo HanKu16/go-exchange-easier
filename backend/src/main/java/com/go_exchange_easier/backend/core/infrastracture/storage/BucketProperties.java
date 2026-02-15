@@ -10,5 +10,6 @@ import lombok.Data;
 public class BucketProperties {
 
     private String user;
+    private String flag;
 
 }
