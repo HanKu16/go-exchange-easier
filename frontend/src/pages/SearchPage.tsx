@@ -1233,6 +1233,7 @@ const SearchPage = () => {
       const allCountries: Country[] = result.data.content.map((c) => ({
         id: c.id,
         name: c.englishName,
+        flagUrl: c.flagUrl,
       }));
       setCountries(allCountries);
     }

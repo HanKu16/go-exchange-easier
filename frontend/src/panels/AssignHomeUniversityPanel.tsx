@@ -41,6 +41,7 @@ const AssignHomeUniversityPanel = () => {
       const allCountries: Country[] = result.data.content.map((c) => ({
         id: c.id,
         name: c.englishName,
+        flagUrl: c.flagUrl,
       }));
       setCountries(allCountries);
       setCountriesFetchStatus("success");
@@ -203,10 +204,12 @@ const AssignHomeUniversityPanel = () => {
                     c.id !== 0 ? (
                       <MenuItem key={c.id} value={c.id}>
                         {c.name}
-                        <img
-                          src={`/flags/${c.name}.png`}
-                          style={{ height: "0.8rem", marginLeft: 3 }}
-                        />
+                        {c.flagUrl ? (
+                          <img
+                            src={c.flagUrl}
+                            style={{ height: "0.8rem", marginLeft: 3 }}
+                          />
+                        ) : null}
                       </MenuItem>
                     ) : null,
                   )}

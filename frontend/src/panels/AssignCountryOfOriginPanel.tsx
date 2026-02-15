@@ -29,6 +29,7 @@ const AssignCountryOfOriginPanel = () => {
       const allCountries: Country[] = result.data.content.map((c) => ({
         id: c.id,
         name: c.englishName,
+        flagUrl: c.flagUrl,
       }));
       allCountries.push({ id: 0, name: "no country" });
       setCountries(allCountries);
@@ -104,12 +105,12 @@ const AssignCountryOfOriginPanel = () => {
                   label={
                     <>
                       {c.name}
-                      {c.id !== 0 && (
+                      {c.flagUrl ? (
                         <img
-                          src={`/flags/${c.name}.png`}
+                          src={c.flagUrl}
                           style={{ height: "0.8rem", marginLeft: 3 }}
                         />
-                      )}
+                      ) : null}
                       {getInteractionElement(c.id)}
                     </>
                   }
