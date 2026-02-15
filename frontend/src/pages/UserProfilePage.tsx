@@ -145,7 +145,8 @@ type UserDataPanelProps = {
   userId: number | string;
   nick: string;
   avatarUrl?: string;
-  countryName: string | null;
+  countryName?: string;
+  countryFlagUrl?: string;
   homeUniversityName?: string;
   description: string;
   isFollowed: boolean;
@@ -155,9 +156,9 @@ type UserDataPanelProps = {
 const UserDataPanel = (props: UserDataPanelProps) => {
   const theme = useTheme();
   const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
-  const countryFlag = props.countryName
-    ? `/flags/${props.countryName}.png`
-    : null;
+  // const countryFlag = props.countryName
+  //   ? `/flags/${props.countryName}.png`
+  //   : null;
   const [isFollowed, setIsFollowed] = useState<boolean>(props.isFollowed);
 
   return (
@@ -220,9 +221,9 @@ const UserDataPanel = (props: UserDataPanelProps) => {
               >
                 {props.countryName}
               </Typography>
-              {countryFlag ? (
+              {props.countryFlagUrl ? (
                 <img
-                  src={countryFlag}
+                  src={props.countryFlagUrl}
                   alt=""
                   style={{ height: "1rem", marginTop: 4 }}
                 />
@@ -337,9 +338,9 @@ const UserDataPanel = (props: UserDataPanelProps) => {
                 >
                   {props.countryName}
                 </Typography>
-                {countryFlag ? (
+                {props.countryFlagUrl ? (
                   <img
-                    src={countryFlag}
+                    src={props.countryFlagUrl}
                     style={{ height: "1rem", marginTop: 4 }}
                   />
                 ) : (
@@ -676,6 +677,9 @@ const UserProfilePage = () => {
         countryName: data.countryOfOrigin
           ? data.countryOfOrigin.englishName
           : "no info about country",
+        countryFlagUrl: data.countryOfOrigin
+          ? data.countryOfOrigin.flagUrl
+          : undefined,
         homeUniversityName: universityName,
         description: data.description,
         isFollowed: data.isFollowed,
