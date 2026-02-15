@@ -4,9 +4,7 @@ import com.go_exchange_easier.backend.core.api.CoreAvatar;
 import com.go_exchange_easier.backend.core.api.CoreUser;
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollow;
-import com.go_exchange_easier.backend.core.domain.location.country.Country;
-import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryRepository;
+import com.go_exchange_easier.backend.core.domain.location.country.*;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
@@ -48,6 +46,7 @@ public class UserServiceImpl implements UserService {
     private final UniversityRepository universityRepository;
     private final CountryRepository countryRepository;
     private final UserStatusRepository userStatusRepository;
+    private final CountryService countryService;
     private final UserRepository userRepository;
     private final AvatarService avatarService;
 
@@ -71,6 +70,7 @@ public class UserServiceImpl implements UserService {
         String statusName = (String) row[9];
         Boolean isFollowed = (Boolean) row[10];
         String avatarKey = row[11] != null ? (String) row[11] : null;
+        String flagKey = row[12] != null ? (String) row[12] : null;
         String avatarUrl = null;
         if (avatarKey != null) {
             avatarUrl = avatarService.getUrl(avatarKey).original();
@@ -79,8 +79,9 @@ public class UserServiceImpl implements UserService {
                 new UniversitySummary(universityId, universityOriginalName,
                         universityEnglishName) :
                 null;
-        CountrySummary country = countryId != null ?
-                new CountrySummary(countryId, countryName) :
+        CountryDetails country = countryId != null ?
+                new CountryDetails(countryId, countryName, flagKey != null ?
+                        countryService.getFlagUrl(flagKey) : null) :
                 null;
         UserStatusSummary status = statusId != null ?
                 new UserStatusSummary(statusId, statusName) :
