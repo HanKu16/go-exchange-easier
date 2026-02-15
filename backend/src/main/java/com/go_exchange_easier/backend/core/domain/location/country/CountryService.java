@@ -5,5 +5,6 @@ import java.util.List;
 public interface CountryService {
 
     List<CountryDetails> getAll();
+    String getFlagUrl(String flagKey);
 
 }

@@ -24,9 +24,14 @@ public class CountryServiceImpl implements CountryService {
         List<Country> countries = countryRepository.findAll();
         return countries.stream()
                 .map(c -> new CountryDetails(c.getId(), c.getEnglishName(),
-                        fileStorageService.getPublicUrl(
-                                bucketProperties.getFlag(), c.getFlagKey())))
+                        c.getFlagKey() != null ?
+                        getFlagUrl(c.getFlagKey()) : null))
                 .toList();
+    }
+
+    @Override
+    public String getFlagUrl(String flagKey) {
+        return fileStorageService.getPublicUrl(bucketProperties.getFlag(), flagKey);
     }
 
 }
