@@ -12,7 +12,8 @@ CREATE TYPE core.reaction_type AS ENUM (
 
 CREATE TABLE core.countries (
   country_id SMALLSERIAL PRIMARY KEY,
-  english_name VARCHAR(60) UNIQUE NOT NULL
+  english_name VARCHAR(60) UNIQUE NOT NULL,
+  flag_key TEXT
 );
 
 CREATE TABLE core.cities (

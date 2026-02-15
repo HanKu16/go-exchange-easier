@@ -11,6 +11,7 @@ ENUM reaction_type {
 TABLE core.countries {
   country_id SMALLSERIAL [pk]
   english_name VARCHAR(60) [not null, unique]
+  flag_key TEXT
 }
 
 TABLE core.cities {

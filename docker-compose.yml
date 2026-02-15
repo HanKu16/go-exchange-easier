@@ -78,13 +78,18 @@ services:
         condition: service_healthy
     volumes:
       - ./database/current-database/core/data/example-avatars:/example-avatars
+      - ./database/current-database/core/data/flags:/flags
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc alias set minio_server ${STORAGE_S3_INTERNAL_URL} ${STORAGE_S3_ROOT_USER} ${STORAGE_S3_ROOT_PASSWORD};
-      /usr/bin/mc mb --ignore-existing minio_server/users;
-      /usr/bin/mc anonymous set public minio_server/users;
-      echo '>>> Uploading images';
-      /usr/bin/mc cp --recursive /example-avatars/ minio_server/users/example-avatars;
-      echo '>>> Bucket users was created';
+      
+      /usr/bin/mc mb --ignore-existing minio_server/${BUCKETS_USERS};
+      /usr/bin/mc anonymous set download minio_server/${BUCKETS_USERS};
+      /usr/bin/mc cp --recursive /example-avatars/ minio_server/${BUCKETS_USERS}/example-avatars;
+      
+      /usr/bin/mc mb --ignore-existing minio_server/${BUCKETS_FLAGS};
+      /usr/bin/mc anonymous set download minio_server/${BUCKETS_FLAGS};
+      /usr/bin/mc cp --recursive /flags/ minio_server/${BUCKETS_FLAGS};
+     
       exit 0;
       "
