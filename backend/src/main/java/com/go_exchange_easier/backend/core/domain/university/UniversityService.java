@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface UniversityService {
 
-    UniversityProfile getProfile(int universityId, int currentUserId);
+    UniversityProfile getProfile(short universityId, int currentUserId);
     Page<UniversityDetails> getPage(UniversityFilters filters, Pageable pageable);
 
 }

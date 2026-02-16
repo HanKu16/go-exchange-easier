@@ -50,7 +50,7 @@ public interface UniversityApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<UniversityProfile> getProfile(
-            @PathVariable Integer universityId,
+            @PathVariable Short universityId,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @GetMapping("/{universityId}/reviews")

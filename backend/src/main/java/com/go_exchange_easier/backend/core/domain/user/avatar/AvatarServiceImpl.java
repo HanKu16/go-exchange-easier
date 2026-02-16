@@ -54,9 +54,9 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public AvatarUrlSummary getUrl(String originalKey) {
-        String originalAvatarUrl = fileStorageService.getUrl(
+        String originalAvatarUrl = fileStorageService.getPublicUrl(
                 bucketProperties.getUser(), originalKey);
-        String thumbnailAvatarUrl = fileStorageService.getUrl(
+        String thumbnailAvatarUrl = fileStorageService.getPublicUrl(
                 bucketProperties.getUser(), getThumbnailKey(originalKey));
         return new AvatarUrlSummary(originalAvatarUrl, thumbnailAvatarUrl);
     }

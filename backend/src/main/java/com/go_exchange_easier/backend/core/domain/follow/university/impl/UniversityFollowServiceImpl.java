@@ -43,7 +43,8 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
         }
     }
 
-    private boolean doesFollowExist(short universityId, int userId) {
+    @Override
+    public boolean doesFollowExist(short universityId, int userId) {
         return universityFollowRepository.countByUniversityIdAndFollowerIdNativeQuery(
                 universityId, userId) > 0;
     }

@@ -38,7 +38,7 @@ public class UniversityController implements UniversityApi {
 
     @Override
     public ResponseEntity<UniversityProfile> getProfile(
-            Integer universityId, AuthenticatedUser authenticatedUser) {
+            Short universityId, AuthenticatedUser authenticatedUser) {
         UniversityProfile profile = universityService.getProfile(
                 universityId, authenticatedUser.getId());
         return ResponseEntity.ok(profile);

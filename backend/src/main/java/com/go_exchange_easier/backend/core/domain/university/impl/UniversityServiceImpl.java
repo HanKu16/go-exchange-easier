@@ -1,13 +1,8 @@
 package com.go_exchange_easier.backend.core.domain.university.impl;
 
-import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
-import com.go_exchange_easier.backend.core.domain.location.city.CityDetails;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryService;
-import com.go_exchange_easier.backend.core.domain.university.University;
-import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
-import com.go_exchange_easier.backend.core.domain.university.UniversityService;
-import com.go_exchange_easier.backend.core.domain.university.UniversitySpecification;
+import com.go_exchange_easier.backend.core.domain.follow.university.UniversityFollowService;
+import com.go_exchange_easier.backend.core.domain.university.*;
+import com.go_exchange_easier.backend.core.domain.university.dto.UniversityPublicProfile;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityFilters;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityProfile;
@@ -17,45 +12,32 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UniversityServiceImpl implements UniversityService {
 
+    private final UniversityPublicProfileProvider publicProfileProvider;
+    private final UniversityFollowService universityFollowService;
     private final UniversityRepository universityRepository;
     private final UniversityMapper universityMapper;
-    private final CountryService countryService;
 
     @Override
     public UniversityProfile getProfile(
-            int universityId, int currentUserId) {
-        List<Object[]> rows = universityRepository.findProfileById(
+            short universityId, int currentUserId) {
+        UniversityPublicProfile publicProfile = publicProfileProvider
+                .getProfile(universityId);
+        boolean isFollowed = universityFollowService.doesFollowExist(
                 universityId, currentUserId);
-        if (rows.isEmpty()) {
-            throw new ResourceNotFoundException("University of id " +
-                    universityId + " was not found.");
-        }
-        Object[] row = rows.getFirst();
-        Short id = (Short) row[0];
-        String originalName = (String) row[1];
-        String englishName = (String) row[2];
-        String linkToWebsite = (String) row[3];
-        String cityName = (String) row[4];
-        String countryName = (String) row[5];
-        Boolean isFollowed = (Boolean) row[6];
-        Integer cityId = (Integer) row[7];
-        Short countryId = (Short) row[8];
-        String countryFlagKey = row[9] != null ? (String) row[9] : null;
-        return new UniversityProfile(id,
-                originalName, englishName, linkToWebsite,
-                new CityDetails(cityId, cityName, new CountryDetails(
-                        countryId, countryName,
-                        countryFlagKey != null ?
-                        countryService.getFlagUrl(countryFlagKey) :
-                                null)),
-                 isFollowed);
+        return new UniversityProfile(
+                publicProfile.id(),
+                publicProfile.nativeName(),
+                publicProfile.englishName(),
+                publicProfile.linkToWebsite(),
+                publicProfile.city(),
+                isFollowed
+        );
     }
 
     @Override
