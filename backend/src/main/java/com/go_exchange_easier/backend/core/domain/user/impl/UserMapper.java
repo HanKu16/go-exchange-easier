@@ -22,8 +22,8 @@ public class UserMapper {
         return new UserDetails(
                 user.getId(),
                 user.getNick(),
-                countryMapper.toSummary(user.getCountryOfOrigin()),
-                universityMapper.toSummary(user.getHomeUniversity())
+                countryMapper.toDetails(user.getCountryOfOrigin()),
+                universityMapper.toDetails(user.getHomeUniversity())
         );
     }
 

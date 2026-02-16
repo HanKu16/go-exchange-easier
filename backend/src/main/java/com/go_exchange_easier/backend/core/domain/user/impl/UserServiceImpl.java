@@ -97,9 +97,9 @@ public class UserServiceImpl implements UserService {
     public Page<UserDetails> getPage(String nick, Pageable pageable) {
         Page<User> users;
         Specification<User> spec = UserSpecification.fetchCountryOfOrigin()
-                .and(UserSpecification.fetchHomeUniversity());
+                .and(UserSpecification.fetchHomeUniversityWithLocation());
         if (nick != null) {
-            spec = UserSpecification.hasNick(nick);
+            spec = spec.and(UserSpecification.hasNick(nick));
         }
         users = userRepository.findAll(spec, pageable);
         return users.map(userMapper::toDetails);
