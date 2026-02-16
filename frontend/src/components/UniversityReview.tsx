@@ -139,11 +139,7 @@ const UniversityReview = (props: UniversityReviewProps) => {
             aria-label="User avatar"
             src={props.avatarUrl ? props.avatarUrl : basicAvatar}
           >
-            <img
-              src={basicAvatar}
-              alt="Default user avatar"
-              style={{ width: "100%", height: "100%" }}
-            />
+            <img src={basicAvatar} style={{ width: "100%", height: "100%" }} />
           </Avatar>
         }
         action={
