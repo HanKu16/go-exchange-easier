@@ -460,8 +460,8 @@ const FeedPanel = (props: FeedPanelProps) => {
   const [showReviewInput, setShowReviewInput] = useState<boolean>(false);
   const [reviewProps, setReviewsProps] = useState<UniversityReviewProps[]>([]);
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [wasAddedOnFirstPage, setWasAddedOnFirstPage] =
-    useState<boolean>(false);
+  const [shouldRefreshReviews, setShouldRefreshReviews] =
+    useState<boolean>(true);
   const [totalPagesCount, setTotalPagesCount] = useState<number>(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -563,18 +563,30 @@ const FeedPanel = (props: FeedPanelProps) => {
   };
 
   useEffect(() => {
+    setReviewsFetchStatus("loading");
     getTotalPagesCount();
+    setShouldRefreshReviews(false);
+    getReviews(currentPageNumber - 1);
   }, []);
 
   useEffect(() => {
-    setReviewsFetchStatus("loading");
-    getReviews(currentPageNumber - 1);
-    setWasAddedOnFirstPage(false);
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [currentPageNumber, wasAddedOnFirstPage]);
+    if (shouldRefreshReviews) {
+      setReviewsFetchStatus("loading");
+      getReviews(currentPageNumber - 1);
+      setShouldRefreshReviews(false);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [shouldRefreshReviews]);
+
+  useEffect(() => {
+    if (shouldRefreshReviews) {
+      return;
+    }
+    setShouldRefreshReviews(true);
+  }, [currentPageNumber]);
 
   return (
     <Box
@@ -602,7 +614,8 @@ const FeedPanel = (props: FeedPanelProps) => {
             handleGoBackClick={handleShowingSubmitReviewSection}
             handleSuccessfulCreation={() => {
               setCurrentPageNumber(1);
-              setWasAddedOnFirstPage(true);
+              setShouldRefreshReviews(true);
+              // setWasAddedOnFirstPage(true);
             }}
             universityId={props.universityId}
           />
