@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.core.domain.university.impl;
 
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.location.city.CityDetails;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.dto.CountryDetails;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryService;
 import com.go_exchange_easier.backend.core.domain.university.UniversityPublicProfileProvider;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;

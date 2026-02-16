@@ -1,7 +1,7 @@
 package com.go_exchange_easier.backend.core.domain.user.impl;
 
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
-import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
+import com.go_exchange_easier.backend.core.domain.location.country.dto.CountrySummary;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.core.domain.user.UserApi;
 import com.go_exchange_easier.backend.core.domain.user.UserReadService;

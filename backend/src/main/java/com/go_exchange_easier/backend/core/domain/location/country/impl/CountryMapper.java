@@ -1,9 +1,9 @@
 package com.go_exchange_easier.backend.core.domain.location.country.impl;
 
 import com.go_exchange_easier.backend.core.domain.location.country.Country;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.dto.CountryDetails;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryService;
-import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
+import com.go_exchange_easier.backend.core.domain.location.country.dto.CountrySummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

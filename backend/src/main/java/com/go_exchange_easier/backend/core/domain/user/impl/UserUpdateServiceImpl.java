@@ -4,7 +4,7 @@ import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoun
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.location.country.Country;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryRepository;
-import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
+import com.go_exchange_easier.backend.core.domain.location.country.dto.CountrySummary;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;

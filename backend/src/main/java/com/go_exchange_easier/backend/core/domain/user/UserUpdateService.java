@@ -1,6 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.user;
 
-import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
+import com.go_exchange_easier.backend.core.domain.location.country.dto.CountrySummary;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarUrlSummary;
 import com.go_exchange_easier.backend.core.domain.user.description.UpdateUserDescriptionRequest;

@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.user.description;
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 public record UserDescriptionDetails(
@@ -8,4 +9,4 @@ public record UserDescriptionDetails(
         String description,
         OffsetDateTime updatedAt
 
-) { }
+) implements Serializable { }

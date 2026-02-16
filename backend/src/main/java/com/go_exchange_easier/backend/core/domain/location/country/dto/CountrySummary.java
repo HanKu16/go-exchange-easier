@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.domain.location.country;
+package com.go_exchange_easier.backend.core.domain.location.country.dto;
 
 import java.io.Serializable;
 
