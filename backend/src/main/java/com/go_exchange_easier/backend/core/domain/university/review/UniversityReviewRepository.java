@@ -32,7 +32,12 @@ public interface UniversityReviewRepository extends
                 ) FILTER (WHERE rc.reaction_type IS NOT NULL),
                 '[]'
             ) AS reactions,
-            us.avatar_key
+            us.avatar_key,
+            co.country_id,
+            co.english_name,
+            co.flag_key,
+            ci.city_id,
+            ci.english_name
         FROM core.university_reviews ur
         LEFT JOIN core.users us ON us.user_id = ur.author_id
         LEFT JOIN core.universities un ON un.university_id = ur.university_id
@@ -40,12 +45,15 @@ public interface UniversityReviewRepository extends
         LEFT JOIN core.university_review_reactions urr ON
             urr.university_review_id = ur.university_review_id AND
             urr.author_id = :currentUserId
+        LEFT JOIN core.cities ci ON ci.city_id = un.city_id
+        LEFT JOIN core.countries co ON co.country_id = ci.country_id
         WHERE us.user_id = :authorId AND us.deleted_at IS NULL AND
             un.deleted_at IS NULL AND ur.deleted_at IS NULL
         GROUP BY ur.university_review_id, us.user_id, us.nick,
             un.university_id, un.english_name, un.original_name,
-            ur.star_rating, ur.text_content, ur.created_at
-        ORDER BY ur.created_at DESC
+            ur.star_rating, ur.text_content, ur.created_at,
+        	co.country_id, co.english_name, co.flag_key,
+        	ci.city_id, ci.english_name
        """, nativeQuery = true)
     List<Object[]> findByAuthorId(@Param("authorId") int authorId,
             @Param("currentUserId") int currentUserId);
@@ -71,7 +79,12 @@ public interface UniversityReviewRepository extends
                 ) FILTER (WHERE rc.reaction_type IS NOT NULL),
                 '[]'
             ) AS reactions,
-            us.avatar_key
+            us.avatar_key,
+            co.country_id,
+            co.english_name,
+            co.flag_key,
+            ci.city_id,
+            ci.english_name
         FROM core.university_reviews ur
         LEFT JOIN core.users us ON us.user_id = ur.author_id
         LEFT JOIN core.universities un ON un.university_id = ur.university_id
@@ -80,12 +93,16 @@ public interface UniversityReviewRepository extends
         LEFT JOIN core.university_review_reactions urr ON
            	urr.university_review_id = ur.university_review_id AND
             urr.author_id = :currentUserId
+        LEFT JOIN core.cities ci ON ci.city_id = un.city_id
+        LEFT JOIN core.countries co ON co.country_id = ci.country_id
         WHERE un.university_id = :universityId AND
             un.deleted_at IS NULL AND us.deleted_at IS NULL AND
             ur.deleted_at IS NULL
         GROUP BY ur.university_review_id, us.user_id, us.nick,
            	un.university_id, un.english_name, un.original_name,
-            ur.star_rating, ur.text_content, ur.created_at
+            ur.star_rating, ur.text_content, ur.created_at,
+            co.country_id, co.english_name, co.flag_key,
+        	ci.city_id, ci.english_name
         ORDER BY ur.created_at DESC
         LIMIT :limit
         OFFSET :offset;

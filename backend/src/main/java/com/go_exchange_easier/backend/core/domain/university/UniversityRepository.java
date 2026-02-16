@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UniversityRepository extends
@@ -40,18 +41,13 @@ public interface UniversityRepository extends
     List<Object[]> findProfileById(@Param("universityId") int universityId,
             @Param("currentUserId") int currentUserId);
 
-    @Query("""
-        SELECT u FROM University u
-        JOIN FETCH u.city c
-        JOIN FETCH c.country
-        WHERE c.id = :cityId
-        """)
-    List<University> findByCityId(@Param("cityId") int cityId);
-
     @Override
     @NonNull
     @EntityGraph(attributePaths = {"city", "city.country"})
     Page<University> findAll(Specification<University> specification,
             @NonNull Pageable pageable);
+
+    @EntityGraph(attributePaths = {"city, city.country"})
+    Optional<University> findById(short id);
 
 }

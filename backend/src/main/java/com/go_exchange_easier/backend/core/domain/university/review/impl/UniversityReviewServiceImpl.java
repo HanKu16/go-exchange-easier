@@ -3,13 +3,17 @@ package com.go_exchange_easier.backend.core.domain.university.review.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.core.domain.location.city.CityDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.CountryService;
 import com.go_exchange_easier.backend.core.domain.reaction.ReactionType;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.reaction.ReactionDetails;
+import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
+import com.go_exchange_easier.backend.core.domain.university.impl.UniversityMapper;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewDetails;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewCountSummary;
-import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionCountService;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewRepository;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
@@ -41,6 +45,8 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     private final UniversityRepository universityRepository;
     private final UserRepository userRepository;
     private final AvatarService avatarService;
+    private final CountryService countryService;
+    private final UniversityMapper universityMapper;
 
     @Override
     public List<UniversityReviewDetails> getByAuthorId(
@@ -69,11 +75,22 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
                 }
                 wasAttemptToSetAvatar = true;
             }
+            Short countryId = (Short) row[11];
+            String countryName = (String) row[12];
+            String flagUrl = row[13] != null ? countryService
+                    .getFlagUrl((String) row[13]) : null;
+            Integer cityId = (Integer) row[14];
+            String cityName = (String) row[15];
+            CountryDetails country = new CountryDetails(
+                    countryId, countryName, flagUrl);
+            CityDetails city = new CityDetails(
+                    cityId, cityName, country);
+            UniversityDetails university = new UniversityDetails(
+                    universityId, universityEnglishName,
+                    universityNativeName, city);
             reviews.add(new UniversityReviewDetails(id, new UserWithAvatarSummary(
-                    authorIdRow, authorNick, avatarUrl),
-                    new UniversitySummary(universityId, universityEnglishName,
-                            universityNativeName), starRating, textContent,
-                    createdAt, reactions));
+                    authorIdRow, authorNick, avatarUrl), university, starRating,
+                    textContent, createdAt, reactions));
         }
         return reviews;
     }
@@ -81,10 +98,9 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     @Override
     public List<UniversityReviewDetails> getByUniversityId(
             int universityId, int currentUserId, int page, int size) {
-        int limit = size;
         int offset = page * size;
         List<Object[]> rows = universityReviewRepository
-                .findByUniversityId(universityId, currentUserId, limit, offset);
+                .findByUniversityId(universityId, currentUserId, size, offset);
         List<UniversityReviewDetails> reviews = new ArrayList<>();
         for (Object[] row : rows) {
             Integer id = (Integer) row[0];
@@ -98,16 +114,27 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             Instant createdAt = (Instant) row[8];
             String reactionsJson = (String) row[9];
             String avatarKey = row[10] != null ? (String) row[10] : null;
+            Short countryId = (Short) row[11];
+            String countryName = (String) row[12];
+            String flagUrl = row[13] != null ? countryService
+                    .getFlagUrl((String) row[13]) : null;
+            Integer cityId = (Integer) row[14];
+            String cityName = (String) row[15];
             String avatarUrl = null;
             if (avatarKey != null) {
                 avatarUrl = avatarService.getUrl(avatarKey).thumbnail();
             }
+            CountryDetails country = new CountryDetails(
+                    countryId, countryName, flagUrl);
+            CityDetails city = new CityDetails(
+                    cityId, cityName, country);
+            UniversityDetails university = new UniversityDetails(
+                    universityIdFromDb, universityEnglishName,
+                    universityNativeName, city);
             List<ReactionDetails> reactions = parseReactionsJson(reactionsJson);
             reviews.add(new UniversityReviewDetails(id,
                     new UserWithAvatarSummary(authorId, authorNick, avatarUrl),
-                    new UniversitySummary(universityIdFromDb, universityNativeName,
-                            universityEnglishName),
-                    starRating, textContent, createdAt, reactions));
+                    university, starRating, textContent, createdAt, reactions));
         }
         return reviews;
     }
@@ -140,9 +167,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         return new UniversityReviewDetails(
                 savedReview.getId(), new UserWithAvatarSummary(
                         user.getId(), user.getNick(), avatarUrl),
-                new UniversitySummary(university.getId(),
-                        university.getOriginalName(),
-                        university.getEnglishName()),
+                universityMapper.toDetails(university),
                 review.getStarRating(), review.getTextContent(),
                 review.getCreatedAt().toInstant(), reactions);
     }
