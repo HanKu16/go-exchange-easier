@@ -4,7 +4,8 @@ import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.location.country.CountrySummary;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.core.domain.user.UserApi;
-import com.go_exchange_easier.backend.core.domain.user.UserService;
+import com.go_exchange_easier.backend.core.domain.user.UserReadService;
+import com.go_exchange_easier.backend.core.domain.user.UserUpdateService;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarUrlSummary;
 import com.go_exchange_easier.backend.core.domain.user.description.UpdateUserDescriptionRequest;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionDetails;
@@ -32,12 +33,13 @@ import java.util.concurrent.TimeUnit;
 public class UserController implements UserApi {
 
     private final UniversityReviewService universityReviewService;
-    private final UserService userService;
+    private final UserUpdateService userUpdateService;
+    private final UserReadService userReadService;
 
     @Override
     public ResponseEntity<UserProfile> getProfile(
             Integer userId, AuthenticatedUser authenticatedUser) {
-        UserProfile response = userService.getProfile(
+        UserProfile response = userReadService.getProfile(
                 userId, authenticatedUser.getId());
         return ResponseEntity.ok(response);
     }
@@ -45,7 +47,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<Page<UserDetails>> getPage(
             String nick, Pageable pageable) {
-        Page<UserDetails> page = userService.getPage(nick, pageable);
+        Page<UserDetails> page = userReadService.getPage(nick, pageable);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
                 .body(page);
@@ -63,7 +65,7 @@ public class UserController implements UserApi {
     public ResponseEntity<UserDescriptionDetails> updateDescription(
             UpdateUserDescriptionRequest request,
             AuthenticatedUser authenticatedUser) {
-        UserDescriptionDetails response = userService
+        UserDescriptionDetails response = userUpdateService
                 .updateDescription(authenticatedUser.getId(), request);
         return ResponseEntity.ok(response);
     }
@@ -72,8 +74,8 @@ public class UserController implements UserApi {
     public ResponseEntity<UniversitySummary> assignHomeUniversity(
             AssignHomeUniversityRequest request,
             AuthenticatedUser authenticatedUser) {
-        UniversitySummary university = userService.assignHomeUniversity(
-                authenticatedUser.getId(), request);
+        UniversitySummary university = userUpdateService
+                .assignHomeUniversity(authenticatedUser.getId(), request);
         return ResponseEntity.ok(university);
     }
 
@@ -81,7 +83,7 @@ public class UserController implements UserApi {
     public ResponseEntity<UserStatusSummary> updateStatus(
             UpdateUserStatusRequest request,
             AuthenticatedUser authenticatedUser) {
-        UserStatusSummary status = userService.updateStatus(
+        UserStatusSummary status = userUpdateService.updateStatus(
                 authenticatedUser.getId(), request);
         return ResponseEntity.ok(status);
     }
@@ -90,7 +92,7 @@ public class UserController implements UserApi {
     public ResponseEntity<CountrySummary> assignCountryOfOrigin(
             AssignCountryOfOriginRequest request,
             AuthenticatedUser authenticatedUser) {
-        CountrySummary country = userService.assignCountryOfOrigin(
+        CountrySummary country = userUpdateService.assignCountryOfOrigin(
                 authenticatedUser.getId(), request);
         return ResponseEntity.ok(country);
     }
@@ -98,7 +100,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<Listing<UserWithAvatarSummary>> getFollowees(
             Integer userId) {
-        List<UserWithAvatarSummary> followees = userService
+        List<UserWithAvatarSummary> followees = userReadService
                 .getFollowees(userId);
         return ResponseEntity.ok(Listing.of(followees));
     }
@@ -106,7 +108,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<Listing<UniversityDetails>> getFollowedUniversities(
             Integer userId) {
-        List<UniversityDetails> universities = userService
+        List<UniversityDetails> universities = userReadService
                 .getFollowedUniversities(userId);
         return ResponseEntity.ok(Listing.of(universities));
     }
@@ -117,7 +119,7 @@ public class UserController implements UserApi {
         if (authenticatedUser == null) {
             return ResponseEntity.status(401).build();
         }
-        UserWithAvatarSummary user = userService
+        UserWithAvatarSummary user = userReadService
                 .getMe(authenticatedUser.getId());
         return ResponseEntity.ok(user);
     }
@@ -125,7 +127,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<AvatarUrlSummary> uploadAvatar(
             MultipartFile file, AuthenticatedUser authenticatedUser) {
-        AvatarUrlSummary avatarUrl = userService.addAvatar(
+        AvatarUrlSummary avatarUrl = userUpdateService.addAvatar(
                 authenticatedUser.getId(), file);
         return ResponseEntity.ok(avatarUrl);
     }
@@ -133,7 +135,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<AvatarUrlSummary> deleteAvatar(
             AuthenticatedUser authenticatedUser) {
-        AvatarUrlSummary avatarUrl = userService.deleteAvatar(
+        AvatarUrlSummary avatarUrl = userUpdateService.deleteAvatar(
                 authenticatedUser.getId());
         return ResponseEntity.ok(avatarUrl);
     }
