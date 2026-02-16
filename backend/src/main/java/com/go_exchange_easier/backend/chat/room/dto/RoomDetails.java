@@ -2,6 +2,8 @@ package com.go_exchange_easier.backend.chat.room.dto;
 
 import com.go_exchange_easier.backend.chat.message.dto.MessageDetails;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
+
+import java.io.Serializable;
 import java.util.UUID;
 
 public record RoomDetails(
@@ -11,4 +13,4 @@ public record RoomDetails(
         String imageUrl,
         SimplePage<MessageDetails> lastMessages
 
-) { }
+) implements Serializable { }
