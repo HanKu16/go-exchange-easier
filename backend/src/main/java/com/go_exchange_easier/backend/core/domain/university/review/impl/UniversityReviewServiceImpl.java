@@ -27,6 +27,8 @@ import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoun
 import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
@@ -49,6 +51,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     private final UniversityMapper universityMapper;
 
     @Override
+    @Cacheable(value="user-university-reviews", key="'user:' + #authorId")
     public List<UniversityReviewDetails> getByAuthorId(
             int authorId, int currentUserId) {
         List<Object[]> rows = universityReviewRepository
@@ -141,7 +144,9 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     @Override
     @Transactional
-    public UniversityReviewDetails create(int userId, CreateUniversityReviewRequest request) {
+    @CacheEvict(value = "user-university-reviews", key = "'user:' + #userId")
+    public UniversityReviewDetails create(int userId,
+            CreateUniversityReviewRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
                         "User of id " + userId + " was not found.")
@@ -174,6 +179,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "user-university-reviews", key = "'user:' + #userId")
     public void delete(int reviewId, int userId) {
         UniversityReview review = universityReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -187,9 +193,12 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     }
 
     @Override
-    public UniversityReviewCountSummary countByUniversityId(int universityId) {
-        int count = universityReviewRepository.countReviewsByUniversityId(universityId);
-        return new UniversityReviewCountSummary((short) universityId, count);
+    public UniversityReviewCountSummary countByUniversityId(
+            int universityId) {
+        int count = universityReviewRepository
+                .countReviewsByUniversityId(universityId);
+        return new UniversityReviewCountSummary(
+                (short) universityId, count);
     }
 
     private UniversityReview buildUniversityReview(

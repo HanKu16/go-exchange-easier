@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.core.domain.university.review.dto;
 import com.go_exchange_easier.backend.core.domain.reaction.ReactionDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.user.dto.UserWithAvatarSummary;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 
@@ -16,4 +17,4 @@ public record UniversityReviewDetails(
         Instant createdAt,
         List<ReactionDetails> reactions
 
-) { }
+) implements Serializable { }
