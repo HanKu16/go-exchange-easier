@@ -726,9 +726,11 @@ const UserSearchSection = (props: SearchSectionProps) => {
                   {" "}
                   {e.university.englishName || e.university.nativeName}{" "}
                   <img
-                    src={`/flags/${e.university.city.country.englishName}.png`}
-                    alt={e.university.city.country.englishName}
+                    src={e.university.city.country.flagUrl}
                     style={{ height: "0.8rem", marginLeft: "6px" }}
+                    onError={(event) =>
+                      (event.currentTarget.style.display = "none")
+                    }
                   />{" "}
                 </span>
               ),
@@ -767,7 +769,20 @@ const UserSearchSection = (props: SearchSectionProps) => {
               route: `/users/${u.id}`,
             },
             {
-              toShow: u.university?.englishName || "unknown",
+              toShow: u.university ? (
+                <span style={{ display: "inline-flex", alignItems: "center" }}>
+                  {u.university.englishName}
+                  <img
+                    src={u.university.city.country.flagUrl}
+                    style={{ height: "0.8rem", marginLeft: "6px" }}
+                    onError={(event) =>
+                      (event.currentTarget.style.display = "none")
+                    }
+                  />
+                </span>
+              ) : (
+                "unknown"
+              ),
               route: `/universities/${u.university?.id}`,
             },
             {
@@ -778,9 +793,11 @@ const UserSearchSection = (props: SearchSectionProps) => {
                   >
                     {u.country.englishName}
                     <img
-                      src={`/flags/${u.country.englishName}.png`}
-                      alt={u.country.englishName}
+                      src={u.country.flagUrl}
                       style={{ height: "0.8rem", marginLeft: "6px" }}
+                      onError={(event) =>
+                        (event.currentTarget.style.display = "none")
+                      }
                     />
                   </span>
                 ) : (
@@ -1040,8 +1057,11 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
                   <>
                     {u.city?.country?.englishName}
                     <img
-                      src={`/flags/${u.city?.country?.englishName}.png`}
+                      src={u.city?.country?.flagUrl}
                       style={{ height: "0.8rem", marginLeft: 2 }}
+                      onError={(event) =>
+                        (event.currentTarget.style.display = "none")
+                      }
                     />
                   </>
                 ) || "",
