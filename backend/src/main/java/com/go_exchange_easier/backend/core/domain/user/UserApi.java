@@ -45,7 +45,7 @@ public interface UserApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<UserProfileDetails> getProfile(
+    ResponseEntity<UserProfile> getProfile(
             @PathVariable("userId") Integer userId,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 

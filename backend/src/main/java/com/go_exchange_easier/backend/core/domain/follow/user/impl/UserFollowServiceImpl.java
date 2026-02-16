@@ -47,7 +47,8 @@ public class UserFollowServiceImpl implements UserFollowService {
         }
     }
 
-    private boolean doesFollowExist(int followerId, int followeeId) {
+    @Override
+    public boolean doesFollowExist(int followerId, int followeeId) {
         return userFollowRepository.countByFollowerIdAndFolloweeId(
                 followerId, followeeId) > 0;
     }

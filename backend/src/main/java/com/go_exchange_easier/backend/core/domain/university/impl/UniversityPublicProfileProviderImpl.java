@@ -10,10 +10,12 @@ import com.go_exchange_easier.backend.core.domain.university.dto.UniversityPubli
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UniversityPublicProfileProviderImpl implements
         UniversityPublicProfileProvider {
 
@@ -21,7 +23,8 @@ public class UniversityPublicProfileProviderImpl implements
     private final CountryService countryService;
 
     @Override
-    @Cacheable(value="universities", key="'university:' + #universityId")
+    @Cacheable(value="university-public-profiles",
+            key="'university:' + #universityId")
     public UniversityPublicProfile getProfile(int universityId) {
         List<Object[]> rows = universityRepository.findProfileById(
                 universityId);

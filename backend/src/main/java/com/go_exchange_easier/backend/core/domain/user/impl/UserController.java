@@ -35,9 +35,9 @@ public class UserController implements UserApi {
     private final UserService userService;
 
     @Override
-    public ResponseEntity<UserProfileDetails> getProfile(
+    public ResponseEntity<UserProfile> getProfile(
             Integer userId, AuthenticatedUser authenticatedUser) {
-        UserProfileDetails response = userService.getProfile(
+        UserProfile response = userService.getProfile(
                 userId, authenticatedUser.getId());
         return ResponseEntity.ok(response);
     }

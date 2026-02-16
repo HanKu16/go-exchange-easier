@@ -4,15 +4,14 @@ import com.go_exchange_easier.backend.core.api.CoreAvatar;
 import com.go_exchange_easier.backend.core.api.CoreUser;
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollow;
+import com.go_exchange_easier.backend.core.domain.follow.user.UserFollowService;
 import com.go_exchange_easier.backend.core.domain.location.country.*;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.core.domain.university.impl.UniversityMapper;
-import com.go_exchange_easier.backend.core.domain.user.UserRepository;
-import com.go_exchange_easier.backend.core.domain.user.UserService;
-import com.go_exchange_easier.backend.core.domain.user.UserSpecification;
+import com.go_exchange_easier.backend.core.domain.user.*;
 import com.go_exchange_easier.backend.core.domain.user.dto.*;
 import com.go_exchange_easier.backend.core.domain.user.status.UpdateUserStatusRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatus;
@@ -24,7 +23,6 @@ import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarUrlSummary;
 import com.go_exchange_easier.backend.core.domain.user.description.UpdateUserDescriptionRequest;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionDetails;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionRepository;
-import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,53 +42,31 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserDescriptionRepository userDescriptionRepository;
+    private final UserPublicProfileProvider publicProfileProvider;
     private final UniversityRepository universityRepository;
+    private final UserFollowService userFollowService;
     private final CountryRepository countryRepository;
     private final UserStatusRepository userStatusRepository;
     private final UniversityMapper universityMapper;
-    private final CountryService countryService;
     private final UserRepository userRepository;
     private final AvatarService avatarService;
     private final UserMapper userMapper;
 
     @Override
-    public UserProfileDetails getProfile(int userId, int currentUserId) {
-        List<Object[]> rows = userRepository.findProfileById(userId, currentUserId);
-        if (rows.isEmpty()) {
-            throw new ResourceNotFoundException("User of id " +
-                    userId + " was not found");
-        }
-        Object[] row = rows.getFirst();
-        Integer id = (Integer) row[0];
-        String nick = (String) row[1];
-        String description = (String) row[2];
-        Short universityId = (Short) row[3];
-        String universityOriginalName = (String) row[4];
-        String universityEnglishName = (String) row[5];
-        Short countryId = (Short) row[6];
-        String countryName = (String) row[7];
-        Short statusId = (Short) row[8];
-        String statusName = (String) row[9];
-        Boolean isFollowed = (Boolean) row[10];
-        String avatarKey = row[11] != null ? (String) row[11] : null;
-        String flagKey = row[12] != null ? (String) row[12] : null;
-        String avatarUrl = null;
-        if (avatarKey != null) {
-            avatarUrl = avatarService.getUrl(avatarKey).original();
-        }
-        UniversitySummary university = universityId != null ?
-                new UniversitySummary(universityId, universityOriginalName,
-                        universityEnglishName) :
-                null;
-        CountryDetails country = countryId != null ?
-                new CountryDetails(countryId, countryName, flagKey != null ?
-                        countryService.getFlagUrl(flagKey) : null) :
-                null;
-        UserStatusSummary status = statusId != null ?
-                new UserStatusSummary(statusId, statusName) :
-                null;
-        return new UserProfileDetails(id, nick, avatarUrl, description, isFollowed,
-                university, country, status);
+    public UserProfile getProfile(int userId, int currentUserId) {
+        UserPublicProfile publicProfile = publicProfileProvider
+                .getProfile(userId);
+        boolean isFollowed = userFollowService
+                .doesFollowExist(currentUserId, userId);
+        return new UserProfile(
+                publicProfile.userId(),
+                publicProfile.nick(),
+                publicProfile.avatarUrl(),
+                publicProfile.description(),
+                publicProfile.homeUniversity(),
+                publicProfile.countryOfOrigin(),
+                publicProfile.status(),
+                isFollowed);
     }
 
     @Override

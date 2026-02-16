@@ -4,5 +4,6 @@ public interface UserFollowService {
 
     void follow(int followerId, int followeeId);
     void unfollow(int followerId, int followeeId);
+    boolean doesFollowExist(int followerId, int followeeId);
 
 }

@@ -19,7 +19,7 @@ import java.util.Set;
 
 public interface UserService {
 
-    UserProfileDetails getProfile(int userId, int currentUserId);
+    UserProfile getProfile(int userId, int currentUserId);
     Page<UserDetails> getPage(String nick, Pageable pageable);
     UserDescriptionDetails updateDescription(
             int userId, UpdateUserDescriptionRequest request);
