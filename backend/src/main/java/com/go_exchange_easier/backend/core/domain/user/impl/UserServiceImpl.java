@@ -25,6 +25,7 @@ import com.go_exchange_easier.backend.core.domain.user.description.UserDescripti
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionRepository;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -83,6 +84,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public UserDescriptionDetails updateDescription(
             int userId, UpdateUserDescriptionRequest request) {
         OffsetDateTime updatedAt = OffsetDateTime.now();
@@ -98,6 +100,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public UniversitySummary assignHomeUniversity(
             int userId, AssignHomeUniversityRequest request) {
         University university = universityRepository.findById(request.universityId())
@@ -116,6 +119,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public UserStatusSummary updateStatus(
             int userId, UpdateUserStatusRequest request) {
         if (request.statusId() != null) {
@@ -140,6 +144,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public CountrySummary assignCountryOfOrigin(
             int userId, AssignCountryOfOriginRequest request) {
         if (request.countryId() != null) {
@@ -204,6 +209,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public AvatarUrlSummary addAvatar(int userId, MultipartFile file) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -215,6 +221,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public AvatarUrlSummary deleteAvatar(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
