@@ -423,14 +423,15 @@ const FeedPanel = (props: FeedPanelProps) => {
   const getReviews = async () => {
     const result = await sendGetUserReviewsRequest(props.userId);
     if (result.isSuccess) {
-      console.log(result.data.content);
       const reviewProps: UniversityReviewProps[] = result.data.content.map(
         (r) => ({
           id: r.id,
           title: r.university.englishName
             ? r.university.englishName
             : r.university.nativeName,
-          avatarUrl: r.author.avatarUrl,
+          avatarUrl: r.university.city.country.flagUrl
+            ? r.university.city.country.flagUrl
+            : r.author.avatarUrl,
           subheader: getLocalDate(r.createdAt),
           starRating: r.starRating,
           textContent: r.textContent,
