@@ -8,7 +8,7 @@ import {
   IconButton,
   Button,
 } from "@mui/material";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SearchResultTable from "../../components/SearchResult";
 import type { UniversityDetails } from "../../dtos/university/UniversityDetails";
 import { sendGetUniversitiesRequest } from "../../utils/api/university";
@@ -39,9 +39,11 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
   const [totalPagesCount, setTotalPagesCount] = useState<number | undefined>(
     undefined,
   );
-  const previousPage = useRef(props.currentPage);
 
   const getUniverisities = async () => {
+    if (props.currentPage === undefined) {
+      return;
+    }
     setUniversitiesFetchStatus("loading");
     const result = await sendGetUniversitiesRequest(
       uniFilters.englishName,
@@ -69,12 +71,10 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
     }
   };
 
-  // to prawdopodobnie się wywołuje
   useEffect(() => {
-    if (previousPage.current === props.currentPage) {
+    if (props.currentPage === undefined) {
       return;
     }
-    previousPage.current = props.currentPage;
     getUniverisities();
   }, [props.currentPage]);
 
@@ -106,6 +106,16 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
 
   const shouldShowGoToDrawerIcon = () => {
     return props.countries.length > 0;
+  };
+
+  const clearFilters = () => {
+    setUniFilters({
+      countryId: null,
+      cityId: null,
+      englishName: null,
+      nativeName: null,
+    });
+    setSearchName("");
   };
 
   const getSuccessSearchResult = () => {
@@ -243,7 +253,7 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
       </IconButton>
       <Button
         variant="contained"
-        onClick={getUniverisities}
+        onClick={() => props.setCurrentPage(0)}
         sx={{
           display: { xs: "none", sm: "flex" },
           borderRadius: "50px",
@@ -262,21 +272,10 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
         onClose={() => setDrawerOpen(false)}
         filters={uniFilters}
         setFilters={(f) => {
-          props.setCurrentPage(0);
           setUniFilters(f);
         }}
         onApply={() => setDrawerOpen(false)}
-        onReset={() => {
-          previousPage.current = props.currentPage;
-          props.resetSearchResult();
-          setUniFilters({
-            countryId: null,
-            cityId: null,
-            englishName: null,
-            nativeName: null,
-          });
-          setSearchName("");
-        }}
+        clearFilters={clearFilters}
         countries={props.countries}
         resetSearchResult={props.resetSearchResult}
       />

@@ -130,7 +130,10 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
       <Stack spacing={2} sx={{ mt: 4 }}>
         <Button
           variant="contained"
-          onClick={props.onReset}
+          onClick={() => {
+            props.clearFilters();
+            props.resetSearchResult();
+          }}
           sx={{
             py: 1.5,
             borderRadius: 3,

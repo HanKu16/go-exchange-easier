@@ -21,7 +21,7 @@ const SearchPage = () => {
     resultComponent: undefined,
     totalNumberOfPages: undefined,
   });
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number | undefined>(undefined);
 
   const handleEntityChange = (newEntity: SearchEntity) => {
     setCurrentSearchEntity(newEntity);
@@ -30,7 +30,7 @@ const SearchPage = () => {
       resultComponent: undefined,
       totalNumberOfPages: undefined,
     });
-    setCurrentPage(0);
+    setCurrentPage(undefined);
   };
 
   const resetSearchResult = () => {
@@ -39,7 +39,7 @@ const SearchPage = () => {
       resultComponent: undefined,
       totalNumberOfPages: undefined,
     });
-    setCurrentPage(0);
+    setCurrentPage(undefined);
   };
 
   const getCountries = async () => {
@@ -132,7 +132,8 @@ const SearchPage = () => {
         )}
         {getSearchResult()}
         {searchResult.totalNumberOfPages != undefined &&
-          searchResult.totalNumberOfPages > 1 && (
+          searchResult.totalNumberOfPages > 1 &&
+          currentPage !== undefined && (
             <Container
               sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}
             >

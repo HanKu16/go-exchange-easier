@@ -25,7 +25,7 @@ export type UniversityFilterDrawerProps = {
   filters: UniversityFilterState;
   setFilters: (f: UniversityFilterState) => void;
   onApply: () => void;
-  onReset: () => void;
+  clearFilters: () => void;
   countries: Country[];
   resetSearchResult: () => void;
 };
@@ -50,7 +50,7 @@ export type SearchResult = {
 export type SearchSectionProps = {
   countries: Country[];
   setSearchResult: (searchResult: SearchResult) => void;
-  currentPage: number;
+  currentPage: number | undefined;
   setCurrentPage: (currentPage: number) => void;
   pageSize: number;
   resetSearchResult: () => void;
