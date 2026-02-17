@@ -460,8 +460,6 @@ const FeedPanel = (props: FeedPanelProps) => {
   const [showReviewInput, setShowReviewInput] = useState<boolean>(false);
   const [reviewProps, setReviewsProps] = useState<UniversityReviewProps[]>([]);
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [shouldRefreshReviews, setShouldRefreshReviews] =
-    useState<boolean>(true);
   const [totalPagesCount, setTotalPagesCount] = useState<number>(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -562,30 +560,20 @@ const FeedPanel = (props: FeedPanelProps) => {
     }
   };
 
-  useEffect(() => {
+  const fetchData = async () => {
     setReviewsFetchStatus("loading");
-    getTotalPagesCount();
-    setShouldRefreshReviews(false);
+    if (totalPagesCount === 0) {
+      getTotalPagesCount();
+    }
     getReviews(currentPageNumber - 1);
-  }, []);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   useEffect(() => {
-    if (shouldRefreshReviews) {
-      setReviewsFetchStatus("loading");
-      getReviews(currentPageNumber - 1);
-      setShouldRefreshReviews(false);
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  }, [shouldRefreshReviews]);
-
-  useEffect(() => {
-    if (shouldRefreshReviews) {
-      return;
-    }
-    setShouldRefreshReviews(true);
+    fetchData();
   }, [currentPageNumber]);
 
   return (
@@ -613,9 +601,13 @@ const FeedPanel = (props: FeedPanelProps) => {
           <ReviewInput
             handleGoBackClick={handleShowingSubmitReviewSection}
             handleSuccessfulCreation={() => {
-              setCurrentPageNumber(1);
-              setShouldRefreshReviews(true);
-              // setWasAddedOnFirstPage(true);
+              getTotalPagesCount();
+              if (currentPageNumber === 1) {
+                // setShouldRefreshReviews(true);
+                fetchData();
+              } else {
+                setCurrentPageNumber(1);
+              }
             }}
             universityId={props.universityId}
           />
