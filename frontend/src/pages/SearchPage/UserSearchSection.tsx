@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -46,7 +46,6 @@ const UserSearchSection = (props: SearchSectionProps) => {
   const [totalPagesCount, setTotalPagesCount] = useState<number | undefined>(
     undefined,
   );
-  const previousPage = useRef(props.currentPage);
   const [fetchStatus, setFetchStatus] = useState<SearchResultFetchStatus>(
     "fetchingWasNotStarted",
   );
@@ -54,9 +53,24 @@ const UserSearchSection = (props: SearchSectionProps) => {
   const handleModeChange = (e: SelectChangeEvent) => {
     props.resetSearchResult();
     setMode(e.target.value as SearchMode);
+    if (e.target.value === "filters") {
+      setSearchNick("");
+    } else if (e.target.value === "simple") {
+      setUserFilters({
+        countryId: null,
+        cityId: null,
+        universityId: null,
+        majorId: null,
+        minYear: null,
+        maxYear: null,
+      });
+    }
   };
 
   const getUsers = async () => {
+    if (props.currentPage === undefined) {
+      return;
+    }
     setFetchStatus("loading");
     if (mode === "simple") {
       const result = await sendGetUsersRequest(
@@ -146,11 +160,10 @@ const UserSearchSection = (props: SearchSectionProps) => {
   }, [fetchStatus]);
 
   useEffect(() => {
-    if (previousPage.current === props.currentPage) {
+    if (props.currentPage === undefined) {
       return;
     }
     getUsers();
-    previousPage.current = props.currentPage;
   }, [props.currentPage]);
 
   const getSuccessExchangesSearchResult = () => {
@@ -319,7 +332,15 @@ const UserSearchSection = (props: SearchSectionProps) => {
             }}
             placeholder="Enter nickname"
             value={searchNick}
-            onChange={(e) => setSearchNick(e.target.value)}
+            onChange={(e) => {
+              setSearchNick(e.target.value);
+              if (fetchStatus === "success") {
+                props.resetSearchResult();
+              }
+              if (props.currentPage !== undefined) {
+                props.setCurrentPage(undefined);
+              }
+            }}
           />
         </Box>
       ) : (
@@ -367,7 +388,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
         <SearchIcon />
       </IconButton>
       <Box sx={{ display: { xs: "none", sm: "block" }, ml: 1 }}>
-        <SearchButton onClick={getUsers} />
+        <SearchButton onClick={() => props.setCurrentPage(0)} />
       </Box>
       <UserFilterDrawer
         countries={props.countries}

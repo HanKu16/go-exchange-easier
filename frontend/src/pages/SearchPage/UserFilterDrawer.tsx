@@ -20,16 +20,6 @@ import { useSnackbar } from "../../context/SnackBarContext";
 import type { Major, UserFilterDrawerProps } from "./types";
 
 const UserFilterDrawer = (props: UserFilterDrawerProps) => {
-  const [selectedCountryId, setSelectedCountryId] = useState<
-    number | null | undefined
-  >(undefined);
-  const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
-  const [selectedUniversityId, setSelectedUniversityId] = useState<
-    number | null
-  >(null);
-  const [selectedMajorId, setSelectedMajorId] = useState<number | null>(null);
-  const [selectedMinYear, setSelectedMinYear] = useState<number | null>(null);
-  const [selectedMaxYear, setSelectedMaxYear] = useState<number | null>(null);
   const [majors, setMajors] = useState<Major[]>([]);
   const [showMajorsDropdown, setShowMajorsDropdown] = useState(false);
   const [cities, setCities] = useState<City[]>([]);
@@ -46,8 +36,8 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
     }
   };
 
-  const getCities = async () => {
-    const result = await sendGetCitiesRequest(selectedCountryId);
+  const getCities = async (countryId: number) => {
+    const result = await sendGetCitiesRequest(countryId);
     if (result.isSuccess) {
       setCities(result.data.content);
     } else {
@@ -56,11 +46,11 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
     }
   };
 
-  const getUniversities = async () => {
+  const getUniversities = async (cityId: number) => {
     const result = await sendGetUniversitiesRequest(
       null,
       null,
-      selectedCityId,
+      cityId,
       null,
       0,
       100,
@@ -78,90 +68,74 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
     getMajors();
   }, []);
 
-  useEffect(() => {
-    if (selectedCountryId === undefined) {
-      return;
-    }
-    setSelectedCityId(null);
-    setSelectedUniversityId(null);
-    setCities([]);
-    setUniversities([]);
-    props.resetSearchResult();
-    if (selectedCountryId !== null) {
-      getCities();
-    }
+  const handleCountryChange = (newId: number | null) => {
     props.setFilters({
       ...props.filters,
-      countryId: selectedCountryId != undefined ? selectedCountryId : null,
+      countryId: newId,
       cityId: null,
       universityId: null,
     });
-  }, [selectedCountryId]);
-
-  useEffect(() => {
-    if (selectedCountryId === null || selectedCountryId === undefined) {
+    if (newId === null) {
       return;
     }
-    setSelectedUniversityId(null);
-    setUniversities([]);
-    if (selectedCityId !== null) {
-      getUniversities();
-    }
-    props.resetSearchResult();
+    getCities(newId);
+  };
+
+  const handleCityChange = (newId: number | null) => {
     props.setFilters({
       ...props.filters,
-      cityId: selectedCityId,
+      cityId: newId,
       universityId: null,
     });
-  }, [selectedCityId]);
-
-  useEffect(() => {
-    if (
-      selectedCountryId === null ||
-      selectedCountryId === undefined ||
-      selectedCityId === null
-    ) {
+    if (newId === null) {
       return;
     }
+    getUniversities(newId);
+  };
+
+  const handleUniversityChange = (newId: number | null) => {
     props.setFilters({
       ...props.filters,
-      universityId: selectedUniversityId,
+      universityId: newId,
     });
-    props.resetSearchResult();
-  }, [selectedUniversityId]);
+  };
+
+  const handleMajorChange = (newId: number | null) => {
+    props.setFilters({
+      ...props.filters,
+      majorId: newId,
+    });
+  };
+
+  const handleMinYearChange = (newMinYear: number | null) => {
+    props.setFilters({
+      ...props.filters,
+      minYear: newMinYear,
+    });
+  };
+
+  const handleMaxYearChange = (newMaxYear: number | null) => {
+    props.setFilters({
+      ...props.filters,
+      maxYear: newMaxYear,
+    });
+  };
 
   useEffect(() => {
+    console.log("filters changed", props.filters);
     props.resetSearchResult();
-    props.setFilters({
-      ...props.filters,
-      majorId: selectedMajorId,
-    });
-  }, [selectedMajorId]);
-
-  useEffect(() => {
-    props.resetSearchResult();
-    props.setFilters({
-      ...props.filters,
-      minYear: selectedMinYear,
-    });
-  }, [selectedMinYear]);
-
-  useEffect(() => {
-    props.resetSearchResult();
-    props.setFilters({
-      ...props.filters,
-      maxYear: selectedMaxYear,
-    });
-  }, [selectedMaxYear]);
+  }, [props.filters]);
 
   const resetButtonHandler = () => {
     props.resetSearchResult();
-    setSelectedCountryId(null);
-    setSelectedCityId(null);
-    setSelectedUniversityId(null);
-    setSelectedMajorId(null);
-    setSelectedMinYear(null);
-    setSelectedMaxYear(null);
+    props.setFilters({
+      countryId: null,
+      cityId: null,
+      universityId: null,
+      majorId: null,
+      minYear: null,
+      maxYear: null,
+    });
   };
 
   return (
@@ -188,12 +162,13 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
             <Autocomplete<Country>
               options={props.countries}
               value={
-                props.countries.find((c) => c.id === selectedCountryId) || null
+                props.countries.find((c) => c.id === props.filters.countryId) ||
+                null
               }
               getOptionLabel={(c) => c.name}
               onChange={(_, newValue) => {
                 const newId = newValue ? newValue.id : null;
-                setSelectedCountryId(newId);
+                handleCountryChange(newId);
               }}
               renderInput={(params) => (
                 <TextField
@@ -207,12 +182,12 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
             />
             <Autocomplete<City>
               options={cities}
-              value={cities.find((c) => c.id === selectedCityId) || null}
+              value={cities.find((c) => c.id === props.filters.cityId) || null}
               getOptionLabel={(c) => c.name}
-              disabled={!selectedCountryId}
+              disabled={!props.filters.countryId}
               onChange={(_, newValue) => {
                 const newId = newValue ? newValue.id : null;
-                setSelectedCityId(newId);
+                handleCityChange(newId);
               }}
               renderInput={(params) => (
                 <TextField
@@ -227,13 +202,14 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
             <Autocomplete<UniversityDetails>
               options={universities}
               value={
-                universities.find((c) => c.id === selectedUniversityId) || null
+                universities.find((c) => c.id === props.filters.universityId) ||
+                null
               }
               getOptionLabel={(c) => c.englishName || c.nativeName}
-              disabled={!selectedCityId || !selectedCountryId}
+              disabled={!props.filters.cityId || !props.filters.countryId}
               onChange={(_, newValue) => {
                 const newId = newValue ? newValue.id : null;
-                setSelectedUniversityId(newId);
+                handleUniversityChange(newId);
               }}
               renderInput={(params) => (
                 <TextField
@@ -261,7 +237,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
                 }
                 onChange={(_, newValue) => {
                   const newId = newValue ? newValue.id : null;
-                  setSelectedMajorId(newId);
+                  handleMajorChange(newId);
                 }}
                 renderInput={(params) => (
                   <TextField {...params} label="Major" variant="filled" />
@@ -278,9 +254,9 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
             <TextField
               label="From"
               type="number"
-              value={selectedMinYear ?? ""}
+              value={props.filters.minYear ?? ""}
               onChange={(e) =>
-                setSelectedMinYear(
+                handleMinYearChange(
                   e.target.value ? Number(e.target.value) : null,
                 )
               }
@@ -289,9 +265,9 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
             <TextField
               label="To"
               type="number"
-              value={selectedMaxYear ?? ""}
+              value={props.filters.maxYear ?? ""}
               onChange={(e) =>
-                setSelectedMaxYear(
+                handleMaxYearChange(
                   e.target.value ? Number(e.target.value) : null,
                 )
               }

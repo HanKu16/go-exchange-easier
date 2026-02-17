@@ -51,7 +51,7 @@ export type SearchSectionProps = {
   countries: Country[];
   setSearchResult: (searchResult: SearchResult) => void;
   currentPage: number | undefined;
-  setCurrentPage: (currentPage: number) => void;
+  setCurrentPage: (currentPage: number | undefined) => void;
   pageSize: number;
   resetSearchResult: () => void;
 };
