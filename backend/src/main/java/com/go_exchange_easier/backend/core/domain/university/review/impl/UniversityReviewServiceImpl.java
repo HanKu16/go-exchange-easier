@@ -89,8 +89,8 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             CityDetails city = new CityDetails(
                     cityId, cityName, country);
             UniversityDetails university = new UniversityDetails(
-                    universityId, universityEnglishName,
-                    universityNativeName, city);
+                    universityId, universityNativeName,
+                    universityEnglishName, city);
             reviews.add(new UniversityReviewDetails(id, new UserWithAvatarSummary(
                     authorIdRow, authorNick, avatarUrl), university, starRating,
                     textContent, createdAt, reactions));
@@ -132,8 +132,8 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             CityDetails city = new CityDetails(
                     cityId, cityName, country);
             UniversityDetails university = new UniversityDetails(
-                    universityIdFromDb, universityEnglishName,
-                    universityNativeName, city);
+                    universityIdFromDb, universityNativeName,
+                    universityEnglishName, city);
             List<ReactionDetails> reactions = parseReactionsJson(reactionsJson);
             reviews.add(new UniversityReviewDetails(id,
                     new UserWithAvatarSummary(authorId, authorNick, avatarUrl),
