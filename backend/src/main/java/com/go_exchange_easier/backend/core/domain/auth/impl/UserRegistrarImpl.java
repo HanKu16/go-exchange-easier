@@ -40,11 +40,13 @@ public class UserRegistrarImpl implements UserRegistrar {
             throw new UsernameAlreadyExistsException("User of login " +
                     request.login() + " already exists.");
         }
-        boolean doesUserOfGivenMailExists = userNotificationRepository
-                .existsByMail(request.mail());
-        if (doesUserOfGivenMailExists) {
-            throw new MailAlreadyExistsException("User of mail " +
-                    request.mail() + " already exists.");
+        if (request.mail() != null) {
+            boolean doesUserOfGivenMailExists = userNotificationRepository
+                    .existsByMail(request.mail());
+            if (doesUserOfGivenMailExists) {
+                throw new MailAlreadyExistsException("User of mail " +
+                        request.mail() + " already exists.");
+            }
         }
         User user = buildUser(request);
         User savedUser = userRepository.save(user);

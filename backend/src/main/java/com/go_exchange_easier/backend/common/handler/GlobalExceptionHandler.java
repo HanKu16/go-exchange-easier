@@ -8,6 +8,8 @@ import com.go_exchange_easier.backend.common.exception.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.exception.JDBCConnectionException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.QueryTimeoutException;
@@ -29,6 +31,7 @@ import java.security.SignatureException;
 import java.util.List;
 
 @RestControllerAdvice
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LogManager.getLogger(
@@ -92,9 +95,17 @@ public class GlobalExceptionHandler {
             IllegalStateException.class,
             DataIntegrityViolationException.class,
             NullPointerException.class,
-            RuntimeException.class
     })
     public ResponseEntity<ApiErrorResponse> handleApplicationException(Exception e) {
+        logger.error(e.getMessage(), e);
+        ApiErrorResponse response = new ApiErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected " +
+                "server error occurred.", List.of(), List.of());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleFallback(Exception e) {
         logger.error(e.getMessage(), e);
         ApiErrorResponse response = new ApiErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected " +
