@@ -1,5 +1,5 @@
 import { Grid, Box, Avatar, Typography, Container } from "@mui/material";
-import basicAvatar from "../assets/examples/basic-avatar.png";
+import basicAvatar from "../assets/basic-avatar.png";
 import SchoolIcon from "@mui/icons-material/School";
 import PublicIcon from "@mui/icons-material/Public";
 import Navbar from "../components/Navbar";

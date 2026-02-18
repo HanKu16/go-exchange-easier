@@ -18,10 +18,10 @@ import {
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
-import goExchangeEasierCaptionImage from "../assets/registration_page/caption.png";
-import earthImage from "../assets/registration_page/earth.png";
-import registrationPageTextImage from "../assets/registration_page/text.png";
-import registrationSuccessImage from "../assets/registration_page/registration-success.png";
+import goExchangeEasierCaptionImage from "../assets/caption.png";
+import earthImage from "../assets/earth.png";
+import registrationPageTextImage from "../assets/text.png";
+import registrationSuccessImage from "../assets/success.png";
 import type { UserRegistrationRequest } from "../dtos/auth/UserRegistrationRequest";
 import { useState } from "react";
 import { sendRegistrationRequest } from "../utils/api/auth";

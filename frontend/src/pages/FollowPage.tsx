@@ -35,7 +35,7 @@ import { useSnackbar } from "../context/SnackBarContext";
 import { useSignedInUser } from "../context/SignedInUserContext";
 import { useApplicationState } from "../context/ApplicationStateContext";
 import NoContent from "../components/NoContent";
-import basicAvatar from "../assets/examples/basic-avatar.png";
+import basicAvatar from "../assets/basic-avatar.png";
 
 type FollowBoxProps = {
   id: number;

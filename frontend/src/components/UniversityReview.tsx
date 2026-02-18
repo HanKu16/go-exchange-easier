@@ -6,7 +6,7 @@ import Avatar from "@mui/material/Avatar";
 import IconButton, { type IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { Rating } from "@mui/material";
-import basicAvatar from "../assets/examples/basic-avatar.png";
+import basicAvatar from "../assets/basic-avatar.png";
 import { useState } from "react";
 import {
   sendDeleteReviewRequest,

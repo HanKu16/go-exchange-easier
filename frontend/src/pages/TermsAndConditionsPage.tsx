@@ -9,9 +9,9 @@ import {
   Avatar,
   Divider,
 } from "@mui/material";
-import goExchangeEasierCaptionImage from "../assets/registration_page/caption.png";
-import earthImage from "../assets/registration_page/earth.png";
-import registrationPageTextImage from "../assets/registration_page/text.png";
+import goExchangeEasierCaptionImage from "../assets/caption.png";
+import earthImage from "../assets/earth.png";
+import registrationPageTextImage from "../assets/text.png";
 import React from "react";
 import GavelIcon from "@mui/icons-material/Gavel";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
