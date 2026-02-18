@@ -10,57 +10,57 @@ ENUM reaction_type {
 
 TABLE core.countries {
   country_id SMALLSERIAL [pk]
-  english_name VARCHAR(60) [not null, unique]
+  english_name TEXT [not null, unique]
   flag_key TEXT
 }
 
 TABLE core.cities {
   city_id SERIAL [pk]
-  english_name VARCHAR(60) [not null]
+  english_name TEXT [not null]
   country_id SMALLINT [ref: > core.countries.country_id, not null]
 }
 
 TABLE core.universities {
   university_id SMALLSERIAL [pk]
-  original_name VARCHAR(500) [not null]
-  english_name VARCHAR(255)
-  link_to_website VARCHAR(2048)
+  original_name TEXT [not null]
+  english_name TEXT
+  link_to_website TEXT
   deleted_at TIMESTAMPTZ 
   city_id INTEGER [ref: > core.cities.city_id, not null]
 }
 
 TABLE core.fields_of_study {
   field_of_study_id SMALLSERIAL [pk]
-  name VARCHAR(50) [unique, not null]
+  name TEXT [unique, not null]
 }
 
 TABLE core.user_statuses {
   user_status_id SMALLSERIAL [pk]
-  name VARCHAR(20) [not null]
+  name TEXT [not null]
 }
 
 TABLE core.user_credentials {
   user_id INTEGER [pk, ref: - core.users.user_id]
-  username VARCHAR(20) [unique, not null]
+  username TEXT [unique, not null]
   password TEXT [not null]
 }
 
 TABLE core.user_descriptions {
   user_id INTEGER [pk, ref: - core.users.user_id]
-  text_content VARCHAR(500) [not null]
+  text_content TEXT [not null]
   updated_at TIMESTAMPTZ 
 }
 
-TABLE core.user_notifications {
+TABLE core.notification_settings {
   user_id INTEGER [pk, ref: - core.users.user_id]
-  mail VARCHAR(254) [unique]
+  mail TEXT [unique]
   is_mail_notification_enabled BOOLEAN [not null]
 }
 
 TABLE core.users {
   user_id SERIAL [pk]
-  nick VARCHAR(20) [not null]
-  avatar_key VARCHAR(255)
+  nick TEXT [not null]
+  avatar_key TEXT
   created_at TIMESTAMPTZ [not null]
   deleted_at TIMESTAMPTZ
   user_status_id SMALLINT [ref: > core.user_statuses.user_status_id]
@@ -76,7 +76,7 @@ TABLE core.user_roles {
 
 TABLE core.university_reviews {
   university_review_id SERIAL [pk]
-  text_content VARCHAR(1000) [not null]
+  text_content TEXT [not null]
   star_rating SMALLINT [not null]
   created_at TIMESTAMPTZ [not null]
   deleted_at TIMESTAMPTZ 
@@ -126,8 +126,8 @@ TABLE core.refresh_tokens {
   expires_at TIMESTAMPTZ [not null]
   is_revoked BOOLEAN [not null]
   device_id UUID [not null]
-  device_name VARCHAR(255)
-  ip_address VARCHAR(45)
+  device_name TEXT
+  ip_address TEXT
   user_id INTEGER [ref: > core.users.user_id, not null]
 }
 

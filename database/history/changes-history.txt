@@ -73,3 +73,5 @@ v1.8
 
 1. Create and define new schema 'chat' for chat feature.
 2. Create schema 'core' and put everything that exists before there.
+3. Change types that VARCHAR to TEXT for every column where VARCHAR was used.
+4. Rename table 'core.user_notifications' to 'core.notification_settings'.

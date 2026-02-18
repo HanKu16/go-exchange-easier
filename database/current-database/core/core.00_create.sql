@@ -12,57 +12,57 @@ CREATE TYPE core.reaction_type AS ENUM (
 
 CREATE TABLE core.countries (
   country_id SMALLSERIAL PRIMARY KEY,
-  english_name VARCHAR(60) UNIQUE NOT NULL,
+  english_name TEXT UNIQUE NOT NULL,
   flag_key TEXT
 );
 
 CREATE TABLE core.cities (
   city_id SERIAL PRIMARY KEY,
-  english_name VARCHAR(60) NOT NULL,
+  english_name TEXT NOT NULL,
   country_id SMALLINT NOT NULL
 );
 
 CREATE TABLE core.universities (
   university_id SMALLSERIAL PRIMARY KEY,
-  original_name VARCHAR(500) NOT NULL,
-  english_name VARCHAR(255),
-  link_to_website VARCHAR(2048),
+  original_name TEXT NOT NULL,
+  english_name TEXT,
+  link_to_website TEXT,
   deleted_at TIMESTAMPTZ,
   city_id INTEGER NOT NULL
 );
 
 CREATE TABLE core.fields_of_study (
   field_of_study_id SMALLSERIAL PRIMARY KEY,
-  name VARCHAR(50) UNIQUE NOT NULL
+  name TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE core.user_statuses (
   user_status_id SMALLSERIAL PRIMARY KEY,
-  name VARCHAR(20) NOT NULL
+  name TEXT NOT NULL
 );
 
 CREATE TABLE core.user_credentials (
   user_id INTEGER PRIMARY KEY,
-  username VARCHAR(20) UNIQUE NOT NULL,
+  username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL
 );
 
 CREATE TABLE core.user_descriptions (
   user_id INTEGER PRIMARY KEY,
-  text_content VARCHAR(500) NOT NULL,
+  text_content TEXT NOT NULL,
   updated_at TIMESTAMPTZ
 );
 
-CREATE TABLE core.user_notifications (
+CREATE TABLE core.notification_settings (
   user_id INTEGER PRIMARY KEY,
-  mail VARCHAR(254) UNIQUE,
+  mail TEXT UNIQUE,
   is_mail_notification_enabled BOOLEAN NOT NULL
 );
 
 CREATE TABLE core.users (
   user_id SERIAL PRIMARY KEY,
-  nick VARCHAR(20) NOT NULL,
-  avatar_key VARCHAR(255),
+  nick TEXT NOT NULL,
+  avatar_key TEXT,
   created_at TIMESTAMPTZ NOT NULL,
   deleted_at TIMESTAMPTZ,
   user_status_id SMALLINT,
@@ -78,7 +78,7 @@ CREATE TABLE core.user_roles (
 
 CREATE TABLE core.university_reviews (
   university_review_id SERIAL PRIMARY KEY,
-  text_content VARCHAR(1000) NOT NULL,
+  text_content TEXT NOT NULL,
   star_rating SMALLINT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL,
   deleted_at TIMESTAMPTZ,
@@ -128,8 +128,8 @@ CREATE TABLE core.refresh_tokens (
   expires_at TIMESTAMPTZ NOT NULL,
   is_revoked BOOLEAN NOT NULL,
   device_id UUID NOT NULL,
-  device_name VARCHAR(255),
-  ip_address VARCHAR(45),
+  device_name TEXT,
+  ip_address TEXT,
   user_id INTEGER NOT NULL
 );
 
@@ -141,7 +141,7 @@ ALTER TABLE core.user_credentials ADD FOREIGN KEY (user_id) REFERENCES core.user
 
 ALTER TABLE core.user_descriptions ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
 
-ALTER TABLE core.user_notifications ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
+ALTER TABLE core.notification_settings ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
 
 ALTER TABLE core.users ADD FOREIGN KEY (user_status_id) REFERENCES core.user_statuses (user_status_id);
 
@@ -191,7 +191,7 @@ USING GIN (lower(english_name) gin_trgm_ops);
 
 CREATE INDEX users_nick_idx ON core.users (nick);
 
-CREATE INDEX user_notifs_mail_idx ON core.user_notifications (mail);
+CREATE INDEX notif_sett_mail_idx ON core.notification_settings (mail);
 
 CREATE INDEX user_creds_username_idx ON core.user_credentials (username);
 
