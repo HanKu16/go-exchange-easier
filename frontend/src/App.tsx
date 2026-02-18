@@ -21,6 +21,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
 import { ConfirmationDialogProvider } from "./context/ConfirmationDialogContext";
+import ChatPage from "./pages/ChatPage";
 
 const AppContent = () => {
   const { isLoading } = useSignedInUser();
@@ -55,6 +56,8 @@ const AppContent = () => {
         <Route path="/me" element={<EditUserPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/follows" element={<FollowPage />} />
+        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/chat/:conversationId" element={<ChatPage />} />
         <Route
           path="*"
           element={
