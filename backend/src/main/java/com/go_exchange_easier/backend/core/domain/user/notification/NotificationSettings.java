@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "user_notifications", schema = "core")
+@Table(name = "notification_settings", schema = "core")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class UserNotification {
+public class NotificationSettings {
 
     @Id
     @Column(name = "user_id")

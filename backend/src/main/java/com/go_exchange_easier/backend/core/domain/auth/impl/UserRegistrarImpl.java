@@ -9,7 +9,7 @@ import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationRequest;
 import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationSummary;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescription;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionRepository;
-import com.go_exchange_easier.backend.core.domain.user.notification.UserNotification;
+import com.go_exchange_easier.backend.core.domain.user.notification.NotificationSettings;
 import com.go_exchange_easier.backend.core.domain.user.notification.UserNotificationRepository;
 import com.go_exchange_easier.backend.core.domain.auth.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.core.domain.auth.exception.UsernameAlreadyExistsException;
@@ -53,8 +53,8 @@ public class UserRegistrarImpl implements UserRegistrar {
         UserCredentials savedCredentials = userCredentialsRepository.save(credentials);
         UserDescription description = buildDescription(user);
         UserDescription savedDescription = userDescriptionRepository.save(description);
-        UserNotification notification = buildNotification(request, user);
-        UserNotification savedNotification = userNotificationRepository.save(notification);
+        NotificationSettings notification = buildNotification(request, user);
+        NotificationSettings savedNotification = userNotificationRepository.save(notification);
         return new RegistrationSummary(savedUser.getId(), credentials.getUsername(),
                 savedUser.getNick(), savedUser.getCreatedAt());
     }
@@ -82,8 +82,8 @@ public class UserRegistrarImpl implements UserRegistrar {
         return description;
     }
 
-    private UserNotification buildNotification(RegistrationRequest request, User user) {
-        UserNotification notification = new UserNotification();
+    private NotificationSettings buildNotification(RegistrationRequest request, User user) {
+        NotificationSettings notification = new NotificationSettings();
         String mail = (request.mail() == null || request.mail().isBlank()) ?
                 null : request.mail();
         System.out.println(mail);
