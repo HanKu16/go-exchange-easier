@@ -1,7 +1,9 @@
 import { Avatar, Box, Card, CardContent, Typography } from "@mui/material";
 import basicAvatar from "../../assets/basic-avatar.png";
+import type { ConversationBoxProps } from "./types";
+import dayjs from "dayjs";
 
-const ConversationBox = () => {
+const ConversationBox = (props: ConversationBoxProps) => {
   return (
     <Card
       sx={{
@@ -26,7 +28,7 @@ const ConversationBox = () => {
         <Box>
           <Avatar
             alt="User avatar"
-            src={basicAvatar}
+            src={props.avatarUrl || basicAvatar}
             sx={{ width: 50, height: 50 }}
           />
         </Box>
@@ -50,18 +52,20 @@ const ConversationBox = () => {
             }}
           >
             <Typography variant="subtitle1" fontWeight="bold" noWrap>
-              Conversation name
+              {props.name}
             </Typography>
             <Typography
               variant="caption"
               color="text.secondary"
               sx={{ whiteSpace: "nowrap", ml: 1 }}
             >
-              18.02 12:45
+              {props.lastMessage?.createdAt
+                ? dayjs(props.lastMessage?.createdAt).format("DD.MM.YYYY HH:mm")
+                : ""}
             </Typography>
           </Box>
           <Typography variant="body2" color="text.secondary" noWrap>
-            Last message preview description...
+            {props.lastMessage?.textContent || ""}
           </Typography>
         </Box>
       </CardContent>
