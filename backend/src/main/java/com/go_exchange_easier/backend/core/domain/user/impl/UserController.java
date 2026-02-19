@@ -19,13 +19,11 @@ import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,7 +47,6 @@ public class UserController implements UserApi {
             String nick, Pageable pageable) {
         Page<UserDetails> page = userReadService.getPage(nick, pageable);
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
                 .body(page);
     }
 

@@ -1,5 +1,7 @@
 package com.go_exchange_easier.backend.core.domain.user;
 
+import com.go_exchange_easier.backend.core.domain.location.city.City;
+import com.go_exchange_easier.backend.core.domain.university.University;
 import jakarta.persistence.criteria.Fetch;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
@@ -18,7 +20,7 @@ public class UserSpecification {
         return (root, query, cb) -> {
             if ((query.getResultType() != Long.class) &&
                     (query.getResultType() != long.class)) {
-                root.fetch("countryOfOrigin");
+                root.fetch("countryOfOrigin", JoinType.LEFT);
             }
             return null;
         };
@@ -28,7 +30,7 @@ public class UserSpecification {
         return (root, query, cb) -> {
             if ((query.getResultType() != Long.class) &&
                     (query.getResultType() != long.class)) {
-                root.fetch("homeUniversity");
+                root.fetch("homeUniversity", JoinType.LEFT);
             }
             return null;
         };
@@ -38,9 +40,9 @@ public class UserSpecification {
         return (root, query, cb) -> {
             if (query.getResultType() != Long.class &&
                 query.getResultType() != long.class) {
-                Fetch<User, Object> universityFetch = root.fetch(
+                Fetch<User, University> universityFetch = root.fetch(
                         "homeUniversity", JoinType.LEFT);
-                Fetch<Object, Object> cityFetch = universityFetch.fetch(
+                Fetch<University, City> cityFetch = universityFetch.fetch(
                         "city", JoinType.LEFT);
                 cityFetch.fetch("country", JoinType.LEFT);
             }
