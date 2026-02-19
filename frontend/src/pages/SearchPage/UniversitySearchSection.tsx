@@ -239,7 +239,7 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
         </IconButton>
       )}
       <IconButton
-        onClick={getUniverisities}
+        onClick={() => props.setCurrentPage(0)}
         sx={{
           display: { xs: "flex", sm: "none" },
           bgcolor: "black",

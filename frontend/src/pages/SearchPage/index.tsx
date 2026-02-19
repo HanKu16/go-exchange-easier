@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, Container, Pagination } from "@mui/material";
+import {
+  Box,
+  Container,
+  Pagination,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import Navbar from "../../components/Navbar";
 import type { Country } from "../../types/Country";
 import { sendGetCountriesRequest } from "../../utils/api/country";
@@ -22,6 +28,8 @@ const SearchPage = () => {
     totalNumberOfPages: undefined,
   });
   const [currentPage, setCurrentPage] = useState<number | undefined>(undefined);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleEntityChange = (newEntity: SearchEntity) => {
     setCurrentSearchEntity(newEntity);
@@ -139,6 +147,9 @@ const SearchPage = () => {
             >
               <Pagination
                 count={searchResult.totalNumberOfPages}
+                siblingCount={isMobile ? 0 : 1}
+                boundaryCount={isMobile ? 1 : 2}
+                size={isMobile ? "small" : "medium"}
                 page={currentPage + 1}
                 showFirstButton
                 showLastButton

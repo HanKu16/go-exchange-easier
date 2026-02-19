@@ -375,7 +375,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
         </IconButton>
       )}
       <IconButton
-        onClick={getUsers}
+        onClick={() => props.setCurrentPage(0)}
         sx={{
           display: { xs: "flex", sm: "none" },
           bgcolor: "black",

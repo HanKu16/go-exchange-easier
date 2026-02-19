@@ -66,7 +66,7 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Container
         maxWidth="xl"
         sx={{ backgroundColor: { xs: "#182c44", lg: "#4a4a4aff" } }}
