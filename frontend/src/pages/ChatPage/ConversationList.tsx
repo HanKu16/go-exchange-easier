@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { sendGetRoomPageRequest } from "../../utils/api/room";
 import type { ConversationBoxProps } from "./types";
 import LoadingConversationList from "./LoadingConversationList";
+import NoConversationsBox from "./NoConversationBox";
 
 const ConversationList = () => {
   const [converstationBoxPropses, setConversationBoxPropses] = useState<
@@ -66,6 +67,23 @@ const ConversationList = () => {
     }
   };
 
+  const getContent = () => {
+    if (totalConverations === 0) {
+      return <NoConversationsBox />;
+    }
+    return (
+      <>
+        {converstationBoxPropses.map((props: ConversationBoxProps) => (
+          <ConversationBox key={props.id} {...props} />
+        ))}
+        {isLoadingNextPage && <LoadingConversationList numberOfBoxes={2} />}
+        {totalConverations === null && (
+          <LoadingConversationList numberOfBoxes={12} />
+        )}
+      </>
+    );
+  };
+
   useEffect(() => {
     getNextPage();
   }, []);
@@ -86,13 +104,7 @@ const ConversationList = () => {
       }}
       onScroll={handleScroll}
     >
-      {converstationBoxPropses.map((props: ConversationBoxProps) => (
-        <ConversationBox key={props.id} {...props} />
-      ))}
-      {isLoadingNextPage && <LoadingConversationList numberOfBoxes={2} />}
-      {totalConverations === null && (
-        <LoadingConversationList numberOfBoxes={12} />
-      )}
+      {getContent()}
     </Box>
   );
 };
