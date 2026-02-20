@@ -51,7 +51,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     private final UniversityMapper universityMapper;
 
     @Override
-    @Cacheable(value="user-university-reviews", key="'user:' + #authorId")
     public List<UniversityReviewDetails> getByAuthorId(
             int authorId, int currentUserId) {
         List<Object[]> rows = universityReviewRepository
@@ -144,7 +143,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "user-university-reviews", key = "'user:' + #userId")
     public UniversityReviewDetails create(int userId,
             CreateUniversityReviewRequest request) {
         User user = userRepository.findById(userId)
@@ -179,7 +177,6 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "user-university-reviews", key = "'user:' + #userId")
     public void delete(int reviewId, int userId) {
         UniversityReview review = universityReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException(
