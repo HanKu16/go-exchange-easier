@@ -131,7 +131,7 @@ const ActionButtons = (props: ActionButtonsProps) => {
         endIcon={<SendIcon />}
         onClick={() => {
           if (props.userId) {
-            navigate(`/chat/${props.userId}`);
+            navigate(`/chat`, { state: { targetUserId: props.userId } });
           }
         }}
       >
