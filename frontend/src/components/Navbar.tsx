@@ -17,6 +17,7 @@ import { useSignedInUser } from "../context/SignedInUserContext";
 import { sendLogoutRequest } from "../utils/api/auth";
 import { useSnackbar } from "../context/SnackBarContext";
 import { useApplicationState } from "../context/ApplicationStateContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 type NavbarItem = {
   label: string;
@@ -39,6 +40,7 @@ const Navbar = () => {
   const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const { showAlert } = useSnackbar();
   const { setAppState } = useApplicationState();
+  const queryClient = useQueryClient();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -56,6 +58,7 @@ const Navbar = () => {
   };
 
   const handleLogOut = async () => {
+    queryClient.clear();
     const result = await sendLogoutRequest();
     if (result.isSuccess) {
       setAppState("success");

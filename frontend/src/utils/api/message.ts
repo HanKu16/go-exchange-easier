@@ -6,12 +6,16 @@ import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
 import { sendRequest } from "../send-request";
 
 export const sendGetMessagePageRequest = async (
+  roomId: string,
   page: number,
   size: number,
 ): Promise<
   ResponseSuccessResult<SimplePage<MessageDetails>> | ResponseFailureResult
 > => {
-  const url = new URL(`/api/chat/rooms`, window.location.origin);
+  const url = new URL(
+    `/api/chat/rooms/${roomId}/messages`,
+    window.location.origin,
+  );
   url.searchParams.append("page", `${page}`);
   url.searchParams.append("size", `${size}`);
   const uri = url.toString();

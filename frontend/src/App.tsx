@@ -21,7 +21,17 @@ import NotFoundPage from "./pages/NotFoundPage";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
 import { ConfirmationDialogProvider } from "./context/ConfirmationDialogContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ChatPage from "./pages/ChatPage";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5,
+    },
+  },
+});
 
 const AppContent = () => {
   const { isLoading } = useSignedInUser();
@@ -82,20 +92,22 @@ const AppContent = () => {
 export const App = () => {
   return (
     <BrowserRouter>
-      <CssBaseline />
-      <SignedInUserProvider>
-        <SnackbarProvider>
-          <ConfirmationDialogProvider>
-            <ApplicationStateProvider>
-              <Routes>
-                <Route element={<AppShell />}>
-                  <Route path="/*" element={<AppContent />}></Route>
-                </Route>
-              </Routes>
-            </ApplicationStateProvider>
-          </ConfirmationDialogProvider>
-        </SnackbarProvider>
-      </SignedInUserProvider>
+      <QueryClientProvider client={queryClient}>
+        <CssBaseline />
+        <SignedInUserProvider>
+          <SnackbarProvider>
+            <ConfirmationDialogProvider>
+              <ApplicationStateProvider>
+                <Routes>
+                  <Route element={<AppShell />}>
+                    <Route path="/*" element={<AppContent />}></Route>
+                  </Route>
+                </Routes>
+              </ApplicationStateProvider>
+            </ConfirmationDialogProvider>
+          </SnackbarProvider>
+        </SignedInUserProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   );
 };
