@@ -122,7 +122,6 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
   };
 
   useEffect(() => {
-    console.log("filters changed", props.filters);
     props.resetSearchResult();
   }, [props.filters]);
 

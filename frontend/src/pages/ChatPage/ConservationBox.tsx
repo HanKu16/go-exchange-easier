@@ -2,8 +2,12 @@ import { Avatar, Box, Card, CardContent, Typography } from "@mui/material";
 import basicAvatar from "../../assets/basic-avatar.png";
 import type { ConversationBoxProps } from "./types";
 import dayjs from "dayjs";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ConversationBox = (props: ConversationBoxProps) => {
+  const navigate = useNavigate();
+  const { conversationId } = useParams();
+
   return (
     <Card
       sx={{
@@ -13,7 +17,9 @@ const ConversationBox = (props: ConversationBoxProps) => {
         flexShrink: 0,
         cursor: "pointer",
         "&:hover": { backgroundColor: "#f5f5f5" },
+        backgroundColor: conversationId === props.id ? "#f2f1f1" : "#fff",
       }}
+      onClick={() => navigate(`/chat/${props.id}`)}
     >
       <CardContent
         sx={{
