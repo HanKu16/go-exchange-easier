@@ -1,16 +1,15 @@
 import type { SimplePage } from "../../dtos/common/SimplePage";
-import type { CreateRoomRequest } from "../../dtos/room/CreateRoomRequest";
-import type { RoomDetails } from "../../dtos/room/RoomDetails";
-import type { RoomSummary } from "../../dtos/room/RoomSummary";
+import type { CreateMessageRequest } from "../../dtos/message/CreateMessageRequest";
+import type { MessageDetails } from "../../dtos/message/MessageDetails";
 import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
 import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
 import { sendRequest } from "../send-request";
 
-export const sendGetRoomPageRequest = async (
+export const sendGetMessagePageRequest = async (
   page: number,
   size: number,
 ): Promise<
-  ResponseSuccessResult<SimplePage<RoomSummary>> | ResponseFailureResult
+  ResponseSuccessResult<SimplePage<MessageDetails>> | ResponseFailureResult
 > => {
   const url = new URL(`/api/chat/rooms`, window.location.origin);
   url.searchParams.append("page", `${page}`);
@@ -22,10 +21,11 @@ export const sendGetRoomPageRequest = async (
   return await sendRequest(uri, request);
 };
 
-export const sendGetOrCreateRoomRequest = async (
-  body: CreateRoomRequest,
-): Promise<ResponseSuccessResult<RoomDetails> | ResponseFailureResult> => {
-  const uri: string = `/api/chat/rooms`;
+export const sendCreateMessageRequest = async (
+  roomId: string,
+  body: CreateMessageRequest,
+): Promise<ResponseSuccessResult<MessageDetails> | ResponseFailureResult> => {
+  const uri: string = `/api/chat/rooms/${roomId}/messages`;
   const request: RequestInit = {
     method: "POST",
     body: JSON.stringify(body),
