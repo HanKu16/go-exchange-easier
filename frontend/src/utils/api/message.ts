@@ -18,6 +18,7 @@ export const sendGetMessagePageRequest = async (
   );
   url.searchParams.append("page", `${page}`);
   url.searchParams.append("size", `${size}`);
+  url.searchParams.append("sort", `createdAt,DESC`);
   const uri = url.toString();
   const request: RequestInit = {
     method: "GET",

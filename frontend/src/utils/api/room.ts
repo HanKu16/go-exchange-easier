@@ -32,3 +32,13 @@ export const sendGetOrCreateRoomRequest = async (
   };
   return await sendRequest(uri, request);
 };
+
+export const sendGetRoomRequest = async (
+  roomId: string,
+): Promise<ResponseSuccessResult<RoomDetails> | ResponseFailureResult> => {
+  const uri: string = `/api/chat/rooms/${roomId}`;
+  const request: RequestInit = {
+    method: "GET",
+  };
+  return await sendRequest(uri, request);
+};
