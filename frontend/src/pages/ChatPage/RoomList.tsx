@@ -37,7 +37,7 @@ const RoomList = () => {
       const nextPage = lastPage.pageNumber + 1;
       return nextPage < lastPage.totalPages ? nextPage : undefined;
     },
-    retry: 5,
+    retry: 2,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
@@ -55,7 +55,7 @@ const RoomList = () => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     const isAtBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 5;
 
-    if (isAtBottom && hasNextPage && !isFetchingNextPage) {
+    if (isAtBottom && hasNextPage && !isFetchingNextPage && !isError) {
       fetchNextPage();
     }
   };
@@ -66,7 +66,7 @@ const RoomList = () => {
         <LoadingRoomsList numberOfBoxes={12} />
       </Box>
     );
-  } else if (isError) {
+  } else if (isError && rooms.length === 0) {
     return <ErrorRoomsBox />;
   } else if (rooms.length === 0) {
     return <NoRoomsBox />;

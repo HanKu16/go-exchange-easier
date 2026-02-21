@@ -19,8 +19,8 @@ public class MessageController implements MessageApi {
     private final MessageService messageService;
 
     @Override
-    public ResponseEntity<SimplePage<MessageDetails>> get(UUID roomId,
-            Pageable pageable, AuthenticatedUser authenticatedUser) {
+    public ResponseEntity<SimplePage<MessageDetails>> getPage(UUID roomId,
+                                                              Pageable pageable, AuthenticatedUser authenticatedUser) {
         SimplePage<MessageDetails> page = messageService
                 .getPage(roomId, authenticatedUser.getId(), pageable);
         return ResponseEntity.ok(page);

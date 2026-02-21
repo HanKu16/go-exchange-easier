@@ -9,6 +9,6 @@ public record MessageDetails(
         UUID id,
         Instant createdAt,
         String textContent,
-        AuthorSummary author
+        AuthorDetails author
 
 ) implements Serializable { }

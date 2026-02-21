@@ -3,7 +3,7 @@ package com.go_exchange_easier.backend.chat.message.impl;
 import com.go_exchange_easier.backend.chat.message.Message;
 import com.go_exchange_easier.backend.chat.message.MessageRepository;
 import com.go_exchange_easier.backend.chat.message.MessageService;
-import com.go_exchange_easier.backend.chat.message.dto.AuthorSummary;
+import com.go_exchange_easier.backend.chat.message.dto.AuthorDetails;
 import com.go_exchange_easier.backend.chat.message.dto.CreateMessageRequest;
 import com.go_exchange_easier.backend.chat.message.dto.MessageDetails;
 import com.go_exchange_easier.backend.chat.room.RoomRepository;
@@ -54,9 +54,11 @@ public class MessageServiceImpl implements MessageService {
                 }
                 avatars.put(avatarKey, avatarUrl);
             }
+
             messages.add(new MessageDetails(message.getId(),
                     message.getCreatedAt().toInstant(), message.getTextContent(),
-                    new AuthorSummary(message.getNick(), avatars.get(avatarKey))));
+                    new AuthorDetails(message.getAuthorId(), message.getNick(),
+                            avatars.get(avatarKey))));
         }
         return SimplePage.of(messages, pageOfMessages.getNumber(),
                 pageOfMessages.getSize(), pageOfMessages.getTotalElements());
@@ -90,7 +92,8 @@ public class MessageServiceImpl implements MessageService {
         return new MessageDetails(createdMessage.getId(),
                 createdMessage.getCreatedAt().toInstant(),
                 createdMessage.getTextContent(),
-                new AuthorSummary(user.getNick(), avatarUrl));
+                new AuthorDetails(createdMessage.getAuthorId(),
+                        user.getNick(), avatarUrl));
     }
 
 }

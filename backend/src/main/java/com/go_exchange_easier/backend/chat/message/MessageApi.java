@@ -36,7 +36,7 @@ public interface MessageApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))),
     })
-    ResponseEntity<SimplePage<MessageDetails>> get(
+    ResponseEntity<SimplePage<MessageDetails>> getPage(
             @PathVariable UUID roomId,
             @ParameterObject Pageable pageable,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
