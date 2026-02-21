@@ -1,4 +1,4 @@
-export type ConversationBoxProps = {
+export type RoomBoxProps = {
   id: string;
   name: string;
   avatarUrl?: string;
@@ -8,7 +8,7 @@ export type ConversationBoxProps = {
   };
 };
 
-export type ConversationHeaderProps = {
+export type RoomHeaderProps = {
   id: string;
   name: string;
   avatarUrl?: string;

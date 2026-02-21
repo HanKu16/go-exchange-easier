@@ -1,6 +1,6 @@
 import { Box, Card, CardContent } from "@mui/material";
 
-const LoadingConversationBox = () => {
+const LoadingRoomBox = () => {
   return (
     <Card
       sx={{
@@ -58,4 +58,14 @@ const LoadingConversationBox = () => {
   );
 };
 
-export default LoadingConversationBox;
+const LoadingRoomsList = ({ numberOfBoxes }: { numberOfBoxes: number }) => {
+  return (
+    <>
+      {[...Array(numberOfBoxes)].map((_) => (
+        <LoadingRoomBox />
+      ))}
+    </>
+  );
+};
+
+export default LoadingRoomsList;

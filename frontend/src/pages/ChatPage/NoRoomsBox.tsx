@@ -3,7 +3,7 @@ import ForumTwoToneIcon from "@mui/icons-material/ForumTwoTone";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { useNavigate } from "react-router-dom";
 
-const NoConversationsBox = () => {
+const NoRoomsBox = () => {
   const navigate = useNavigate();
 
   return (
@@ -84,4 +84,4 @@ const NoConversationsBox = () => {
   );
 };
 
-export default NoConversationsBox;
+export default NoRoomsBox;
