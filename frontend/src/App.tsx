@@ -67,7 +67,7 @@ const AppContent = () => {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/follows" element={<FollowPage />} />
         <Route path="/chat" element={<ChatPage />} />
-        <Route path="/chat/:conversationId" element={<ChatPage />} />
+        <Route path="/chat/:roomId" element={<ChatPage />} />
         <Route
           path="*"
           element={

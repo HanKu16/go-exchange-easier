@@ -1,12 +1,12 @@
 import { Avatar, Box, Card, CardContent, Typography } from "@mui/material";
 import basicAvatar from "../../assets/basic-avatar.png";
-import type { ConversationBoxProps } from "./types";
+import type { RoomBoxProps } from "./types";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 
-const ConversationBox = (props: ConversationBoxProps) => {
+const RoomBox = (props: RoomBoxProps) => {
   const navigate = useNavigate();
-  const { conversationId } = useParams();
+  const { roomId } = useParams();
 
   return (
     <Card
@@ -17,7 +17,7 @@ const ConversationBox = (props: ConversationBoxProps) => {
         flexShrink: 0,
         cursor: "pointer",
         "&:hover": { backgroundColor: "#f5f5f5" },
-        backgroundColor: conversationId === props.id ? "#f2f1f1" : "#fff",
+        backgroundColor: roomId === props.id ? "#f2f1f1" : "#fff",
       }}
       onClick={() => navigate(`/chat/${props.id}`)}
     >
@@ -36,7 +36,9 @@ const ConversationBox = (props: ConversationBoxProps) => {
             alt="User avatar"
             src={props.avatarUrl || basicAvatar}
             sx={{ width: 50, height: 50 }}
-          />
+          >
+            <img src={basicAvatar} style={{ width: "100%", height: "100%" }} />
+          </Avatar>
         </Box>
         <Box
           sx={{
@@ -79,4 +81,4 @@ const ConversationBox = (props: ConversationBoxProps) => {
   );
 };
 
-export default ConversationBox;
+export default RoomBox;

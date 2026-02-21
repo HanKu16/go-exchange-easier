@@ -61,8 +61,8 @@ const LoadingRoomBox = () => {
 const LoadingRoomsList = ({ numberOfBoxes }: { numberOfBoxes: number }) => {
   return (
     <>
-      {[...Array(numberOfBoxes)].map((_) => (
-        <LoadingRoomBox />
+      {[...Array(numberOfBoxes)].map((_, i: number) => (
+        <LoadingRoomBox key={i} />
       ))}
     </>
   );
