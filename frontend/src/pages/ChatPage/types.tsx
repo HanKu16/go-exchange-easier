@@ -21,4 +21,5 @@ export type MessageBoxProps = {
   nick: string;
   avatarUrl?: string;
   dateAndTime: string;
+  isUserMessage: boolean;
 };
