@@ -10,7 +10,7 @@ import ErrorRoomsBox from "./ErrorRoomsBox";
 
 const RoomList = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const pageSize = isMobile ? 15 : 10;
   const { showAlert } = useSnackbar();
 
@@ -63,7 +63,7 @@ const RoomList = () => {
   if (isLoading) {
     return (
       <Box sx={listStyles}>
-        <LoadingRoomsList numberOfBoxes={12} />
+        <LoadingRoomsList numberOfBoxes={pageSize} />
       </Box>
     );
   } else if (isError && rooms.length === 0) {
@@ -82,7 +82,8 @@ const RoomList = () => {
 };
 
 const listStyles = {
-  width: { xs: "100%", md: "30%", lg: "25%" },
+  minWidth: { md: "30%", lg: "25%" },
+  maxWidth: { md: "30%", lg: "25%" },
   height: "100%",
   display: "flex",
   flexDirection: "column",
