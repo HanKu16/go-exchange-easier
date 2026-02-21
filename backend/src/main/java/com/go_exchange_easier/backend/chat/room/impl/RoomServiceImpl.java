@@ -13,6 +13,7 @@ import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
 import com.go_exchange_easier.backend.chat.room.entity.Room;
 import com.go_exchange_easier.backend.chat.room.entity.UserInRoom;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.api.CoreFacade;
 import com.go_exchange_easier.backend.core.api.CoreUser;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +82,25 @@ public class RoomServiceImpl implements RoomService {
             roomId = createdRoom.getId();
         }
         CoreUser targetUser = coreFacade.getUser(request.targetUserId());
+        return new RoomDetails(roomId, targetUser.nick(),
+                targetUser.avatar() != null ?
+                        targetUser.avatar().thumbnailUrl() : null,
+                pageOfMessages);
+    }
+
+    @Override
+    @Transactional
+    public RoomDetails getById(UUID roomId, int signedInUserId) {
+        Room room = roomRepository
+                .findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Room of id " + roomId + " was not found."));
+        SimplePage<MessageDetails> pageOfMessages = messageService
+                .getPage(roomId, signedInUserId, PageRequest.of(
+                0, 30, Sort.by(Sort.Direction.DESC, "createdAt")));
+        int targetUserId = userInRoomRepository
+                .findOtherMemberId(roomId, signedInUserId);
+        CoreUser targetUser = coreFacade.getUser(targetUserId);
         return new RoomDetails(roomId, targetUser.nick(),
                 targetUser.avatar() != null ?
                         targetUser.avatar().thumbnailUrl() : null,

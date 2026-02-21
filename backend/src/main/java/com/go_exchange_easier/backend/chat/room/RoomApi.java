@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import java.util.UUID;
 
 @RequestMapping("/api/chat/rooms")
 @Tag(name = "Room")
@@ -38,7 +39,7 @@ public interface RoomApi {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Rooms were successfully returned"),
+                    description = "Room was successfully returned"),
             @ApiResponse(
                     responseCode = "400",
                     description = "Validation failed - invalid request body",
@@ -47,6 +48,28 @@ public interface RoomApi {
     })
     ResponseEntity<RoomDetails> getOrCreate(
             @RequestBody @Valid CreateRoomRequest request,
+            @AuthenticationPrincipal AuthenticatedUser authenticationUser);
+
+    @GetMapping("/{roomId}")
+    @Operation(summary = "Get room")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Rooms were successfully returned"),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "User was trying to access room that " +
+                            "he is not member of",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Room was not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class)))
+    })
+    ResponseEntity<RoomDetails> getById(
+            @PathVariable UUID roomId,
             @AuthenticationPrincipal AuthenticatedUser authenticationUser);
 
 }

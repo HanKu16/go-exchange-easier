@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 public class RoomController implements RoomApi {
@@ -32,6 +34,15 @@ public class RoomController implements RoomApi {
             AuthenticatedUser authenticationUser) {
         RoomDetails room = roomService.getOrCreate(
                 authenticationUser.getId(), request);
+        return ResponseEntity.ok(room);
+    }
+
+    @Override
+    public ResponseEntity<RoomDetails> getById(
+            UUID roomId,
+            AuthenticatedUser authenticationUser) {
+        RoomDetails room = roomService.getById(
+                roomId, authenticationUser.getId());
         return ResponseEntity.ok(room);
     }
 
