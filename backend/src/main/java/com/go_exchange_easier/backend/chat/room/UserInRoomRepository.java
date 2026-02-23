@@ -23,6 +23,7 @@ public interface UserInRoomRepository extends JpaRepository<UserInRoom, UserInRo
         WHERE r.room.id = :roomId
         AND r.userId != :userId
     """)
-    int findOtherMemberId(@Param("roomId") UUID roomId, @Param("userId") int userId);
+    int findOtherMemberId(@Param("roomId") UUID roomId,
+            @Param("userId") int userId);
 
 }

@@ -3,8 +3,8 @@ package com.go_exchange_easier.backend.chat.room.impl;
 import com.go_exchange_easier.backend.chat.room.RoomApi;
 import com.go_exchange_easier.backend.chat.room.RoomService;
 import com.go_exchange_easier.backend.chat.room.dto.CreateRoomRequest;
-import com.go_exchange_easier.backend.chat.room.dto.RoomDetails;
 import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
+import com.go_exchange_easier.backend.chat.room.dto.RoomPreviewSummary;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
@@ -20,28 +20,28 @@ public class RoomController implements RoomApi {
     private final RoomService roomService;
 
     @Override
-    public ResponseEntity<SimplePage<RoomSummary>> getUserRoomsPage(
+    public ResponseEntity<SimplePage<RoomPreviewSummary>> getUserRoomsPage(
             AuthenticatedUser authenticatedUser,
             Integer page, Integer size) {
-        SimplePage<RoomSummary> rooms = roomService.getUserRooms(
+        SimplePage<RoomPreviewSummary> rooms = roomService.getUserRooms(
                 authenticatedUser.getId(), page, size);
         return ResponseEntity.ok(rooms);
     }
 
     @Override
-    public ResponseEntity<RoomDetails> getOrCreate(
+    public ResponseEntity<RoomSummary> getOrCreate(
             CreateRoomRequest request,
             AuthenticatedUser authenticationUser) {
-        RoomDetails room = roomService.getOrCreate(
+        RoomSummary room = roomService.getOrCreate(
                 authenticationUser.getId(), request);
         return ResponseEntity.ok(room);
     }
 
     @Override
-    public ResponseEntity<RoomDetails> getById(
+    public ResponseEntity<RoomSummary> getById(
             UUID roomId,
             AuthenticatedUser authenticationUser) {
-        RoomDetails room = roomService.getById(
+        RoomSummary room = roomService.getById(
                 roomId, authenticationUser.getId());
         return ResponseEntity.ok(room);
     }

@@ -1,8 +1,8 @@
 package com.go_exchange_easier.backend.chat.room;
 
 import com.go_exchange_easier.backend.chat.room.dto.CreateRoomRequest;
-import com.go_exchange_easier.backend.chat.room.dto.RoomDetails;
 import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
+import com.go_exchange_easier.backend.chat.room.dto.RoomPreviewSummary;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
@@ -23,13 +23,13 @@ import java.util.UUID;
 public interface RoomApi {
 
     @GetMapping
-    @Operation(summary = "Get page of user rooms")
+    @Operation(summary = "Get page of user rooms previews")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
                     description = "Rooms were successfully returned"),
     })
-    ResponseEntity<SimplePage<RoomSummary>> getUserRoomsPage(
+    ResponseEntity<SimplePage<RoomPreviewSummary>> getUserRoomsPage(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @RequestParam("page") Integer page,
             @RequestParam("size") Integer size);
@@ -46,7 +46,7 @@ public interface RoomApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<RoomDetails> getOrCreate(
+    ResponseEntity<RoomSummary> getOrCreate(
             @RequestBody @Valid CreateRoomRequest request,
             @AuthenticationPrincipal AuthenticatedUser authenticationUser);
 
@@ -57,18 +57,12 @@ public interface RoomApi {
                     responseCode = "200",
                     description = "Rooms were successfully returned"),
             @ApiResponse(
-                    responseCode = "403",
-                    description = "User was trying to access room that " +
-                            "he is not member of",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorResponse.class))),
-            @ApiResponse(
                     responseCode = "404",
-                    description = "Room was not found",
+                    description = "Room was not found or user is not member of the room",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<RoomDetails> getById(
+    ResponseEntity<RoomSummary> getById(
             @PathVariable UUID roomId,
             @AuthenticationPrincipal AuthenticatedUser authenticationUser);
 

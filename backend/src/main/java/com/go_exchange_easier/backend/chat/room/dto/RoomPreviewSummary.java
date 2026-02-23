@@ -1,18 +1,18 @@
 package com.go_exchange_easier.backend.chat.room.dto;
 
-import com.go_exchange_easier.backend.chat.message.dto.MessageDetails;
-import com.go_exchange_easier.backend.common.dto.SimplePage;
+import com.go_exchange_easier.backend.chat.message.dto.MessageSummary;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Schema(requiredProperties = {"id", "name", "lastMessages"})
-public record RoomDetails(
+@Schema(requiredProperties = {"id", "name"})
+public record RoomPreviewSummary(
 
         UUID id,
         String name,
         @Nullable String imageUrl,
-        SimplePage<MessageDetails> lastMessages
+        @Nullable MessageSummary lastMessage
 
 ) implements Serializable { }
+
