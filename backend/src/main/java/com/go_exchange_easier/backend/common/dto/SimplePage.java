@@ -1,13 +1,18 @@
 package com.go_exchange_easier.backend.common.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
+@Schema(requiredProperties = {"content", "pageNumber",
+        "pageSize", "totalElements", "totalPages"})
 public record SimplePage<T>(
+
         List<T> content,
         Integer pageNumber,
         Integer pageSize,
         Long totalElements,
         Integer totalPages
+
 ) {
 
     public static <T> SimplePage<T> of(List<T> content,
@@ -21,4 +26,5 @@ public record SimplePage<T>(
     public static <T> SimplePage<T> empty(Integer requestedPageSize) {
         return new SimplePage<>(List.of(), 0, requestedPageSize, 0L, 0);
     }
+
 }

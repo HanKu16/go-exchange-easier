@@ -1,10 +1,14 @@
 package com.go_exchange_easier.backend.core.api;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
+
+@Schema(requiredProperties = {"avatar"})
 public record CoreUser(
 
-        Integer id,
+        @Nullable Integer id,
         String nick,
-        CoreAvatar avatar
+        @Nullable CoreAvatar avatar
 
 ) {
 
