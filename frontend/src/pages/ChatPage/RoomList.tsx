@@ -1,6 +1,6 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import RoomBox from "./RoomBox";
-import { sendGetRoomPageRequest } from "../../utils/api/room";
+import { sendGetRoomPreviewsPageRequest } from "../../utils/api/room";
 import LoadingRoomsList from "./LoadingRoomsList";
 import NoRoomsBox from "./NoRoomsBox";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -25,7 +25,7 @@ const RoomList = () => {
     queryKey: ["rooms"],
     queryFn: async ({ pageParam = 0 }) => {
       await new Promise((f) => setTimeout(f, 3000));
-      const result = await sendGetRoomPageRequest(pageParam, pageSize);
+      const result = await sendGetRoomPreviewsPageRequest(pageParam, pageSize);
       if (!result.isSuccess) {
         showAlert("Failed to load conversations.", "error");
         throw new Error("Failed to load rooms.");

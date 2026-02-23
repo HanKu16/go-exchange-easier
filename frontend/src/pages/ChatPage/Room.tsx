@@ -8,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import RoomHeader from "./RoomHeader";
 import { useQueryClient } from "@tanstack/react-query";
 import type { RoomSummary } from "../../dtos/room/RoomSummary";
-import type { RoomDetails } from "../../dtos/room/RoomDetails";
 import MessageBox from "./MessageBox";
 import { useSignedInUser } from "../../context/SignedInUserContext";
 import { sendGetRoomRequest } from "../../utils/api/room";
@@ -32,7 +31,7 @@ const Room = () => {
     cachedData?.pages
       .flatMap((page) => page.content)
       .find((r) => r.id === roomId) ||
-    queryClient.getQueryData<RoomDetails>(["new-room", roomId]);
+    queryClient.getQueryData<RoomSummary>(["new-room", roomId]);
 
   const { data: room } = useQuery({
     queryKey: ["room", roomId],
