@@ -1,10 +1,9 @@
 import { Box, Container } from "@mui/material";
-import { useRef } from "react";
 import { useParams } from "react-router-dom";
 import type { SimplePage } from "../../dtos/common/SimplePage";
 import type { MessageDetails } from "../../dtos/message/MessageDetails";
 import { sendGetMessagePageRequest } from "../../utils/api/message";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import RoomHeader from "./RoomHeader";
 import { useQueryClient } from "@tanstack/react-query";
 import type { RoomSummary } from "../../dtos/room/RoomSummary";
@@ -12,12 +11,15 @@ import MessageBox from "./MessageBox";
 import { useSignedInUser } from "../../context/SignedInUserContext";
 import { sendGetRoomRequest } from "../../utils/api/room";
 import MessageInput from "./MessageInput";
+import { useSnackbar } from "../../context/SnackBarContext";
+import LoadingMessages from "./LoadingMessages";
+import LoadingChatHistoryError from "./LoadingChatHistoryError";
 
 const Room = () => {
   const { roomId } = useParams();
-  const lastFetchedPage = useRef<number>(0);
   const pageSize = 30;
   const queryClient = useQueryClient();
+  const { showAlert } = useSnackbar();
 
   interface InfiniteDataStructure {
     pages: SimplePage<RoomSummary>[];
@@ -45,29 +47,66 @@ const Room = () => {
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["messages", roomId, lastFetchedPage.current],
-    queryFn: async (): Promise<SimplePage<MessageDetails>> => {
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    const threshold = 300;
+    const isNearTop =
+      Math.abs(scrollTop) + clientHeight >= scrollHeight - threshold;
+    if (isNearTop && hasNextPage && !isFetchingNextPage && !isError) {
+      fetchNextPage();
+    }
+  };
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ["messages", roomId],
+    queryFn: async ({ pageParam = 0 }) => {
+      await new Promise((f) => setTimeout(f, 3000));
+
       const result = await sendGetMessagePageRequest(
         roomId!,
-        lastFetchedPage.current,
+        pageParam,
         pageSize,
       );
-
-      if (result.isSuccess) {
-        return result.data;
-      } else {
-        throw new Error("Failed to load messages.");
+      if (!result.isSuccess) {
+        showAlert("Failed to load chat history.", "error");
+        throw new Error("Failed to load chat history.");
       }
+      return result.data;
     },
-    enabled: !!roomId,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const nextPage = lastPage.pageNumber + 1;
+      return nextPage < lastPage.totalPages ? nextPage : undefined;
+    },
+    enabled: roomId != undefined,
+    retry: 4,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
+
+  const messages: MessageDetails[] =
+    data?.pages.flatMap((page) =>
+      page.content.map((m) => ({
+        id: m.id,
+        createdAt: m.createdAt,
+        textContent: m.textContent,
+        author: {
+          id: m.author.id,
+          nick: m.author.nick,
+          avatarUrl: m.author.avatarUrl,
+        },
+      })),
+    ) ?? [];
+
   if (roomId === undefined) {
     return <></>;
   }
-
-  if (isLoading) return <Box>Loading...</Box>;
-  if (isError) return <Box>Fetch error...</Box>;
 
   if (!room) {
     return <></>;
@@ -102,9 +141,9 @@ const Room = () => {
           overflowY: "auto",
           paddingBottom: { xs: 1, md: 2 },
         }}
+        onScroll={handleScroll}
       >
-        <Box sx={{ flexGrow: 1 }} />
-        {data?.content.map((m) => (
+        {messages.map((m) => (
           <MessageBox
             id={m.id}
             textContent={m.textContent}
@@ -115,6 +154,8 @@ const Room = () => {
             key={m.id}
           />
         ))}
+        {(isLoading || isFetchingNextPage) && <LoadingMessages />}
+        {isError && !isLoading && <LoadingChatHistoryError />}
       </Container>
       <Box
         sx={{

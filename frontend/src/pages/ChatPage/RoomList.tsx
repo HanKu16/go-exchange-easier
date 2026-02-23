@@ -37,7 +37,7 @@ const RoomList = () => {
       const nextPage = lastPage.pageNumber + 1;
       return nextPage < lastPage.totalPages ? nextPage : undefined;
     },
-    retry: 2,
+    retry: 4,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
@@ -77,6 +77,7 @@ const RoomList = () => {
         <RoomBox key={props.id} {...props} />
       ))}
       {isFetchingNextPage && <LoadingRoomsList numberOfBoxes={2} />}
+      {isError && <></>}
     </Box>
   );
 };
