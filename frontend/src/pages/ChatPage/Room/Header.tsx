@@ -1,5 +1,5 @@
-import basicAvatar from "../../assets/basic-avatar.png";
-import type { RoomHeaderProps } from "./types";
+import basicAvatar from "../../../assets/basic-avatar.png";
+import type { HeaderProps } from "../types";
 import { useNavigate } from "react-router-dom";
 import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
 import {
@@ -13,7 +13,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 
-const RoomHeader = (props: RoomHeaderProps) => {
+const Header = (props: HeaderProps) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -73,4 +73,4 @@ const RoomHeader = (props: RoomHeaderProps) => {
   );
 };
 
-export default RoomHeader;
+export default Header;

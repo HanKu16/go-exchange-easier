@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
 
-const LoadingMessages = () => {
+const LoadingBox = () => {
   return (
     <Box
       sx={{
@@ -19,4 +19,4 @@ const LoadingMessages = () => {
   );
 };
 
-export default LoadingMessages;
+export default LoadingBox;

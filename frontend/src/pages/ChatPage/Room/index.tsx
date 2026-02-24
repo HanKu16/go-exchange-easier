@@ -1,27 +1,27 @@
 import { Box, Container } from "@mui/material";
 import { useParams } from "react-router-dom";
-import type { SimplePage } from "../../dtos/common/SimplePage";
-import type { MessageDetails } from "../../dtos/message/MessageDetails";
+import type { SimplePage } from "../../../dtos/common/SimplePage";
+import type { MessageDetails } from "../../../dtos/message/MessageDetails";
 import {
   sendCreateMessageRequest,
   sendGetMessagePageRequest,
-} from "../../utils/api/message";
+} from "../../../utils/api/message";
 import {
   useInfiniteQuery,
   useMutation,
   useQuery,
   type InfiniteData,
 } from "@tanstack/react-query";
-import RoomHeader from "./RoomHeader";
+import Header from "./Header";
 import { useQueryClient } from "@tanstack/react-query";
 import MessageBox from "./MessageBox";
-import { useSignedInUser } from "../../context/SignedInUserContext";
-import { sendGetRoomRequest } from "../../utils/api/room";
+import { useSignedInUser } from "../../../context/SignedInUserContext";
+import { sendGetRoomRequest } from "../../../utils/api/room";
 import MessageInput from "./MessageInput";
-import { useSnackbar } from "../../context/SnackBarContext";
-import LoadingMessages from "./LoadingMessages";
-import LoadingChatHistoryError from "./LoadingChatHistoryError";
-import type { RoomPreview } from "../../dtos/room/RoomPreview";
+import { useSnackbar } from "../../../context/SnackBarContext";
+import LoadingBox from "./LoadingBox";
+import LoadingError from "./LoadingError";
+import type { RoomPreview } from "../../../dtos/room/RoomPreview";
 
 const Room = () => {
   const { roomId } = useParams();
@@ -185,7 +185,7 @@ const Room = () => {
         overflow: "hidden",
       }}
     >
-      <RoomHeader
+      <Header
         id={room.id}
         name={room.name}
         avatarUrl={room.imageUrl}
@@ -217,8 +217,8 @@ const Room = () => {
             key={m.id}
           />
         ))}
-        {(isLoading || isFetchingNextPage) && <LoadingMessages />}
-        {isError && !isLoading && <LoadingChatHistoryError />}
+        {(isLoading || isFetchingNextPage) && <LoadingBox />}
+        {isError && !isLoading && <LoadingError />}
       </Container>
       <Box
         sx={{

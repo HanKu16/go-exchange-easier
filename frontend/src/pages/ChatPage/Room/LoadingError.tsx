@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
-const LoadingChatHistoryError = () => {
+const LoadingError = () => {
   return (
     <Box
       sx={{
@@ -49,4 +49,4 @@ const LoadingChatHistoryError = () => {
   );
 };
 
-export default LoadingChatHistoryError;
+export default LoadingError;

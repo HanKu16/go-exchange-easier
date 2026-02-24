@@ -1,12 +1,11 @@
-import { Box, useMediaQuery, useTheme } from "@mui/material";
-import RoomBox from "./RoomBox";
-import { sendGetRoomPreviewsPageRequest } from "../../utils/api/room";
-import LoadingRoomsList from "./LoadingRoomsList";
-import NoRoomsBox from "./NoRoomsBox";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import React from "react";
-import { useSnackbar } from "../../context/SnackBarContext";
-import ErrorRoomsBox from "./ErrorRoomsBox";
+import { useMediaQuery, useTheme, Box } from "@mui/material";
+import { useSnackbar } from "../../../context/SnackBarContext";
+import { sendGetRoomPreviewsPageRequest } from "../../../utils/api/room";
+import ErrorBox from "./ErrorBox";
+import LoadingListBox from "./LoadingListBox";
+import NoRooms from "./NoContentBox";
+import RoomPreviewBox from "./RoomPreviewBox";
 
 const RoomList = () => {
   const theme = useTheme();
@@ -63,28 +62,28 @@ const RoomList = () => {
   if (isLoading) {
     return (
       <Box sx={listStyles}>
-        <LoadingRoomsList numberOfBoxes={pageSize} />
+        <LoadingListBox numberOfBoxes={pageSize} />
       </Box>
     );
   } else if (isError && rooms.length === 0) {
     return (
       <Box sx={listStyles}>
-        <ErrorRoomsBox />;
+        <ErrorBox />;
       </Box>
     );
   } else if (rooms.length === 0) {
     return (
       <Box sx={listStyles}>
-        <NoRoomsBox />
+        <NoRooms />
       </Box>
     );
   }
   return (
     <Box sx={listStyles} onScroll={handleScroll}>
       {rooms.map((props) => (
-        <RoomBox key={props.id} {...props} />
+        <RoomPreviewBox key={props.id} {...props} />
       ))}
-      {isFetchingNextPage && <LoadingRoomsList numberOfBoxes={2} />}
+      {isFetchingNextPage && <LoadingListBox numberOfBoxes={2} />}
       {isError && <></>}
     </Box>
   );

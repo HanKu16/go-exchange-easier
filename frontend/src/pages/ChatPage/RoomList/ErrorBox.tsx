@@ -1,7 +1,7 @@
 import { Box, Card, Typography, alpha } from "@mui/material";
 import ErrorTwoToneIcon from "@mui/icons-material/ErrorTwoTone";
 
-const ErrorRoomsBox = () => {
+const ErrorBox = () => {
   return (
     <Box
       sx={{
@@ -68,4 +68,4 @@ const ErrorRoomsBox = () => {
   );
 };
 
-export default ErrorRoomsBox;
+export default ErrorBox;

@@ -1,11 +1,11 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import Navbar from "../../components/Navbar";
-import RoomList from "./RoomList";
 import Room from "./Room";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { sendGetOrCreateRoomRequest } from "../../utils/api/room";
 import { useEffect } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
+import RoomList from "./RoomList";
 
 const ChatPage = () => {
   const navigate = useNavigate();

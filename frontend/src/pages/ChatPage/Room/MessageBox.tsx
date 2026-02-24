@@ -1,6 +1,6 @@
 import { Avatar, Box } from "@mui/material";
-import type { MessageBoxProps } from "./types";
-import basicAvatar from "../../assets/basic-avatar.png";
+import type { MessageBoxProps } from "../types";
+import basicAvatar from "../../../assets/basic-avatar.png";
 import dayjs from "dayjs";
 
 const MessageBox = (props: MessageBoxProps) => {

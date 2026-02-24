@@ -1,10 +1,10 @@
 import { Avatar, Box, Card, CardContent, Typography } from "@mui/material";
-import basicAvatar from "../../assets/basic-avatar.png";
-import type { RoomBoxProps } from "./types";
+import basicAvatar from "../../../assets/basic-avatar.png";
+import type { RoomBoxProps } from "../types";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 
-const RoomBox = (props: RoomBoxProps) => {
+const RoomPreviewBox = (props: RoomBoxProps) => {
   const navigate = useNavigate();
   const { roomId } = useParams();
 
@@ -81,4 +81,4 @@ const RoomBox = (props: RoomBoxProps) => {
   );
 };
 
-export default RoomBox;
+export default RoomPreviewBox;

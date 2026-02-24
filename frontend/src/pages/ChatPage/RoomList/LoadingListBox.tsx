@@ -58,7 +58,7 @@ const LoadingRoomBox = () => {
   );
 };
 
-const LoadingRoomsList = ({ numberOfBoxes }: { numberOfBoxes: number }) => {
+const LoadingListBox = ({ numberOfBoxes }: { numberOfBoxes: number }) => {
   return (
     <>
       {[...Array(numberOfBoxes)].map((_, i: number) => (
@@ -68,4 +68,4 @@ const LoadingRoomsList = ({ numberOfBoxes }: { numberOfBoxes: number }) => {
   );
 };
 
-export default LoadingRoomsList;
+export default LoadingListBox;
