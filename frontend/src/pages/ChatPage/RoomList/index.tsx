@@ -39,6 +39,9 @@ const RoomList = () => {
     },
     retry: 4,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    refetchInterval: 15000,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
   });
 
   const rooms =

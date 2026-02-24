@@ -22,6 +22,7 @@ export type MessageBoxProps = {
   avatarUrl?: string;
   dateAndTime: string;
   isUserMessage: boolean;
+  isPending: boolean;
 };
 
 export const cacheKeys = {
@@ -30,3 +31,5 @@ export const cacheKeys = {
   room: (roomId: string) => ["room", roomId] as const,
   messagesFromRoom: (roomId: string) => ["messages", roomId] as const,
 };
+
+export type MessageStatus = "success" | "pending" | "error";

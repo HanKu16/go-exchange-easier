@@ -29,6 +29,7 @@ const Room = () => {
   const pageSize = 30;
   const queryClient = useQueryClient();
   const { showAlert } = useSnackbar();
+  const temporaryMessagePrefix = "temp-";
 
   const cachedRooms = queryClient.getQueryData<
     InfiniteData<SimplePage<RoomPreview>>
@@ -95,11 +96,10 @@ const Room = () => {
     enabled: roomId != undefined,
     retry: 4,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    refetchInterval: 30000,
-    refetchIntervalInBackground: true,
+    refetchInterval: 60000,
+    refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
   });
-
   const { mutate } = useMutation({
     mutationFn: (newText: string) => sendMessage(newText),
     onMutate: async (newText) => {
@@ -113,7 +113,7 @@ const Room = () => {
           queryKey,
         );
       const optimisticMessage: MessageDetails = {
-        id: `temp-${Date.now()}`,
+        id: `${temporaryMessagePrefix}-${Date.now()}`,
         textContent: newText,
         createdAt: new Date().toISOString(),
         author: {
@@ -150,6 +150,9 @@ const Room = () => {
       if (!roomId) return;
       queryClient.invalidateQueries({
         queryKey: cacheKeys.messagesFromRoom(roomId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: cacheKeys.allRooms,
       });
     },
   });
@@ -224,6 +227,7 @@ const Room = () => {
             avatarUrl={m.author.avatarUrl}
             dateAndTime={m.createdAt}
             isUserMessage={m.author.id === signedInUser.id}
+            isPending={m.id.startsWith(temporaryMessagePrefix) ? true : false}
             key={m.id}
           />
         ))}

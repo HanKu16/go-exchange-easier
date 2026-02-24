@@ -1,4 +1,4 @@
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, CircularProgress } from "@mui/material";
 import type { MessageBoxProps } from "../types";
 import basicAvatar from "../../../assets/basic-avatar.png";
 import dayjs from "dayjs";
@@ -43,6 +43,12 @@ const MessageBox = (props: MessageBoxProps) => {
           >
             {props.textContent}
           </Box>
+          {props.isPending && (
+            <CircularProgress
+              size={12}
+              sx={{ color: "#1f3958ff", marginTop: 0.5 }}
+            />
+          )}
         </Box>
       </Box>
     </Box>
