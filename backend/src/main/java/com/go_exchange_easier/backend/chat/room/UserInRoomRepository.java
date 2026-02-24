@@ -11,12 +11,7 @@ import java.util.UUID;
 @Repository
 public interface UserInRoomRepository extends JpaRepository<UserInRoom, UserInRoomId> {
 
-    @Query("""
-        SELECT COUNT(r) > 0
-        FROM UserInRoom r
-        WHERE r.room.id = :roomId AND r.userId = :userId
-    """)
-    boolean isUserMemberOfRoom(@Param("roomId") UUID roomId, @Param("userId") int userId);
+    boolean existsByRoomIdAndUserId(UUID roomId, int userId);
 
     @Query("""
         SELECT r.userId FROM UserInRoom r

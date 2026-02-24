@@ -6,8 +6,7 @@ import com.go_exchange_easier.backend.chat.message.MessageService;
 import com.go_exchange_easier.backend.chat.message.dto.AuthorDetails;
 import com.go_exchange_easier.backend.chat.message.dto.CreateMessageRequest;
 import com.go_exchange_easier.backend.chat.message.dto.MessageDetails;
-import com.go_exchange_easier.backend.chat.room.RoomRepository;
-import com.go_exchange_easier.backend.chat.room.UserInRoomRepository;
+import com.go_exchange_easier.backend.chat.room.RoomService;
 import com.go_exchange_easier.backend.chat.room.entity.Room;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.core.api.CoreAvatar;
@@ -29,15 +28,14 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class MessageServiceImpl implements MessageService {
 
-    private final UserInRoomRepository userInRoomRepository;
     private final MessageRepository messageRepository;
-    private final RoomRepository roomRepository;
+    private final RoomService roomService;
     private final CoreFacade coreFacade;
 
     @Override
     public SimplePage<MessageDetails> getPage(
             UUID roomId, int userId, Pageable pageable) {
-        if (!userInRoomRepository.isUserMemberOfRoom(roomId, userId)) {
+        if (!roomService.isUserMemberOfRoom(roomId, userId)) {
             throw new AuthorizationDeniedException("Authenticated user " +
                     "is not member of room that he is trying to access.");
         }
@@ -76,11 +74,12 @@ public class MessageServiceImpl implements MessageService {
         message.setCreatedAt(OffsetDateTime.now());
         message.setDeletedAt(null);
         message.setAuthorId(user.getId());
-        Room room = roomRepository.getReferenceById(roomId);
+        Room room = roomService.getReference(roomId);
         message.setRoom(room);
         Message createdMessage;
         try {
             createdMessage = messageRepository.saveAndFlush(message);
+            roomService.updateLastMessage(roomId, createdMessage);
         } catch (DataIntegrityViolationException e) {
             throw new ReferencedResourceNotFoundException("Room of id " +
                     roomId + " was not found.");

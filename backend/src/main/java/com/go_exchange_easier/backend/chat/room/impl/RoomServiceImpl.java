@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.chat.room.impl;
 
+import com.go_exchange_easier.backend.chat.message.Message;
 import com.go_exchange_easier.backend.chat.message.dto.AuthorSummary;
 import com.go_exchange_easier.backend.chat.message.dto.MessageSummary;
 import com.go_exchange_easier.backend.chat.room.RoomRepository;
@@ -82,8 +83,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional
     public RoomSummary getById(UUID roomId, int signedInUserId) {
-        if (!userInRoomRepository.isUserMemberOfRoom(
-                roomId, signedInUserId)) {
+        if (!isUserMemberOfRoom(roomId, signedInUserId)) {
             throw new ResourceNotFoundException("Room of id " +
                     roomId + " was not found.");
         }
@@ -97,6 +97,30 @@ public class RoomServiceImpl implements RoomService {
         return new RoomSummary(roomId, targetUser.nick(),
                 targetUser.avatar() != null ?
                         targetUser.avatar().thumbnailUrl() : null);
+    }
+
+    @Override
+    public boolean isUserMemberOfRoom(UUID roomId, int userId) {
+        return userInRoomRepository.existsByRoomIdAndUserId(roomId, userId);
+    }
+
+    @Override
+    public Room getReference(UUID roomId) {
+        return roomRepository.getReferenceById(roomId);
+    }
+
+    @Override
+    @Transactional
+    public void updateLastMessage(UUID roomId, Message message) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Room of id " + roomId + " was not found."));
+        room.setLastMessageAt(message.getCreatedAt());
+        room.setLastMessageTextContent(message.getTextContent());
+        room.setLastMessageAuthorId(message.getAuthorId());
+        room.setLastMessageAuthorNick(message.getNick());
+        room.setLastMessageAuthorAvatarKey(message.getAvatarKey());
+        roomRepository.save(room);
     }
 
     private Room createRoom(int userId, int targetUserId) {
