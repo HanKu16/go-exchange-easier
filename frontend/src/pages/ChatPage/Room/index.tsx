@@ -22,6 +22,7 @@ import { useSnackbar } from "../../../context/SnackBarContext";
 import LoadingBox from "./LoadingBox";
 import LoadingError from "./LoadingError";
 import type { RoomPreview } from "../../../dtos/room/RoomPreview";
+import { cacheKeys } from "../types";
 
 const Room = () => {
   const { roomId } = useParams();
@@ -31,17 +32,17 @@ const Room = () => {
 
   const cachedRooms = queryClient.getQueryData<
     InfiniteData<SimplePage<RoomPreview>>
-  >(["rooms"]);
+  >(cacheKeys.allRooms);
   const { signedInUser } = useSignedInUser();
 
   const roomInCache =
     cachedRooms?.pages
       .flatMap((page) => page.content)
       .find((r) => r.id === roomId) ||
-    queryClient.getQueryData<RoomPreview>(["new-room", roomId]);
+    queryClient.getQueryData<RoomPreview>([cacheKeys.newRoom, roomId]);
 
   const { data: room } = useQuery({
-    queryKey: ["room", roomId],
+    queryKey: cacheKeys.room(roomId!),
     queryFn: async () => {
       const result = await sendGetRoomRequest(roomId!);
       if (result.isSuccess) {
@@ -72,7 +73,7 @@ const Room = () => {
     isLoading,
     isError,
   } = useInfiniteQuery({
-    queryKey: ["messages", roomId],
+    queryKey: cacheKeys.messagesFromRoom(roomId!),
     queryFn: async ({ pageParam = 0 }) => {
       await new Promise((f) => setTimeout(f, 3000));
       const result = await sendGetMessagePageRequest(
@@ -102,7 +103,10 @@ const Room = () => {
   const { mutate } = useMutation({
     mutationFn: (newText: string) => sendMessage(newText),
     onMutate: async (newText) => {
-      const queryKey = ["messages", roomId];
+      if (!roomId) {
+        return;
+      }
+      const queryKey = cacheKeys.messagesFromRoom(roomId);
       await queryClient.cancelQueries({ queryKey });
       const previousData =
         queryClient.getQueryData<InfiniteData<SimplePage<MessageDetails>>>(
@@ -135,12 +139,18 @@ const Room = () => {
       return { previousData };
     },
     onError: (_, __, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(["messages", roomId], context.previousData);
+      if (context?.previousData && roomId) {
+        queryClient.setQueryData(
+          cacheKeys.messagesFromRoom(roomId),
+          context.previousData,
+        );
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["messages", roomId] });
+      if (!roomId) return;
+      queryClient.invalidateQueries({
+        queryKey: cacheKeys.messagesFromRoom(roomId),
+      });
     },
   });
 

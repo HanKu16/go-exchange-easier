@@ -8,7 +8,7 @@ export type RoomBoxProps = {
   };
 };
 
-export type RoomHeaderProps = {
+export type HeaderProps = {
   id: string;
   name: string;
   avatarUrl?: string;
@@ -22,4 +22,11 @@ export type MessageBoxProps = {
   avatarUrl?: string;
   dateAndTime: string;
   isUserMessage: boolean;
+};
+
+export const cacheKeys = {
+  newRoom: ["new-room"] as const,
+  allRooms: ["rooms"] as const,
+  room: (roomId: string) => ["room", roomId] as const,
+  messagesFromRoom: (roomId: string) => ["messages", roomId] as const,
 };

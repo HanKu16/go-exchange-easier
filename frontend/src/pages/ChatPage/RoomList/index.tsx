@@ -6,6 +6,7 @@ import ErrorBox from "./ErrorBox";
 import LoadingListBox from "./LoadingListBox";
 import NoRooms from "./NoContentBox";
 import RoomPreviewBox from "./RoomPreviewBox";
+import { cacheKeys } from "../types";
 
 const RoomList = () => {
   const theme = useTheme();
@@ -21,7 +22,7 @@ const RoomList = () => {
     isLoading,
     isError,
   } = useInfiniteQuery({
-    queryKey: ["rooms"],
+    queryKey: cacheKeys.allRooms,
     queryFn: async ({ pageParam = 0 }) => {
       await new Promise((f) => setTimeout(f, 3000));
       const result = await sendGetRoomPreviewsPageRequest(pageParam, pageSize);
