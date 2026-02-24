@@ -23,3 +23,15 @@ export type MessageBoxProps = {
   dateAndTime: string;
   isUserMessage: boolean;
 };
+
+export type TemporaryMessage = {
+  tempId: string;
+  createdAt: string;
+  textContent: string;
+  isSuccessfullySend: undefined | false;
+  roomId: string;
+};
+
+export type TemporaryMessageBoxProps = {
+  message: TemporaryMessage;
+};

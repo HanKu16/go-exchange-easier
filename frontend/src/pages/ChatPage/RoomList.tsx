@@ -67,9 +67,17 @@ const RoomList = () => {
       </Box>
     );
   } else if (isError && rooms.length === 0) {
-    return <ErrorRoomsBox />;
+    return (
+      <Box sx={listStyles}>
+        <ErrorRoomsBox />;
+      </Box>
+    );
   } else if (rooms.length === 0) {
-    return <NoRoomsBox />;
+    return (
+      <Box sx={listStyles}>
+        <NoRoomsBox />
+      </Box>
+    );
   }
   return (
     <Box sx={listStyles} onScroll={handleScroll}>

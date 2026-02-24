@@ -2,7 +2,10 @@ import { Box, Container } from "@mui/material";
 import { useParams } from "react-router-dom";
 import type { SimplePage } from "../../dtos/common/SimplePage";
 import type { MessageDetails } from "../../dtos/message/MessageDetails";
-import { sendGetMessagePageRequest } from "../../utils/api/message";
+import {
+  sendCreateMessageRequest,
+  sendGetMessagePageRequest,
+} from "../../utils/api/message";
 import {
   useInfiniteQuery,
   useQuery,
@@ -18,12 +21,18 @@ import MessageInput from "./MessageInput";
 import { useSnackbar } from "../../context/SnackBarContext";
 import LoadingMessages from "./LoadingMessages";
 import LoadingChatHistoryError from "./LoadingChatHistoryError";
+import { useState } from "react";
+import type { TemporaryMessage } from "./types";
+import TemporaryMessageBox from "./TemporaryMessageBox";
 
 const Room = () => {
   const { roomId } = useParams();
   const pageSize = 30;
   const queryClient = useQueryClient();
   const { showAlert } = useSnackbar();
+  const [pendingMessages, setPendingMessages] = useState<TemporaryMessage[]>(
+    [],
+  );
 
   const cachedRooms = queryClient.getQueryData<
     InfiniteData<SimplePage<RoomSummary>>
@@ -107,6 +116,57 @@ const Room = () => {
       })),
     ) ?? [];
 
+  const updateMessageCache = (roomId: string, newMessage: MessageDetails) => {
+    queryClient.setQueryData<InfiniteData<SimplePage<MessageDetails>>>(
+      ["messages", roomId],
+      (oldData) => {
+        if (!oldData) {
+          return oldData;
+        }
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page, index) =>
+            index === 0
+              ? { ...page, content: [newMessage, ...page.content] }
+              : page,
+          ),
+        };
+      },
+    );
+  };
+
+  const sendMessage = async (messageText: string) => {
+    if (!roomId) {
+      return;
+    }
+    const result = await sendCreateMessageRequest(roomId, {
+      textContent: messageText,
+    });
+    const tempId = crypto.randomUUID();
+    const tempMessage: TemporaryMessage = {
+      tempId: tempId,
+      createdAt: new Date().toISOString(),
+      textContent: messageText,
+      isSuccessfullySend: undefined,
+      roomId: roomId,
+    };
+    setPendingMessages((prev) => [tempMessage, ...prev]);
+    await new Promise((f) => setTimeout(f, 1500));
+    if (result.isSuccess) {
+      const newPendingMessages = pendingMessages.filter(
+        (m: TemporaryMessage) => m.tempId !== tempId,
+      );
+      setPendingMessages(newPendingMessages);
+      updateMessageCache(roomId, result.data);
+    } else {
+      setPendingMessages((prev) =>
+        prev.map((m) =>
+          m.tempId === tempId ? { ...m, isSuccessfullySend: false } : m,
+        ),
+      );
+    }
+  };
+
   if (!room) {
     return <></>;
   }
@@ -142,6 +202,9 @@ const Room = () => {
         }}
         onScroll={handleScroll}
       >
+        {pendingMessages.map((m) =>
+          m.roomId === roomId ? <TemporaryMessageBox message={m} /> : <></>,
+        )}
         {messages.map((m) => (
           <MessageBox
             id={m.id}
@@ -165,7 +228,7 @@ const Room = () => {
           p: 1,
         }}
       >
-        <MessageInput onSendMessage={(text) => console.log(text)} />
+        <MessageInput onSendMessage={sendMessage} />
       </Box>
     </Box>
   );
