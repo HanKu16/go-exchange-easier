@@ -4,7 +4,7 @@ import com.go_exchange_easier.backend.chat.room.RoomApi;
 import com.go_exchange_easier.backend.chat.room.RoomService;
 import com.go_exchange_easier.backend.chat.room.dto.CreateRoomRequest;
 import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
-import com.go_exchange_easier.backend.chat.room.dto.RoomPreviewSummary;
+import com.go_exchange_easier.backend.chat.room.dto.RoomPreview;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,10 @@ public class RoomController implements RoomApi {
     private final RoomService roomService;
 
     @Override
-    public ResponseEntity<SimplePage<RoomPreviewSummary>> getUserRoomsPage(
+    public ResponseEntity<SimplePage<RoomPreview>> getUserRoomsPage(
             AuthenticatedUser authenticatedUser,
             Integer page, Integer size) {
-        SimplePage<RoomPreviewSummary> rooms = roomService.getUserRooms(
+        SimplePage<RoomPreview> rooms = roomService.getUserRooms(
                 authenticatedUser.getId(), page, size);
         return ResponseEntity.ok(rooms);
     }

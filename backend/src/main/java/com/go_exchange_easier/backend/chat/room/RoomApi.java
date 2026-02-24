@@ -2,7 +2,7 @@ package com.go_exchange_easier.backend.chat.room;
 
 import com.go_exchange_easier.backend.chat.room.dto.CreateRoomRequest;
 import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
-import com.go_exchange_easier.backend.chat.room.dto.RoomPreviewSummary;
+import com.go_exchange_easier.backend.chat.room.dto.RoomPreview;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
@@ -29,7 +29,7 @@ public interface RoomApi {
                     responseCode = "200",
                     description = "Rooms were successfully returned"),
     })
-    ResponseEntity<SimplePage<RoomPreviewSummary>> getUserRoomsPage(
+    ResponseEntity<SimplePage<RoomPreview>> getUserRoomsPage(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @RequestParam("page") Integer page,
             @RequestParam("size") Integer size);

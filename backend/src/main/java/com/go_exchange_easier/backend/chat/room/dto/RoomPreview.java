@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Schema(requiredProperties = {"id", "name"})
-public record RoomPreviewSummary(
+public record RoomPreview(
 
         UUID id,
         String name,

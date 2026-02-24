@@ -7,7 +7,7 @@ import com.go_exchange_easier.backend.chat.room.RoomService;
 import com.go_exchange_easier.backend.chat.room.UserInRoomRepository;
 import com.go_exchange_easier.backend.chat.room.dto.CreateRoomRequest;
 import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
-import com.go_exchange_easier.backend.chat.room.dto.RoomPreviewSummary;
+import com.go_exchange_easier.backend.chat.room.dto.RoomPreview;
 import com.go_exchange_easier.backend.chat.room.entity.Room;
 import com.go_exchange_easier.backend.chat.room.entity.UserInRoom;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
@@ -30,7 +30,7 @@ public class RoomServiceImpl implements RoomService {
     private final CoreFacade coreFacade;
 
     @Override
-    public SimplePage<RoomPreviewSummary> getUserRooms(int userId, int page, int size) {
+    public SimplePage<RoomPreview> getUserRooms(int userId, int page, int size) {
         int offset = page * size;
         int totalElements = roomRepository.countUserRoomsThatContainsAnyMessage(userId);
         List<Object[]> rows = roomRepository.findRoomWithOtherParticipant(
@@ -41,7 +41,7 @@ public class RoomServiceImpl implements RoomService {
             otherUserIds.add(otherUserId);
         }
         Map<Integer, CoreUser> users = coreFacade.getUsers(otherUserIds);
-        List<RoomPreviewSummary> rooms = new ArrayList<>(10);
+        List<RoomPreview> rooms = new ArrayList<>(10);
         for (Object[] row : rows) {
             UUID roomId = (UUID) row[0];
             Instant lastMessageAt = handleCastAndNullCheck(
@@ -52,7 +52,7 @@ public class RoomServiceImpl implements RoomService {
                     row[4], String.class);
             Integer otherParticipantUserId = (Integer) row[5];
             CoreUser user = users.get(otherParticipantUserId);
-            rooms.add(new RoomPreviewSummary(roomId, user.nick(),
+            rooms.add(new RoomPreview(roomId, user.nick(),
                     user.avatar() != null ? user.avatar().thumbnailUrl() : null,
                     new MessageSummary(lastMessageAt, lastMessageTextContent,
                             new AuthorSummary(lastMessageAuthorNick,
