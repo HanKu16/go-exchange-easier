@@ -1,6 +1,6 @@
 import type { MessageSummary } from "../message/MessageSummary";
 
-export type RoomPreviewSummary = {
+export type RoomPreview = {
   id: string;
   name: string;
   imageUrl: string;

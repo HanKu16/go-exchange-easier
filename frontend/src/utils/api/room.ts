@@ -1,6 +1,6 @@
 import type { SimplePage } from "../../dtos/common/SimplePage";
 import type { CreateRoomRequest } from "../../dtos/room/CreateRoomRequest";
-import type { RoomPreviewSummary } from "../../dtos/room/RoomPreviewSummary";
+import type { RoomPreview } from "../../dtos/room/RoomPreview";
 import type { RoomSummary } from "../../dtos/room/RoomSummary";
 import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
 import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
@@ -10,7 +10,7 @@ export const sendGetRoomPreviewsPageRequest = async (
   page: number,
   size: number,
 ): Promise<
-  ResponseSuccessResult<SimplePage<RoomPreviewSummary>> | ResponseFailureResult
+  ResponseSuccessResult<SimplePage<RoomPreview>> | ResponseFailureResult
 > => {
   const url = new URL(`/api/chat/rooms`, window.location.origin);
   url.searchParams.append("page", `${page}`);

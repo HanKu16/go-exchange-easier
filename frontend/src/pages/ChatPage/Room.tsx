@@ -3,7 +3,11 @@ import { useParams } from "react-router-dom";
 import type { SimplePage } from "../../dtos/common/SimplePage";
 import type { MessageDetails } from "../../dtos/message/MessageDetails";
 import { sendGetMessagePageRequest } from "../../utils/api/message";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  type InfiniteData,
+} from "@tanstack/react-query";
 import RoomHeader from "./RoomHeader";
 import { useQueryClient } from "@tanstack/react-query";
 import type { RoomSummary } from "../../dtos/room/RoomSummary";
@@ -21,16 +25,13 @@ const Room = () => {
   const queryClient = useQueryClient();
   const { showAlert } = useSnackbar();
 
-  interface InfiniteDataStructure {
-    pages: SimplePage<RoomSummary>[];
-    pageParams: number[];
-  }
-
-  const cachedData = queryClient.getQueryData<InfiniteDataStructure>(["rooms"]);
+  const cachedRooms = queryClient.getQueryData<
+    InfiniteData<SimplePage<RoomSummary>>
+  >(["rooms"]);
   const { signedInUser } = useSignedInUser();
 
   const roomInCache =
-    cachedData?.pages
+    cachedRooms?.pages
       .flatMap((page) => page.content)
       .find((r) => r.id === roomId) ||
     queryClient.getQueryData<RoomSummary>(["new-room", roomId]);
@@ -39,8 +40,10 @@ const Room = () => {
     queryKey: ["room", roomId],
     queryFn: async () => {
       const result = await sendGetRoomRequest(roomId!);
-      if (result.isSuccess) return result.data;
-      throw new Error("Room not found");
+      if (result.isSuccess) {
+        return result.data;
+      }
+      throw new Error("Room was not found.");
     },
     enabled: !!roomId && !roomInCache,
     initialData: roomInCache,
@@ -103,10 +106,6 @@ const Room = () => {
         },
       })),
     ) ?? [];
-
-  if (roomId === undefined) {
-    return <></>;
-  }
 
   if (!room) {
     return <></>;
