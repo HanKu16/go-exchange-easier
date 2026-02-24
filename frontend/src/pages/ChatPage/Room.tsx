@@ -8,12 +8,12 @@ import {
 } from "../../utils/api/message";
 import {
   useInfiniteQuery,
+  useMutation,
   useQuery,
   type InfiniteData,
 } from "@tanstack/react-query";
 import RoomHeader from "./RoomHeader";
 import { useQueryClient } from "@tanstack/react-query";
-import type { RoomSummary } from "../../dtos/room/RoomSummary";
 import MessageBox from "./MessageBox";
 import { useSignedInUser } from "../../context/SignedInUserContext";
 import { sendGetRoomRequest } from "../../utils/api/room";
@@ -21,21 +21,16 @@ import MessageInput from "./MessageInput";
 import { useSnackbar } from "../../context/SnackBarContext";
 import LoadingMessages from "./LoadingMessages";
 import LoadingChatHistoryError from "./LoadingChatHistoryError";
-import { useState } from "react";
-import type { TemporaryMessage } from "./types";
-import TemporaryMessageBox from "./TemporaryMessageBox";
+import type { RoomPreview } from "../../dtos/room/RoomPreview";
 
 const Room = () => {
   const { roomId } = useParams();
   const pageSize = 30;
   const queryClient = useQueryClient();
   const { showAlert } = useSnackbar();
-  const [pendingMessages, setPendingMessages] = useState<TemporaryMessage[]>(
-    [],
-  );
 
   const cachedRooms = queryClient.getQueryData<
-    InfiniteData<SimplePage<RoomSummary>>
+    InfiniteData<SimplePage<RoomPreview>>
   >(["rooms"]);
   const { signedInUser } = useSignedInUser();
 
@@ -43,7 +38,7 @@ const Room = () => {
     cachedRooms?.pages
       .flatMap((page) => page.content)
       .find((r) => r.id === roomId) ||
-    queryClient.getQueryData<RoomSummary>(["new-room", roomId]);
+    queryClient.getQueryData<RoomPreview>(["new-room", roomId]);
 
   const { data: room } = useQuery({
     queryKey: ["room", roomId],
@@ -80,7 +75,6 @@ const Room = () => {
     queryKey: ["messages", roomId],
     queryFn: async ({ pageParam = 0 }) => {
       await new Promise((f) => setTimeout(f, 3000));
-
       const result = await sendGetMessagePageRequest(
         roomId!,
         pageParam,
@@ -100,6 +94,54 @@ const Room = () => {
     enabled: roomId != undefined,
     retry: 4,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    refetchInterval: 30000,
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: (newText: string) => sendMessage(newText),
+    onMutate: async (newText) => {
+      const queryKey = ["messages", roomId];
+      await queryClient.cancelQueries({ queryKey });
+      const previousData =
+        queryClient.getQueryData<InfiniteData<SimplePage<MessageDetails>>>(
+          queryKey,
+        );
+      const optimisticMessage: MessageDetails = {
+        id: `temp-${Date.now()}`,
+        textContent: newText,
+        createdAt: new Date().toISOString(),
+        author: {
+          id: signedInUser.id,
+          nick: "You",
+          avatarUrl: signedInUser.avatarUrl,
+        },
+      };
+      queryClient.setQueryData<InfiniteData<SimplePage<MessageDetails>>>(
+        queryKey,
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page, index) =>
+              index === 0
+                ? { ...page, content: [optimisticMessage, ...page.content] }
+                : page,
+            ),
+          };
+        },
+      );
+      return { previousData };
+    },
+    onError: (_, __, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(["messages", roomId], context.previousData);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["messages", roomId] });
+    },
   });
 
   const messages: MessageDetails[] =
@@ -116,54 +158,16 @@ const Room = () => {
       })),
     ) ?? [];
 
-  const updateMessageCache = (roomId: string, newMessage: MessageDetails) => {
-    queryClient.setQueryData<InfiniteData<SimplePage<MessageDetails>>>(
-      ["messages", roomId],
-      (oldData) => {
-        if (!oldData) {
-          return oldData;
-        }
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page, index) =>
-            index === 0
-              ? { ...page, content: [newMessage, ...page.content] }
-              : page,
-          ),
-        };
-      },
-    );
-  };
-
   const sendMessage = async (messageText: string) => {
-    if (!roomId) {
+    if (!roomId || !room) {
       return;
     }
     const result = await sendCreateMessageRequest(roomId, {
       textContent: messageText,
     });
-    const tempId = crypto.randomUUID();
-    const tempMessage: TemporaryMessage = {
-      tempId: tempId,
-      createdAt: new Date().toISOString(),
-      textContent: messageText,
-      isSuccessfullySend: undefined,
-      roomId: roomId,
-    };
-    setPendingMessages((prev) => [tempMessage, ...prev]);
     await new Promise((f) => setTimeout(f, 1500));
-    if (result.isSuccess) {
-      const newPendingMessages = pendingMessages.filter(
-        (m: TemporaryMessage) => m.tempId !== tempId,
-      );
-      setPendingMessages(newPendingMessages);
-      updateMessageCache(roomId, result.data);
-    } else {
-      setPendingMessages((prev) =>
-        prev.map((m) =>
-          m.tempId === tempId ? { ...m, isSuccessfullySend: false } : m,
-        ),
-      );
+    if (!result.isSuccess) {
+      throw new Error("Failed to create message");
     }
   };
 
@@ -202,9 +206,6 @@ const Room = () => {
         }}
         onScroll={handleScroll}
       >
-        {pendingMessages.map((m) =>
-          m.roomId === roomId ? <TemporaryMessageBox message={m} /> : <></>,
-        )}
         {messages.map((m) => (
           <MessageBox
             id={m.id}
@@ -228,7 +229,7 @@ const Room = () => {
           p: 1,
         }}
       >
-        <MessageInput onSendMessage={sendMessage} />
+        <MessageInput onSendMessage={(text) => mutate(text)} />
       </Box>
     </Box>
   );
