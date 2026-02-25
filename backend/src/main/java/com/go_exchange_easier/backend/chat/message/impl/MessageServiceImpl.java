@@ -9,9 +9,9 @@ import com.go_exchange_easier.backend.chat.message.dto.MessageDetails;
 import com.go_exchange_easier.backend.chat.room.RoomService;
 import com.go_exchange_easier.backend.chat.room.entity.Room;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
-import com.go_exchange_easier.backend.core.api.CoreAvatar;
 import com.go_exchange_easier.backend.core.api.CoreFacade;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
+import com.go_exchange_easier.backend.core.api.CoreUser;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -40,23 +40,22 @@ public class MessageServiceImpl implements MessageService {
                     "is not member of room that he is trying to access.");
         }
         Page<Message> pageOfMessages = messageRepository.findByRoomId(roomId, pageable);
-        HashMap<String, String> avatars = new HashMap<>();
+        HashMap<Integer, CoreUser> authors = new HashMap<>();
         List<MessageDetails> messages = new ArrayList<>(pageOfMessages.getSize());
         for (Message message : pageOfMessages.getContent()) {
-            String avatarKey = message.getAvatarKey();
-            if (!avatars.containsKey(avatarKey)) {
-                String avatarUrl = null;
-                if (avatarKey != null) {
-                    CoreAvatar avatar = coreFacade.getAvatar(message.getAvatarKey());
-                    avatarUrl = avatar.thumbnailUrl();
-                }
-                avatars.put(avatarKey, avatarUrl);
+            int authorId = message.getAuthorId();
+            if (!authors.containsKey(authorId)) {
+                CoreUser user = coreFacade.getUser(authorId);
+                authors.put(authorId, user);
             }
-
+            CoreUser author = authors.get(authorId);
+            String avatarUrl = author.avatar() != null ?
+                    author.avatar().thumbnailUrl() : null;
             messages.add(new MessageDetails(message.getId(),
-                    message.getCreatedAt().toInstant(), message.getTextContent(),
-                    new AuthorDetails(message.getAuthorId(), message.getNick(),
-                            avatars.get(avatarKey))));
+                    message.getCreatedAt().toInstant(),
+                    message.getTextContent(),
+                    new AuthorDetails(message.getAuthorId(),
+                            author.nick(), avatarUrl )));
         }
         return SimplePage.of(messages, pageOfMessages.getNumber(),
                 pageOfMessages.getSize(), pageOfMessages.getTotalElements());
