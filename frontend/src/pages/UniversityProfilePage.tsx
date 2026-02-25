@@ -663,6 +663,7 @@ const UniversityProfilePage = () => {
 
   const getProfile = async () => {
     const result = await sendGetUniversityProfileRequest(universityId);
+    console.log(result);
     if (result.isSuccess) {
       const data: UniversityProfile = result.data;
       const universityDataPanelProps: UniversityDataPanelProps = {
@@ -692,6 +693,8 @@ const UniversityProfilePage = () => {
         setUniversityProfileFetchStatus("serverError");
       } else if (result.error.status === "SERVICE_UNAVAILABLE") {
         setUniversityProfileFetchStatus("connectionError");
+      } else if (result.error.status === "NOT_FOUND") {
+        setUniversityProfileFetchStatus("universityNotFound");
       }
     }
   };
@@ -705,6 +708,8 @@ const UniversityProfilePage = () => {
       setAppState("connectionError");
     } else if (universityProfileFetchStatus === "serverError") {
       setAppState("serverError");
+    } else if (universityProfileFetchStatus === "universityNotFound") {
+      setAppState("success");
     }
   }, [universityProfileFetchStatus]);
 
