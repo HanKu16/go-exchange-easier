@@ -16,7 +16,7 @@
 
 The main goal of this platform is to **centralize information** about student exchanges, acting as a dedicated alternative to fragmented social media groups. Instead of scrolling through endless posts to find relevant advice, prospective students can instantly connect with students who have already returned.
 
-The application allows users to browse detailed **user and university profiles** and precisely filter experienced students by **country, city, university, field of study, and specific exchange period** (e.g., 2023–2025). This ensures that users gain first-hand insights from people who were actually there. The **university review system** empowers users to gather authentic opinions and choose the ideal exchange destination for their needs. Additionally, a **real-time chat feature** is currently being implemented to further facilitate direct peer-to-peer communication.
+The application allows users to browse detailed **user and university profiles** and precisely filter experienced students by **country, city, university, field of study, and specific exchange period** (e.g., 2023–2025). This ensures that users gain first-hand insights from people who were actually there. The **university review system** empowers users to gather authentic opinions and choose the ideal exchange destination for their needs. To complete the experience, an integrated **chat feature** enables direct peer-to-peer communication, allowing students to easily connect and exchange valuable tips.
 
 
 
@@ -34,11 +34,11 @@ The application allows users to browse detailed **user and university profiles**
 * **🤝 Social Features**
     Includes the ability to follow other users to stay updated with their activity.
 
+* **💬 Chat System**
+     A direct messaging system to allow instant peer-to-peer communication without leaving the platform.
+
 * **☁️ Media & Storage**
     Image storage handles by **S3** and data caching via **Redis**.
-
-* **💬 Chat System (In Progress)**
-     A direct messaging system is currently being developed to allow instant peer-to-peer communication without leaving the platform.
 
 
 
@@ -103,11 +103,12 @@ With the containers running, the environment is fully initialized. The database 
 > **⚠️ Important:** **Authentication is required** to access the application. Apart from the **Login** and **Register** pages, all other views and features are protected. You must log in to explore the content.
 
 * **Frontend:** [http://localhost:5173](http://localhost:5173)
-    * **Login:** [http://localhost:5173/login](http://localhost:5173/login)
+     * **Login:** [http://localhost:5173/login](http://localhost:5173/login)
      * **Register:** [http://localhost:5173/register](http://localhost:5173/register)
      * **Example University Profile:** [http://localhost:5173/universities/168](http://localhost:5173/universities/168)
      * **Example User Profile:** [http://localhost:5173/users/2531](http://localhost:5173/users/2531)
      * **Search Page:** [http://localhost:5173/search](http://localhost:5173/search)
+	 * **Chat Page:** [http://localhost:5173/chat](http://localhost:5173/chat)
 
 * **Backend API:** [http://localhost:8080/swagger-ui/index.html#/](http://localhost:8080/swagger-ui/index.html#/)
 * **Object Storage (MinIO):** [http://localhost:9001](http://localhost:9001)
