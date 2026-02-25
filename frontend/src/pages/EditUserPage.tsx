@@ -200,12 +200,20 @@ const EditUserPage = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", height: "100vh", flexDirection: "column" }}>
+      <Box
+        sx={{
+          display: "flex",
+          height: "100vh",
+          flexDirection: "column",
+          overflowY: "hidden",
+        }}
+      >
         <Navbar />
         <Box
           sx={{
             display: "flex",
-            flexGrow: { sm: 1 },
+            flexGrow: 1,
+            minHeight: 0,
             flexDirection: { xs: "column", sm: "row" },
           }}
         >
@@ -215,7 +223,9 @@ const EditUserPage = () => {
             selectedSubsectionName={selectedSubsectionPanel}
             setSelectedSubsectionName={setSelectedSubsectionName}
           />
-          <Box sx={{ flexGrow: 1, padding: 4 }}>{getPanel()}</Box>
+          <Box sx={{ flexGrow: 1, padding: 4, overflowY: "auto" }}>
+            {getPanel()}
+          </Box>
         </Box>
       </Box>
     </>
