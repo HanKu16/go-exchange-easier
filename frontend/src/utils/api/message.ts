@@ -37,3 +37,14 @@ export const sendCreateMessageRequest = async (
   };
   return await sendRequest(uri, request);
 };
+
+export const sendDeleteMessageRequest = async (
+  roomId: string,
+  messageId: string,
+): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
+  const uri: string = `/api/chat/rooms/${roomId}/messages/${messageId}`;
+  const request: RequestInit = {
+    method: "DELETE",
+  };
+  return await sendRequest(uri, request);
+};

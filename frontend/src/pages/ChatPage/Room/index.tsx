@@ -4,6 +4,7 @@ import type { SimplePage } from "../../../dtos/common/SimplePage";
 import type { MessageDetails } from "../../../dtos/message/MessageDetails";
 import {
   sendCreateMessageRequest,
+  sendDeleteMessageRequest,
   sendGetMessagePageRequest,
 } from "../../../utils/api/message";
 import {
@@ -184,6 +185,23 @@ const Room = () => {
     }
   };
 
+  const deleteMessage = async (messageId: string) => {
+    if (roomId === undefined) {
+      return false;
+    }
+    const result = await sendDeleteMessageRequest(roomId, messageId);
+    if (result.isSuccess) {
+      queryClient.invalidateQueries({
+        queryKey: cacheKeys.messagesFromRoom(roomId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: cacheKeys.allRooms,
+      });
+      return true;
+    }
+    return false;
+  };
+
   if (!room) {
     return <></>;
   }
@@ -228,6 +246,7 @@ const Room = () => {
             dateAndTime={m.createdAt}
             isUserMessage={m.author.id === signedInUser.id}
             isPending={m.id.startsWith(temporaryMessagePrefix) ? true : false}
+            onDelete={async () => await deleteMessage(m.id)}
             key={m.id}
           />
         ))}

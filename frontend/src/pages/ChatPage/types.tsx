@@ -23,6 +23,7 @@ export type MessageBoxProps = {
   dateAndTime: string;
   isUserMessage: boolean;
   isPending: boolean;
+  onDelete: () => Promise<boolean>;
 };
 
 export const cacheKeys = {
