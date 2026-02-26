@@ -28,7 +28,7 @@ public class Room {
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "last_message_id")
     private Message lastMessage;
 

@@ -6,11 +6,12 @@ import jakarta.annotation.Nullable;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Schema(requiredProperties = {"id", "name"})
+@Schema(requiredProperties = {"id", "name", "targetUserId"})
 public record RoomPreview(
 
         UUID id,
         String name,
+        Integer targetUserId,
         @Nullable String imageUrl,
         @Nullable MessageSummary lastMessage
 
