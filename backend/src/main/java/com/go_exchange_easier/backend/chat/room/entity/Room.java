@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.chat.room.entity;
 
+import com.go_exchange_easier.backend.chat.message.Message;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,20 +25,12 @@ public class Room {
     @EqualsAndHashCode.Include
     private UUID id;
 
-    @Column(name = "last_message_at")
-    private OffsetDateTime lastMessageAt;
+    @Column(name = "created_at")
+    private OffsetDateTime createdAt;
 
-    @Column(name = "last_message_text_content")
-    private String lastMessageTextContent;
-
-    @Column(name = "last_message_author_id")
-    private Integer lastMessageAuthorId;
-
-    @Column(name = "last_message_author_nick")
-    private String lastMessageAuthorNick;
-
-    @Column(name = "last_message_author_avatar_key")
-    private String lastMessageAuthorAvatarKey;
+    @OneToOne
+    @JoinColumn(name = "last_message_id")
+    private Message lastMessage;
 
     @OneToMany(mappedBy = "room")
     private Set<UserInRoom> users = new HashSet<>();

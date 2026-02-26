@@ -31,6 +31,9 @@ public class UserInRoom implements Persistable<UserInRoomId> {
     @Column(name = "last_read_at")
     private OffsetDateTime lastReadAt;
 
+    @Column(name = "joined_at")
+    private OffsetDateTime joinedAt;
+
     @Transient
     private boolean isNew = true;
 

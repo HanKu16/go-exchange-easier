@@ -28,12 +28,6 @@ public class Message {
     @Column(name = "text_content")
     private String textContent;
 
-    @Column(name = "avatar_key")
-    private String avatarKey;
-
-    @Column(name = "nick")
-    private String nick;
-
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
