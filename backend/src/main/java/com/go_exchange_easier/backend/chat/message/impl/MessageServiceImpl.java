@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,15 +41,11 @@ public class MessageServiceImpl implements MessageService {
                     "is not member of room that he is trying to access.");
         }
         Page<Message> pageOfMessages = messageRepository.findByRoomId(roomId, pageable);
-        HashMap<Integer, CoreUser> authors = new HashMap<>();
+        Set<Integer> usersIds = extractUsersIds(pageOfMessages);
+        Map<Integer, CoreUser> authors = coreFacade.getUsers(usersIds);
         List<MessageDetails> messages = new ArrayList<>(pageOfMessages.getSize());
         for (Message message : pageOfMessages.getContent()) {
-            int authorId = message.getAuthorId();
-            if (!authors.containsKey(authorId)) {
-                CoreUser user = coreFacade.getUser(authorId);
-                authors.put(authorId, user);
-            }
-            CoreUser author = authors.get(authorId);
+            CoreUser author = authors.get(message.getAuthorId());
             String avatarUrl = author.avatar() != null ?
                     author.avatar().thumbnailUrl() : null;
             messages.add(new MessageDetails(message.getId(),
@@ -90,6 +87,13 @@ public class MessageServiceImpl implements MessageService {
                 createdMessage.getTextContent(),
                 new AuthorDetails(createdMessage.getAuthorId(),
                         user.getNick(), avatarUrl));
+    }
+
+    private Set<Integer> extractUsersIds(Page<Message> pageOfMessages) {
+        return pageOfMessages.getContent()
+                .stream()
+                .map(Message::getAuthorId)
+                .collect(Collectors.toSet());
     }
 
 }

@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +38,14 @@ public class RoomServiceImpl implements RoomService {
         Pageable pageable = PageRequest.of(page, size);
         Page<RoomProjection> pageOfRooms = roomRepository
                 .findRoomsProjectionByUserId(userId, pageable);
+        Set<Integer> usersIds = extractUsersIds(pageOfRooms);
+        Map<Integer, CoreUser> users = coreFacade.getUsers(usersIds);
         List<RoomPreview> roomsPreviews = new ArrayList<>(size);
         for (RoomProjection room : pageOfRooms.getContent()) {
-            CoreUser targetUser = coreFacade.getUser(room.targetUserId());
+            CoreUser targetUser = users.get(room.targetUserId());
             String targetUserAvatarUrl = targetUser.avatar() != null ?
                     targetUser.avatar().thumbnailUrl() : null;
-            CoreUser lastMessageAuthor = coreFacade.getUser(room.lastMessageAuthorId());
+            CoreUser lastMessageAuthor = users.get(room.lastMessageAuthorId());
             String lastMessageAuthorAvatarUrl = lastMessageAuthor.avatar() != null ?
                     lastMessageAuthor.avatar().thumbnailUrl() : null;
             roomsPreviews.add(new RoomPreview(room.id(), targetUser.nick(),
@@ -141,6 +145,19 @@ public class RoomServiceImpl implements RoomService {
                 .map(UserInRoom::getUserId)
                 .orElseThrow(() -> new MissingChatParticipantException(
                         "Chat room supposed to have another user but has not."));
+    }
+
+    private Set<Integer> extractUsersIds(Page<RoomProjection> pageOfRooms) {
+        Set<Integer> targetUsersIds = pageOfRooms.getContent()
+                .stream()
+                .map(RoomProjection::targetUserId)
+                .collect(Collectors.toSet());
+        Set<Integer> messagesAuthorsIds = pageOfRooms.getContent()
+                .stream()
+                .map(RoomProjection::lastMessageAuthorId)
+                .collect(Collectors.toSet());
+        return Stream.concat(targetUsersIds.stream(), messagesAuthorsIds.stream())
+                .collect(Collectors.toSet());
     }
 
     private <T> T handleCastAndNullCheck(Object obj, Class<T> clazz) {
