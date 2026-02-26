@@ -202,7 +202,7 @@ const Room = () => {
         id={room.id}
         name={room.name}
         avatarUrl={room.imageUrl}
-        link={"NOT IMPLEMENTED YET"}
+        link={`/users/${room.targetUserId}`}
       />
       <Container
         sx={{

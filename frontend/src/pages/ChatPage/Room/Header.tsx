@@ -64,7 +64,21 @@ const Header = (props: HeaderProps) => {
             overflow: "hidden",
           }}
         >
-          <Typography variant="subtitle1" fontWeight="bold" noWrap>
+          <Typography
+            onClick={() => navigate(props.link)}
+            variant="subtitle1"
+            fontWeight="bold"
+            noWrap
+            sx={{
+              cursor: "pointer",
+              display: "inline-block",
+              transition: "color 0.2s, text-decoration 0.2s",
+              "&:hover": {
+                color: "primary.main",
+                textDecoration: "underline",
+              },
+            }}
+          >
             {props.name}
           </Typography>
         </Box>
