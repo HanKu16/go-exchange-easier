@@ -37,7 +37,7 @@ public interface MessageApi {
                             schema = @Schema(implementation = ApiErrorResponse.class))),
     })
     ResponseEntity<SimplePage<MessageDetails>> getPage(
-            @PathVariable UUID roomId,
+            @PathVariable("roomId") UUID roomId,
             @ParameterObject Pageable pageable,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
@@ -60,8 +60,26 @@ public interface MessageApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<MessageDetails> create(
-            @PathVariable UUID roomId,
+            @PathVariable("roomId") UUID roomId,
             @RequestBody @Valid CreateMessageRequest request,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
+
+    @DeleteMapping("/{messageId}")
+    @Operation(summary = "Delete message")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Message was successfully deleted",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Message or was not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class)))
+    })
+    ResponseEntity<Void> delete(
+            @PathVariable("roomId") UUID roomId,
+            @PathVariable("messageId") UUID messageId,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
 }

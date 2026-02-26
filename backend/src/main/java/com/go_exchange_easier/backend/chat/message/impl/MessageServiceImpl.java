@@ -9,6 +9,7 @@ import com.go_exchange_easier.backend.chat.message.dto.MessageDetails;
 import com.go_exchange_easier.backend.chat.room.RoomService;
 import com.go_exchange_easier.backend.chat.room.entity.Room;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.api.CoreFacade;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
 import com.go_exchange_easier.backend.core.api.CoreUser;
@@ -87,6 +88,24 @@ public class MessageServiceImpl implements MessageService {
                 createdMessage.getTextContent(),
                 new AuthorDetails(createdMessage.getAuthorId(),
                         user.getNick(), avatarUrl));
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID messageId, UUID roomId, int userId) {
+        Message message = messageRepository.findWithRoomById(messageId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Message of id " + messageId + " was not found."));
+        if (message.getAuthorId() != userId || !message.getRoom().getId().equals(roomId)) {
+            throw new ResourceNotFoundException("Message of id " +
+                    messageId + " was not found.");
+        }
+        roomService.updateLastMessage(roomId, null);
+        messageRepository.delete(message);
+        messageRepository.flush();
+        Optional<Message> latestMessage = messageRepository
+                .findTopByRoomIdOrderByCreatedAtDesc(roomId);
+        roomService.updateLastMessage(roomId, latestMessage.orElse(null));
     }
 
     private Set<Integer> extractUsersIds(Page<Message> pageOfMessages) {

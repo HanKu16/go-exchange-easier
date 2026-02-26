@@ -13,6 +13,7 @@ import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.api.CoreFacade;
 import com.go_exchange_easier.backend.core.api.CoreUser;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -106,7 +107,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public void updateLastMessage(UUID roomId, Message message) {
+    public void updateLastMessage(UUID roomId, @Nullable Message message) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Room of id " + roomId + " was not found."));

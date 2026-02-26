@@ -20,7 +20,7 @@ public class MessageController implements MessageApi {
 
     @Override
     public ResponseEntity<SimplePage<MessageDetails>> getPage(UUID roomId,
-                                                              Pageable pageable, AuthenticatedUser authenticatedUser) {
+            Pageable pageable, AuthenticatedUser authenticatedUser) {
         SimplePage<MessageDetails> page = messageService
                 .getPage(roomId, authenticatedUser.getId(), pageable);
         return ResponseEntity.ok(page);
@@ -33,6 +33,14 @@ public class MessageController implements MessageApi {
         MessageDetails message = messageService.create(
                 roomId, request, authenticatedUser);
         return ResponseEntity.ok(message);
+    }
+
+    @Override
+    public ResponseEntity<Void> delete(UUID roomId, UUID messageId,
+            AuthenticatedUser authenticatedUser) {
+        messageService.delete(messageId, roomId, authenticatedUser.getId());
+        return ResponseEntity.noContent()
+                .build();
     }
 
 }
