@@ -10,15 +10,26 @@ import basicAvatar from "../../../assets/basic-avatar.png";
 import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useEffect, useState } from "react";
+import { useConfirmation } from "../../../context/ConfirmationDialogContext";
 
 const MessageBox = (props: MessageBoxProps) => {
   const [isWaitingForBeingDeleted, setIsWaitingForBeingDeleted] =
     useState<boolean>(false);
   const [wasDeletionFailure, setWasDeletionFailure] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const { showConfirmation } = useConfirmation();
 
   const handleTap = () => {
     setIsActive(!isActive);
+  };
+
+  const handleDeletion = async () => {
+    setIsWaitingForBeingDeleted(true);
+    const wasDeleted: boolean = await props.onDelete();
+    if (!wasDeleted) {
+      setWasDeletionFailure(true);
+      setIsWaitingForBeingDeleted(false);
+    }
   };
 
   useEffect(() => {
@@ -51,14 +62,13 @@ const MessageBox = (props: MessageBoxProps) => {
               color: "error.light",
               "&:hover": { color: "error.main" },
             }}
-            onClick={async () => {
-              setIsWaitingForBeingDeleted(true);
-              const wasDeleted: boolean = await props.onDelete();
-              if (!wasDeleted) {
-                setWasDeletionFailure(true);
-                setIsWaitingForBeingDeleted(false);
-              } else {
-              }
+            onClick={() => {
+              showConfirmation({
+                title: "Are you sure you want to delete this message?",
+                message: "This action cannot be undone.",
+                onConfirm: handleDeletion,
+                confirmColor: "error",
+              });
             }}
           >
             <DeleteIcon sx={{ fontSize: 16 }} />

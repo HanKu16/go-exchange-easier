@@ -60,6 +60,7 @@ export const ConfirmationDialogProvider: React.FC<{ children: ReactNode }> = ({
 
       <Dialog
         open={open}
+        disableScrollLock
         onClose={handleClose}
         PaperProps={{
           sx: { borderRadius: 4, p: 1, maxWidth: 400, textAlign: "center" },
