@@ -3,9 +3,7 @@ package com.go_exchange_easier.backend.chat.room.impl;
 import com.go_exchange_easier.backend.chat.message.Message;
 import com.go_exchange_easier.backend.chat.message.dto.AuthorSummary;
 import com.go_exchange_easier.backend.chat.message.dto.MessageSummary;
-import com.go_exchange_easier.backend.chat.room.RoomRepository;
-import com.go_exchange_easier.backend.chat.room.RoomService;
-import com.go_exchange_easier.backend.chat.room.UserInRoomRepository;
+import com.go_exchange_easier.backend.chat.room.*;
 import com.go_exchange_easier.backend.chat.room.dto.CreateRoomRequest;
 import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
 import com.go_exchange_easier.backend.chat.room.dto.RoomPreview;
@@ -16,9 +14,12 @@ import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException
 import com.go_exchange_easier.backend.core.api.CoreFacade;
 import com.go_exchange_easier.backend.core.api.CoreUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Service
@@ -32,50 +33,41 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public SimplePage<RoomPreview> getUserRooms(int userId, int page, int size) {
-        int offset = page * size;
-        int totalElements = roomRepository.countUserRoomsThatContainsAnyMessage(userId);
-        List<Object[]> rows = roomRepository.findRoomWithOtherParticipant(
-                userId, size, offset);
-        Set<Integer> otherUserIds = new HashSet<>(size);
-        for (Object[] row : rows) {
-            Integer otherUserId = (Integer) row[5];
-            otherUserIds.add(otherUserId);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RoomProjection> pageOfRooms = roomRepository
+                .findRoomsProjectionByUserId(userId, pageable);
+        List<RoomPreview> roomsPreviews = new ArrayList<>(size);
+        for (RoomProjection room : pageOfRooms.getContent()) {
+            CoreUser targetUser = coreFacade.getUser(room.targetUserId());
+            String targetUserAvatarUrl = targetUser.avatar() != null ?
+                    targetUser.avatar().thumbnailUrl() : null;
+            CoreUser lastMessageAuthor = coreFacade.getUser(room.lastMessageAuthorId());
+            String lastMessageAuthorAvatarUrl = lastMessageAuthor.avatar() != null ?
+                    lastMessageAuthor.avatar().thumbnailUrl() : null;
+            roomsPreviews.add(new RoomPreview(room.id(), targetUser.nick(),
+                    targetUser.id(), targetUserAvatarUrl,
+                    new MessageSummary(room.lastMessageCreatedAt().toInstant(),
+                            room.lastMessageTextContent(),
+                            new AuthorSummary(lastMessageAuthor.nick(),
+                                    lastMessageAuthorAvatarUrl))));
         }
-        Map<Integer, CoreUser> users = coreFacade.getUsers(otherUserIds);
-        List<RoomPreview> rooms = new ArrayList<>(10);
-        for (Object[] row : rows) {
-            UUID roomId = (UUID) row[0];
-            Instant lastMessageAt = handleCastAndNullCheck(
-                    row[1], Instant.class);
-            String lastMessageTextContent = handleCastAndNullCheck(row[2], String.class);
-            String lastMessageAuthorNick = handleCastAndNullCheck(row[3], String.class);
-            String lastMessageAuthorAvatarKey = handleCastAndNullCheck(
-                    row[4], String.class);
-            Integer otherParticipantUserId = (Integer) row[5];
-            CoreUser user = users.get(otherParticipantUserId);
-            rooms.add(new RoomPreview(roomId, user.nick(),
-                    user.avatar() != null ? user.avatar().thumbnailUrl() : null,
-                    new MessageSummary(lastMessageAt, lastMessageTextContent,
-                            new AuthorSummary(lastMessageAuthorNick,
-                                    lastMessageAuthorAvatarKey))));
-        }
-        return SimplePage.of(rooms, page, size, (long) totalElements);
+        return SimplePage.of(roomsPreviews, page, size, pageOfRooms.getTotalElements());
     }
 
     @Override
     @Transactional
     public RoomSummary getOrCreate(int userId, CreateRoomRequest request) {
-        Optional<UUID> optionalRoomId = roomRepository
-                .findRoomIdWithParticipants(userId, request.targetUserId());
+        Optional<Room> optionalRoom = roomRepository.findPrivateRoomWithUsers(
+                userId, request.targetUserId());
         UUID roomId;
-        if (optionalRoomId.isPresent()) {
-            roomId = optionalRoomId.get();
+        if (optionalRoom.isPresent()) {
+            roomId = optionalRoom.get().getId();
         } else {
             Room createdRoom = createRoom(userId, request.targetUserId());
             roomId = createdRoom.getId();
         }
         CoreUser targetUser = coreFacade.getUser(request.targetUserId());
-        return new RoomSummary(roomId, targetUser.nick(),
+        return new RoomSummary(roomId, targetUser.nick(), targetUser.id(),
                 targetUser.avatar() != null ?
                         targetUser.avatar().thumbnailUrl() : null);
     }
@@ -83,19 +75,18 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional
     public RoomSummary getById(UUID roomId, int signedInUserId) {
-        if (!isUserMemberOfRoom(roomId, signedInUserId)) {
-            throw new ResourceNotFoundException("Room of id " +
-                    roomId + " was not found.");
-        }
         Room room = roomRepository
-                .findById(roomId)
+                .findPrivateRoomWithUsersById(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Room of id " + roomId + " was not found."));
-        int targetUserId = userInRoomRepository
-                .findOtherMemberId(roomId, signedInUserId);
+        if (!isUserMemberOfRoom(signedInUserId, room.getUsers())) {
+            throw new ResourceNotFoundException(
+                    "Room of id " + roomId + " was not found.");
+        }
+        int targetUserId = getTargetUserId(signedInUserId, room.getUsers());
         CoreUser targetUser = coreFacade.getUser(targetUserId);
         return new RoomSummary(roomId, targetUser.nick(),
-                targetUser.avatar() != null ?
+                targetUserId, targetUser.avatar() != null ?
                         targetUser.avatar().thumbnailUrl() : null);
     }
 
@@ -115,24 +106,41 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Room of id " + roomId + " was not found."));
-        room.setLastMessageAt(message.getCreatedAt());
-        room.setLastMessageTextContent(message.getTextContent());
-        room.setLastMessageAuthorId(message.getAuthorId());
-        room.setLastMessageAuthorNick(message.getNick());
-        room.setLastMessageAuthorAvatarKey(message.getAvatarKey());
+        room.setLastMessage(message);
         roomRepository.save(room);
     }
 
     private Room createRoom(int userId, int targetUserId) {
-        Room createdRoom = roomRepository.save(new Room());
+        Room newRoom = new Room();
+        OffsetDateTime now = OffsetDateTime.now();
+        newRoom.setCreatedAt(now);
+        Room createdRoom = roomRepository.save(newRoom);
         UserInRoom creatorUserInRoom = new UserInRoom();
         creatorUserInRoom.setRoom(createdRoom);
+        creatorUserInRoom.setJoinedAt(now);
         creatorUserInRoom.setUserId(userId);
         UserInRoom targetUserInRoom = new UserInRoom();
         targetUserInRoom.setRoom(createdRoom);
+        targetUserInRoom.setJoinedAt(now);
         targetUserInRoom.setUserId(targetUserId);
         userInRoomRepository.saveAll(List.of(targetUserInRoom, creatorUserInRoom));
         return createdRoom;
+    }
+
+    private boolean isUserMemberOfRoom(int userId, Set<UserInRoom> usersInRoom) {
+        return usersInRoom
+                .stream()
+                .anyMatch(u -> u.getUserId() == userId);
+    }
+
+    private int getTargetUserId(int signedInUserId, Set<UserInRoom> usersInRoom) {
+        return usersInRoom
+                .stream()
+                .filter(u -> u.getUserId() != signedInUserId)
+                .findFirst()
+                .map(UserInRoom::getUserId)
+                .orElseThrow(() -> new MissingChatParticipantException(
+                        "Chat room supposed to have another user but has not."));
     }
 
     private <T> T handleCastAndNullCheck(Object obj, Class<T> clazz) {

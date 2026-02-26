@@ -68,8 +68,6 @@ public class MessageServiceImpl implements MessageService {
             AuthenticatedUser user) {
         Message message = new Message();
         message.setTextContent(request.textContent());
-        message.setAvatarKey(user.getAvatarKey());
-        message.setNick(user.getNick());
         message.setCreatedAt(OffsetDateTime.now());
         message.setDeletedAt(null);
         message.setAuthorId(user.getId());
