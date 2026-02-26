@@ -2,25 +2,21 @@ CREATE SCHEMA IF NOT EXISTS chat;
 
 CREATE TABLE chat.rooms (
   room_id UUID PRIMARY KEY,
-  last_message_at TIMESTAMPTZ,
-  last_message_text_content TEXT,
-  last_message_author_id INTEGER,
-  last_message_author_nick VARCHAR(20),
-  last_message_author_avatar_key VARCHAR(255)
+  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_message_id UUID
 );
 
 CREATE TABLE chat.user_in_rooms (
   room_id UUID,
   user_id INTEGER,
   last_read_at TIMESTAMPTZ,
+  joined_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (room_id, user_id)
 );
 
 CREATE TABLE chat.messages (
   message_id UUID PRIMARY KEY,
-  text_content VARCHAR(1000) NOT NULL,
-  avatar_key VARCHAR(255),
-  nick VARCHAR(20) NOT NULL,
+  text_content TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL,
   deleted_at TIMESTAMPTZ,
   room_id UUID NOT NULL,

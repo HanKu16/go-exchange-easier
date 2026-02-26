@@ -1,0 +1,4 @@
+1. Remove columns 'last_message_at', 'last_message_text_content', 'last_message_author_id', 'last_message_author_nick', 'last_message_author_avatar_key' from 'chat.rooms'.
+2. Add column 'created_at' to 'chat.rooms'.
+3. Remove columns 'avatar_key' and 'nick' from 'chat.messages'.
+4. Add column 'joined_at' to 'chat.user_in_rooms'.
