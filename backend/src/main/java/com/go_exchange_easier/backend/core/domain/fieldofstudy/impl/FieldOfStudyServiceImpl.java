@@ -6,6 +6,7 @@ import com.go_exchange_easier.backend.core.domain.fieldofstudy.FieldOfStudyServi
 import com.go_exchange_easier.backend.core.domain.fieldofstudy.FieldOfStudySummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -20,9 +21,10 @@ public class FieldOfStudyServiceImpl implements FieldOfStudyService {
     @Override
     @Cacheable(value="fields_of_study", key="'all'")
     public List<FieldOfStudySummary> getAll() {
-        List<FieldOfStudy> fieldsOfStudy = fieldOfStudyRepository.findAll();
+        List<FieldOfStudy> fieldsOfStudy = fieldOfStudyRepository
+                .findAll(Sort.by(Sort.Order.asc("name").ignoreCase()));
         return fieldsOfStudy.stream()
-                .map(f -> new FieldOfStudySummary(f.getId(), f.getName()))
+                .map(FieldOfStudySummary::fromEntity)
                 .toList();
     }
 

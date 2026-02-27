@@ -117,8 +117,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
             }
             return new CountrySummary(country.getId(), country.getEnglishName());
         } else {
-            int rowsUpdated = userRepository.assignCountryOfOrigin(
-                    userId, null);
+            int rowsUpdated = userRepository.assignCountryOfOrigin(userId, null);
             if (rowsUpdated == 0) {
                 throw new ResourceNotFoundException("User of id " + userId +
                         " was not found.");
@@ -134,6 +133,10 @@ public class UserUpdateServiceImpl implements UserUpdateService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User of id " + userId + " was not found."));
+        String existingAvatarKey = user.getAvatarKey();
+        if (existingAvatarKey != null) {
+            avatarService.delete(existingAvatarKey);
+        }
         AvatarKeys newKeys = avatarService.add(userId, file);
         user.setAvatarKey(newKeys.original());
         return avatarService.getUrl(newKeys.original());
@@ -146,7 +149,11 @@ public class UserUpdateServiceImpl implements UserUpdateService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User of id " + userId + " was not found."));
-        user.setAvatarKey(null);
+        String existingAvatarKey = user.getAvatarKey();
+        if (existingAvatarKey != null) {
+            avatarService.delete(existingAvatarKey);
+            user.setAvatarKey(null);
+        }
         return new AvatarUrlSummary(null, null);
     }
 
