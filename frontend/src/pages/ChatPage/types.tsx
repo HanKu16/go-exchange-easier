@@ -1,6 +1,7 @@
 export type RoomBoxProps = {
   id: string;
   name: string;
+  hasAnyUnreadMessages: boolean;
   avatarUrl?: string;
   lastMessage?: {
     createdAt: string;
