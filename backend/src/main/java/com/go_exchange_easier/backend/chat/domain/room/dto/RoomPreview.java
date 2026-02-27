@@ -6,12 +6,13 @@ import jakarta.annotation.Nullable;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Schema(requiredProperties = {"id", "name", "targetUserId"})
+@Schema(requiredProperties = {"id", "name", "targetUserId", "hasAnyUnreadMessages"})
 public record RoomPreview(
 
         UUID id,
         String name,
         Integer targetUserId,
+        boolean hasAnyUnreadMessages,
         @Nullable String imageUrl,
         @Nullable MessageSummary lastMessage
 

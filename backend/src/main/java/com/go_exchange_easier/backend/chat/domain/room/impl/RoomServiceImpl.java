@@ -54,8 +54,10 @@ public class RoomServiceImpl implements RoomService {
             CoreUser lastMessageAuthor = users.get(room.lastMessageAuthorId());
             String lastMessageAuthorAvatarUrl = lastMessageAuthor.avatar() != null ?
                     lastMessageAuthor.avatar().thumbnailUrl() : null;
+            boolean hasAnyUnreadMessages = hasAnyUnreadMessages(
+                    room.lastMessageCreatedAt(), room.lastReadAt());
             roomsPreviews.add(new RoomPreview(room.id(), targetUser.nick(),
-                    targetUser.id(), targetUserAvatarUrl,
+                    targetUser.id(), hasAnyUnreadMessages, targetUserAvatarUrl,
                     new MessageSummary(room.lastMessageCreatedAt().toInstant(),
                             room.lastMessageTextContent(),
                             new AuthorSummary(lastMessageAuthor.nick(),
@@ -177,16 +179,16 @@ public class RoomServiceImpl implements RoomService {
                 .collect(Collectors.toSet());
     }
 
-    private <T> T handleCastAndNullCheck(Object obj, Class<T> clazz) {
-        if (obj == null) {
-            return null;
+    private boolean hasAnyUnreadMessages(
+            @Nullable OffsetDateTime lastMessageCreatedAt,
+            @Nullable OffsetDateTime lastReadAt) {
+        if (lastMessageCreatedAt == null) {
+            return false;
         }
-        if (clazz.isInstance(obj)) {
-            return clazz.cast(obj);
+        if (lastReadAt == null) {
+            return true;
         }
-        throw new ClassCastException("Cast error, expected type was: " +
-                clazz.getSimpleName() + ", but get: " +
-                obj.getClass().getSimpleName());
+        return lastMessageCreatedAt.isAfter(lastReadAt);
     }
 
 }

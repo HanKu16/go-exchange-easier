@@ -22,7 +22,8 @@ public interface RoomRepository extends
             m.id,
             m.createdAt,
             m.textContent,
-            m.authorId
+            m.authorId,
+            me.lastReadAt
         )
         FROM Room r
         JOIN r.users me

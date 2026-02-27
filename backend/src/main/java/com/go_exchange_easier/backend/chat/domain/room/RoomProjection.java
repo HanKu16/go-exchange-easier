@@ -10,6 +10,7 @@ public record RoomProjection (
         UUID lastMessageId,
         OffsetDateTime lastMessageCreatedAt,
         String lastMessageTextContent,
-        int lastMessageAuthorId
+        int lastMessageAuthorId,
+        OffsetDateTime lastReadAt
 
 ) { }
