@@ -9,6 +9,7 @@ import com.go_exchange_easier.backend.chat.room.dto.RoomSummary;
 import com.go_exchange_easier.backend.chat.room.dto.RoomPreview;
 import com.go_exchange_easier.backend.chat.room.entity.Room;
 import com.go_exchange_easier.backend.chat.room.entity.UserInRoom;
+import com.go_exchange_easier.backend.chat.room.entity.UserInRoomId;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
 import com.go_exchange_easier.backend.core.api.CoreFacade;
@@ -113,6 +114,17 @@ public class RoomServiceImpl implements RoomService {
                         "Room of id " + roomId + " was not found."));
         room.setLastMessage(message);
         roomRepository.save(room);
+    }
+
+    @Override
+    @Transactional
+    public void updateLastReadAt(UUID roomId, int userId) {
+        Room roomReference = roomRepository.getReferenceById(roomId);
+        UserInRoom userInRoom = userInRoomRepository.findById(
+                new UserInRoomId(roomReference, userId))
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Room of id " + roomId + " was not found."));
+        userInRoom.setLastReadAt(OffsetDateTime.now());
     }
 
     private Room createRoom(int userId, int targetUserId) {

@@ -10,7 +10,6 @@ import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.UUID;
 
 @RestController
@@ -44,6 +43,15 @@ public class RoomController implements RoomApi {
         RoomSummary room = roomService.getById(
                 roomId, authenticationUser.getId());
         return ResponseEntity.ok(room);
+    }
+
+    @Override
+    public ResponseEntity<Void> updateReadStatus(
+            UUID roomId,
+            AuthenticatedUser authenticationUser) {
+        roomService.updateLastReadAt(roomId, authenticationUser.getId());
+        return ResponseEntity.noContent()
+                .build();
     }
 
 }

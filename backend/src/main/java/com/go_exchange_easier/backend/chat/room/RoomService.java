@@ -16,5 +16,6 @@ public interface RoomService {
     boolean isUserMemberOfRoom(UUID roomId, int userId);
     Room getReference(UUID roomId);
     void updateLastMessage(UUID roomId, Message message);
+    void updateLastReadAt(UUID roomId, int userId);
 
 }

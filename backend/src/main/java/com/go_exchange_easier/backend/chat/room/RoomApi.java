@@ -66,4 +66,20 @@ public interface RoomApi {
             @PathVariable UUID roomId,
             @AuthenticationPrincipal AuthenticatedUser authenticationUser);
 
+    @PatchMapping("/{roomId}/readStatus")
+    @Operation(summary = "Update read status for particular room")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Read status was successfully updated"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Room was not found or user is not member of the room",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class)))
+    })
+    ResponseEntity<Void> updateReadStatus(
+            @PathVariable UUID roomId,
+            @AuthenticationPrincipal AuthenticatedUser authenticationUser);
+
 }
