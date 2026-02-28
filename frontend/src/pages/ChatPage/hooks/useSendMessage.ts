@@ -63,7 +63,7 @@ export const useSendMessage = (roomId: string, syncAll: () => void) => {
     );
   };
 
-  const { mutate } = useMutation({
+  const { mutate, isError, isPending } = useMutation({
     mutationFn: (newText: string) => sendMessage(newText),
     onMutate: async (newText) => {
       if (!roomId) {
@@ -92,7 +92,7 @@ export const useSendMessage = (roomId: string, syncAll: () => void) => {
       syncAll();
     },
   });
-  return { sendMessage: mutate };
+  return { sendMessage: mutate, isError, isPending };
 };
 
 export default useSendMessage;
