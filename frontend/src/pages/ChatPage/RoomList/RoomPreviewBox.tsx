@@ -1,27 +1,14 @@
 import { Avatar, Box, Card, CardContent, Typography } from "@mui/material";
 import basicAvatar from "../../../assets/basic-avatar.png";
-import type { RoomBoxProps } from "../types";
+import { type RoomBoxProps } from "../types";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 const RoomPreviewBox = (props: RoomBoxProps) => {
   const navigate = useNavigate();
   const { roomId } = useParams();
-  const [lastActivityAt, setLastActivityAt] = useState<number>(Date.now());
-
-  useEffect(() => {
-    if (roomId === props.id) {
-      setLastActivityAt(Date.now());
-    }
-  }, [roomId, props.id, props.lastMessage]);
-
   const hasUnreadMessages =
-    props.hasAnyUnreadMessages &&
-    roomId !== props.id &&
-    (props.lastMessage?.createdAt
-      ? dayjs(props.lastMessage.createdAt).valueOf() > lastActivityAt
-      : false);
+    props.id === roomId ? false : props.hasAnyUnreadMessages;
 
   return (
     <Card

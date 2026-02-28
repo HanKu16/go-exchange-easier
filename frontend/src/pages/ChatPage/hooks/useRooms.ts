@@ -1,8 +1,15 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "../types";
 import { sendGetRoomPreviewsPageRequest } from "../../../utils/api/room";
+import { useEffect } from "react";
+import type { SimplePage } from "../../../dtos/common/SimplePage";
+import type { RoomPreview } from "../../../dtos/room/RoomPreview";
+import type { InfiniteData } from "../../../types/InfiniteData";
+import { useParams } from "react-router-dom";
 
 export const useChatRooms = (pageSize: number) => {
+  const { roomId } = useParams();
+  const queryClient = useQueryClient();
   const {
     data,
     fetchNextPage,
@@ -42,6 +49,32 @@ export const useChatRooms = (pageSize: number) => {
       ),
     }),
   });
+
+  const updateOptimisticallyRoomPreviewsCache = () => {
+    queryClient.setQueryData<InfiniteData<SimplePage<RoomPreview>>>(
+      cacheKeys.allRooms,
+      (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            content: page.content.map((room) =>
+              room.id === roomId
+                ? { ...room, hasAnyUnreadMessages: false }
+                : room,
+            ),
+          })),
+        };
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (data && roomId) {
+      updateOptimisticallyRoomPreviewsCache();
+    }
+  }, [data, roomId]);
 
   const rooms = data?.pages ?? [];
 
