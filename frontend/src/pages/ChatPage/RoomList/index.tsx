@@ -1,58 +1,22 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMediaQuery, useTheme, Box } from "@mui/material";
-import { useSnackbar } from "../../../context/SnackBarContext";
-import { sendGetRoomPreviewsPageRequest } from "../../../utils/api/room";
 import ErrorBox from "./ErrorBox";
 import LoadingListBox from "./LoadingListBox";
 import NoRooms from "./NoContentBox";
 import RoomPreviewBox from "./RoomPreviewBox";
-import { cacheKeys } from "../types";
+import useChatRooms from "../hooks/useRooms";
 
 const RoomList = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const pageSize = isMobile ? 15 : 10;
-  const { showAlert } = useSnackbar();
-
   const {
-    data,
+    rooms,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
     isError,
-  } = useInfiniteQuery({
-    queryKey: cacheKeys.allRooms,
-    queryFn: async ({ pageParam = 0 }) => {
-      await new Promise((f) => setTimeout(f, 3000));
-      const result = await sendGetRoomPreviewsPageRequest(pageParam, pageSize);
-      if (!result.isSuccess) {
-        showAlert("Failed to load conversations.", "error");
-        throw new Error("Failed to load rooms.");
-      }
-      return result.data;
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => {
-      const nextPage = lastPage.pageNumber + 1;
-      return nextPage < lastPage.totalPages ? nextPage : undefined;
-    },
-    retry: 4,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    refetchInterval: 15000,
-    refetchIntervalInBackground: false,
-    refetchOnWindowFocus: true,
-  });
-
-  const rooms =
-    data?.pages.flatMap((page) =>
-      page.content.map((r) => ({
-        id: r.id,
-        name: r.name,
-        avatarUrl: r.imageUrl,
-        lastMessage: r.lastMessage,
-      })),
-    ) ?? [];
+    isLoading,
+  } = useChatRooms(pageSize);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
