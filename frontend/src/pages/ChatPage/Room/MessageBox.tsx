@@ -145,8 +145,8 @@ const MessageBox = (props: MessageBoxProps) => {
             <Typography
               variant="caption"
               sx={{
-                color: "error.main", // Standardowy czerwony z MUI
-                fontSize: "0.7rem", // Bardzo mały rozmiar, żeby nie dominował
+                color: "error.main",
+                fontSize: "0.7rem",
                 fontWeight: "bold",
                 marginTop: 0.25,
                 paddingX: 1,

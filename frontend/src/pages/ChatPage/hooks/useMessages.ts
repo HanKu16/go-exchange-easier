@@ -55,6 +55,7 @@ export const useRoomMessages = (roomId: string) => {
       const nextPage = lastPage.pageNumber + 1;
       return nextPage < lastPage.totalPages ? nextPage : undefined;
     },
+    retry: 3,
     enabled: !!roomId,
     staleTime: Infinity,
   });

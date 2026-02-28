@@ -13,7 +13,7 @@ export const useChatRooms = (pageSize: number) => {
   } = useInfiniteQuery({
     queryKey: cacheKeys.allRooms,
     queryFn: async ({ pageParam = 0 }) => {
-      await new Promise((f) => setTimeout(f, 3000));
+      // await new Promise((f) => setTimeout(f, 1000));
       const result = await sendGetRoomPreviewsPageRequest(pageParam, pageSize);
       if (!result.isSuccess) {
         throw new Error("Failed to load rooms.");
@@ -25,7 +25,7 @@ export const useChatRooms = (pageSize: number) => {
       const nextPage = lastPage.pageNumber + 1;
       return nextPage < lastPage.totalPages ? nextPage : undefined;
     },
-    retry: 4,
+    retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,

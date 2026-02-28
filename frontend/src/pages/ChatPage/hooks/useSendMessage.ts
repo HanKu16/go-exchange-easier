@@ -10,7 +10,7 @@ import { useSignedInUser } from "../../../context/SignedInUserContext";
 import type { SimplePage } from "../../../dtos/common/SimplePage";
 import type { MessageDetails } from "../../../dtos/message/MessageDetails";
 
-export const useSendMessage = (roomId: string, syncAll: () => void) => {
+const useSendMessage = (roomId: string, syncAll: () => void) => {
   const queryClient = useQueryClient();
   const { signedInUser } = useSignedInUser();
 
@@ -18,7 +18,7 @@ export const useSendMessage = (roomId: string, syncAll: () => void) => {
     const result = await sendCreateMessageRequest(roomId, {
       textContent: messageText,
     });
-    await new Promise((f) => setTimeout(f, 1500));
+    // await new Promise((f) => setTimeout(f, 500));
     if (!result.isSuccess) {
       throw new Error("Failed to create message.");
     }
