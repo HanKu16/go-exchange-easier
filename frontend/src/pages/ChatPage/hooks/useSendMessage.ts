@@ -4,11 +4,11 @@ import {
   type InfiniteData,
   type QueryKey,
 } from "@tanstack/react-query";
-import { cacheKeys, temporaryMessagePrefix } from "../ChatPage/types";
-import { sendCreateMessageRequest } from "../../utils/api/message";
-import { useSignedInUser } from "../../context/SignedInUserContext";
-import type { SimplePage } from "../../dtos/common/SimplePage";
-import type { MessageDetails } from "../../dtos/message/MessageDetails";
+import { cacheKeys, temporaryMessagePrefix } from "../types";
+import { sendCreateMessageRequest } from "../../../utils/api/message";
+import { useSignedInUser } from "../../../context/SignedInUserContext";
+import type { SimplePage } from "../../../dtos/common/SimplePage";
+import type { MessageDetails } from "../../../dtos/message/MessageDetails";
 
 export const useSendMessage = (roomId: string, syncAll: () => void) => {
   const queryClient = useQueryClient();

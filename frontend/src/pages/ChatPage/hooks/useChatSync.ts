@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { cacheKeys } from "../ChatPage/types";
+import { cacheKeys } from "../types";
 
 export const useChatSync = (roomId: string) => {
   const queryClient = useQueryClient();

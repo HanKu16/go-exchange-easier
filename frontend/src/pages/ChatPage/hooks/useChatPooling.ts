@@ -17,5 +17,5 @@ export const useChatPolling = (roomId: string) => {
     return () => clearInterval(interval);
   }, [roomId, syncAll]);
 
-  return { syncAll };
+  return {};
 };
