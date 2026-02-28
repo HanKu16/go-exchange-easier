@@ -6,6 +6,7 @@ import { sendGetOrCreateRoomRequest } from "../../utils/api/room";
 import { useEffect } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import RoomList from "./RoomList";
+import { useChatPolling } from "./hooks/useChatPooling";
 
 const ChatPage = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const ChatPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { roomId } = useParams();
+  useChatPolling(roomId);
 
   const { mutate } = useMutation({
     mutationFn: () => sendGetOrCreateRoomRequest({ targetUserId }),

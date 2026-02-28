@@ -3,7 +3,7 @@ import { TextField, IconButton, InputAdornment, Paper } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { Box } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { useChatSync } from "../hooks/useChatSync";
+import useChatSync from "../hooks/useChatSync";
 import { useSendMessage } from "../hooks/useSendMessage";
 import type { MessageInputProps } from "../types";
 
