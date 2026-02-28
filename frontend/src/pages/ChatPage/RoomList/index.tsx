@@ -4,6 +4,7 @@ import LoadingListBox from "./LoadingListBox";
 import NoRooms from "./NoContentBox";
 import RoomPreviewBox from "./RoomPreviewBox";
 import useChatRooms from "../hooks/useRooms";
+import LoadingError from "./LoadingError";
 
 const RoomList = () => {
   const theme = useTheme();
@@ -52,7 +53,9 @@ const RoomList = () => {
         <RoomPreviewBox key={props.id} {...props} />
       ))}
       {isFetchingNextPage && <LoadingListBox numberOfBoxes={2} />}
-      {isError && <></>}
+      {isError && !isFetchingNextPage && (
+        <LoadingError onRetry={fetchNextPage} />
+      )}
     </Box>
   );
 };

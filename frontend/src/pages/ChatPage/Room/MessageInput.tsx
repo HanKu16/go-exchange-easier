@@ -4,7 +4,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { Box } from "@mui/material";
 import { useParams } from "react-router-dom";
 import useChatSync from "../hooks/useChatSync";
-import { useSendMessage } from "../hooks/useSendMessage";
+import useSendMessage from "../hooks/useSendMessage";
 import type { MessageInputProps } from "../types";
 import { useSnackbar } from "../../../context/SnackBarContext";
 

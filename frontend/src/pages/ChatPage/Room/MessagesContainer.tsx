@@ -63,7 +63,9 @@ const MessagesContainer = () => {
         />
       ))}
       {(isLoading || isFetchingNextPage) && <LoadingBox />}
-      {isError && !isLoading && <LoadingError onRetry={fetchNextPage} />}
+      {isError && !isLoading && !isFetchingNextPage && (
+        <LoadingError onRetry={fetchNextPage} />
+      )}
     </Container>
   );
 };
