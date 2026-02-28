@@ -603,7 +603,6 @@ const FeedPanel = (props: FeedPanelProps) => {
             handleSuccessfulCreation={() => {
               getTotalPagesCount();
               if (currentPageNumber === 1) {
-                // setShouldRefreshReviews(true);
                 fetchData();
               } else {
                 setCurrentPageNumber(1);

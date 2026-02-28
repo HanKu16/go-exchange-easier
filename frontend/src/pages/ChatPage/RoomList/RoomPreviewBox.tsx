@@ -3,10 +3,25 @@ import basicAvatar from "../../../assets/basic-avatar.png";
 import type { RoomBoxProps } from "../types";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const RoomPreviewBox = (props: RoomBoxProps) => {
   const navigate = useNavigate();
   const { roomId } = useParams();
+  const [lastActivityAt, setLastActivityAt] = useState<number>(Date.now());
+
+  useEffect(() => {
+    if (roomId === props.id) {
+      setLastActivityAt(Date.now());
+    }
+  }, [roomId, props.id, props.lastMessage]);
+
+  const hasUnreadMessages =
+    props.hasAnyUnreadMessages &&
+    roomId !== props.id &&
+    (props.lastMessage?.createdAt
+      ? dayjs(props.lastMessage.createdAt).valueOf() > lastActivityAt
+      : false);
 
   return (
     <Card
@@ -79,11 +94,9 @@ const RoomPreviewBox = (props: RoomBoxProps) => {
             variant="body2"
             noWrap
             sx={{
-              color: props.hasAnyUnreadMessages
-                ? "text.primary"
-                : "text.secondary",
-              fontWeight: props.hasAnyUnreadMessages ? 600 : 400,
-              opacity: props.hasAnyUnreadMessages ? 1 : 0.8,
+              color: hasUnreadMessages ? "text.primary" : "text.secondary",
+              fontWeight: hasUnreadMessages ? 600 : 400,
+              opacity: hasUnreadMessages ? 1 : 0.8,
             }}
           >
             {props.lastMessage?.textContent || ""}

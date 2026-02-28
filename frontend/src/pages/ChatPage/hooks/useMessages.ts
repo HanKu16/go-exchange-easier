@@ -1,35 +1,10 @@
-// useRoomMessages.ts
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { cacheKeys } from "../types";
-import type { SimplePage } from "../../../dtos/common/SimplePage";
-import type { RoomPreview } from "../../../dtos/room/RoomPreview";
 import { sendGetMessagePageRequest } from "../../../utils/api/message";
 import { sendUpdateRoomReadStatusRequest } from "../../../utils/api/room";
-import type { InfiniteData } from "../../../types/InfiniteData";
 
 export const useRoomMessages = (roomId: string) => {
-  const queryClient = useQueryClient();
   const pageSize = 30;
-
-  const updateOptimisticallyRoomPreviewsCache = () => {
-    queryClient.setQueryData<InfiniteData<SimplePage<RoomPreview>>>(
-      cacheKeys.allRooms,
-      (oldData) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page) => ({
-            ...page,
-            content: page.content.map((room) =>
-              room.id === roomId
-                ? { ...room, hasAnyUnreadMessages: false }
-                : room,
-            ),
-          })),
-        };
-      },
-    );
-  };
 
   const getMessages = async (pageNumber: number) => {
     const result = await sendGetMessagePageRequest(
@@ -41,7 +16,6 @@ export const useRoomMessages = (roomId: string) => {
       throw new Error("Failed to load chat history.");
     }
     if (pageNumber === 0) {
-      updateOptimisticallyRoomPreviewsCache();
       sendUpdateRoomReadStatusRequest(roomId);
     }
     return result.data;
