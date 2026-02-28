@@ -65,14 +65,27 @@ const RoomPreviewBox = (props: RoomBoxProps) => {
             <Typography
               variant="caption"
               color="text.secondary"
-              sx={{ whiteSpace: "nowrap", ml: 1 }}
+              sx={{
+                whiteSpace: "nowrap",
+                ml: 1,
+              }}
             >
               {props.lastMessage?.createdAt
                 ? dayjs(props.lastMessage?.createdAt).format("DD.MM.YYYY HH:mm")
                 : ""}
             </Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary" noWrap>
+          <Typography
+            variant="body2"
+            noWrap
+            sx={{
+              color: props.hasAnyUnreadMessages
+                ? "text.primary"
+                : "text.secondary",
+              fontWeight: props.hasAnyUnreadMessages ? 600 : 400,
+              opacity: props.hasAnyUnreadMessages ? 1 : 0.8,
+            }}
+          >
             {props.lastMessage?.textContent || ""}
           </Typography>
         </Box>
