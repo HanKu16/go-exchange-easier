@@ -2,17 +2,21 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { cacheKeys } from "../types";
 
-export const useChatSync = (roomId: string) => {
+const useChatSync = (roomId: string | undefined) => {
   const queryClient = useQueryClient();
 
   const syncAll = useCallback(async () => {
-    if (!roomId) return;
-    await Promise.all([
-      queryClient.invalidateQueries({
-        queryKey: cacheKeys.messagesFromRoom(roomId),
-      }),
+    const tasks = [
       queryClient.invalidateQueries({ queryKey: cacheKeys.allRooms }),
-    ]);
+    ];
+    if (roomId) {
+      tasks.push(
+        queryClient.invalidateQueries({
+          queryKey: cacheKeys.messagesFromRoom(roomId),
+        }),
+      );
+    }
+    await Promise.all(tasks);
   }, [roomId, queryClient]);
 
   return { syncAll };
