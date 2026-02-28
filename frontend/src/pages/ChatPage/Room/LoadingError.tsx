@@ -1,7 +1,8 @@
 import { Box, Button, Typography } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import type { LoadingErrorProps } from "../types";
 
-const LoadingError = () => {
+const LoadingError = (props: LoadingErrorProps) => {
   return (
     <Box
       sx={{
@@ -28,7 +29,7 @@ const LoadingError = () => {
       </Box>
       <Button
         variant="contained"
-        // onClick={() => fetchNextPage()}
+        onClick={props.onRetry}
         sx={{
           mt: 1,
           backgroundColor: "#a14949",

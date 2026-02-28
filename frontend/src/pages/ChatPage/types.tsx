@@ -41,3 +41,7 @@ export const temporaryMessagePrefix = "temp-";
 export type MessageInputProps = {
   disabled?: boolean;
 };
+
+export type LoadingErrorProps = {
+  onRetry: () => void;
+};

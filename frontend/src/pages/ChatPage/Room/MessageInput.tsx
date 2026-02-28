@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextField, IconButton, InputAdornment, Paper } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { Box } from "@mui/material";
@@ -6,12 +6,14 @@ import { useParams } from "react-router-dom";
 import useChatSync from "../hooks/useChatSync";
 import { useSendMessage } from "../hooks/useSendMessage";
 import type { MessageInputProps } from "../types";
+import { useSnackbar } from "../../../context/SnackBarContext";
 
 const MessageInput = (props: MessageInputProps) => {
   const [message, setMessage] = useState("");
   const { roomId } = useParams();
   const { syncAll } = useChatSync(roomId!);
-  const { sendMessage } = useSendMessage(roomId!, syncAll);
+  const { sendMessage, isError } = useSendMessage(roomId!, syncAll);
+  const { showAlert } = useSnackbar();
 
   const handleSend = () => {
     if (message.trim()) {
@@ -26,6 +28,12 @@ const MessageInput = (props: MessageInputProps) => {
       handleSend();
     }
   };
+
+  useEffect(() => {
+    if (isError) {
+      showAlert("Failed to send a message.", "error");
+    }
+  }, [isError]);
 
   return (
     <Box
