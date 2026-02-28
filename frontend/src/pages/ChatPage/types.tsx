@@ -35,3 +35,9 @@ export const cacheKeys = {
 };
 
 export type MessageStatus = "success" | "pending" | "error";
+
+export const temporaryMessagePrefix = "temp-";
+
+export type MessageInputProps = {
+  disabled?: boolean;
+};

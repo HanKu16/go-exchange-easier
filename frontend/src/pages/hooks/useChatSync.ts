@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect } from "react";
-import { cacheKeys } from "./types";
+import { useCallback } from "react";
+import { cacheKeys } from "../ChatPage/types";
 
 export const useChatSync = (roomId: string) => {
   const queryClient = useQueryClient();
@@ -15,18 +15,7 @@ export const useChatSync = (roomId: string) => {
     ]);
   }, [roomId, queryClient]);
 
-  useEffect(() => {
-    if (!roomId) {
-      return;
-    }
-
-    syncAll();
-    const interval = setInterval(() => {
-      syncAll();
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, [roomId, syncAll]);
-
   return { syncAll };
 };
+
+export default useChatSync;
