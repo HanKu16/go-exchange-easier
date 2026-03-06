@@ -10,7 +10,7 @@ export const sendCreateReviewRequest = async (
 ): Promise<
   ResponseSuccessResult<UniversityReviewDetails> | ResponseFailureResult
 > => {
-  const uri: string = `/api/universityReviews`;
+  const uri: string = `/api/university-reviews`;
   const request: RequestInit = {
     method: "POST",
     body: JSON.stringify(body),
@@ -21,7 +21,7 @@ export const sendCreateReviewRequest = async (
 export const sendDeleteReviewRequest = async (
   reviewId: number,
 ): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
-  const uri: string = `/api/universityReviews/${reviewId}`;
+  const uri: string = `/api/university-reviews/${reviewId}`;
   const request: RequestInit = {
     method: "DELETE",
   };
@@ -32,7 +32,7 @@ export const sendAddUniversityReviewReactionRequest = async (
   reviewId: number,
   body: AddUniversityReviewReactionRequest,
 ): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
-  const uri: string = `/api/universityReviews/${reviewId}/reaction`;
+  const uri: string = `/api/university-reviews/${reviewId}/reaction`;
   const request: RequestInit = {
     method: "PUT",
     body: JSON.stringify(body),
@@ -43,7 +43,7 @@ export const sendAddUniversityReviewReactionRequest = async (
 export const sendDeleteUniversityReviewReactionRequest = async (
   reviewId: number,
 ): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
-  const uri: string = `/api/universityReviews/${reviewId}/reaction`;
+  const uri: string = `/api/university-reviews/${reviewId}/reaction`;
   const request: RequestInit = {
     method: "DELETE",
   };

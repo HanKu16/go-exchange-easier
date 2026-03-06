@@ -66,7 +66,7 @@ public interface RoomApi {
             @PathVariable UUID roomId,
             @AuthenticationPrincipal AuthenticatedUser authenticationUser);
 
-    @PatchMapping("/{roomId}/readStatus")
+    @PatchMapping("/{roomId}/read-status")
     @Operation(summary = "Update read status for particular room")
     @ApiResponses(value = {
             @ApiResponse(

@@ -60,7 +60,7 @@ public interface UserApi {
             @RequestParam(value = "nick", required = false) String nick,
             Pageable pageable);
 
-    @GetMapping("/{userId}/universityReviews")
+    @GetMapping("/{userId}/university-reviews")
     @Operation(summary = "Get reviews which were written by user")
     @ApiResponses(value = {
             @ApiResponse(
@@ -97,7 +97,7 @@ public interface UserApi {
             @RequestBody @Valid UpdateUserDescriptionRequest request,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
-    @PatchMapping("/homeUniversity")
+    @PatchMapping("/home-university")
     @Operation(summary = "Assign home university to user")
     @ApiResponses(value = {
             @ApiResponse(
@@ -161,7 +161,7 @@ public interface UserApi {
             @RequestBody @Valid UpdateUserStatusRequest request,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
-    @PatchMapping("/countryOfOrigin")
+    @PatchMapping("/country-of-origin")
     @Operation(summary = "Assign country of origin to user")
     @ApiResponses(value = {
             @ApiResponse(
@@ -203,7 +203,7 @@ public interface UserApi {
     ResponseEntity<Listing<UserWithAvatarSummary>> getFollowees(
             @PathVariable Integer userId);
 
-    @GetMapping("/{userId}/followedUniversities")
+    @GetMapping("/{userId}/followed-universities")
     @Operation(summary = "Get followed universities")
     @ApiResponses(value = {
             @ApiResponse(

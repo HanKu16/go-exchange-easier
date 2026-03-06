@@ -7,7 +7,7 @@ import type { Listing } from "../../dtos/common/Listing";
 export const sendGetFieldsOfStudiesRequest = async (): Promise<
   ResponseSuccessResult<Listing<FieldOfStudySummary>> | ResponseFailureResult
 > => {
-  const uri: string = `/api/fieldsOfStudy`;
+  const uri: string = `/api/fields-of-study`;
   const request: RequestInit = {
     method: "GET",
   };

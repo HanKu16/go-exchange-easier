@@ -36,7 +36,7 @@ export const sendGetUserReviewsRequest = async (
   | ResponseSuccessResult<Listing<UniversityReviewDetails>>
   | ResponseFailureResult
 > => {
-  const uri: string = `/api/users/${userId}/universityReviews`;
+  const uri: string = `/api/users/${userId}/university-reviews`;
   const request: RequestInit = {
     method: "GET",
   };
@@ -61,7 +61,7 @@ export const sendAssignHomeUniversityRequest = async (
 ): Promise<
   ResponseSuccessResult<UniversitySummary> | ResponseFailureResult
 > => {
-  const uri: string = `/api/users/homeUniversity`;
+  const uri: string = `/api/users/home-university`;
   const request: RequestInit = {
     method: "PATCH",
     body: JSON.stringify(body),
@@ -85,7 +85,7 @@ export const sendUpdateStatusRequest = async (
 export const sendAssignCountryOfOriginRequest = async (
   body: AssignCountryOfOriginRequest,
 ): Promise<ResponseSuccessResult<CountrySummary> | ResponseFailureResult> => {
-  const uri: string = `/api/users/countryOfOrigin`;
+  const uri: string = `/api/users/country-of-origin`;
   const request: RequestInit = {
     method: "PATCH",
     body: JSON.stringify(body),
@@ -129,7 +129,7 @@ export const sendGetFollowedUniversitiesRequest = async (
 ): Promise<
   ResponseSuccessResult<Listing<UniversityDetails>> | ResponseFailureResult
 > => {
-  const uri: string = `/api/users/${userId}/followedUniversities`;
+  const uri: string = `/api/users/${userId}/followed-universities`;
   const request: RequestInit = {
     method: "GET",
   };

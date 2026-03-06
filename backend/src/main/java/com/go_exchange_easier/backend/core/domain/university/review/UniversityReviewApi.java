@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/universityReviews")
+@RequestMapping("/api/university-reviews")
 @Tag(name = "University review")
 public interface UniversityReviewApi {
 

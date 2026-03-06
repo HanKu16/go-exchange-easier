@@ -46,7 +46,7 @@ export const sendGetRoomRequest = async (
 export const sendUpdateRoomReadStatusRequest = async (
   roomId: string,
 ): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
-  const uri: string = `/api/chat/rooms/${roomId}/readStatus`;
+  const uri: string = `/api/chat/rooms/${roomId}/read-status`;
   const request: RequestInit = {
     method: "PATCH",
   };
