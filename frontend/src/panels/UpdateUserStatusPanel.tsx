@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import type { ReactElement } from "react";
 import { Radio, RadioGroup } from "@mui/material";
 import { FormControl, Button } from "@mui/material";
-import { sendUpdateStatusRequest } from "../utils/user";
+import { sendUpdateStatusRequest } from "../utils/api/user";
 import { sendGetUserStatusesRequest } from "../utils/api/user-status";
 import { FormControlLabel } from "@mui/material";
 import type { UserStatusSummary } from "../dtos/user/status/UserStatusSummary";

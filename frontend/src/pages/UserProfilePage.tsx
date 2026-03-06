@@ -15,7 +15,7 @@ import UniversityReview, {
 import {
   sendGetUserProfileRequest,
   sendGetUserReviewsRequest,
-} from "../utils/user";
+} from "../utils/api/user";
 import { useEffect, useState } from "react";
 import type { UserProfileDetails } from "../dtos/user/UserProfileDetails";
 import { useNavigate, useParams } from "react-router-dom";

@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import type { ReactElement } from "react";
 import { InputLabel, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
 import { FormControl, Button } from "@mui/material";
-import { sendAssignHomeUniversityRequest } from "../utils/user";
+import { sendAssignHomeUniversityRequest } from "../utils/api/user";
 import { FormControlLabel } from "@mui/material";
 import type { Country } from "../types/Country";
 import type { UniversityNameLanguage } from "../types/UniversityNameLanguage";

@@ -19,7 +19,7 @@ import { useSignedInUser } from "../context/SignedInUserContext";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { sendGetMeRequest } from "../utils/user";
+import { sendGetMeRequest } from "../utils/api/user";
 
 const LoginPage = () => {
   const navigate = useNavigate();

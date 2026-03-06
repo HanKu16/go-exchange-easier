@@ -16,7 +16,7 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchResultTable from "../../components/SearchResult";
-import { sendGetUsersRequest } from "../../utils/user";
+import { sendGetUsersRequest } from "../../utils/api/user";
 import { type UserDetails } from "../../dtos/user/UserDetails";
 import { sendGetExchangesRequest } from "../../utils/api/exchange";
 import type { ExchangeDetails } from "../../dtos/exchange/ExchangeDetails";

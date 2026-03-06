@@ -1,22 +1,22 @@
-import type { UserProfileDetails } from "../dtos/user/UserProfileDetails";
-import { sendRequest } from "./send-request";
-import type { ResponseSuccessResult } from "../types/ResonseSuccessResult";
-import type { ResponseFailureResult } from "../types/ResponseFailureResult";
-import type { UpdateUserDescriptionRequest } from "../dtos/user/description/UpdateUserDescriptionRequest";
-import type { UserDescriptionSummary } from "../dtos/user/description/UserDescriptionSummary";
-import type { AssignHomeUniversityRequest } from "../dtos/user/AssignHomeUniversityRequest";
-import type { UpdateUserStatusRequest } from "../dtos/user/status/UpdateUserStatusRequest";
-import type { AssignCountryOfOriginRequest } from "../dtos/user/AssignCountryOfOriginRequest";
-import type { UniversityReviewDetails } from "../dtos/university/review/UniversityReviewDetails";
-import type { Listing } from "../dtos/common/Listing";
-import type { PageResponse } from "../dtos/common/PageResponse";
-import type { UserDetails } from "../dtos/user/UserDetails";
-import type { UniversityDetails } from "../dtos/university/UniversityDetails";
-import type { AvatarUrlSummary } from "../dtos/user/avatar/AvatarUrlSummary";
-import type { UserWithAvatarSummary } from "../dtos/user/UserWithAvatarSummary";
-import type { UserStatusSummary } from "../dtos/user/status/UserStatusSummary";
-import type { CountrySummary } from "../dtos/location/CountrySummary";
-import type { UniversitySummary } from "../dtos/university/UniversitySummary";
+import type { UserProfileDetails } from "../../dtos/user/UserProfileDetails";
+import { sendRequest } from "../send-request";
+import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
+import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
+import type { UpdateUserDescriptionRequest } from "../../dtos/user/description/UpdateUserDescriptionRequest";
+import type { UserDescriptionSummary } from "../../dtos/user/description/UserDescriptionSummary";
+import type { AssignHomeUniversityRequest } from "../../dtos/user/AssignHomeUniversityRequest";
+import type { UpdateUserStatusRequest } from "../../dtos/user/status/UpdateUserStatusRequest";
+import type { AssignCountryOfOriginRequest } from "../../dtos/user/AssignCountryOfOriginRequest";
+import type { UniversityReviewDetails } from "../../dtos/university/review/UniversityReviewDetails";
+import type { Listing } from "../../dtos/common/Listing";
+import type { PageResponse } from "../../dtos/common/PageResponse";
+import type { UserDetails } from "../../dtos/user/UserDetails";
+import type { UniversityDetails } from "../../dtos/university/UniversityDetails";
+import type { AvatarUrlSummary } from "../../dtos/user/avatar/AvatarUrlSummary";
+import type { UserWithAvatarSummary } from "../../dtos/user/UserWithAvatarSummary";
+import type { UserStatusSummary } from "../../dtos/user/status/UserStatusSummary";
+import type { CountrySummary } from "../../dtos/location/CountrySummary";
+import type { UniversitySummary } from "../../dtos/university/UniversitySummary";
 
 export const sendGetUserProfileRequest = async (
   userId: number | string,

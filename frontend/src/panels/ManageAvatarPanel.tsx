@@ -6,7 +6,7 @@ import getCroppedImg from "../utils/canvas-utils";
 import {
   sendDeleteAvatarRequest,
   sendUploadAvatarRequest,
-} from "../utils/user";
+} from "../utils/api/user";
 import { Slider, Typography, Stack, IconButton, Divider } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";

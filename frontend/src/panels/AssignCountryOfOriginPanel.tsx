@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import type { ReactElement } from "react";
 import { Radio, RadioGroup } from "@mui/material";
 import { FormControl, Button } from "@mui/material";
-import { sendAssignCountryOfOriginRequest } from "../utils/user";
+import { sendAssignCountryOfOriginRequest } from "../utils/api/user";
 import { FormControlLabel } from "@mui/material";
 import type { Country } from "../types/Country";
 import PanelHeader from "../components/PanelHeader";

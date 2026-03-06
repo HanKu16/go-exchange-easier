@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import {
   sendGetFollowedUniversitiesRequest,
   sendGetFolloweesRequest,
-} from "../utils/user";
+} from "../utils/api/user";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
 import { useNavigate } from "react-router-dom";
 import {

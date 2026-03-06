@@ -2,7 +2,7 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import { IconButton, Tooltip } from "@mui/material";
 import { Button } from "@mui/material";
-import { sendUpdateDescriptionRequest } from "../utils/user";
+import { sendUpdateDescriptionRequest } from "../utils/api/user";
 import { TextField } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import PanelHeader from "../components/PanelHeader";

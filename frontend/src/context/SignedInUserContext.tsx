@@ -5,7 +5,7 @@ import {
   type ReactNode,
   useEffect,
 } from "react";
-import { sendGetMeRequest } from "../utils/user";
+import { sendGetMeRequest } from "../utils/api/user";
 
 type SignedInUser = {
   id: number;
