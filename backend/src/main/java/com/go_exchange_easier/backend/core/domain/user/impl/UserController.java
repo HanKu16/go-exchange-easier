@@ -111,11 +111,8 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<?> getMe(
+    public ResponseEntity<UserWithAvatarSummary> getMe(
             AuthenticatedUser authenticatedUser) {
-        if (authenticatedUser == null) {
-            return ResponseEntity.status(401).build();
-        }
         UserWithAvatarSummary user = userReadService
                 .getMe(authenticatedUser.getId());
         return ResponseEntity.ok(user);

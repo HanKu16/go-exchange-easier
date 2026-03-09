@@ -235,8 +235,8 @@ public interface UserApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<?> getMe(
-            @AuthenticationPrincipal(errorOnInvalidType = false) AuthenticatedUser authenticatedUser);
+    ResponseEntity<UserWithAvatarSummary> getMe(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Upload user avatar")
