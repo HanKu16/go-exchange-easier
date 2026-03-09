@@ -100,6 +100,9 @@ docker-compose up -d --build
 ### 5. **Access the application**
 With the containers running, the environment is fully initialized. The database comes **pre-seeded with sample data**, so no manual setup is required to test the application.
 
+> **⚠️ Note on startup time:**
+> While the frontend container starts almost instantly, the Spring Boot backend may take an additional minute or two to fully boot up. If you open the application right away and encounter a **"Service unavailable"** error, please wait a few moments and refresh the page.
+
 > **⚠️ Important:** **Authentication is required** to access the application. Apart from the **Login** and **Register** pages, all other views and features are protected. You must log in to explore the content.
 
 * **Frontend:** [http://localhost:5173](http://localhost:5173)
