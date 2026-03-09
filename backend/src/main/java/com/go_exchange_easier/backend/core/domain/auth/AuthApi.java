@@ -85,7 +85,7 @@ public interface AuthApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<Void> refresh(
-            @CookieValue(name = "refreshToken") String refreshToken,
+            @CookieValue(name = "refreshToken", required = false) String refreshToken,
             @RequestHeader(value = "X-Device-Id", required = true) String deviceId,
             @RequestHeader(value = "X-Device-Name", required = true) String deviceName,
             HttpServletRequest servletRequest);

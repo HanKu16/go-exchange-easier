@@ -8,8 +8,10 @@ import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationRequest;
 import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationSummary;
 import com.go_exchange_easier.backend.core.domain.auth.dto.TokenBundle;
 import com.go_exchange_easier.backend.core.infrastracture.security.config.JwtConfig;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -84,8 +86,13 @@ public class AuthController implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<Void> refresh(String refreshToken, String deviceId,
+    public ResponseEntity<Void> refresh(
+            @Nullable String refreshToken, String deviceId,
             String deviceName, HttpServletRequest servletRequest) {
+        if (refreshToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .build();
+        }
         TokenBundle tokenBundle = authService.refresh(refreshToken, servletRequest);
         ResponseCookie accessTokenCookie = ResponseCookie.from(
                         "accessToken", tokenBundle.accessToken())
