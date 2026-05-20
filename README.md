@@ -124,7 +124,7 @@ Use these credentials to log in as a pre-existing user without registration:
 ### 6. Stop the application
 To stop all running containers and remove the created networks, run:
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ## 📄 License & Copyright
