@@ -4,7 +4,6 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
-import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
@@ -69,11 +68,8 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="sticky">
-      <Container
-        maxWidth="xl"
-        sx={{ backgroundColor: { xs: "#182c44", lg: "#4a4a4aff" } }}
-      >
+    <AppBar position="sticky" sx={{ backgroundColor: { xs: "#182c44", lg: "#4a4a4aff" }  }}>
+      <Box sx={{ width: "100%", px: { xs: 2, md: 3 } }}>
         <Toolbar disableGutters>
           {isLgScreen ? (
             <img
@@ -168,7 +164,7 @@ const Navbar = () => {
             </Menu>
           </Box>
         </Toolbar>
-      </Container>
+      </Box>
     </AppBar>
   );
 };

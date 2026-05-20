@@ -1,4 +1,4 @@
-import { Container } from "@mui/material";
+import { Box } from "@mui/material";
 import MessageBox from "./MessageBox";
 import LoadingBox from "./LoadingBox";
 import LoadingError from "./LoadingError";
@@ -34,7 +34,7 @@ const MessagesContainer = () => {
   const { deleteMessage } = useDeleteMessage(roomId);
 
   return (
-    <Container
+    <Box
       sx={{
         flexGrow: 1,
         width: "100%",
@@ -45,6 +45,7 @@ const MessagesContainer = () => {
         boxShadow: 3,
         bgcolor: "background.paper",
         overflowY: "auto",
+        paddingX: { xs: 1, md: 2, lg: 3 },
         paddingBottom: { xs: 1, md: 2 },
       }}
       onScroll={handleScroll}
@@ -66,7 +67,7 @@ const MessagesContainer = () => {
       {isError && !isLoading && !isFetchingNextPage && (
         <LoadingError onRetry={fetchNextPage} />
       )}
-    </Container>
+    </Box>
   );
 };
 

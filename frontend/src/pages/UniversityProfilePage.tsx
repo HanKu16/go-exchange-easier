@@ -520,18 +520,19 @@ const FeedPanel = (props: FeedPanelProps) => {
     if (reviewsFetchStatus === "success") {
       if (reviewProps.length !== 0) {
         return (
-          <Container
+          <Box
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               gap: 3,
+              width: "100%",
             }}
           >
             {reviewProps.map((rp) => (
               <UniversityReview {...rp} key={rp.id} />
             ))}
-          </Container>
+          </Box>
         );
       } else {
         return (
