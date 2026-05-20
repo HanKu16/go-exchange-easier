@@ -94,7 +94,7 @@ cp .env.example .env
 
 ### 4. Run the following command to build the images and start all services
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ### 5. **Access the application**
