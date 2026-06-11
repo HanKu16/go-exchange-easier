@@ -61,12 +61,12 @@ const RoomPreviewBox = (props: RoomBoxProps) => {
               mb: 0.5,
             }}
           >
-            <Typography variant="subtitle1" fontWeight="bold" noWrap>
+            <Typography variant="subtitle1" fontWeight="bold" noWrap sx={{ color: "#182c44" }}>
               {props.name}
             </Typography>
             <Typography
               variant="caption"
-              color="text.secondary"
+              color="#182c44"
               sx={{
                 whiteSpace: "nowrap",
                 ml: 1,
@@ -82,7 +82,7 @@ const RoomPreviewBox = (props: RoomBoxProps) => {
             noWrap
             sx={{
               color: hasUnreadMessages ? "text.primary" : "text.secondary",
-              fontWeight: hasUnreadMessages ? 600 : 400,
+              fontWeight: hasUnreadMessages ? 500 : 400,
               opacity: hasUnreadMessages ? 1 : 0.8,
             }}
           >

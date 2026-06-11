@@ -69,7 +69,9 @@ const MessageInput = (props: MessageInputProps) => {
             backgroundColor: "white",
             borderRadius: 1,
             "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#e0e0e0" },
+              "& fieldset": { borderColor: "#182c44" },
+              "&:hover fieldset": { borderColor: "#182c44" },
+              "&.Mui-focused fieldset": { borderColor: "#182c44" },
             },
           }}
           InputProps={{
@@ -79,14 +81,14 @@ const MessageInput = (props: MessageInputProps) => {
                   onClick={handleSend}
                   disabled={!message.trim() || props.disabled}
                   sx={{
-                    color: "#1976d2",
+                    color: "#182c44",
                     transition: "all 0.2s ease",
 
                     "&:hover": {
-                      backgroundColor: "rgba(25, 118, 210, 0.08)",
+                      backgroundColor: "rgba(24, 44, 68, 0.08)",
                     },
                     "&:active": {
-                      color: "#0d47a1 !important",
+                      color: "#244164 !important",
                       transform: "scale(0.85)",
                     },
                     "& .MuiSvgIcon-root": {

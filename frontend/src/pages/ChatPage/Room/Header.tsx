@@ -73,8 +73,9 @@ const Header = (props: HeaderProps) => {
               cursor: "pointer",
               display: "inline-block",
               transition: "color 0.2s, text-decoration 0.2s",
+              color: "#182c44",
               "&:hover": {
-                color: "primary.main",
+                color: "#244164",
                 textDecoration: "underline",
               },
             }}

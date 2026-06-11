@@ -110,7 +110,7 @@ const MessageBox = (props: MessageBoxProps) => {
             alignItems: props.isUserMessage ? "flex-end" : "flex-start",
           }}
         >
-          <Box sx={{ fontSize: 13, paddingX: 1, paddingBottom: 0.25 }}>
+          <Box sx={{ fontSize: 13, paddingX: 1, paddingBottom: 0.25, color: "#182c44" }}>
             {dayjs(props.dateAndTime).isSame(dayjs(), "day")
               ? dayjs(props.dateAndTime).format("HH:mm")
               : dayjs(props.dateAndTime).format("DD.MM.YYYY HH:mm")}
