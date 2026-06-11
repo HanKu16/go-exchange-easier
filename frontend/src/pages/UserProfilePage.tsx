@@ -91,7 +91,7 @@ const ActionButtons = (props: ActionButtonsProps) => {
       const result = await sendFollowUserRequest(props.userId);
       if (!result.isSuccess) {
         props.setIsFollowed(false);
-        showAlert("An error occured. Try follow user later.", "error");
+        showAlert("An error occured. Try save user later.", "error");
       }
     }
   };
@@ -102,7 +102,7 @@ const ActionButtons = (props: ActionButtonsProps) => {
       const result = await sendUnfollowUserRequest(props.userId);
       if (!result.isSuccess) {
         props.setIsFollowed(true);
-        showAlert("An error occured. Try unfollow user later.", "error");
+        showAlert("An error occured. Try unsave user later.", "error");
       }
     }
   };
@@ -115,7 +115,7 @@ const ActionButtons = (props: ActionButtonsProps) => {
           endIcon={<PersonRemove />}
           onClick={() => handleUnfollow()}
         >
-          UNFOLLOW
+          UNSAVE
         </Button>
       ) : (
         <Button
@@ -123,7 +123,7 @@ const ActionButtons = (props: ActionButtonsProps) => {
           endIcon={<PersonAdd />}
           onClick={() => handleFollow()}
         >
-          FOLLOW
+          SAVE
         </Button>
       )}
       <Button

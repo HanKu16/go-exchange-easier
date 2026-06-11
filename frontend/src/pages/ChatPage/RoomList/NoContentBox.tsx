@@ -75,9 +75,9 @@ const NoRooms = () => {
             textTransform: "none",
             boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
           }}
-          onClick={() => navigate("/follows")}
+          onClick={() => navigate("/saved")}
         >
-          Go to your follows
+          Go to your saved users
         </Button>
       </Card>
     </Box>

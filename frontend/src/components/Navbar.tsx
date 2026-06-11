@@ -30,7 +30,7 @@ const Navbar = () => {
     { label: "Account", route: "/me" },
     { label: "Chat", route: "/chat" },
     { label: "Search", route: "/search" },
-    { label: "Follows", route: "/follows" },
+    { label: "Saved", route: "/saved" },
   ];
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);

@@ -54,7 +54,7 @@ const FollowButton = (props: FollowButtonProps) => {
       const result = await sendFollowUniversityRequest(props.universityId);
       if (!result.isSuccess) {
         props.setIsFollowed(false);
-        showAlert("An error occured. Try follow university later.", "error");
+        showAlert("An error occured. Try save university later.", "error");
       }
     }
   };
@@ -64,7 +64,7 @@ const FollowButton = (props: FollowButtonProps) => {
       const result = await sendUnfollowUniversityRequest(props.universityId);
       if (!result.isSuccess) {
         props.setIsFollowed(true);
-        showAlert("An error occured. Try unfollow university later.", "error");
+        showAlert("An error occured. Try unsave university later.", "error");
       }
     }
   };
@@ -84,7 +84,7 @@ const FollowButton = (props: FollowButtonProps) => {
           endIcon={<BookmarkIcon />}
           onClick={() => handleUnfollow()}
         >
-          UNFOLLOW
+          UNSAVE
         </Button>
       ) : (
         <Button
@@ -93,7 +93,7 @@ const FollowButton = (props: FollowButtonProps) => {
           endIcon={<BookmarkIcon />}
           onClick={() => handleFollow()}
         >
-          FOLLOW
+          SAVE
         </Button>
       )}
     </Container>
