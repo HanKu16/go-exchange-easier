@@ -118,13 +118,17 @@ const SectionsList = (props: SectionListProps) => {
                 "&.Mui-selected .MuiListItemIcon-root": { color: "#182c44" },
               }}
             >
-              <ListItemIcon sx={{ minWidth: 40 }}>{section.icon}</ListItemIcon>
-              <ListItemText
-                primaryTypographyProps={{
-                  fontSize: { xs: "0.9rem", sm: "1rem" },
-                }}
-                primary={section.name}
-              />
+              <ListItemIcon sx={{ minWidth: 40, color: "#182c44" }}>{section.icon}</ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{
+                    fontSize: { xs: "0.9rem", sm: "1rem" },
+                    sx: {
+                      color: "#182c44",
+                      fontWeight: props.selectedSectionName === section.name ? 700 : 400,
+                    },
+                  }}
+                  primary={section.name}
+                />
               {props.selectedSectionName === section.name ? (
                 <ExpandLess />
               ) : (
@@ -158,6 +162,10 @@ const SectionsList = (props: SectionListProps) => {
                     <ListItemText
                       primaryTypographyProps={{
                         fontSize: { xs: "0.85rem", sm: "0.95rem" },
+                        sx: {
+                          color: "#182c44",
+                          fontWeight: props.selectedSubsectionName === ss ? 600 : 400,
+                        },
                       }}
                       primary={ss}
                     />

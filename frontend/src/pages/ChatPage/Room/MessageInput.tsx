@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { TextField, IconButton, InputAdornment, Paper } from "@mui/material";
+import {
+  TextField,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Popover,
+  Box,
+  Tooltip,
+} from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import { Box } from "@mui/material";
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import { useParams } from "react-router-dom";
 import useChatSync from "../hooks/useChatSync";
 import useSendMessage from "../hooks/useSendMessage";
@@ -27,6 +35,36 @@ const MessageInput = (props: MessageInputProps) => {
       event.preventDefault();
       handleSend();
     }
+  };
+
+  const [emojiAnchor, setEmojiAnchor] = useState<HTMLElement | null>(null);
+  const emojis = [
+    "😀",
+    "😃",
+    "😂",
+    "😍",
+    "😊",
+    "👍",
+    "🙏",
+    "🎉",
+    "🔥",
+    "❤️",
+    "😢",
+    "😮",
+    "😅",
+    "🤔",
+    "🙌",
+  ];
+
+  const openEmojiPicker = (e: React.MouseEvent<HTMLElement>) => {
+    setEmojiAnchor(e.currentTarget);
+  };
+
+  const closeEmojiPicker = () => setEmojiAnchor(null);
+
+  const handleEmojiClick = (emoji: string) => {
+    setMessage((prev) => prev + emoji);
+    setEmojiAnchor(null);
   };
 
   useEffect(() => {
@@ -77,6 +115,42 @@ const MessageInput = (props: MessageInputProps) => {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
+                <IconButton
+                  onClick={openEmojiPicker}
+                  disabled={props.disabled}
+                  sx={{ color: "#182c44", mr: 1 }}
+                  aria-label="emoji picker"
+                >
+                  <EmojiEmotionsIcon />
+                </IconButton>
+                <Popover
+                  open={Boolean(emojiAnchor)}
+                  anchorEl={emojiAnchor}
+                  onClose={closeEmojiPicker}
+                  anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                  transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+                >
+                  <Box sx={{ p: 1 }}>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(4, 1fr)",
+                        gap: 1,
+                        width: 200,
+                      }}
+                    >
+                      {emojis.map((e) => (
+                        <Box key={e} sx={{ display: "flex", justifyContent: "center" }}>
+                          <Tooltip title={e}>
+                            <IconButton onClick={() => handleEmojiClick(e)} size="small">
+                              <span style={{ fontSize: 18 }}>{e}</span>
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                </Popover>
                 <IconButton
                   onClick={handleSend}
                   disabled={!message.trim() || props.disabled}
