@@ -285,13 +285,17 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
         <Container
           sx={{
             backgroundColor: "#182c44",
-            minHeight: "100vh",
+            minHeight: "calc(100vh - 64px)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             paddingY: 8,
             position: "fixed",
-            width: "inherit",
+            width: "25%",
+            left: 0,
+            top: 64,
+            overflowY: "auto",
+            maxWidth: "none",
           }}
         >
           <img
@@ -731,23 +735,25 @@ const UniversityProfilePage = () => {
     universityDataPanelProps !== undefined
   ) {
     return (
-      <Grid container minHeight="100vh" sx={{ backgroundColor: "#eeececff" }}>
-        <Grid size={{ xs: 12, lg: 3 }}>
-          {!isLgScreen && <Navbar />}
-          <UniversityDataPanel {...universityDataPanelProps} />
-          {!isLgScreen && <FeedPanel universityId={universityId} />}
-        </Grid>
-        <Grid size={{ xs: 0, lg: 9 }}>
-          <Box sx={{ minHeight: "100%" }}>
-            {isLgScreen && (
-              <>
-                <Navbar />
-                <FeedPanel universityId={universityId} />
-              </>
-            )}
+      <>
+        {isLgScreen && <Navbar />}
+        {isLgScreen ? (
+          <Box sx={{ display: "flex", minHeight: `calc(100vh - 64px)`, backgroundColor: "#eeececff" }}>
+            <UniversityDataPanel {...universityDataPanelProps} />
+            <Box sx={{ width: "75%", marginLeft: "25%" }}>
+              <FeedPanel universityId={universityId} />
+            </Box>
           </Box>
-        </Grid>
-      </Grid>
+        ) : (
+          <Grid container minHeight="100vh" sx={{ backgroundColor: "#eeececff" }}>
+            <Grid size={{ xs: 12 }}>
+              <Navbar />
+              <UniversityDataPanel {...universityDataPanelProps} />
+              <FeedPanel universityId={universityId} />
+            </Grid>
+          </Grid>
+        )}
+      </>
     );
   }
 };

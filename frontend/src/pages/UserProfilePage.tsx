@@ -164,13 +164,16 @@ const UserDataPanel = (props: UserDataPanelProps) => {
         <Box
           sx={{
             backgroundColor: "#182c44",
-            minHeight: "100vh",
+            minHeight: "calc(100vh - 64px)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             paddingY: 4,
             position: "fixed",
-            width: "inherit",
+            width: "25%",
+            left: 0,
+            top: 64,
+            overflowY: "auto",
           }}
         >
           <Avatar
@@ -742,27 +745,25 @@ const UserProfilePage = () => {
     userDataPanelProps !== undefined
   ) {
     return (
-      <Grid container minHeight="100vh" sx={{ backgroundColor: "#eeececff" }}>
-        <Grid size={{ xs: 12, lg: 3 }}>
-          {isLgScreen ? <></> : <Navbar />}
-          <UserDataPanel {...userDataPanelProps} />
-          {isLgScreen ? (
-            <></>
-          ) : (
-            <FeedPanel userId={userId} isOwnProfile={isOwnProfile} />
-          )}
-        </Grid>
-        <Grid size={{ xs: 0, lg: 9 }}>
-          <Box sx={{ minHeight: "100%" }}>
-            {isLgScreen && (
-              <>
-                <Navbar />
-                <FeedPanel userId={userId} isOwnProfile={isOwnProfile} />
-              </>
-            )}
+      <>
+        {isLgScreen && <Navbar />}
+        {isLgScreen ? (
+          <Box sx={{ display: "flex", minHeight: `calc(100vh - 64px)`, backgroundColor: "#eeececff" }}>
+            <UserDataPanel {...userDataPanelProps} />
+            <Box sx={{ width: "75%", marginLeft: "25%" }}>
+              <FeedPanel userId={userId} isOwnProfile={isOwnProfile} />
+            </Box>
           </Box>
-        </Grid>
-      </Grid>
+        ) : (
+          <Grid container minHeight="100vh" sx={{ backgroundColor: "#eeececff" }}>
+            <Grid size={{ xs: 12 }}>
+              <Navbar />
+              <UserDataPanel {...userDataPanelProps} />
+              <FeedPanel userId={userId} isOwnProfile={isOwnProfile} />
+            </Grid>
+          </Grid>
+        )}
+      </>
     );
   }
 };
