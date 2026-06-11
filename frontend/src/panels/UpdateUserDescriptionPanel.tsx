@@ -68,7 +68,21 @@ const UpdateUserDescriptionPanel = () => {
         multiline
         rows={6}
         placeholder="Enter your description"
-        sx={{ width: "100%", marginTop: 2 }}
+        sx={{
+          width: "100%",
+          marginTop: 2,
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": { borderColor: description ? "#182c44" : "#e0e0e0" },
+            "&:hover fieldset": { borderColor: description ? "#182c44" : "#bdbdbd" },
+            "&.Mui-focused fieldset": { borderColor: description ? "#182c44" : "#3f51b5" },
+          },
+          "& .MuiInputLabel-root": {
+            color: description ? "#182c44" : undefined,
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#182c44",
+          },
+        }}
         value={description}
         onChange={(event) => setDescription(event.target.value)}
       />
@@ -76,7 +90,7 @@ const UpdateUserDescriptionPanel = () => {
         <Button
           variant="contained"
           size="large"
-          sx={{ marginTop: 2 }}
+          sx={{ marginTop: 2, backgroundColor: "#182c44", "&:hover": { backgroundColor: "#244164" } }}
           onClick={handleDescriptionUpdate}
         >
           CONFIRM

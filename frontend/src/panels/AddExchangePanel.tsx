@@ -129,7 +129,7 @@ const ChooseUniversitySubpanel = (props: ChooseUniversitySubpanelProps) => {
         <Button
           variant="contained"
           size="small"
-          sx={{ marginLeft: 2 }}
+          sx={{ marginLeft: 2, backgroundColor: "#182c44", "&:hover": { backgroundColor: "#244164" } }}
           onClick={() => {
             props.setSelectedUniversityId(universityId);
             props.setCurrentStage("Choose major");
@@ -177,7 +177,7 @@ const ChooseUniversitySubpanel = (props: ChooseUniversitySubpanelProps) => {
                   <FormControlLabel
                     key={u.id}
                     value={u.id}
-                    control={<Radio />}
+                    control={<Radio sx={{ '&.Mui-checked': { color: '#182c44' } }} />}
                     label={
                       <>
                         {selectedUniversityNameLanguage === "english" &&
@@ -307,7 +307,7 @@ const ChooseMajorSubpanel = (props: ChooseMajorSubpanelProps) => {
         <Button
           variant="contained"
           size="small"
-          sx={{ marginLeft: 2 }}
+          sx={{ marginLeft: 2, backgroundColor: "#182c44", "&:hover": { backgroundColor: "#244164" } }}
           onClick={() => {
             props.setSelectedMajorId(majorId);
             props.setCurrentStage("Choose time range");
@@ -353,10 +353,10 @@ const ChooseMajorSubpanel = (props: ChooseMajorSubpanelProps) => {
               }}
             >
               {majors.map((m) => (
-                <FormControlLabel
-                  key={m.id}
-                  value={m.id}
-                  control={<Radio />}
+              <FormControlLabel
+                key={m.id}
+                value={m.id}
+                control={<Radio sx={{ '&.Mui-checked': { color: '#182c44' } }} />}
                   label={
                     <>
                       {m.name}
@@ -496,7 +496,7 @@ const ChooseTimeRangeSubpanel = (props: ChooseTimeRangeSubpanel) => {
               onChange={(newValue) => setEndDate(newValue)}
             />
           </Box>
-          {shouldButtonBeShown && (
+            {shouldButtonBeShown && (
             <Button
               variant="contained"
               size="medium"
@@ -504,6 +504,8 @@ const ChooseTimeRangeSubpanel = (props: ChooseTimeRangeSubpanel) => {
                 marginLeft: 2,
                 marginTop: 2,
                 width: { xs: "50%", md: "25%" },
+                backgroundColor: "#182c44",
+                "&:hover": { backgroundColor: "#244164" },
               }}
               onClick={() => {
                 handleAddingExchange();
@@ -533,9 +535,9 @@ const ExchangeAddedSuccessfullySubpanel = (
           marginLeft: 2,
           marginTop: 4,
           width: { xs: "50%", md: "20%" },
-          backgroundColor: "#04315f",
+          backgroundColor: "#182c44",
           "&:hover": {
-            backgroundColor: "#064080",
+            backgroundColor: "#244164",
           },
         }}
         onClick={() => {

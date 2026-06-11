@@ -93,7 +93,7 @@ const ChangeAvatarPanel = () => {
       <Box sx={{ width: "100%", mb: 3 }}>
         <Typography
           variant="h5"
-          sx={{ fontWeight: 600, color: "#1a1a1a", mb: 0.5 }}
+          sx={{ fontWeight: 600, color: "#182c44", mb: 0.5 }}
         >
           Profile Picture
         </Typography>
@@ -115,7 +115,7 @@ const ChangeAvatarPanel = () => {
           onClick={() => fileInputRef.current?.click()}
           sx={{
             bgcolor: "#f4f4f4",
-            color: "#333",
+            color: "#182c44",
             boxShadow: "none",
             "&:hover": { bgcolor: "#e8e8e8", boxShadow: "none" },
           }}
@@ -128,7 +128,7 @@ const ChangeAvatarPanel = () => {
             variant="contained"
             startIcon={<CheckCircleIcon />}
             onClick={handleAvatarUpload}
-            sx={{ bgcolor: "#241058", "&:hover": { bgcolor: "#1a0b40" } }}
+            sx={{ bgcolor: "#182c44", "&:hover": { bgcolor: "#244164" } }}
           >
             Apply changes
           </Button>

@@ -103,7 +103,7 @@ const AssignHomeUniversityPanel = () => {
         <Button
           variant="contained"
           size="small"
-          sx={{ marginLeft: 2 }}
+          sx={{ marginLeft: 2, backgroundColor: "#182c44", "&:hover": { backgroundColor: "#244164" } }}
           onClick={handleHomeUniversityAssignment}
         >
           CONFIRM
@@ -144,10 +144,10 @@ const AssignHomeUniversityPanel = () => {
               }
             >
               {universities.map((u) => (
-                <FormControlLabel
+                  <FormControlLabel
                   key={u.id}
                   value={u.id}
-                  control={<Radio />}
+                  control={<Radio sx={{ '&.Mui-checked': { color: '#182c44' } }} />}
                   label={
                     <>
                       {selectedUniversityNameLanguage === "english" &&

@@ -67,7 +67,7 @@ const UpdateUserStatusPanel = () => {
         <Button
           variant="contained"
           size="small"
-          sx={{ marginLeft: 2 }}
+          sx={{ marginLeft: 2, backgroundColor: "#182c44", "&:hover": { backgroundColor: "#244164" } }}
           onClick={handleStatusUpdate}
         >
           CONFIRM
@@ -93,7 +93,7 @@ const UpdateUserStatusPanel = () => {
                 <FormControlLabel
                   key={s.id}
                   value={s.id}
-                  control={<Radio />}
+                  control={<Radio sx={{ '&.Mui-checked': { color: '#182c44' } }} />}
                   label={
                     <>
                       {s.name}

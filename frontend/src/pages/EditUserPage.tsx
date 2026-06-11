@@ -96,7 +96,7 @@ const SectionsList = (props: SectionListProps) => {
         sx={{
           padding: { xs: 1.5, sm: 2 },
           fontSize: { xs: "1rem", sm: "1.25rem" },
-          color: "text.secondary",
+          color: "#182c44",
           fontWeight: 600,
         }}
       >
@@ -112,10 +112,10 @@ const SectionsList = (props: SectionListProps) => {
                 minHeight: 48,
                 "&.Mui-selected": {
                   backgroundColor: "rgba(0, 0, 0, 0.04)",
-                  borderLeft: "4px solid #1976d2",
-                  color: "#1976d2",
+                  borderLeft: "4px solid #182c44",
+                  color: "#182c44",
                 },
-                "&.Mui-selected .MuiListItemIcon-root": { color: "#1976d2" },
+                "&.Mui-selected .MuiListItemIcon-root": { color: "#182c44" },
               }}
             >
               <ListItemIcon sx={{ minWidth: 40 }}>{section.icon}</ListItemIcon>
@@ -147,11 +147,11 @@ const SectionsList = (props: SectionListProps) => {
                       minHeight: 44,
                       "&.Mui-selected": {
                         backgroundColor: "rgba(0, 0, 0, 0.04)",
-                        borderLeft: "4px solid #207ddaff",
-                        color: "#207ddaff",
+                        borderLeft: "4px solid #182c44",
+                        color: "#182c44",
                       },
                       "&.Mui-selected .MuiListItemIcon-root": {
-                        color: "#207ddaff",
+                        color: "#182c44",
                       },
                     }}
                   >

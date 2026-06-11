@@ -67,7 +67,7 @@ const AssignCountryOfOriginPanel = () => {
         <Button
           variant="contained"
           size="small"
-          sx={{ marginLeft: 2 }}
+          sx={{ marginLeft: 2, backgroundColor: "#182c44", "&:hover": { backgroundColor: "#244164" } }}
           onClick={handleCountryAssignment}
         >
           CONFIRM
@@ -101,7 +101,7 @@ const AssignCountryOfOriginPanel = () => {
                 <FormControlLabel
                   key={c.id}
                   value={c.id}
-                  control={<Radio />}
+                  control={<Radio sx={{ '&.Mui-checked': { color: '#182c44' } }} />}
                   label={
                     <>
                       {c.name}
