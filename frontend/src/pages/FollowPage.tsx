@@ -110,7 +110,7 @@ const FollowBox = (props: FollowBoxProps) => {
     if (!isSuccess) {
       setIsFollowed(wasFollowed);
       showAlert(
-        `Failed to ${wasFollowed ? "unfollow" : " follow back"}.`,
+        `Failed to ${wasFollowed ? "unsave" : " save"}.`,
         "error",
       );
     } else {
@@ -138,7 +138,7 @@ const FollowBox = (props: FollowBoxProps) => {
         borderRadius: 3,
         transition: "all 0.3s ease",
         "&:hover": {
-          borderColor: "primary.main",
+          borderColor: "#182c44",
           transform: "translateY(-2px)",
           boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
         },
@@ -191,8 +191,8 @@ const FollowBox = (props: FollowBoxProps) => {
                 display: "block",
                 cursor: "pointer",
                 transition: "color 0.2s",
+                color: "#182c44",
                 "&:hover": {
-                  color: "primary.main",
                   textDecoration: "underline",
                 },
               }}
@@ -218,7 +218,7 @@ const FollowBox = (props: FollowBoxProps) => {
           }}
           onClick={handleButtonClick}
         >
-          {isFollowed ? "Unfollow" : "Follow"}
+          {isFollowed ? "Unsave" : "Save"}
         </Button>
       </Stack>
     </Card>
@@ -454,7 +454,7 @@ const tabStyles = {
   minHeight: "40px",
   px: 3,
   "&.Mui-selected": {
-    color: "text.primary",
+    color: "#182c44",
     backgroundColor: "#fff",
     boxShadow: "0px 2px 4px rgba(0,0,0,0.05)",
   },
