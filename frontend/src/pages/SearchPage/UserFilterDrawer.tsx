@@ -145,7 +145,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
       PaperProps={{ sx: { width: { xs: "100%", sm: 400 }, p: 4 } }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
-        <Typography variant="h5" fontWeight="800">
+        <Typography variant="h5" fontWeight="800" sx={{ color: "#182c44" }}>
           Filter by exchange details
         </Typography>
         <IconButton onClick={props.onClose} sx={{ bgcolor: "#f5f5f5" }}>
@@ -154,7 +154,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
       </Box>
       <Stack spacing={4} sx={{ flexGrow: 1 }}>
         <Box>
-          <Typography variant="subtitle2" fontWeight="bold" mb={2}>
+          <Typography variant="subtitle2" fontWeight="bold" mb={2} sx={{ color: "#182c44" }}>
             LOCATION
           </Typography>
           <Stack spacing={2}>
@@ -225,7 +225,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
         <Box>
           {showMajorsDropdown && (
             <>
-              <Typography variant="subtitle2" fontWeight="bold" mb={2}>
+              <Typography variant="subtitle2" fontWeight="bold" mb={2} sx={{ color: "#182c44" }}>
                 STUDIES
               </Typography>
               <Autocomplete<Major>
@@ -246,7 +246,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
           )}
         </Box>
         <Box>
-          <Typography variant="subtitle2" fontWeight="bold" mb={2}>
+          <Typography variant="subtitle2" fontWeight="bold" mb={2} sx={{ color: "#182c44" }}>
             YEARS RANGE
           </Typography>
           <Stack direction="row" spacing={2}>
@@ -279,7 +279,7 @@ const UserFilterDrawer = (props: UserFilterDrawerProps) => {
         <Button
           variant="contained"
           onClick={resetButtonHandler}
-          sx={{ py: 1.5, borderRadius: 3, bgcolor: "black" }}
+          sx={{ py: 1.5, borderRadius: 3, bgcolor: "#182c44", "&:hover": { bgcolor: "#244164" } }}
         >
           Reset
         </Button>

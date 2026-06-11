@@ -67,7 +67,7 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
       PaperProps={{ sx: { width: { xs: "100%", sm: 400 }, p: 4 } }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 4 }}>
-        <Typography variant="h5" fontWeight="800">
+        <Typography variant="h5" fontWeight="800" sx={{ color: "#182c44" }}>
           Filter Universities
         </Typography>
         <IconButton onClick={props.onClose} sx={{ bgcolor: "#f5f5f5" }}>
@@ -78,8 +78,8 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
       <Stack spacing={4} sx={{ flexGrow: 1 }}>
         <Box>
           <Stack direction="row" spacing={1} alignItems="center" mb={2}>
-            <LocationOnOutlinedIcon color="action" fontSize="small" />
-            <Typography variant="subtitle2" fontWeight="bold">
+            <LocationOnOutlinedIcon sx={{ color: "#182c44" }} fontSize="small" />
+            <Typography variant="subtitle2" fontWeight="bold" sx={{ color: "#182c44" }}>
               LOCATION
             </Typography>
           </Stack>
@@ -138,7 +138,8 @@ const UniversityFilterDrawer = (props: UniversityFilterDrawerProps) => {
             py: 1.5,
             borderRadius: 3,
             fontWeight: "bold",
-            bgcolor: "black",
+            bgcolor: "#182c44",
+            "&:hover": { bgcolor: "#244164" },
           }}
         >
           Clear all

@@ -14,8 +14,8 @@ const SearchButton = (props: SearchButtonProps) => {
         px: 4,
         py: 1.5,
         fontWeight: 700,
-        bgcolor: "black",
-        "&:hover": { bgcolor: "#333" },
+        bgcolor: "#182c44",
+        "&:hover": { bgcolor: "#244164" },
         ml: 1,
       }}
     >

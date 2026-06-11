@@ -299,7 +299,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
           sx={{
             fontWeight: 700,
             fontSize: { xs: "0.8rem", md: "0.9rem" },
-            color: "text.secondary",
+            color: "#182c44",
             "& .MuiSelect-select": {
               display: "flex",
               alignItems: "center",
@@ -308,12 +308,13 @@ const UserSearchSection = (props: SearchSectionProps) => {
           }}
         >
           <MenuItem value="simple">
-            <PersonOutlineIcon fontSize="small" />
-            By Nick
+            <PersonOutlineIcon fontSize="small" sx={{ color: "#182c44" }} />
+            <span style={{ color: "#182c44" }}>By Nick</span>
           </MenuItem>
           {props.countries.length > 0 && (
             <MenuItem value="filters">
-              <SettingsSuggestIcon fontSize="small" /> By Exchange
+              <SettingsSuggestIcon fontSize="small" sx={{ color: "#182c44" }} />
+              <span style={{ color: "#182c44" }}>By Exchange</span>
             </MenuItem>
           )}
         </Select>
@@ -355,8 +356,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
           onClick={() => setDrawerOpen(true)}
         >
           <Typography
-            color="text.secondary"
-            sx={{ fontSize: { xs: "0.9rem", md: "1.1rem" } }}
+            sx={{ fontSize: { xs: "0.9rem", md: "1.1rem" }, color: "#182c44" }}
           >
             Set filters
           </Typography>
@@ -366,7 +366,7 @@ const UserSearchSection = (props: SearchSectionProps) => {
         <IconButton
           onClick={() => setDrawerOpen(true)}
           sx={{
-            color: "primary.main",
+            color: "#182c44",
             mr: { xs: 0, md: 1 },
             padding: { xs: 1, md: "8px" },
           }}

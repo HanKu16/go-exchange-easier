@@ -6,7 +6,7 @@ const PageHeaders = () => (
       variant="h3"
       component="h1"
       fontWeight="800"
-      sx={{ mb: 1, textAlign: "center" }}
+      sx={{ mb: 1, textAlign: "center", color: "#182c44" }}
     >
       Explore our community
     </Typography>

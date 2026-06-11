@@ -38,7 +38,7 @@ const tabStyles = {
   minHeight: "40px",
   px: 3,
   "&.Mui-selected": {
-    color: "text.primary",
+    color: "#182c44",
     backgroundColor: "#fff",
     boxShadow: "0px 2px 4px rgba(0,0,0,0.05)",
   },

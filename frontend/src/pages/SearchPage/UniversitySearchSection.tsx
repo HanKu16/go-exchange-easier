@@ -191,14 +191,14 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
           sx={{
             fontWeight: 600,
             fontSize: "0.85rem",
-            color: "primary.main",
+            color: "#182c44",
             mr: { xs: 0.5, md: 1.5 },
             minWidth: { xs: 60, md: 80 },
-            "& .MuiSelect-icon": { color: "primary.main" },
+            "& .MuiSelect-icon": { color: "#182c44" },
           }}
         >
-          <MenuItem value="english">ENG</MenuItem>
-          <MenuItem value="native">NAT</MenuItem>
+          <MenuItem value="english" sx={{ color: "#182c44" }}>ENG</MenuItem>
+          <MenuItem value="native" sx={{ color: "#182c44" }}>NAT</MenuItem>
         </Select>
         <Divider
           orientation="vertical"
@@ -230,7 +230,7 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
         <IconButton
           onClick={() => setDrawerOpen(true)}
           sx={{
-            color: "primary.main",
+            color: "#182c44",
             mr: { xs: 0, md: 1 },
             padding: { xs: 1, md: "8px" },
           }}
@@ -242,11 +242,11 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
         onClick={() => props.setCurrentPage(0)}
         sx={{
           display: { xs: "flex", sm: "none" },
-          bgcolor: "black",
+          bgcolor: "#182c44",
           color: "white",
           p: 1,
           ml: 1,
-          "&:hover": { bgcolor: "#333" },
+          "&:hover": { bgcolor: "#244164" },
         }}
       >
         <SearchIcon />
@@ -260,8 +260,8 @@ const UniversitySearchSection = (props: SearchSectionProps) => {
           px: 4,
           py: 1.5,
           fontWeight: 700,
-          bgcolor: "black",
-          "&:hover": { bgcolor: "#333" },
+          bgcolor: "#182c44",
+          "&:hover": { bgcolor: "#244164" },
           ml: 1,
         }}
       >
