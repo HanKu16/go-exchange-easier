@@ -160,6 +160,17 @@ const LoginPage = () => {
                 variant="outlined"
                 fullWidth
                 autoComplete="username"
+                InputLabelProps={{
+                  sx: { color: '#182c44', '&.Mui-focused': { color: '#182c44' } },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: '#182c44' },
+                    '&:hover fieldset': { borderColor: '#182c44' },
+                    '&.Mui-focused fieldset': { borderColor: '#182c44' },
+                  },
+                  '& .MuiInputLabel-root': { color: '#182c44' },
+                }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -178,6 +189,17 @@ const LoginPage = () => {
                 variant="outlined"
                 fullWidth
                 autoComplete="current-password"
+                InputLabelProps={{
+                  sx: { color: '#182c44', '&.Mui-focused': { color: '#182c44' } },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: '#182c44' },
+                    '&:hover fieldset': { borderColor: '#182c44' },
+                    '&.Mui-focused fieldset': { borderColor: '#182c44' },
+                  },
+                  '& .MuiInputLabel-root': { color: '#182c44' },
+                }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">

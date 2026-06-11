@@ -52,6 +52,20 @@ const InputField = (props: InputFieldProps) => {
       type={props.type || "text"}
       fullWidth
       variant="outlined"
+      InputLabelProps={{
+        sx: {
+          color: "#182c44",
+          "&.Mui-focused": { color: "#182c44" },
+        },
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': { borderColor: '#182c44' },
+          '&:hover fieldset': { borderColor: '#182c44' },
+          '&.Mui-focused fieldset': { borderColor: '#182c44' },
+        },
+        '& .MuiInputLabel-root': { color: '#182c44' },
+      }}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
@@ -330,9 +344,9 @@ export const RegistrationPage = () => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        value={isAgreementAccepted}
-                        color="primary"
+                        checked={isAgreementAccepted}
                         onChange={() => setIsAgreementAccepted((prev) => !prev)}
+                        sx={{ color: '#182c44', '&.Mui-checked': { color: '#182c44' } }}
                       />
                     }
                     label={
