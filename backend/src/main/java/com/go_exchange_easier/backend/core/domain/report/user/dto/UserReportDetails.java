@@ -1,6 +1,7 @@
-package com.go_exchange_easier.backend.core.domain.report.user;
+package com.go_exchange_easier.backend.core.domain.report.user.dto;
 
 import com.go_exchange_easier.backend.core.domain.report.ReportStatus;
+import com.go_exchange_easier.backend.core.domain.report.user.UserReport;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import java.io.Serializable;

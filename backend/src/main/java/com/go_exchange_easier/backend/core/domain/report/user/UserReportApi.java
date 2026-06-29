@@ -2,6 +2,8 @@ package com.go_exchange_easier.backend.core.domain.report.user;
 
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
+import com.go_exchange_easier.backend.core.domain.report.user.dto.CreateUserReportRequest;
+import com.go_exchange_easier.backend.core.domain.report.user.dto.UserReportDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

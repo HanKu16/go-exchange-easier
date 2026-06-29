@@ -1,6 +1,10 @@
-package com.go_exchange_easier.backend.core.domain.report.user;
+package com.go_exchange_easier.backend.core.domain.report.user.impl;
 
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
+import com.go_exchange_easier.backend.core.domain.report.user.dto.CreateUserReportRequest;
+import com.go_exchange_easier.backend.core.domain.report.user.UserReportApi;
+import com.go_exchange_easier.backend.core.domain.report.user.dto.UserReportDetails;
+import com.go_exchange_easier.backend.core.domain.report.user.UserReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
