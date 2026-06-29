@@ -133,6 +133,33 @@ CREATE TABLE core.refresh_tokens (
   user_id INTEGER NOT NULL
 );
 
+CREATE TABLE core.reports (
+  report_id UUID PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL,
+  description TEXT,
+  status TEXT NOT NULL,
+  reporter_id INTEGER NOT NULL
+);
+
+CREATE TABLE core.user_reports (
+  report_id UUID PRIMARY KEY,
+  context JSONB NOT NULL,
+  reported_user_id INTEGER NOT NULL
+);
+
+CREATE TABLE core.university_review_reports (
+  report_id UUID PRIMARY KEY,
+  context JSONB NOT NULL,
+  reported_review_id INTEGER NOT NULL
+);
+
+CREATE TABLE core.chat_reports (
+  report_id UUID PRIMARY KEY,
+  context JSONB NOT NULL,
+  reported_user_id INTEGER NOT NULL,
+  room_id UUID NOT NULL
+);
+
 ALTER TABLE core.cities ADD FOREIGN KEY (country_id) REFERENCES core.countries (country_id);
 
 ALTER TABLE core.universities ADD FOREIGN KEY (city_id) REFERENCES core.cities (city_id);
@@ -177,6 +204,20 @@ ALTER TABLE core.exchanges ADD FOREIGN KEY (university_id) REFERENCES core.unive
 
 ALTER TABLE core.refresh_tokens ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
 
+ALTER TABLE core.reports ADD FOREIGN KEY (reporter_id) REFERENCES core.users (user_id);
+
+ALTER TABLE core.user_reports ADD FOREIGN KEY (report_id) REFERENCES core.reports (report_id);
+
+ALTER TABLE core.user_reports ADD FOREIGN KEY (reported_user_id) REFERENCES core.users (user_id);
+
+ALTER TABLE core.university_review_reports ADD FOREIGN KEY (report_id) REFERENCES core.reports (report_id);
+
+ALTER TABLE core.university_review_reports ADD FOREIGN KEY (reported_review_id) REFERENCES core.university_reviews (university_review_id);
+
+ALTER TABLE core.chat_reports ADD FOREIGN KEY (report_id) REFERENCES core.reports (report_id);
+
+ALTER TABLE core.chat_reports ADD FOREIGN KEY (reported_user_id) REFERENCES core.users (user_id);
+
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 CREATE INDEX cities_country_id_idx ON core.cities (country_id);
@@ -208,3 +249,15 @@ CREATE INDEX exchanges_end_at_idx ON core.exchanges (end_at);
 CREATE INDEX exchanges_fos_id_idx ON core.exchanges (field_of_study_id);
 
 CREATE INDEX exchanges_uni_id_idx ON core.exchanges (university_id);
+
+CREATE INDEX reports_reporter_id_idx ON core.reports (reporter_id);
+
+CREATE INDEX reports_status_created_at_idx ON core.reports (status, created_at DESC);
+
+CREATE INDEX user_reports_reported_user_id_idx ON core.user_reports (reported_user_id);
+
+CREATE INDEX univ_review_reports_review_id_idx ON core.university_review_reports (reported_review_id);
+
+CREATE INDEX chat_reports_reported_user_id_idx ON core.chat_reports (reported_user_id);
+
+CREATE INDEX chat_reports_room_id_idx ON core.chat_reports (room_id);

@@ -1,0 +1,1 @@
+1. Add tables 'core.reports', 'core.user_reports', 'core.chat_reports' and 'core.university_review_reports'.
