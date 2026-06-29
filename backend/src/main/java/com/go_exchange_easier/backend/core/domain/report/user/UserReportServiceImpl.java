@@ -1,0 +1,39 @@
+package com.go_exchange_easier.backend.core.domain.report.user;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.go_exchange_easier.backend.core.domain.report.ReportStatus;
+import com.go_exchange_easier.backend.core.domain.user.UserPublicProfileProvider;
+import com.go_exchange_easier.backend.core.domain.user.dto.UserPublicProfile;
+import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.stereotype.Service;
+import java.time.OffsetDateTime;
+import java.util.Map;
+
+@Service
+@RequiredArgsConstructor
+public class UserReportServiceImpl implements UserReportService {
+
+    private final UserPublicProfileProvider userPublicProfileProvider;
+    private final UserReportRepository userReportRepository;
+    private final ObjectMapper objectMapper;
+
+    @Override
+    @Transactional
+    public UserReportDetails create(int reportedUserId, int reporterId, CreateUserReportRequest request) {
+        UserReport report = new UserReport();
+        report.setCreatedAt(OffsetDateTime.now());
+        report.setDescription(request.description());
+        report.setStatus(ReportStatus.NEW);
+        report.setReporterId(reporterId);
+        report.setReportedUserId(reportedUserId);
+        UserPublicProfile profile = userPublicProfileProvider.getProfile(reportedUserId);
+        Map<String, Object> context = objectMapper.convertValue(
+                profile, new TypeReference<Map<String, Object>>() {});
+        report.setContext(context);
+        UserReport savedReport = userReportRepository.save(report);
+        return UserReportDetails.fromEntity(savedReport);
+    }
+
+}
