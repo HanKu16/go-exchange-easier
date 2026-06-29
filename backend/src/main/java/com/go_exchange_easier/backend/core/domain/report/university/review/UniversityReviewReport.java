@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.domain.report.university;
+package com.go_exchange_easier.backend.core.domain.report.university.review;
 
 import com.go_exchange_easier.backend.core.domain.report.Report;
 import jakarta.persistence.*;

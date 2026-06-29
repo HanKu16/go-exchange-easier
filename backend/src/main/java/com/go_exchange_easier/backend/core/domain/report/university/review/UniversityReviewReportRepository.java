@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.domain.report.university;
+package com.go_exchange_easier.backend.core.domain.report.university.review;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -19,7 +19,8 @@ public class UserReportController implements UserReportApi {
     public ResponseEntity<UserReportDetails> create(
             Integer reportedUserId,
             CreateUserReportRequest request,
-            AuthenticatedUser authenticatedUser) {
+            AuthenticatedUser authenticatedUser
+    ) {
         UserReportDetails report = userReportService.create(
                 reportedUserId, authenticatedUser.getId(), request);
         return ResponseEntity

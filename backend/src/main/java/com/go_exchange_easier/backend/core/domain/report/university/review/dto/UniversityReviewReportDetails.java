@@ -1,7 +1,7 @@
-package com.go_exchange_easier.backend.core.domain.report.university.dto;
+package com.go_exchange_easier.backend.core.domain.report.university.review.dto;
 
 import com.go_exchange_easier.backend.core.domain.report.ReportStatus;
-import com.go_exchange_easier.backend.core.domain.report.university.UniversityReviewReport;
+import com.go_exchange_easier.backend.core.domain.report.university.review.UniversityReviewReport;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import java.io.Serializable;

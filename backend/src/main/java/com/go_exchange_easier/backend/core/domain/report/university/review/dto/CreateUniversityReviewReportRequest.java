@@ -1,4 +1,4 @@
-package com.go_exchange_easier.backend.core.domain.report.university.dto;
+package com.go_exchange_easier.backend.core.domain.report.university.review.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;

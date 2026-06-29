@@ -1,11 +1,13 @@
 package com.go_exchange_easier.backend.core.domain.university.review;
 
+import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewSnapshot;
 import com.go_exchange_easier.backend.core.domain.university.review.entity.UniversityReview;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UniversityReviewRepository extends
@@ -124,6 +126,29 @@ public interface UniversityReviewRepository extends
             	us.deleted_at IS NULL AND un.deleted_at IS NULL
             """, nativeQuery = true)
     int countReviewsByUniversityId(@Param("universityId") int universityId);
+
+    @Query(value = """
+            SELECT new com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewSnapshot(
+                ur.id,
+                new com.go_exchange_easier.backend.core.domain.user.dto.UserSummary(
+                    us.id,
+                    us.nick
+                ),
+                new com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary(
+                    un.id,
+                    un.originalName,
+                    un.englishName
+                ),
+                ur.starRating,
+                ur.textContent,
+                ur.createdAt
+            )
+            FROM UniversityReview ur
+            LEFT JOIN ur.author us
+            LEFT JOIN ur.university un
+            WHERE ur.deletedAt IS NULL AND ur.id = :reviewId
+        """)
+    Optional<UniversityReviewSnapshot> findSnapshotById(int reviewId);
 
 }
 

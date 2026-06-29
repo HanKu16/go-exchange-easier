@@ -17,6 +17,7 @@ import com.go_exchange_easier.backend.core.domain.university.review.dto.Universi
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionCountService;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewRepository;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
+import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewSnapshot;
 import com.go_exchange_easier.backend.core.domain.university.review.entity.UniversityReview;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;
 import com.go_exchange_easier.backend.core.domain.user.dto.UserWithAvatarSummary;
@@ -27,8 +28,6 @@ import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoun
 import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
@@ -49,6 +48,13 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     private final AvatarService avatarService;
     private final CountryService countryService;
     private final UniversityMapper universityMapper;
+
+    @Override
+    public UniversityReviewSnapshot getSnapshotById(int reviewId) {
+        return universityReviewRepository.findSnapshotById(reviewId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "University review of id " + reviewId + " was not found."));
+    }
 
     @Override
     public List<UniversityReviewDetails> getByAuthorId(
