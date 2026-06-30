@@ -24,8 +24,8 @@ import { useConfirmation } from "../context/ConfirmationDialogContext";
 import { useNavigate } from "react-router-dom";
 
 const reactionOrder = {
-  Like: 1,
-  Dislike: 2,
+  LIKE: 1,
+  DISLIKE: 2,
 };
 
 type DeleteCircleButtonProps = IconButtonProps & {

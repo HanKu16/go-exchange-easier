@@ -13,7 +13,7 @@ const Reaction = (props: ReactionProps) => {
   const defaultColor = "";
   const reactionColor: string = props.isSet ? "#1e3756ff" : defaultColor;
 
-  if (props.type === "Like") {
+  if (props.type === "LIKE") {
     return (
       <IconButton
         aria-label="like review"
@@ -25,7 +25,7 @@ const Reaction = (props: ReactionProps) => {
         </Typography>
       </IconButton>
     );
-  } else if (props.type === "Dislike") {
+  } else if (props.type === "DISLIKE") {
     return (
       <IconButton
         aria-label="dislike review"
