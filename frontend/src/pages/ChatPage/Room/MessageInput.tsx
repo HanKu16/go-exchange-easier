@@ -20,11 +20,13 @@ const MessageInput = (props: MessageInputProps) => {
   const [message, setMessage] = useState("");
   const { roomId } = useParams();
   const { syncAll } = useChatSync(roomId!);
-  const { sendMessage, isError } = useSendMessage(roomId!, syncAll);
+  const { sendMessage, isError, error } = useSendMessage(roomId!, syncAll);
   const { showAlert } = useSnackbar();
 
+  const maxMessageSize = 1000;
+
   const handleSend = () => {
-    if (message.trim()) {
+    if (message.trim() && message.length <= maxMessageSize) {
       sendMessage(message);
       setMessage("");
     }
@@ -69,9 +71,14 @@ const MessageInput = (props: MessageInputProps) => {
 
   useEffect(() => {
     if (isError) {
-      showAlert("Failed to send a message.", "error");
+      const apiError = error as any;
+      if (apiError?.fieldErrors && apiError.fieldErrors.some((e: any) => e.code === "SIZE")) {
+        showAlert(`Message is too long (max ${maxMessageSize} characters).`, "error");
+      } else {
+        showAlert("Failed to send a message.", "error");
+      }
     }
-  }, [isError]);
+  }, [isError, error, maxMessageSize]);
 
   return (
     <Box
@@ -101,6 +108,7 @@ const MessageInput = (props: MessageInputProps) => {
           variant="outlined"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          inputProps={{ maxLength: maxMessageSize }}
           onKeyDown={handleKeyPress}
           disabled={props.disabled}
           sx={{
@@ -179,6 +187,11 @@ const MessageInput = (props: MessageInputProps) => {
             ),
           }}
         />
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 0.5, mx: 1 }}>
+          <small style={{ color: message.length > maxMessageSize ? "#d32f2f" : "#616161" }}>
+            {message.length}/{maxMessageSize}
+          </small>
+        </Box>
       </Paper>
     </Box>
   );

@@ -18,10 +18,10 @@ const useSendMessage = (roomId: string, syncAll: () => void) => {
     const result = await sendCreateMessageRequest(roomId, {
       textContent: messageText,
     });
-    // await new Promise((f) => setTimeout(f, 500));
     if (!result.isSuccess) {
-      throw new Error("Failed to create message.");
+      throw result.error;
     }
+    return result.data;
   };
 
   const createOptimisticMessage = (messageText: string): MessageDetails => {
@@ -63,7 +63,7 @@ const useSendMessage = (roomId: string, syncAll: () => void) => {
     );
   };
 
-  const { mutate, isError, isPending } = useMutation({
+  const { mutate, isError, isPending, error } = useMutation({
     mutationFn: (newText: string) => sendMessage(newText),
     onMutate: async (newText) => {
       if (!roomId) {
@@ -92,7 +92,7 @@ const useSendMessage = (roomId: string, syncAll: () => void) => {
       syncAll();
     },
   });
-  return { sendMessage: mutate, isError, isPending };
+  return { sendMessage: mutate, isError, isPending, error };
 };
 
 export default useSendMessage;
