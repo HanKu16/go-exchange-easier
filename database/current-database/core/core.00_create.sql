@@ -1,13 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS core ;
 
 CREATE TYPE core.role AS ENUM (
-  'RoleUser',
-  'RoleAdmin'
+  'ROLE_USER',
+  'ROLE_ADMIN'
 );
 
 CREATE TYPE core.reaction_type AS ENUM (
-  'Like',
-  'Dislike'
+  'LIKE',
+  'DISLIKE'
 );
 
 CREATE TABLE core.countries (
