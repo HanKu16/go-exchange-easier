@@ -67,7 +67,7 @@ export async function sendRequest<ResponseSuccessBody>(
             fieldErrors: [],
             globalErrors: [
               {
-                code: "ConnectionError",
+                code: "CONNECTION_ERROR",
                 message: `Server responded with status ${response.status}`,
               },
             ],
@@ -102,7 +102,7 @@ export async function sendRequest<ResponseSuccessBody>(
           fieldErrors: [],
           globalErrors: [
             {
-              code: "ConnectionError",
+              code: "CONNECTION_ERROR",
               message: "Failed to connect to the backend server.",
             },
           ],
@@ -118,7 +118,7 @@ export async function sendRequest<ResponseSuccessBody>(
         fieldErrors: [],
         globalErrors: [
           {
-            code: "InternalError",
+            code: "INTERNAL_ERROR",
             message: "An unexepected error occured.",
           },
         ],
@@ -175,7 +175,7 @@ export async function sendRequestWithoutRefresh<ResponseSuccessBody>(
           fieldErrors: [],
           globalErrors: [
             {
-              code: "ConnectionError",
+              code: "CONNECTION_ERROR",
               message: "Failed to connect to the backend server.",
             },
           ],
@@ -191,7 +191,7 @@ export async function sendRequestWithoutRefresh<ResponseSuccessBody>(
         fieldErrors: [],
         globalErrors: [
           {
-            code: "InternalError",
+            code: "INTERNAL_ERROR",
             message: "An unexepected error occured.",
           },
         ],

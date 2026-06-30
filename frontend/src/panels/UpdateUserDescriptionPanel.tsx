@@ -30,7 +30,7 @@ const UpdateUserDescriptionPanel = () => {
       showAlert("Description was updated successfully.", "success");
       setSavedDescription(description);
     } else {
-      if (result.error.fieldErrors.some((e) => e.code === "Size")) {
+      if (result.error.fieldErrors.some((e) => e.code === "SIZE")) {
         showAlert(
           `Description can not be longer 
           than ${maxDescriptionSize} characters. But current has 

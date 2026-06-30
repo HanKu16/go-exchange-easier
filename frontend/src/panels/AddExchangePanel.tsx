@@ -466,7 +466,7 @@ const ChooseTimeRangeSubpanel = (props: ChooseTimeRangeSubpanel) => {
     } else {
       const globalErrorsCodes = getGlobalErrorCodes(response.error);
       if (globalErrorsCodes.length !== 0) {
-        if (globalErrorsCodes.includes("ValidDateRange")) {
+        if (globalErrorsCodes.includes("VALID_DATE_RANGE")) {
           showAlert("Start date must be before end date.", "error");
         } else {
           showAlert("An error occured please try again later.", "error");

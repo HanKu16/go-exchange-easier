@@ -167,12 +167,12 @@ export const RegistrationPage = () => {
           errorFieldNames.join(", ") +
           ".",
       );
-    } else if (globalErrorsCodes.includes("LoginAlreadyTaken")) {
+    } else if (globalErrorsCodes.includes("LOGIN_ALREADY_TAKEN")) {
       setErrorMessage("Login is already taken.");
-    } else if (globalErrorsCodes.includes("MailAlreadyTaken")) {
+    } else if (globalErrorsCodes.includes("MAIL_ALREADY_TAKEN")) {
       setErrorMessage("Account associated with given name already exists.");
     } else if (
-      globalErrorsCodes.includes("InternalError") ||
+      globalErrorsCodes.includes("INTERNAL_ERROR") ||
       error.status === "INTERNAL_SERVER_ERROR"
     ) {
       setErrorMessage("An unexpected error occured. Please try again later.");

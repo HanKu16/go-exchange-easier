@@ -248,6 +248,12 @@ const ReviewInput = (props: ReviewInput) => {
         disabled={isSubmitDisabled}
         fullWidth
         size="large"
+        sx={{
+            backgroundColor: "#04315f",
+            "&:hover": {
+              backgroundColor: "#064080",
+            },
+        }}
       >
         Submit
       </Button>
