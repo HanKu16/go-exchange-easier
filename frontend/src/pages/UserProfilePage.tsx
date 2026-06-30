@@ -439,7 +439,7 @@ const FeedPanel = (props: FeedPanelProps) => {
           starRating: r.starRating,
           textContent: r.textContent,
           reactions: r.reactions,
-          showDeleteButton: props.isOwnProfile,
+          authorId: r.author.id,
           route: `/universities/${r.university.id}`,
           removeFromPage: () => removeFromPage(r.id),
         }),

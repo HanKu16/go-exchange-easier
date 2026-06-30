@@ -138,13 +138,13 @@ const ShowReviewInputButton = (props: GoToSumbitReviewButtonProps) => {
   );
 };
 
-type ReviewInput = {
+type ReviewInputProps = {
   handleGoBackClick: () => void;
   universityId: number | string | undefined;
   handleSuccessfulCreation: (reviewProps: UniversityReviewProps) => void;
 };
 
-const ReviewInput = (props: ReviewInput) => {
+const ReviewInput = (props: ReviewInputProps) => {
   const [postText, setPostText] = useState<string>("");
   const [ratingValue, setRatingValue] = useState<number | null>(null);
   const maxReviewSize = 1000;
@@ -171,7 +171,7 @@ const ReviewInput = (props: ReviewInput) => {
         starRating: result.data.starRating,
         textContent: result.data.textContent,
         reactions: result.data.reactions,
-        showDeleteButton: false,
+        authorId: result.data.author.id,
       };
       props.handleSuccessfulCreation(reviewProps);
       props.handleGoBackClick();
@@ -250,7 +250,26 @@ const ReviewInput = (props: ReviewInput) => {
         value={postText}
         onChange={(e) => setPostText(e.target.value)}
         inputProps={{ maxLength: maxReviewSize }}
-        sx={{ mb: 3 }}
+        sx={{
+          mb: 3,
+          "& .MuiInputLabel-root": {
+            color: "#04315f",
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "#04315f",
+          },
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "#04315f",
+            },
+            "&:hover fieldset": {
+              borderColor: "#064080",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#04315f",
+            },
+          },
+        }}
       />
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <Typography
@@ -512,8 +531,12 @@ const FeedPanel = (props: FeedPanelProps) => {
         starRating: r.starRating,
         textContent: r.textContent,
         reactions: r.reactions,
-        showDeleteButton: false,
+        isSignedInUserOwnerOfReview: false,
         route: `/users/${r.author.id}`,
+        authorId: r.author.id,
+        removeFromPage: () => {
+          fetchData();
+        }
       }));
       setReviewsProps(props);
       setReviewsFetchStatus("success");
@@ -692,7 +715,6 @@ const UniversityProfilePage = () => {
 
   const getProfile = async () => {
     const result = await sendGetUniversityProfileRequest(universityId);
-    console.log(result);
     if (result.isSuccess) {
       const data: UniversityProfile = result.data;
       const universityDataPanelProps: UniversityDataPanelProps = {
