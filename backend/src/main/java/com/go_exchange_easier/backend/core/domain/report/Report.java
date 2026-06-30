@@ -21,7 +21,7 @@ public abstract class Report {
     @Column(name = "report_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     @EqualsAndHashCode.Include
-    private UUID reportId;
+    private UUID id;
 
     @Column(name = "created_at")
     private OffsetDateTime createdAt;

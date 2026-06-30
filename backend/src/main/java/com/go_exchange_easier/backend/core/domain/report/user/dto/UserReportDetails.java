@@ -9,9 +9,9 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-@Schema(requiredProperties = {"reportId", "createdAt", "status", "reporterId", "context", "reportedUserId"})
+@Schema(requiredProperties = {"id", "createdAt", "status", "reporterId", "context", "reportedUserId"})
 public record UserReportDetails(
-        UUID reportId,
+        UUID id,
         OffsetDateTime createdAt,
 
         @Nullable
@@ -25,7 +25,7 @@ public record UserReportDetails(
 
     public static UserReportDetails fromEntity(UserReport report) {
         return new UserReportDetails(
-                report.getReportId(),
+                report.getId(),
                 report.getCreatedAt(),
                 report.getDescription(),
                 report.getStatus(),
