@@ -147,12 +147,14 @@ type ReviewInput = {
 const ReviewInput = (props: ReviewInput) => {
   const [postText, setPostText] = useState<string>("");
   const [ratingValue, setRatingValue] = useState<number | null>(null);
+  const maxReviewSize = 1000;
   const isSubmitDisabled =
     !postText.trim() || ratingValue === null || ratingValue === 0;
+  const isTooLong = postText.length > maxReviewSize;
   const { showAlert } = useSnackbar();
 
   const handleSubmit = async () => {
-    if (isSubmitDisabled || !props.universityId) {
+    if (isSubmitDisabled || isTooLong || !props.universityId) {
       showAlert("Failed to create review. Please try again later.", "error");
       return;
     }
@@ -177,7 +179,14 @@ const ReviewInput = (props: ReviewInput) => {
       setRatingValue(null);
       showAlert("Review was created successfully.", "success");
     } else {
-      showAlert("Failed to create review. Please try again later.", "error");
+      if (result.error.fieldErrors.some((e) => e.code === "SIZE")) {
+        showAlert(
+          `Could not create review because it is too long. Maximum length is ${maxReviewSize} characters.`,
+          "error",
+        );
+      } else {
+        showAlert("Failed to create review. Please try again later.", "error");
+      }
     }
   };
 
@@ -234,18 +243,28 @@ const ReviewInput = (props: ReviewInput) => {
         label="Text"
         placeholder="What do you think?"
         multiline
-        rows={4}
+        minRows={4}
+        maxRows={8}
         fullWidth
         variant="outlined"
         value={postText}
         onChange={(e) => setPostText(e.target.value)}
+        inputProps={{ maxLength: maxReviewSize }}
         sx={{ mb: 3 }}
       />
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <Typography
+          variant="caption"
+          sx={{ color: isTooLong ? "error.main" : "text.secondary" }}
+        >
+          {postText.length}/{maxReviewSize}
+        </Typography>
+      </Box>
       <Button
         variant="contained"
         endIcon={<SendIcon />}
         onClick={handleSubmit}
-        disabled={isSubmitDisabled}
+        disabled={isSubmitDisabled || isTooLong}
         fullWidth
         size="large"
         sx={{
