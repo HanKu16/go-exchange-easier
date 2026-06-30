@@ -9,14 +9,15 @@ import com.go_exchange_easier.backend.core.domain.report.university.review.dto.C
 import com.go_exchange_easier.backend.core.domain.report.university.review.dto.UniversityReviewReportDetails;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewSnapshot;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
 import java.time.OffsetDateTime;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UniversityReviewReportServiceImpl implements UniversityReviewReportService {
 
     private final UniversityReviewReportRepository universityReviewReportRepository;
@@ -25,8 +26,11 @@ public class UniversityReviewReportServiceImpl implements UniversityReviewReport
 
     @Override
     @Transactional
-    public UniversityReviewReportDetails create(int reviewId,
-            int reporterId, CreateUniversityReviewReportRequest request) {
+    public UniversityReviewReportDetails create(
+            int reviewId,
+            int reporterId,
+            CreateUniversityReviewReportRequest request
+    ) {
         UniversityReviewReport report = new UniversityReviewReport();
         report.setCreatedAt(OffsetDateTime.now());
         report.setDescription(request.description());

@@ -45,20 +45,23 @@ public class DateRangeValidator implements ConstraintValidator<ValidDateRange, O
         if (s == null || s.isEmpty()) {
             return s;
         }
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
+        return s.substring(0, 1)
+                .toUpperCase() + s.substring(1);
     }
 
-    private LocalDate getDateFromClass(Object value, String dateAsText)
-            throws NoSuchMethodException, InvocationTargetException,
-                IllegalAccessException {
+    private LocalDate getDateFromClass(
+            Object value,
+            String dateAsText
+    ) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         return (LocalDate) value.getClass()
                 .getMethod("get" + capitalize(dateAsText))
                 .invoke(value);
     }
 
-    private LocalDate getDateFromRecord(Object value, String dateAsText)
-            throws NoSuchMethodException, InvocationTargetException,
-            IllegalAccessException {
+    private LocalDate getDateFromRecord(
+            Object value,
+            String dateAsText
+    ) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         return (LocalDate) value.getClass()
                 .getMethod(dateAsText)
                 .invoke(value);

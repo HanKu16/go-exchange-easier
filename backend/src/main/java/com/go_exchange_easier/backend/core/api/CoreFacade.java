@@ -5,8 +5,10 @@ import java.util.Set;
 
 public interface CoreFacade {
 
-    CoreUser getUser(int userId);
-    Map<Integer, CoreUser> getUsers(Set<Integer> userIds);
+    CoreUser getUserById(int userId);
+
+    Map<Integer, CoreUser> getUsersByIds(Set<Integer> userIds);
+
     CoreAvatar getAvatar(String avatarKey);
 
 }

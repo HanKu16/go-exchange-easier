@@ -2,7 +2,10 @@ package com.go_exchange_easier.backend.core.domain.user.notification;
 
 import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "notification_settings", schema = "core")

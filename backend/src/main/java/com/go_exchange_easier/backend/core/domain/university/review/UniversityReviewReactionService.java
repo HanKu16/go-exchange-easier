@@ -6,8 +6,15 @@ import java.util.List;
 
 public interface UniversityReviewReactionService {
 
-    List<UniversityReviewReactionDetails> add(int userId, int reviewId,
-            AddUniversityReviewReactionRequest request);
-    List<UniversityReviewReactionDetails> delete(int userId, int reviewId);
+    List<UniversityReviewReactionDetails> add(
+            int userId,
+            int reviewId,
+            AddUniversityReviewReactionRequest request
+    );
+
+    List<UniversityReviewReactionDetails> delete(
+            int userId,
+            int reviewId
+    );
 
 }

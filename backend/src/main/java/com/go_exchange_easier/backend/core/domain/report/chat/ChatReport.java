@@ -1,14 +1,17 @@
 package com.go_exchange_easier.backend.core.domain.report.chat;
 
 import com.go_exchange_easier.backend.core.domain.report.Report;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import java.util.Map;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import java.util.Map;
-import java.util.UUID;
 
 @Entity
 @Table(name = "chat_reports", schema = "core")

@@ -7,10 +7,8 @@ import java.util.UUID;
 
 @Schema(requiredProperties = {"id", "createdAt", "textContent", "author"})
 public record MessageDetails(
-
         UUID id,
         Instant createdAt,
         String textContent,
         AuthorDetails author
-
 ) implements Serializable { }

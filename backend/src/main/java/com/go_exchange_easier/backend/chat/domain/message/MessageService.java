@@ -4,14 +4,27 @@ import com.go_exchange_easier.backend.chat.domain.message.dto.CreateMessageReque
 import com.go_exchange_easier.backend.chat.domain.message.dto.MessageDetails;
 import com.go_exchange_easier.backend.common.dto.SimplePage;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
-import org.springframework.data.domain.Pageable;
 import java.util.UUID;
+import org.springframework.data.domain.Pageable;
 
 public interface MessageService {
 
-    SimplePage<MessageDetails> getPage(UUID roomId, int userId, Pageable pageable);
-    MessageDetails create(UUID roomId, CreateMessageRequest request,
-            AuthenticatedUser signedInUser);
-    void delete(UUID messageId, UUID roomId, int signedInUserId);
+    SimplePage<MessageDetails> getPage(
+            UUID roomId,
+            int userId,
+            Pageable pageable
+    );
+
+    MessageDetails create(
+            UUID roomId,
+            CreateMessageRequest request,
+            AuthenticatedUser signedInUser
+    );
+
+    void delete(
+            UUID messageId,
+            UUID roomId,
+            int signedInUserId
+    );
 
 }

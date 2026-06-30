@@ -3,12 +3,12 @@ package com.go_exchange_easier.backend.core.domain.location.city;
 import com.go_exchange_easier.backend.core.domain.location.country.Country;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "cities", schema = "core")

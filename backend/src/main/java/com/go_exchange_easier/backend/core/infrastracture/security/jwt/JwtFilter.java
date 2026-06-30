@@ -7,17 +7,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import lombok.NonNull;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 /**
@@ -38,7 +38,8 @@ public class JwtFilter extends OncePerRequestFilter {
     public JwtFilter(
             JwtClaimsExtractor jwtClaimsExtractor,
             JwtTokenValidator jwtTokenValidator,
-            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
+            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver
+    ) {
         this.jwtClaimsExtractor = jwtClaimsExtractor;
         this.jwtTokenValidator = jwtTokenValidator;
         this.resolver = resolver;
@@ -77,17 +78,28 @@ public class JwtFilter extends OncePerRequestFilter {
             int userId = jwtClaimsExtractor.extractUserId(accessToken);
             String username = jwtClaimsExtractor.extractUsername(accessToken);
             Set<Role> roles = jwtClaimsExtractor.extractRoles(accessToken)
-                    .stream().map(Role::valueOf).collect(Collectors.toSet());
+                    .stream()
+                    .map(Role::valueOf)
+                    .collect(Collectors.toSet());
             String nick = jwtClaimsExtractor.extractNick(accessToken);
             Optional<String> avatarKey = jwtClaimsExtractor.extractAvatarKey(accessToken);
             AuthenticatedUser authenticatedUser = new AuthenticatedUser(
-                    userId, username, null, true, nick, avatarKey.orElse(null), roles);
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                            authenticatedUser, null, authenticatedUser.getAuthorities());
-            authToken.setDetails(new WebAuthenticationDetailsSource()
-                    .buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                    userId,
+                    username,
+                    null,
+                    true,
+                    nick,
+                    avatarKey.orElse(null),
+                    roles
+            );
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    authenticatedUser,
+                    null,
+                    authenticatedUser.getAuthorities()
+            );
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext()
+                    .setAuthentication(authToken);
         }
     }
 

@@ -16,10 +16,7 @@ public class CityMapper {
         if (city == null) {
             return null;
         }
-        return new CityDetails(
-                city.getId(),
-                city.getEnglishName(),
-                countryMapper.toDetails(city.getCountry()));
+        return new CityDetails(city.getId(), city.getEnglishName(), countryMapper.toDetails(city.getCountry()));
     }
 
 }

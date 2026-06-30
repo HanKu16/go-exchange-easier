@@ -19,34 +19,41 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
 
     @Override
     @Transactional
-    public void follow(Integer userId, Short universityId) {
+    public void follow(
+            Integer userId,
+            Short universityId
+    ) {
         if (!universityRepository.existsById(universityId)) {
-            throw new ResourceNotFoundException("University of id " +
-                    universityId + " was not found.");
+            throw new ResourceNotFoundException("University of id " + universityId + " was not found.");
         }
         if (doesFollowExist(universityId, userId)) {
-            throw new ResourceAlreadyExistsException("University follow where user id" +
-                    userId + " and university id " + universityId + " already exists.");
+            throw new ResourceAlreadyExistsException(
+                    "University follow where user id" + userId + " and university id " + universityId +
+                            " already exists.");
         }
         universityFollowRepository.insertByNativeQuery(universityId, userId);
     }
 
     @Override
     @Transactional
-    public void unfollow(Integer userId, Short universityId) {
-        int rowsDeleted = universityFollowRepository.deleteByUniversityIdAndFollowerId(
-                universityId, userId);
+    public void unfollow(
+            Integer userId,
+            Short universityId
+    ) {
+        int rowsDeleted = universityFollowRepository.deleteByUniversityIdAndFollowerId(universityId, userId);
         if (rowsDeleted == 0) {
-            throw new ResourceNotFoundException("University follow" +
-                    " where user id " + userId + " and university id " +
-                    universityId + " was not found.");
+            throw new ResourceNotFoundException(
+                    "University follow" + " where user id " + userId + " and university id " + universityId +
+                            " was not found.");
         }
     }
 
     @Override
-    public boolean doesFollowExist(short universityId, int userId) {
-        return universityFollowRepository.countByUniversityIdAndFollowerIdNativeQuery(
-                universityId, userId) > 0;
+    public boolean doesFollowExist(
+            short universityId,
+            int userId
+    ) {
+        return universityFollowRepository.countByUniversityIdAndFollowerIdNativeQuery(universityId, userId) > 0;
     }
 
 }

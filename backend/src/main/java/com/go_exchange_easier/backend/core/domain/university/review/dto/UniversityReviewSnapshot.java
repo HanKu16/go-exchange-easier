@@ -5,8 +5,7 @@ import com.go_exchange_easier.backend.core.domain.user.dto.UserSummary;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 
-@Schema(requiredProperties = {"id", "author", "university",
-        "starRating", "textContent", "createdAt"})
+@Schema(requiredProperties = {"id", "author", "university", "starRating", "textContent", "createdAt"})
 public record UniversityReviewSnapshot(
         Integer id,
         UserSummary author,

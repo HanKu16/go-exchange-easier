@@ -6,9 +6,10 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"id", "nick"})
 public record AuthorDetails(
-
         Integer id,
         String nick,
-        @Nullable String avatarUrl
 
-) implements Serializable { }
+        @Nullable
+        String avatarUrl
+
+) implements Serializable {}

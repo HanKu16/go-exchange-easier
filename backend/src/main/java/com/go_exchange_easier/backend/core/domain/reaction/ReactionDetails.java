@@ -5,9 +5,7 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"type", "count", "isSet"})
 public record ReactionDetails(
-
         ReactionType type,
         Short count,
         Boolean isSet
-
 ) implements Serializable { }

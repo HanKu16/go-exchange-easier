@@ -1,8 +1,12 @@
 package com.go_exchange_easier.backend.core.domain.user.impl;
 
+import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.location.country.dto.CountrySummary;
+import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
+import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
+import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewDetails;
 import com.go_exchange_easier.backend.core.domain.user.UserApi;
 import com.go_exchange_easier.backend.core.domain.user.UserReadService;
 import com.go_exchange_easier.backend.core.domain.user.UserUpdateService;
@@ -10,20 +14,16 @@ import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarUrlSummary;
 import com.go_exchange_easier.backend.core.domain.user.description.UpdateUserDescriptionRequest;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionDetails;
 import com.go_exchange_easier.backend.core.domain.user.dto.*;
-import com.go_exchange_easier.backend.common.dto.Listing;
-import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
-import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewDetails;
-import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
 import com.go_exchange_easier.backend.core.domain.user.status.UpdateUserStatusRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,15 +36,18 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<UserProfile> getProfile(
-            Integer userId, AuthenticatedUser authenticatedUser) {
-        UserProfile response = userReadService.getProfile(
-                userId, authenticatedUser.getId());
+            Integer userId,
+            AuthenticatedUser authenticatedUser
+    ) {
+        UserProfile response = userReadService.getProfile(userId, authenticatedUser.getId());
         return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<Page<UserDetails>> getPage(
-            String nick, Pageable pageable) {
+            String nick,
+            Pageable pageable
+    ) {
         Page<UserDetails> page = userReadService.getPage(nick, pageable);
         return ResponseEntity.ok()
                 .body(page);
@@ -52,85 +55,90 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
-            Integer userId, AuthenticatedUser authenticatedUser) {
-        List<UniversityReviewDetails> reviews = universityReviewService
-                .getByAuthorId(userId, authenticatedUser.getId());
+            Integer userId,
+            AuthenticatedUser authenticatedUser
+    ) {
+        List<UniversityReviewDetails> reviews = universityReviewService.getByAuthorId(
+                userId,
+                authenticatedUser.getId()
+        );
         return ResponseEntity.ok(Listing.of(reviews));
     }
 
     @Override
     public ResponseEntity<UserDescriptionDetails> updateDescription(
             UpdateUserDescriptionRequest request,
-            AuthenticatedUser authenticatedUser) {
-        UserDescriptionDetails response = userUpdateService
-                .updateDescription(authenticatedUser.getId(), request);
+            AuthenticatedUser authenticatedUser
+    ) {
+        UserDescriptionDetails response = userUpdateService.updateDescription(authenticatedUser.getId(), request);
         return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<UniversitySummary> assignHomeUniversity(
             AssignHomeUniversityRequest request,
-            AuthenticatedUser authenticatedUser) {
-        UniversitySummary university = userUpdateService
-                .assignHomeUniversity(authenticatedUser.getId(), request);
+            AuthenticatedUser authenticatedUser
+    ) {
+        UniversitySummary university = userUpdateService.assignHomeUniversity(authenticatedUser.getId(), request);
         return ResponseEntity.ok(university);
     }
 
     @Override
     public ResponseEntity<UserStatusSummary> updateStatus(
             UpdateUserStatusRequest request,
-            AuthenticatedUser authenticatedUser) {
-        UserStatusSummary status = userUpdateService.updateStatus(
-                authenticatedUser.getId(), request);
+            AuthenticatedUser authenticatedUser
+    ) {
+        UserStatusSummary status = userUpdateService.updateStatus(authenticatedUser.getId(), request);
         return ResponseEntity.ok(status);
     }
 
     @Override
     public ResponseEntity<CountrySummary> assignCountryOfOrigin(
             AssignCountryOfOriginRequest request,
-            AuthenticatedUser authenticatedUser) {
-        CountrySummary country = userUpdateService.assignCountryOfOrigin(
-                authenticatedUser.getId(), request);
+            AuthenticatedUser authenticatedUser
+    ) {
+        CountrySummary country = userUpdateService.assignCountryOfOrigin(authenticatedUser.getId(), request);
         return ResponseEntity.ok(country);
     }
 
     @Override
     public ResponseEntity<Listing<UserWithAvatarSummary>> getFollowees(
-            Integer userId) {
-        List<UserWithAvatarSummary> followees = userReadService
-                .getFollowees(userId);
+            Integer userId
+    ) {
+        List<UserWithAvatarSummary> followees = userReadService.getFollowees(userId);
         return ResponseEntity.ok(Listing.of(followees));
     }
 
     @Override
     public ResponseEntity<Listing<UniversityDetails>> getFollowedUniversities(
-            Integer userId) {
-        List<UniversityDetails> universities = userReadService
-                .getFollowedUniversities(userId);
+            Integer userId
+    ) {
+        List<UniversityDetails> universities = userReadService.getFollowedUniversities(userId);
         return ResponseEntity.ok(Listing.of(universities));
     }
 
     @Override
     public ResponseEntity<UserWithAvatarSummary> getMe(
-            AuthenticatedUser authenticatedUser) {
-        UserWithAvatarSummary user = userReadService
-                .getMe(authenticatedUser.getId());
+            AuthenticatedUser authenticatedUser
+    ) {
+        UserWithAvatarSummary user = userReadService.getMe(authenticatedUser.getId());
         return ResponseEntity.ok(user);
     }
 
     @Override
     public ResponseEntity<AvatarUrlSummary> uploadAvatar(
-            MultipartFile file, AuthenticatedUser authenticatedUser) {
-        AvatarUrlSummary avatarUrl = userUpdateService.addAvatar(
-                authenticatedUser.getId(), file);
+            MultipartFile file,
+            AuthenticatedUser authenticatedUser
+    ) {
+        AvatarUrlSummary avatarUrl = userUpdateService.addAvatar(authenticatedUser.getId(), file);
         return ResponseEntity.ok(avatarUrl);
     }
 
     @Override
     public ResponseEntity<AvatarUrlSummary> deleteAvatar(
-            AuthenticatedUser authenticatedUser) {
-        AvatarUrlSummary avatarUrl = userUpdateService.deleteAvatar(
-                authenticatedUser.getId());
+            AuthenticatedUser authenticatedUser
+    ) {
+        AvatarUrlSummary avatarUrl = userUpdateService.deleteAvatar(authenticatedUser.getId());
         return ResponseEntity.ok(avatarUrl);
     }
 

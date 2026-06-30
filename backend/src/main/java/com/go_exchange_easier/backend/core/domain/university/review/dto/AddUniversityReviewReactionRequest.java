@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 public record AddUniversityReviewReactionRequest(
 
         @NotNull(message = "Reaction type is required.")
-        @Schema(example = "like")
+        @Schema(example = "LIKE")
         ReactionType reactionType
 
 ) { }

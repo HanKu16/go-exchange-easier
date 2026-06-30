@@ -9,17 +9,19 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-@Schema(requiredProperties = {"reportId", "createdAt", "status",
-        "reporterId", "context", "reportedReviewId"})
+@Schema(requiredProperties = {"reportId", "createdAt", "status", "reporterId", "context", "reportedReviewId"})
 public record UniversityReviewReportDetails(
         UUID reportId,
         OffsetDateTime createdAt,
-        @Nullable String description,
+
+        @Nullable
+        String description,
+
         ReportStatus status,
         Integer reporterId,
         Map<String, Object> context,
-        Integer reportedReviewId
-) implements Serializable {
+        Integer reportedReviewId) implements Serializable
+{
 
     public static UniversityReviewReportDetails fromEntity(UniversityReviewReport report) {
         return new UniversityReviewReportDetails(

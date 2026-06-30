@@ -1,7 +1,10 @@
 package com.go_exchange_easier.backend.core.domain.fieldofstudy;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "fields_of_study", schema = "core")

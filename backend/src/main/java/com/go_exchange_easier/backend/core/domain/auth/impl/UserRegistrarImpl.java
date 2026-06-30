@@ -51,7 +51,7 @@ public class UserRegistrarImpl implements UserRegistrar {
         User user = buildUser(request);
         User savedUser = userRepository.save(user);
         UserCredentials credentials = buildCredentials(request, user);
-        credentials.getRoles().add(Role.RoleUser);
+        credentials.getRoles().add(Role.ROLE_USER);
         UserCredentials savedCredentials = userCredentialsRepository.save(credentials);
         UserDescription description = buildDescription(user);
         UserDescription savedDescription = userDescriptionRepository.save(description);

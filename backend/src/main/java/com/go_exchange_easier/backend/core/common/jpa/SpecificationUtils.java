@@ -1,11 +1,11 @@
 package com.go_exchange_easier.backend.core.common.jpa;
 
-import org.springframework.data.jpa.domain.Specification;
 import java.util.function.Function;
+import org.springframework.data.jpa.domain.Specification;
 
 public final class SpecificationUtils {
 
-    private SpecificationUtils() {}
+    private SpecificationUtils() { }
 
     /**
      * Appends a specification to the current one using AND, but only if the value is not null.

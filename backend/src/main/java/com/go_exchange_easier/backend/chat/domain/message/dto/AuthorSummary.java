@@ -6,8 +6,9 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"nick"})
 public record AuthorSummary(
-
         String nick,
-        @Nullable String avatarUrl
+
+        @Nullable
+        String avatarUrl
 
 ) implements Serializable { }

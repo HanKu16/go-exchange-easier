@@ -5,17 +5,12 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"id", "name"})
 public record FieldOfStudySummary(
-
         Short id,
         String name
-
 ) implements Serializable {
 
     public static FieldOfStudySummary fromEntity(FieldOfStudy u) {
-        return new FieldOfStudySummary(
-                u.getId(),
-                u.getName()
-        );
+        return new FieldOfStudySummary(u.getId(), u.getName());
     }
 
 }

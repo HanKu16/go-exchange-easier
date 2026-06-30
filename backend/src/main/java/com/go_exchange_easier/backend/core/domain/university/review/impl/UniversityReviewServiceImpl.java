@@ -2,39 +2,39 @@ package com.go_exchange_easier.backend.core.domain.university.review.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
-import com.go_exchange_easier.backend.core.domain.location.city.CityDetails;
-import com.go_exchange_easier.backend.core.domain.location.country.dto.CountryDetails;
-import com.go_exchange_easier.backend.core.domain.location.country.CountryService;
-import com.go_exchange_easier.backend.core.domain.reaction.ReactionType;
-import com.go_exchange_easier.backend.core.domain.university.University;
-import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
-import com.go_exchange_easier.backend.core.domain.reaction.ReactionDetails;
-import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
-import com.go_exchange_easier.backend.core.domain.university.impl.UniversityMapper;
-import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewDetails;
-import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewCountSummary;
-import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionCountService;
-import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewRepository;
-import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
-import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewSnapshot;
-import com.go_exchange_easier.backend.core.domain.university.review.entity.UniversityReview;
-import com.go_exchange_easier.backend.core.domain.user.UserRepository;
-import com.go_exchange_easier.backend.core.domain.user.dto.UserWithAvatarSummary;
-import com.go_exchange_easier.backend.core.domain.university.review.dto.CreateUniversityReviewRequest;
 import com.go_exchange_easier.backend.common.exception.DataCorruptionException;
 import com.go_exchange_easier.backend.common.exception.NotOwnerOfResourceException;
 import com.go_exchange_easier.backend.common.exception.ReferencedResourceNotFoundException;
+import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
+import com.go_exchange_easier.backend.core.domain.location.city.CityDetails;
+import com.go_exchange_easier.backend.core.domain.location.country.CountryService;
+import com.go_exchange_easier.backend.core.domain.location.country.dto.CountryDetails;
+import com.go_exchange_easier.backend.core.domain.reaction.ReactionDetails;
+import com.go_exchange_easier.backend.core.domain.reaction.ReactionType;
+import com.go_exchange_easier.backend.core.domain.university.University;
+import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
+import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
+import com.go_exchange_easier.backend.core.domain.university.impl.UniversityMapper;
+import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionCountService;
+import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewRepository;
+import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
+import com.go_exchange_easier.backend.core.domain.university.review.dto.CreateUniversityReviewRequest;
+import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewCountSummary;
+import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewDetails;
+import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewSnapshot;
+import com.go_exchange_easier.backend.core.domain.university.review.entity.UniversityReview;
 import com.go_exchange_easier.backend.core.domain.user.User;
+import com.go_exchange_easier.backend.core.domain.user.UserRepository;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.go_exchange_easier.backend.core.domain.user.dto.UserWithAvatarSummary;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -58,9 +58,10 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     @Override
     public List<UniversityReviewDetails> getByAuthorId(
-            int authorId, int currentUserId) {
-        List<Object[]> rows = universityReviewRepository
-                .findByAuthorId(authorId, currentUserId);
+            int authorId,
+            int currentUserId
+    ) {
+        List<Object[]> rows = universityReviewRepository.findByAuthorId(authorId, currentUserId);
         List<UniversityReviewDetails> reviews = new ArrayList<>();
         String avatarUrl = null;
         boolean wasAttemptToSetAvatar = false;
@@ -79,36 +80,46 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             if (!wasAttemptToSetAvatar) {
                 String avatarKey = row[10] != null ? (String) row[10] : null;
                 if (avatarKey != null) {
-                    avatarUrl = avatarService.getUrl(avatarKey).thumbnail();
+                    avatarUrl = avatarService.getUrl(avatarKey)
+                            .thumbnail();
                 }
                 wasAttemptToSetAvatar = true;
             }
             Short countryId = (Short) row[11];
             String countryName = (String) row[12];
-            String flagUrl = row[13] != null ? countryService
-                    .getFlagUrl((String) row[13]) : null;
+            String flagUrl = row[13] != null ? countryService.getFlagUrl((String) row[13]) : null;
             Integer cityId = (Integer) row[14];
             String cityName = (String) row[15];
-            CountryDetails country = new CountryDetails(
-                    countryId, countryName, flagUrl);
-            CityDetails city = new CityDetails(
-                    cityId, cityName, country);
+            CountryDetails country = new CountryDetails(countryId, countryName, flagUrl);
+            CityDetails city = new CityDetails(cityId, cityName, country);
             UniversityDetails university = new UniversityDetails(
-                    universityId, universityNativeName,
-                    universityEnglishName, city);
-            reviews.add(new UniversityReviewDetails(id, new UserWithAvatarSummary(
-                    authorIdRow, authorNick, avatarUrl), university, starRating,
-                    textContent, createdAt, reactions));
+                    universityId,
+                    universityNativeName,
+                    universityEnglishName,
+                    city
+            );
+            reviews.add(new UniversityReviewDetails(
+                    id,
+                    new UserWithAvatarSummary(authorIdRow, authorNick, avatarUrl),
+                    university,
+                    starRating,
+                    textContent,
+                    createdAt,
+                    reactions
+            ));
         }
         return reviews;
     }
 
     @Override
     public List<UniversityReviewDetails> getByUniversityId(
-            int universityId, int currentUserId, int page, int size) {
+            int universityId,
+            int currentUserId,
+            int page,
+            int size
+    ) {
         int offset = page * size;
-        List<Object[]> rows = universityReviewRepository
-                .findByUniversityId(universityId, currentUserId, size, offset);
+        List<Object[]> rows = universityReviewRepository.findByUniversityId(universityId, currentUserId, size, offset);
         List<UniversityReviewDetails> reviews = new ArrayList<>();
         for (Object[] row : rows) {
             Integer id = (Integer) row[0];
@@ -124,46 +135,51 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
             String avatarKey = row[10] != null ? (String) row[10] : null;
             Short countryId = (Short) row[11];
             String countryName = (String) row[12];
-            String flagUrl = row[13] != null ? countryService
-                    .getFlagUrl((String) row[13]) : null;
+            String flagUrl = row[13] != null ? countryService.getFlagUrl((String) row[13]) : null;
             Integer cityId = (Integer) row[14];
             String cityName = (String) row[15];
             String avatarUrl = null;
             if (avatarKey != null) {
-                avatarUrl = avatarService.getUrl(avatarKey).thumbnail();
+                avatarUrl = avatarService.getUrl(avatarKey)
+                        .thumbnail();
             }
-            CountryDetails country = new CountryDetails(
-                    countryId, countryName, flagUrl);
-            CityDetails city = new CityDetails(
-                    cityId, cityName, country);
+            CountryDetails country = new CountryDetails(countryId, countryName, flagUrl);
+            CityDetails city = new CityDetails(cityId, cityName, country);
             UniversityDetails university = new UniversityDetails(
-                    universityIdFromDb, universityNativeName,
-                    universityEnglishName, city);
+                    universityIdFromDb,
+                    universityNativeName,
+                    universityEnglishName,
+                    city
+            );
             List<ReactionDetails> reactions = parseReactionsJson(reactionsJson);
-            reviews.add(new UniversityReviewDetails(id,
+            reviews.add(new UniversityReviewDetails(
+                    id,
                     new UserWithAvatarSummary(authorId, authorNick, avatarUrl),
-                    university, starRating, textContent, createdAt, reactions));
+                    university,
+                    starRating,
+                    textContent,
+                    createdAt,
+                    reactions
+            ));
         }
         return reviews;
     }
 
     @Override
     @Transactional
-    public UniversityReviewDetails create(int userId,
-            CreateUniversityReviewRequest request) {
+    public UniversityReviewDetails create(
+            int userId,
+            CreateUniversityReviewRequest request
+    ) {
         User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ReferencedResourceNotFoundException("User of id " + userId + " was not found."));
+        University university = universityRepository.findById(request.universityId())
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
-                        "User of id " + userId + " was not found.")
-        );
-        University university = universityRepository
-                .findById(request.universityId())
-                .orElseThrow(() -> new ReferencedResourceNotFoundException(
-                        "University of id " + request.universityId() +
-                                " was not found."));
+                        "University of id " + request.universityId() + " was not found."));
         UniversityReview review = buildUniversityReview(request, user, university);
         UniversityReview savedReview = universityReviewRepository.save(review);
         reactionCountService.createCounts(savedReview);
-        List<ReactionDetails> reactions =  Arrays.stream(ReactionType.values())
+        List<ReactionDetails> reactions = Arrays.stream(ReactionType.values())
                 .toList()
                 .stream()
                 .map(t -> new ReactionDetails(t, (short) 0, false))
@@ -171,42 +187,55 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         String avatarKey = user.getAvatarKey();
         String avatarUrl = null;
         if (avatarKey != null) {
-            avatarUrl = avatarService.getUrl(avatarKey).thumbnail();
+            avatarUrl = avatarService.getUrl(avatarKey)
+                    .thumbnail();
         }
         return new UniversityReviewDetails(
-                savedReview.getId(), new UserWithAvatarSummary(
-                        user.getId(), user.getNick(), avatarUrl),
+                savedReview.getId(),
+                new UserWithAvatarSummary(user.getId(), user.getNick(), avatarUrl),
                 universityMapper.toDetails(university),
-                review.getStarRating(), review.getTextContent(),
-                review.getCreatedAt().toInstant(), reactions);
+                review.getStarRating(),
+                review.getTextContent(),
+                review.getCreatedAt()
+                        .toInstant(),
+                reactions
+        );
     }
 
     @Override
     @Transactional
-    public void delete(int reviewId, int userId) {
+    public void delete(
+            int reviewId,
+            int userId
+    ) {
         UniversityReview review = universityReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "University review of id " + reviewId + " was not found."));
-        if (!review.getAuthor().getId().equals(userId)) {
-            throw new NotOwnerOfResourceException("Authenticated user is not " +
-                    "entitled to delete university review of id " + reviewId + ".");
+        if (!review.getAuthor()
+                .getId()
+                .equals(userId)) {
+            throw new NotOwnerOfResourceException(
+                    "Authenticated user is not " + "entitled to delete university review of id " + reviewId + ".");
         }
-        reactionCountService.deleteCounts(review.getReactionCounts().stream().toList());
+        reactionCountService.deleteCounts(review.getReactionCounts()
+                                                  .stream()
+                                                  .toList());
         universityReviewRepository.delete(review);
     }
 
     @Override
     public UniversityReviewCountSummary countByUniversityId(
-            int universityId) {
-        int count = universityReviewRepository
-                .countReviewsByUniversityId(universityId);
-        return new UniversityReviewCountSummary(
-                (short) universityId, count);
+            int universityId
+    ) {
+        int count = universityReviewRepository.countReviewsByUniversityId(universityId);
+        return new UniversityReviewCountSummary((short) universityId, count);
     }
 
     private UniversityReview buildUniversityReview(
             CreateUniversityReviewRequest request,
-            User user, University university) {
+            User user,
+            University university
+    ) {
         UniversityReview review = new UniversityReview();
         review.setTextContent(request.text());
         review.setStarRating(request.starRating());
@@ -217,14 +246,13 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     }
 
     private List<ReactionDetails> parseReactionsJson(
-            String json) {
+            String json
+    ) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(json, new TypeReference
-                    <List<ReactionDetails>>() {});
+            return mapper.readValue(json, new TypeReference<List<ReactionDetails>>() {});
         } catch (Exception e) {
-            throw new DataCorruptionException("Parsing " + json + " to " +
-                    "List<ReactionDetails> failed.");
+            throw new DataCorruptionException("Parsing " + json + " to " + "List<ReactionDetails> failed.");
         }
     }
 

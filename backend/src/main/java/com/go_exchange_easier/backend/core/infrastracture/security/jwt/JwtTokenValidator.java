@@ -1,12 +1,12 @@
 package com.go_exchange_easier.backend.core.infrastracture.security.jwt;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
+import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-import javax.crypto.SecretKey;
-import io.jsonwebtoken.security.SignatureException;
 
 /**
  * {@code JwtTokenValidator} is a class responsible for validating
@@ -17,8 +17,7 @@ import io.jsonwebtoken.security.SignatureException;
 @RequiredArgsConstructor
 public class JwtTokenValidator {
 
-    private static final Logger logger = LogManager.getLogger(
-            JwtTokenValidator.class);
+    private static final Logger logger = LogManager.getLogger(JwtTokenValidator.class);
     private final SecretKey signingKey;
 
     public boolean validate(String token) {

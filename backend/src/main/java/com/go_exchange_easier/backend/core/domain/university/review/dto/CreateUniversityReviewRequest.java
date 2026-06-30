@@ -7,8 +7,7 @@ public record CreateUniversityReviewRequest(
 
         @NotBlank(message = "Text can not be null, empty or whitespace only.")
         @Size(max = 1000, message = "Text max size is 1000 characters.")
-        @Schema(example = "This university was real great. I like teaching staff " +
-                "like also the campus.")
+        @Schema(example = "This university was real great. I like teaching staff like also the campus.")
         String text,
 
         @NotNull(message = "Star rating is required.")

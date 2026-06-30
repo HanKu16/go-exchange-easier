@@ -13,7 +13,9 @@ import jakarta.validation.Payload;
 public @interface ValidAvatar {
 
     String message() default "Invalid avatar file.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 
 }

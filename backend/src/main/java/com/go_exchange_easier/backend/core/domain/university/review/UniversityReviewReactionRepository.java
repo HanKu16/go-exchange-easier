@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface UniversityReviewReactionRepository extends
         JpaRepository<UniversityReviewReaction, Long> {
 
-    Optional<UniversityReviewReaction> findByAuthorIdAndReviewId(
-            int authorId, int reviewId);
+    Optional<UniversityReviewReaction> findByAuthorIdAndReviewId(int authorId, int reviewId);
 
 }

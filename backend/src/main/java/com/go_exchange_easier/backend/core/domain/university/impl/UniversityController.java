@@ -5,19 +5,19 @@ import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.university.UniversityApi;
 import com.go_exchange_easier.backend.core.domain.university.UniversityService;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
-import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityFilters;
-import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewCountSummary;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityProfile;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
+import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewCountSummary;
+import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewDetails;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,9 +28,10 @@ public class UniversityController implements UniversityApi {
 
     @Override
     public ResponseEntity<Page<UniversityDetails>> getPage(
-            UniversityFilters filters, Pageable pageable) {
-        Page<UniversityDetails> page = universityService
-                .getPage(filters, pageable);
+            UniversityFilters filters,
+            Pageable pageable
+    ) {
+        Page<UniversityDetails> page = universityService.getPage(filters, pageable);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(60, TimeUnit.MINUTES))
                 .body(page);
@@ -38,26 +39,32 @@ public class UniversityController implements UniversityApi {
 
     @Override
     public ResponseEntity<UniversityProfile> getProfile(
-            Short universityId, AuthenticatedUser authenticatedUser) {
-        UniversityProfile profile = universityService.getProfile(
-                universityId, authenticatedUser.getId());
+            Short universityId,
+            AuthenticatedUser authenticatedUser
+    ) {
+        UniversityProfile profile = universityService.getProfile(universityId, authenticatedUser.getId());
         return ResponseEntity.ok(profile);
     }
 
     @Override
     public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
-            Integer universityId, AuthenticatedUser authenticatedUser,
-            int page, int size) {
-        List<UniversityReviewDetails> reviews = universityReviewService
-                .getByUniversityId(universityId, authenticatedUser.getId(),
-                        page, size);
+            Integer universityId,
+            AuthenticatedUser authenticatedUser,
+            int page,
+            int size
+    ) {
+        List<UniversityReviewDetails> reviews = universityReviewService.getByUniversityId(
+                universityId,
+                authenticatedUser.getId(),
+                page,
+                size
+        );
         return ResponseEntity.ok(Listing.of(reviews));
     }
 
     @Override
     public ResponseEntity<UniversityReviewCountSummary> getCount(Integer universityId) {
-        UniversityReviewCountSummary reviewCount = universityReviewService
-                .countByUniversityId(universityId);
+        UniversityReviewCountSummary reviewCount = universityReviewService.countByUniversityId(universityId);
         return ResponseEntity.ok(reviewCount);
     }
 

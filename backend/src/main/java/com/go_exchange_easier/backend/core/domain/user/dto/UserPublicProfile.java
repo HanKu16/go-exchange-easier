@@ -9,13 +9,21 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"userId", "nick", "description"})
 public record UserPublicProfile(
-
         Integer userId,
         String nick,
-        @Nullable String avatarUrl,
+
+        @Nullable
+        String avatarUrl,
+
         String description,
-        @Nullable UniversitySummary homeUniversity,
-        @Nullable CountryDetails countryOfOrigin,
-        @Nullable UserStatusSummary status
+
+        @Nullable
+        UniversitySummary homeUniversity,
+
+        @Nullable
+        CountryDetails countryOfOrigin,
+
+        @Nullable
+        UserStatusSummary status
 
 ) implements Serializable { }

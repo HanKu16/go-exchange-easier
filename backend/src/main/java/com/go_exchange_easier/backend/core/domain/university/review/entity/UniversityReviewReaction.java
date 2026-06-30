@@ -3,7 +3,10 @@ package com.go_exchange_easier.backend.core.domain.university.review.entity;
 import com.go_exchange_easier.backend.core.domain.reaction.ReactionType;
 import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 

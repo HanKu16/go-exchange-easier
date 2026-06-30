@@ -5,6 +5,10 @@ import com.go_exchange_easier.backend.core.domain.report.user.dto.UserReportDeta
 
 public interface UserReportService {
 
-    UserReportDetails create(int reportedUserId, int reporterId, CreateUserReportRequest request);
+    UserReportDetails create(
+            int reportedUserId,
+            int reporterId,
+            CreateUserReportRequest request
+    );
 
 }

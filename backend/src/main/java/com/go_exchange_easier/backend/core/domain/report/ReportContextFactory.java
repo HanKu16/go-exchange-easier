@@ -1,12 +1,12 @@
 package com.go_exchange_easier.backend.core.domain.report;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewSnapshot;
 import com.go_exchange_easier.backend.core.domain.user.dto.UserPublicProfile;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import com.fasterxml.jackson.core.type.TypeReference;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor

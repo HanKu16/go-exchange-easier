@@ -6,9 +6,7 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"id", "name", "country"})
 public record CityDetails(
-
         Integer id,
         String name,
         CountryDetails country
-
 ) implements Serializable { }

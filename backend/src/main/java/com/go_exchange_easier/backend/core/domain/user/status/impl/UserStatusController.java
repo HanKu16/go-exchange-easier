@@ -4,10 +4,10 @@ import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusApi;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusService;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

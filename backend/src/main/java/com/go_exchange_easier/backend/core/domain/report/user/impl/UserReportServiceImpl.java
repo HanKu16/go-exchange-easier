@@ -2,19 +2,22 @@ package com.go_exchange_easier.backend.core.domain.report.user.impl;
 
 import com.go_exchange_easier.backend.core.domain.report.ReportContextFactory;
 import com.go_exchange_easier.backend.core.domain.report.ReportStatus;
-import com.go_exchange_easier.backend.core.domain.report.user.*;
+import com.go_exchange_easier.backend.core.domain.report.user.UserReport;
+import com.go_exchange_easier.backend.core.domain.report.user.UserReportRepository;
+import com.go_exchange_easier.backend.core.domain.report.user.UserReportService;
 import com.go_exchange_easier.backend.core.domain.report.user.dto.CreateUserReportRequest;
 import com.go_exchange_easier.backend.core.domain.report.user.dto.UserReportDetails;
 import com.go_exchange_easier.backend.core.domain.user.UserPublicProfileProvider;
 import com.go_exchange_easier.backend.core.domain.user.dto.UserPublicProfile;
-import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserReportServiceImpl implements UserReportService {
 
     private final UserPublicProfileProvider userPublicProfileProvider;
@@ -23,7 +26,11 @@ public class UserReportServiceImpl implements UserReportService {
 
     @Override
     @Transactional
-    public UserReportDetails create(int reportedUserId, int reporterId, CreateUserReportRequest request) {
+    public UserReportDetails create(
+            int reportedUserId,
+            int reporterId,
+            CreateUserReportRequest request
+    ) {
         UserReport report = new UserReport();
         report.setCreatedAt(OffsetDateTime.now());
         report.setDescription(request.description());

@@ -2,7 +2,10 @@ package com.go_exchange_easier.backend.core.domain.university.review.entity;
 
 import com.go_exchange_easier.backend.core.domain.reaction.ReactionType;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.domain.Persistable;
@@ -14,8 +17,7 @@ import org.springframework.data.domain.Persistable;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @IdClass(UniversityReviewsReactionCountId.class)
-public class UniversityReviewReactionCount implements
-        Persistable<UniversityReviewsReactionCountId> {
+public class UniversityReviewReactionCount implements Persistable<UniversityReviewsReactionCountId> {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)

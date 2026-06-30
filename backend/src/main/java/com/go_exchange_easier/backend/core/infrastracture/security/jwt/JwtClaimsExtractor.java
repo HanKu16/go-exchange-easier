@@ -2,13 +2,13 @@ package com.go_exchange_easier.backend.core.infrastracture.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.List;
-import java.util.Date;
+import javax.crypto.SecretKey;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /**
  * {@code JwtClaimsExtractor} is a utility class responsible for extracting
@@ -23,51 +23,54 @@ public class JwtClaimsExtractor {
     private final SecretKey signingKey;
 
     public int extractUserId(String token) {
-        return extractClaim(token, claims -> {
-            Object id = claims.get("userId");
-            if (id instanceof Integer) return (Integer) id;
-            if (id instanceof Long) return ((Long) id).intValue();
-            if (id instanceof String) return Integer.parseInt((String) id);
-            throw new MissingJwtClaimException("There is " +
-                    "no claim 'userId' in the token.");
-        });
+        return extractClaim(
+                token, claims -> {
+                    Object id = claims.get("userId");
+                    if (id instanceof Integer) {
+                        return (Integer) id;
+                    }
+                    if (id instanceof Long) {
+                        return ((Long) id).intValue();
+                    }
+                    if (id instanceof String) {
+                        return Integer.parseInt((String) id);
+                    }
+                    throw new MissingJwtClaimException("There is " + "no claim 'userId' in the token.");
+                }
+        );
     }
 
     public String extractUsername(String token) {
-        String username = extractClaim(token,
-                claims -> (String) claims.get("username"));
+        String username = extractClaim(token, claims -> (String) claims.get("username"));
         if (username == null) {
-            throw new MissingJwtClaimException("There is " +
-                    "no claim 'username' in the token.");
+            throw new MissingJwtClaimException("There is " + "no claim 'username' in the token.");
         }
         return username;
     }
 
     public String extractNick(String token) {
-        String nick = extractClaim(token,
-                claims -> (String) claims.get("nick"));
+        String nick = extractClaim(token, claims -> (String) claims.get("nick"));
         if (nick == null) {
-            throw new MissingJwtClaimException("There is " +
-                    "no claim 'nick' in the token.");
+            throw new MissingJwtClaimException("There is " + "no claim 'nick' in the token.");
         }
         return nick;
     }
 
     public Optional<String> extractAvatarKey(String token) {
-        String avatarKey = extractClaim(token,
-                claims -> (String) claims.get("avatarKey"));
+        String avatarKey = extractClaim(token, claims -> (String) claims.get("avatarKey"));
         return avatarKey != null ? Optional.of(avatarKey) : Optional.empty();
     }
 
     public List<String> extractRoles(String token) {
-        return extractClaim(token, claims -> {
-            try {
-                return claims.get("roles", List.class);
-            } catch (Exception e) {
-                throw new MissingJwtClaimException("There is " +
-                        "no claim 'roles' in the token.");
-            }
-        });
+        return extractClaim(
+                token, claims -> {
+                    try {
+                        return claims.get("roles", List.class);
+                    } catch (Exception e) {
+                        throw new MissingJwtClaimException("There is " + "no claim 'roles' in the token.");
+                    }
+                }
+        );
     }
 
     public Date extractExpirationDate(String token) {

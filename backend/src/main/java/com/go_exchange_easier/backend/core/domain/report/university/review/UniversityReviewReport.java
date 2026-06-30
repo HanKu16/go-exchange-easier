@@ -1,13 +1,16 @@
 package com.go_exchange_easier.backend.core.domain.report.university.review;
 
 import com.go_exchange_easier.backend.core.domain.report.Report;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import java.util.Map;
 
 @Entity
 @Table(name = "university_review_reports", schema = "core")

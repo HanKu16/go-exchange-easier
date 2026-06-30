@@ -11,15 +11,14 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ExchangeRepository extends
-        JpaRepository<Exchange, Integer>,
-        JpaSpecificationExecutor<Exchange> {
+public interface ExchangeRepository extends JpaRepository<Exchange, Integer>, JpaSpecificationExecutor<Exchange> {
 
     @Override
     @NonNull
-    @EntityGraph(attributePaths = {"user", "fieldOfStudy", "university", "university.city",
-        "university.city.country"})
-    Page<Exchange> findAll(@Nullable Specification<Exchange> specification,
-            @NonNull Pageable pageable);
+    @EntityGraph(attributePaths = {"user", "fieldOfStudy", "university", "university.city", "university.city.country"})
+    Page<Exchange> findAll(
+            @Nullable Specification<Exchange> specification,
+            @NonNull Pageable pageable
+    );
 
 }

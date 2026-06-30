@@ -8,7 +8,10 @@ import java.io.Serializable;
 public record CountryDetails(
 
         Short id,
+
         String englishName,
-        @Nullable String flagUrl
+
+        @Nullable
+        String flagUrl
 
 ) implements Serializable { }

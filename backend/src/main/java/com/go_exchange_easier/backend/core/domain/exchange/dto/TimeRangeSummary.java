@@ -6,8 +6,6 @@ import java.time.LocalDate;
 
 @Schema(requiredProperties = {"startedAt", "endAt"})
 public record TimeRangeSummary(
-
         LocalDate startedAt,
         LocalDate endAt
-
 ) implements Serializable { }

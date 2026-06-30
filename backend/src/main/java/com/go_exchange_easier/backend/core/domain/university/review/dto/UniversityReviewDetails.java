@@ -8,10 +8,8 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 
-@Schema(requiredProperties = {"id", "author", "university",
-        "starRating", "textContent", "createdAt", "reactions"})
+@Schema(requiredProperties = {"id", "author", "university", "starRating", "textContent", "createdAt", "reactions"})
 public record UniversityReviewDetails(
-
         Integer id,
         UserWithAvatarSummary author,
         UniversityDetails university,
@@ -19,5 +17,4 @@ public record UniversityReviewDetails(
         String textContent,
         Instant createdAt,
         List<ReactionDetails> reactions
-
 ) implements Serializable { }

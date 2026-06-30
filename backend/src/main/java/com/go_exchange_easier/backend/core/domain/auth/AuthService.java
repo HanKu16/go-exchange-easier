@@ -6,8 +6,16 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthService {
 
-    TokenBundle login(LoginRequest request, HttpServletRequest servletRequest);
-    TokenBundle refresh(String refreshToken, HttpServletRequest servletRequest);
+    TokenBundle login(
+            LoginRequest request,
+            HttpServletRequest servletRequest
+    );
+
+    TokenBundle refresh(
+            String refreshToken,
+            HttpServletRequest servletRequest
+    );
+
     TokenBundle logout(String refreshToken);
 
 }

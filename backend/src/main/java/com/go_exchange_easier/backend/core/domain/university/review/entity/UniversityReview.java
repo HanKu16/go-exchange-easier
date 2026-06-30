@@ -3,12 +3,15 @@ package com.go_exchange_easier.backend.core.domain.university.review.entity;
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "university_reviews", schema = "core")
@@ -17,8 +20,8 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @SQLRestriction("deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE core.university_reviews " +
-        "SET deleted_at = CURRENT_TIMESTAMP WHERE university_review_id = ?")
+@SQLDelete(
+        sql = "UPDATE core.university_reviews " + "SET deleted_at = CURRENT_TIMESTAMP WHERE university_review_id = ?")
 public class UniversityReview {
 
     @Id

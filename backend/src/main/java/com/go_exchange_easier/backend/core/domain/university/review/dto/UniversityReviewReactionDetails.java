@@ -6,8 +6,6 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"reactionType", "count"})
 public record UniversityReviewReactionDetails(
-
         ReactionType reactionType,
         Short count
-
 ) implements Serializable { }

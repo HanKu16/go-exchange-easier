@@ -9,14 +9,22 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"userId", "nick", "description", "isFollowed"})
 public record UserProfile(
-
         Integer userId,
         String nick,
-        @Nullable String avatarUrl,
-        String description,
-        @Nullable UniversitySummary homeUniversity,
-        @Nullable CountryDetails countryOfOrigin,
-        @Nullable UserStatusSummary status,
-        Boolean isFollowed
 
+        @Nullable
+        String avatarUrl,
+
+        String description,
+
+        @Nullable
+        UniversitySummary homeUniversity,
+
+        @Nullable
+        CountryDetails countryOfOrigin,
+
+        @Nullable
+        UserStatusSummary status,
+
+        Boolean isFollowed
 ) implements Serializable { }

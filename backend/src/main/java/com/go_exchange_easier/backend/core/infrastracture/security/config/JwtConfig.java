@@ -2,12 +2,12 @@ package com.go_exchange_easier.backend.core.infrastracture.security.config;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import javax.crypto.SecretKey;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import javax.crypto.SecretKey;
 
 @Configuration
 @ConfigurationProperties(prefix = "application.security.jwt")

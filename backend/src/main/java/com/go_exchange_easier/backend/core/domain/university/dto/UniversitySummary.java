@@ -6,9 +6,10 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"id", "nativeName"})
 public record UniversitySummary(
-
         Short id,
         String nativeName,
-        @Nullable String englishName
 
-) implements Serializable { }
+        @Nullable
+        String englishName
+
+) implements Serializable {}

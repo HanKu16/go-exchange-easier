@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Size;
 
 public record CreateUniversityReviewReportRequest(
 
-    @Size(max = 1000, message = "Description cannot be longer than 1000 characters.")
-    @Schema(example = "Profile photo of this user violates rules.")
-    String description
+        @Size(max = 1000, message = "Description cannot be longer than 1000 characters.")
+        @Schema(example = "Profile photo of this user violates rules.")
+        String description
 
 ) { }

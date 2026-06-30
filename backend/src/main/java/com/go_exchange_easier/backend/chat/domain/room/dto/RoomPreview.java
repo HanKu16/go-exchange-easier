@@ -8,13 +8,16 @@ import java.util.UUID;
 
 @Schema(requiredProperties = {"id", "name", "targetUserId", "hasAnyUnreadMessages"})
 public record RoomPreview(
-
         UUID id,
         String name,
         Integer targetUserId,
         boolean hasAnyUnreadMessages,
-        @Nullable String imageUrl,
-        @Nullable MessageSummary lastMessage
 
-) implements Serializable { }
+        @Nullable
+        String imageUrl,
+
+        @Nullable
+        MessageSummary lastMessage
+
+) implements Serializable {}
 

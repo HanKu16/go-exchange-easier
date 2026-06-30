@@ -2,10 +2,10 @@ package com.go_exchange_easier.backend.core.domain.university.impl;
 
 import com.go_exchange_easier.backend.core.domain.follow.university.UniversityFollowService;
 import com.go_exchange_easier.backend.core.domain.university.*;
-import com.go_exchange_easier.backend.core.domain.university.dto.UniversityPublicProfile;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityFilters;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityProfile;
+import com.go_exchange_easier.backend.core.domain.university.dto.UniversityPublicProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,11 +25,11 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Override
     public UniversityProfile getProfile(
-            short universityId, int currentUserId) {
-        UniversityPublicProfile publicProfile = publicProfileProvider
-                .getProfile(universityId);
-        boolean isFollowed = universityFollowService.doesFollowExist(
-                universityId, currentUserId);
+            short universityId,
+            int currentUserId
+    ) {
+        UniversityPublicProfile publicProfile = publicProfileProvider.getProfile(universityId);
+        boolean isFollowed = universityFollowService.doesFollowExist(universityId, currentUserId);
         return new UniversityProfile(
                 publicProfile.id(),
                 publicProfile.nativeName(),
@@ -42,11 +42,11 @@ public class UniversityServiceImpl implements UniversityService {
 
     @Override
     public Page<UniversityDetails> getPage(
-            UniversityFilters filters, Pageable pageable) {
-        Specification<University> specification =
-                UniversitySpecification.fromFilter(filters);
-        Page<University> universities = universityRepository
-                .findAll(specification, pageable);
+            UniversityFilters filters,
+            Pageable pageable
+    ) {
+        Specification<University> specification = UniversitySpecification.fromFilter(filters);
+        Page<University> universities = universityRepository.findAll(specification, pageable);
         return universities.map(universityMapper::toDetails);
     }
 

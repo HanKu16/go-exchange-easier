@@ -3,10 +3,10 @@ package com.go_exchange_easier.backend.core.api;
 import com.go_exchange_easier.backend.core.domain.user.UserReadService;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarUrlSummary;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +16,12 @@ public class CoreFacadeImpl implements CoreFacade {
     private final AvatarService avatarService;
 
     @Override
-    public CoreUser getUser(int userId) {
+    public CoreUser getUserById(int userId) {
         return userReadService.getUser(userId);
     }
 
     @Override
-    public Map<Integer, CoreUser> getUsers(Set<Integer> userIds) {
+    public Map<Integer, CoreUser> getUsersByIds(Set<Integer> userIds) {
         return userReadService.getUsers(userIds);
     }
 

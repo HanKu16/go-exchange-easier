@@ -8,24 +8,27 @@ import com.go_exchange_easier.backend.core.domain.location.country.dto.CountrySu
 import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
-import com.go_exchange_easier.backend.core.domain.user.*;
+import com.go_exchange_easier.backend.core.domain.user.User;
+import com.go_exchange_easier.backend.core.domain.user.UserRepository;
+import com.go_exchange_easier.backend.core.domain.user.UserUpdateService;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarKeys;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarUrlSummary;
 import com.go_exchange_easier.backend.core.domain.user.description.UpdateUserDescriptionRequest;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionDetails;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionRepository;
-import com.go_exchange_easier.backend.core.domain.user.dto.*;
+import com.go_exchange_easier.backend.core.domain.user.dto.AssignCountryOfOriginRequest;
+import com.go_exchange_easier.backend.core.domain.user.dto.AssignHomeUniversityRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UpdateUserStatusRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatus;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusRepository;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
+import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import java.time.OffsetDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -43,58 +46,54 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public UserDescriptionDetails updateDescription(
-            int userId, UpdateUserDescriptionRequest request) {
+            int userId,
+            UpdateUserDescriptionRequest request
+    ) {
         OffsetDateTime updatedAt = OffsetDateTime.now();
-        int rowsUpdated = userDescriptionRepository.updateByUserId(
-                userId, request.description(), updatedAt);
+        int rowsUpdated = userDescriptionRepository.updateByUserId(userId, request.description(), updatedAt);
         if (rowsUpdated == 0) {
-            throw new ResourceNotFoundException("Description for " +
-                    "user of id " + userId + " was not found.");
+            throw new ResourceNotFoundException("Description for user of id " + userId + " was not found.");
         }
-        return new UserDescriptionDetails(userId,
-                request.description(), updatedAt);
+        return new UserDescriptionDetails(userId, request.description(), updatedAt);
     }
 
     @Override
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public UniversitySummary assignHomeUniversity(
-            int userId, AssignHomeUniversityRequest request) {
+            int userId,
+            AssignHomeUniversityRequest request
+    ) {
         University university = universityRepository.findById(request.universityId())
                 .orElseThrow(() -> new ReferencedResourceNotFoundException(
-                        "University of id " + request.universityId() +
-                        " does not exist."));
-        int rowsUpdated = userRepository.updateHomeUniversity(
-                userId, university.getId());
+                        "University of id " + request.universityId() + " does not exist."));
+        int rowsUpdated = userRepository.updateHomeUniversity(userId, university.getId());
         if (rowsUpdated == 0) {
-            throw new ResourceNotFoundException("User of id " +
-                    userId + " does not exist.");
+            throw new ResourceNotFoundException("User of id " + userId + " does not exist.");
         }
-        return new UniversitySummary(university.getId(),
-                university.getOriginalName(), university.getEnglishName());
+        return new UniversitySummary(university.getId(), university.getOriginalName(), university.getEnglishName());
     }
 
     @Override
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public UserStatusSummary updateStatus(
-            int userId, UpdateUserStatusRequest request) {
+            int userId,
+            UpdateUserStatusRequest request
+    ) {
         if (request.statusId() != null) {
             UserStatus status = userStatusRepository.findById(request.statusId())
                     .orElseThrow(() -> new ReferencedResourceNotFoundException(
-                            "Status of id " + request.statusId() +
-                            " was not found."));
+                            "Status of id " + request.statusId() + " was not found."));
             int rowsUpdated = userRepository.updateStatus(userId, status.getId());
             if (rowsUpdated == 0) {
-                throw new ResourceNotFoundException("User of id " +
-                        userId + " was not found.");
+                throw new ResourceNotFoundException("User of id " + userId + " was not found.");
             }
             return new UserStatusSummary(status.getId(), status.getName());
         }
         int rowsUpdated = userRepository.updateStatus(userId, null);
         if (rowsUpdated == 0) {
-            throw new ResourceNotFoundException(
-                    "User of id " + userId + " was not found.");
+            throw new ResourceNotFoundException("User of id " + userId + " was not found.");
         }
         return new UserStatusSummary(null, null);
     }
@@ -103,24 +102,22 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public CountrySummary assignCountryOfOrigin(
-            int userId, AssignCountryOfOriginRequest request) {
+            int userId,
+            AssignCountryOfOriginRequest request
+    ) {
         if (request.countryId() != null) {
             Country country = countryRepository.findById(request.countryId())
                     .orElseThrow(() -> new ReferencedResourceNotFoundException(
-                            "Country of id " + request.countryId() +
-                            " was not found."));
-            int rowsUpdated = userRepository.assignCountryOfOrigin(
-                    userId, request.countryId());
+                            "Country of id " + request.countryId() + " was not found."));
+            int rowsUpdated = userRepository.assignCountryOfOrigin(userId, request.countryId());
             if (rowsUpdated == 0) {
-                throw new ResourceNotFoundException("User of id " +
-                        userId + " was not found.");
+                throw new ResourceNotFoundException("User of id " + userId + " was not found.");
             }
             return new CountrySummary(country.getId(), country.getEnglishName());
         } else {
             int rowsUpdated = userRepository.assignCountryOfOrigin(userId, null);
             if (rowsUpdated == 0) {
-                throw new ResourceNotFoundException("User of id " + userId +
-                        " was not found.");
+                throw new ResourceNotFoundException("User of id " + userId + " was not found.");
             }
             return new CountrySummary(null, null);
         }
@@ -129,10 +126,12 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Override
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
-    public AvatarUrlSummary addAvatar(int userId, MultipartFile file) {
+    public AvatarUrlSummary addAvatar(
+            int userId,
+            MultipartFile file
+    ) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User of id " + userId + " was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User of id " + userId + " was not found."));
         String existingAvatarKey = user.getAvatarKey();
         if (existingAvatarKey != null) {
             avatarService.delete(existingAvatarKey);
@@ -147,8 +146,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public AvatarUrlSummary deleteAvatar(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User of id " + userId + " was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User of id " + userId + " was not found."));
         String existingAvatarKey = user.getAvatarKey();
         if (existingAvatarKey != null) {
             avatarService.delete(existingAvatarKey);

@@ -8,12 +8,15 @@ import java.io.Serializable;
 @Schema(requiredProperties = {"id", "nativeName",
         "city", "isFollowed"})
 public record UniversityProfile(
-
     Short id,
     String nativeName,
-    @Nullable String englishName,
-    @Nullable String linkToWebsite,
+
+    @Nullable
+    String englishName,
+
+    @Nullable
+    String linkToWebsite,
+
     CityDetails city,
     Boolean isFollowed
-
 )  implements Serializable { }

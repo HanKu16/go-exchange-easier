@@ -13,7 +13,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/api/reports/users")
 @Tag(name = "User report")
@@ -28,17 +31,16 @@ public interface UserReportApi {
             @ApiResponse(
                     responseCode = "400",
                     description = "Validation failed - invalid request body",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorResponse.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Reported user was not found",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorResponse.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<UserReportDetails> create(
             @PathVariable Integer reportedUserId,
             @RequestBody @Valid CreateUserReportRequest request,
-            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser
+    );
 
 }

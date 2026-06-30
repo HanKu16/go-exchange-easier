@@ -2,11 +2,14 @@ package com.go_exchange_easier.backend.core.domain.auth.entity;
 
 import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(name = "user_credentials", schema = "core")
@@ -36,11 +39,7 @@ public class UserCredentials {
     @Column(name = "role", columnDefinition = "role")
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-            name = "user_roles",
-            schema = "core",
-            joinColumns = @JoinColumn(name = "user_id")
-    )
+    @CollectionTable(name = "user_roles", schema = "core", joinColumns = @JoinColumn(name = "user_id"))
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private Set<Role> roles = new HashSet<>();
 

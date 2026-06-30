@@ -1,12 +1,12 @@
 package com.go_exchange_easier.backend.chat.domain.room.entity;
 
 import jakarta.persistence.*;
+import java.time.OffsetDateTime;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Persistable;
-import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "user_in_rooms", schema = "chat")

@@ -10,16 +10,19 @@ import com.go_exchange_easier.backend.core.domain.university.impl.UniversityMapp
 import com.go_exchange_easier.backend.core.domain.user.*;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarUrlSummary;
-import com.go_exchange_easier.backend.core.domain.user.dto.*;
+import com.go_exchange_easier.backend.core.domain.user.dto.UserDetails;
+import com.go_exchange_easier.backend.core.domain.user.dto.UserProfile;
+import com.go_exchange_easier.backend.core.domain.user.dto.UserPublicProfile;
+import com.go_exchange_easier.backend.core.domain.user.dto.UserWithAvatarSummary;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +37,12 @@ public class UserReadServiceImpl implements UserReadService {
     private final UserMapper userMapper;
 
     @Override
-    public UserProfile getProfile(int userId, int currentUserId) {
-        UserPublicProfile publicProfile = publicProfileProvider
-                .getProfile(userId);
-        boolean isFollowed = userFollowService
-                .doesFollowExist(currentUserId, userId);
+    public UserProfile getProfile(
+            int userId,
+            int currentUserId
+    ) {
+        UserPublicProfile publicProfile = publicProfileProvider.getProfile(userId);
+        boolean isFollowed = userFollowService.doesFollowExist(currentUserId, userId);
         return new UserProfile(
                 publicProfile.userId(),
                 publicProfile.nick(),
@@ -47,11 +51,15 @@ public class UserReadServiceImpl implements UserReadService {
                 publicProfile.homeUniversity(),
                 publicProfile.countryOfOrigin(),
                 publicProfile.status(),
-                isFollowed);
+                isFollowed
+        );
     }
 
     @Override
-    public Page<UserDetails> getPage(String nick, Pageable pageable) {
+    public Page<UserDetails> getPage(
+            String nick,
+            Pageable pageable
+    ) {
         Page<User> users;
         Specification<User> spec = UserSpecification.fetchCountryOfOrigin()
                 .and(UserSpecification.fetchHomeUniversityWithLocation());
@@ -65,24 +73,23 @@ public class UserReadServiceImpl implements UserReadService {
     @Override
     public List<UserWithAvatarSummary> getFollowees(int userId) {
         User user = userRepository.findWithFollowees(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User of id " + userId + " was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User of id " + userId + " was not found."));
         return user.getUserFollowsSent()
                 .stream()
                 .map(UserFollow::getFollowee)
                 .map(u -> new UserWithAvatarSummary(
-                        u.getId(), u.getNick(),
-                        u.getAvatarKey() != null ?
-                                avatarService.getUrl(u.getAvatarKey()).thumbnail() :
-                                null))
+                        u.getId(),
+                        u.getNick(),
+                        u.getAvatarKey() != null ? avatarService.getUrl(u.getAvatarKey())
+                                .thumbnail() : null
+                ))
                 .toList();
     }
 
     @Override
     public List<UniversityDetails> getFollowedUniversities(int userId) {
         User user = userRepository.findWithFollowedUniversities(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User of id " + userId + " was not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User of id " + userId + " was not found."));
         return user.getUniversityFollowsSent()
                 .stream()
                 .map(f -> universityMapper.toDetails(f.getUniversity()))
@@ -92,13 +99,10 @@ public class UserReadServiceImpl implements UserReadService {
     @Override
     public UserWithAvatarSummary getMe(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User of id " + userId + " was not found."));
-        String avatarUrl = user.getAvatarKey() != null ?
-                avatarService.getUrl(user.getAvatarKey()).original() :
-                null;
-        return new UserWithAvatarSummary(user.getId(),
-                user.getNick(), avatarUrl);
+                .orElseThrow(() -> new ResourceNotFoundException("User of id " + userId + " was not found."));
+        String avatarUrl = user.getAvatarKey() != null ? avatarService.getUrl(user.getAvatarKey())
+                .original() : null;
+        return new UserWithAvatarSummary(user.getId(), user.getNick(), avatarUrl);
     }
 
     @Override
@@ -111,13 +115,11 @@ public class UserReadServiceImpl implements UserReadService {
         }
         User user = optionalUser.get();
         if (user.getAvatarKey() != null) {
-            AvatarUrlSummary avatar = avatarService
-                    .getUrl(user.getAvatarKey());
+            AvatarUrlSummary avatar = avatarService.getUrl(user.getAvatarKey());
             thumbnailUrl = avatar.thumbnail();
             originalUrl = avatar.original();
         }
-        return new CoreUser(user.getId(), user.getNick(),
-                new CoreAvatar(thumbnailUrl, originalUrl));
+        return new CoreUser(user.getId(), user.getNick(), new CoreAvatar(thumbnailUrl, originalUrl));
     }
 
     @Override
@@ -136,16 +138,10 @@ public class UserReadServiceImpl implements UserReadService {
             } else {
                 CoreAvatar userAvatar = null;
                 if (user.getAvatarKey() != null) {
-                    AvatarUrlSummary avatar = avatarService
-                            .getUrl(user.getAvatarKey());
-                    userAvatar = new CoreAvatar(avatar.original(),
-                            avatar.thumbnail());
+                    AvatarUrlSummary avatar = avatarService.getUrl(user.getAvatarKey());
+                    userAvatar = new CoreAvatar(avatar.original(), avatar.thumbnail());
                 }
-                result.put(id, new CoreUser(
-                        user.getId(),
-                        user.getNick(),
-                        userAvatar
-                ));
+                result.put(id, new CoreUser(user.getId(), user.getNick(), userAvatar));
             }
         }
         return result;

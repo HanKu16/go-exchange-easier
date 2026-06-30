@@ -7,26 +7,28 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UniversityFollowRepository extends
-        JpaRepository<UniversityFollow, UniversityFollowId> {
+public interface UniversityFollowRepository extends JpaRepository<UniversityFollow, UniversityFollowId> {
 
     @Modifying
-    @Query("DELETE UniversityFollow f WHERE f.follower.id = :followerId " +
-            "AND f.university.id = :universityId")
-    int deleteByUniversityIdAndFollowerId(@Param("universityId") short universityId,
-            @Param("followerId") int followerId);
+    @Query("DELETE UniversityFollow f WHERE f.follower.id = :followerId " + "AND f.university.id = :universityId")
+    int deleteByUniversityIdAndFollowerId(
+            @Param("universityId") short universityId,
+            @Param("followerId") int followerId
+    );
 
     @Modifying
     @Query(value = "INSERT INTO core.university_follows (follower_id, university_id)" +
             "VALUES (:followerId, :universityId)", nativeQuery = true)
-    int insertByNativeQuery(@Param("universityId") short universityId,
-            @Param("followerId") int followerId);
+    int insertByNativeQuery(
+            @Param("universityId") short universityId,
+            @Param("followerId") int followerId
+    );
 
     @Query(value = "SELECT COUNT(*) FROM core.university_follows " +
-            "WHERE university_id = :universityId AND follower_id = :followerId",
-            nativeQuery = true)
+            "WHERE university_id = :universityId AND follower_id = :followerId", nativeQuery = true)
     int countByUniversityIdAndFollowerIdNativeQuery(
             @Param("universityId") short universityId,
-            @Param("followerId") int followerId);
+            @Param("followerId") int followerId
+    );
 
 }

@@ -4,12 +4,12 @@ import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.core.domain.fieldofstudy.FieldOfStudyApi;
 import com.go_exchange_easier.backend.core.domain.fieldofstudy.FieldOfStudyService;
 import com.go_exchange_easier.backend.core.domain.fieldofstudy.FieldOfStudySummary;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequiredArgsConstructor

@@ -5,8 +5,6 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"universityId", "count"})
 public record UniversityReviewCountSummary(
-
         Short universityId,
         Integer count
-
 ) implements Serializable { }

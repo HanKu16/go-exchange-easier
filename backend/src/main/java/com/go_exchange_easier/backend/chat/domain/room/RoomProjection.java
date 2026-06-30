@@ -4,7 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record RoomProjection (
-
         UUID id,
         int targetUserId,
         UUID lastMessageId,
@@ -12,5 +11,4 @@ public record RoomProjection (
         String lastMessageTextContent,
         int lastMessageAuthorId,
         OffsetDateTime lastReadAt
-
 ) { }

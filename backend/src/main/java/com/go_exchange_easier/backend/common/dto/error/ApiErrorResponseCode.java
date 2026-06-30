@@ -1,7 +1,6 @@
 package com.go_exchange_easier.backend.common.dto.error;
 
 public enum ApiErrorResponseCode {
-
     ResourceNotFound,
     ReferencedResourceNotFound,
     PermissionDenied,
@@ -16,5 +15,4 @@ public enum ApiErrorResponseCode {
     MissingRequestHeader,
     InvalidParameterType,
     MethodNotSupported
-
 }

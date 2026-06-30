@@ -1,8 +1,8 @@
 package com.go_exchange_easier.backend.core.domain.follow.university;
 
 import jakarta.persistence.Embeddable;
-import lombok.*;
 import java.io.Serializable;
+import lombok.*;
 
 @Embeddable
 @Getter

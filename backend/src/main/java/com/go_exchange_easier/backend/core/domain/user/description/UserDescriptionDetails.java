@@ -6,9 +6,7 @@ import java.time.OffsetDateTime;
 
 @Schema(requiredProperties = {"userId", "description", "updatedAt"})
 public record UserDescriptionDetails(
-
         Integer userId,
         String description,
         OffsetDateTime updatedAt
-
 ) implements Serializable { }

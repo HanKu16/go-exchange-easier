@@ -8,7 +8,7 @@ import com.go_exchange_easier.backend.core.domain.report.university.review.dto.U
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,10 +21,12 @@ public class UniversityReviewReportController implements UniversityReviewReportA
             CreateUniversityReviewReportRequest request,
             AuthenticatedUser authenticatedUser
     ) {
-        UniversityReviewReportDetails report = universityReviewReportService
-                .create(reportId, authenticatedUser.getId(), request);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
+        UniversityReviewReportDetails report = universityReviewReportService.create(
+                reportId,
+                authenticatedUser.getId(),
+                request
+        );
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(report);
     }
 

@@ -19,9 +19,10 @@ public interface CityApi {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Cities were successfully returned"),
+                    description = "Cities were successfully returned")
     })
     ResponseEntity<Listing<CityDetails>> getAll(
-            @RequestParam(value = "countryId", required = false) Short countryId);
+            @RequestParam(value = "countryId", required = false) Short countryId
+    );
 
 }

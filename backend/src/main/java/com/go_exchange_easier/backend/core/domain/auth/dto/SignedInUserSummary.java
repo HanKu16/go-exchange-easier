@@ -8,6 +8,8 @@ import java.io.Serializable;
 public record SignedInUserSummary(
 
         Integer userId,
-        @Nullable String avatarUrl
+
+        @Nullable
+        String avatarUrl
 
 ) implements Serializable { }

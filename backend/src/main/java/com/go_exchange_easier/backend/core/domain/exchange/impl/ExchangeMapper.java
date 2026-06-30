@@ -22,8 +22,7 @@ public class ExchangeMapper {
         }
         return new ExchangeDetails(
                 exchange.getId(),
-                new TimeRangeSummary(exchange.getStartedAt(),
-                        exchange.getEndAt()),
+                new TimeRangeSummary(exchange.getStartedAt(), exchange.getEndAt()),
                 userMapper.toSummary(exchange.getUser()),
                 universityMapper.toDetails(exchange.getUniversity()),
                 FieldOfStudySummary.fromEntity(exchange.getFieldOfStudy())

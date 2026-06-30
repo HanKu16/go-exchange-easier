@@ -6,9 +6,7 @@ import java.time.Instant;
 
 @Schema(requiredProperties = {"createdAt", "textContent", "author"})
 public record MessageSummary(
-
         Instant createdAt,
         String textContent,
         AuthorSummary author
-
 ) implements Serializable { }

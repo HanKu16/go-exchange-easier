@@ -1,17 +1,17 @@
 package com.go_exchange_easier.backend.core.domain.auth.dto;
 
 import com.go_exchange_easier.backend.core.domain.auth.entity.Role;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,8 +45,7 @@ public class AuthenticatedUser implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles
-                .stream()
+        return roles.stream()
                 .map(r -> new SimpleGrantedAuthority(r.toString()))
                 .collect(Collectors.toSet());
     }

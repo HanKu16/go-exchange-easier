@@ -4,12 +4,12 @@ import com.go_exchange_easier.backend.common.dto.Listing;
 import com.go_exchange_easier.backend.core.domain.location.city.CitiesService;
 import com.go_exchange_easier.backend.core.domain.location.city.CityApi;
 import com.go_exchange_easier.backend.core.domain.location.city.CityDetails;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

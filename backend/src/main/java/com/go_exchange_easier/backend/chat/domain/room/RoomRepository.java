@@ -12,50 +12,50 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface RoomRepository extends
-        JpaRepository<Room, UUID> {
+public interface RoomRepository extends JpaRepository<Room, UUID> {
 
     @Query(value = """
-        SELECT new com.go_exchange_easier.backend.chat.domain.room.RoomProjection(
-            r.id,
-            otherUser.userId,
-            m.id,
-            m.createdAt,
-            m.textContent,
-            m.authorId,
-            me.lastReadAt
-        )
-        FROM Room r
-        JOIN r.users me
-        JOIN r.users otherUser
-        JOIN r.lastMessage m
-        WHERE me.userId = :userId
-            AND otherUser.userId != :userId
-        ORDER BY m.createdAt DESC
-    """, countQuery = """
-        SELECT COUNT(r)
-        FROM Room r
-        JOIN r.users me
-        WHERE me.userId = :userId
-        AND r.lastMessage IS NOT NULL
-    """)
+                SELECT new com.go_exchange_easier.backend.chat.domain.room.RoomProjection(
+                    r.id,
+                    otherUser.userId,
+                    m.id,
+                    m.createdAt,
+                    m.textContent,
+                    m.authorId,
+                    me.lastReadAt
+                )
+                FROM Room r
+                JOIN r.users me
+                JOIN r.users otherUser
+                JOIN r.lastMessage m
+                WHERE me.userId = :userId
+                    AND otherUser.userId != :userId
+                ORDER BY m.createdAt DESC
+            """, countQuery = """
+                SELECT COUNT(r)
+                FROM Room r
+                JOIN r.users me
+                WHERE me.userId = :userId
+                AND r.lastMessage IS NOT NULL
+            """)
     Page<RoomProjection> findRoomsProjectionByUserId(
             @Param("userId") int userId,
             Pageable pageable
     );
 
-    @Query("""
-        SELECT
-            r
-        FROM Room r
-        JOIN r.users u1
-        JOIN r.users u2
-        WHERE u1.userId = :userId
-        AND u2.userId = :targetUserId
-    """)
+    @Query(value = """
+                SELECT
+                    r
+                FROM Room r
+                JOIN r.users u1
+                JOIN r.users u2
+                WHERE u1.userId = :userId
+                AND u2.userId = :targetUserId
+            """)
     Optional<Room> findPrivateRoomWithUsers(
             @Param("userId") int userId,
-            @Param("targetUserId") int targetUserId);
+            @Param("targetUserId") int targetUserId
+    );
 
     @EntityGraph(attributePaths = {"users"})
     Optional<Room> findPrivateRoomWithUsersById(UUID roomId);

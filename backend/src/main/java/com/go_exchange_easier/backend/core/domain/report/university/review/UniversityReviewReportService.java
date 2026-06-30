@@ -5,6 +5,10 @@ import com.go_exchange_easier.backend.core.domain.report.university.review.dto.U
 
 public interface UniversityReviewReportService {
 
-    UniversityReviewReportDetails create(int reviewId, int reporterId, CreateUniversityReviewReportRequest request);
+    UniversityReviewReportDetails create(
+            int reviewId,
+            int reporterId,
+            CreateUniversityReviewReportRequest request
+    );
 
 }

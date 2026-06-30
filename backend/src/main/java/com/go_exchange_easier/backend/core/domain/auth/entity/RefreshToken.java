@@ -2,12 +2,12 @@ package com.go_exchange_easier.backend.core.domain.auth.entity;
 
 import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "refresh_tokens", schema = "core")

@@ -20,37 +20,44 @@ public class UserFollowServiceImpl implements UserFollowService {
 
     @Override
     @Transactional
-    public void follow(int followerId, int followeeId) {
+    public void follow(
+            int followerId,
+            int followeeId
+    ) {
         if (followerId == followeeId) {
             throw new IllegalOperationException("User can not follow himself.");
         }
         if (!userRepository.existsById(followeeId)) {
-            throw new ResourceNotFoundException("User of id " +
-                    followeeId + " was not found.");
+            throw new ResourceNotFoundException("User of id " + followeeId + " was not found.");
         }
         if (doesFollowExist(followerId, followeeId)) {
-            throw new ResourceAlreadyExistsException("User follow where follower id " +
-                    followeeId + " and followee id " + followeeId + " already exists.");
+            throw new ResourceAlreadyExistsException(
+                    "User follow where follower id " + followerId + " and followee id " + followeeId +
+                            " already exists.");
         }
         userFollowRepository.insertByNativeQuery(followerId, followeeId);
     }
 
     @Override
     @Transactional
-    public void unfollow(int followerId, int followeeId) {
-        int rowsDeleted = userFollowRepository.deleteByFollowerIdAndFolloweeId(
-                followerId, followeeId);
+    public void unfollow(
+            int followerId,
+            int followeeId
+    ) {
+        int rowsDeleted = userFollowRepository.deleteByFollowerIdAndFolloweeId(followerId, followeeId);
         if (rowsDeleted == 0) {
-            throw new ResourceNotFoundException("User follow" +
-                    " where follower id " + followerId + " and followee id " +
-                    followeeId + " was not found.");
+            throw new ResourceNotFoundException(
+                    "User follow where follower id " + followerId + " and followee id " + followeeId +
+                            " was not found.");
         }
     }
 
     @Override
-    public boolean doesFollowExist(int followerId, int followeeId) {
-        return userFollowRepository.countByFollowerIdAndFolloweeId(
-                followerId, followeeId) > 0;
+    public boolean doesFollowExist(
+            int followerId,
+            int followeeId
+    ) {
+        return userFollowRepository.countByFollowerIdAndFolloweeId(followerId, followeeId) > 0;
     }
 
 }

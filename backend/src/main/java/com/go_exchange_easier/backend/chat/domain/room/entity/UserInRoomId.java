@@ -1,8 +1,8 @@
 package com.go_exchange_easier.backend.chat.domain.room.entity;
 
 import jakarta.persistence.Embeddable;
-import lombok.*;
 import java.io.Serializable;
+import lombok.*;
 
 @Embeddable
 @Getter

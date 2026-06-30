@@ -11,6 +11,8 @@ public record RoomSummary(
         UUID id,
         String name,
         Integer targetUserId,
-        @Nullable String imageUrl
+
+        @Nullable
+        String imageUrl
 
 ) implements Serializable { }

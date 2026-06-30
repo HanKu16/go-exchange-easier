@@ -1,19 +1,19 @@
 package com.go_exchange_easier.backend.core.domain.user.impl;
 
 import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException;
-import com.go_exchange_easier.backend.core.domain.location.country.dto.CountryDetails;
 import com.go_exchange_easier.backend.core.domain.location.country.CountryService;
+import com.go_exchange_easier.backend.core.domain.location.country.dto.CountryDetails;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversitySummary;
 import com.go_exchange_easier.backend.core.domain.user.UserPublicProfileProvider;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
 import com.go_exchange_easier.backend.core.domain.user.dto.UserPublicProfile;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +25,11 @@ public class UserPublicProfileProviderImpl implements UserPublicProfileProvider 
     private final AvatarService avatarService;
 
     @Override
-    @Cacheable(value="user-public-profiles", key="'user:' + #userId")
+    @Cacheable(value = "user-public-profiles", key = "'user:' + #userId")
     public UserPublicProfile getProfile(int userId) {
         List<Object[]> rows = userRepository.findProfileById(userId);
         if (rows.isEmpty()) {
-            throw new ResourceNotFoundException(
-                    "User of id " + userId + " was not found");
+            throw new ResourceNotFoundException("User of id " + userId + " was not found");
         }
         Object[] row = rows.getFirst();
         Integer id = (Integer) row[0];
@@ -47,21 +46,21 @@ public class UserPublicProfileProviderImpl implements UserPublicProfileProvider 
         String flagKey = row[11] != null ? (String) row[11] : null;
         String avatarUrl = null;
         if (avatarKey != null) {
-            avatarUrl = avatarService.getUrl(avatarKey).original();
+            avatarUrl = avatarService.getUrl(avatarKey)
+                    .original();
         }
-        UniversitySummary university = universityId != null ?
-                new UniversitySummary(universityId, universityOriginalName,
-                        universityEnglishName) :
-                null;
-        CountryDetails country = countryId != null ?
-                new CountryDetails(countryId, countryName, flagKey != null ?
-                        countryService.getFlagUrl(flagKey) : null) :
-                null;
-        UserStatusSummary status = statusId != null ?
-                new UserStatusSummary(statusId, statusName) :
-                null;
-        return new UserPublicProfile(id, nick, avatarUrl, description,
-                university, country, status);
+        UniversitySummary university = universityId != null ? new UniversitySummary(
+                universityId,
+                universityOriginalName,
+                universityEnglishName
+        ) : null;
+        CountryDetails country = countryId != null ? new CountryDetails(
+                countryId,
+                countryName,
+                flagKey != null ? countryService.getFlagUrl(flagKey) : null
+        ) : null;
+        UserStatusSummary status = statusId != null ? new UserStatusSummary(statusId, statusName) : null;
+        return new UserPublicProfile(id, nick, avatarUrl, description, university, country, status);
     }
 
 }

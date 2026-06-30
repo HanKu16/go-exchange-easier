@@ -1,33 +1,32 @@
 package com.go_exchange_easier.backend.core.domain.university.review.impl;
 
 import com.go_exchange_easier.backend.core.domain.reaction.ReactionType;
-import com.go_exchange_easier.backend.core.domain.university.review.entity.UniversityReview;
-import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewReactionDetails;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionCountRepository;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewReactionCountService;
+import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewReactionDetails;
+import com.go_exchange_easier.backend.core.domain.university.review.entity.UniversityReview;
 import com.go_exchange_easier.backend.core.domain.university.review.entity.UniversityReviewReactionCount;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UniversityReviewReactionCountServiceImpl implements
-        UniversityReviewReactionCountService {
+public class UniversityReviewReactionCountServiceImpl implements UniversityReviewReactionCountService {
 
     private final UniversityReviewReactionCountRepository reactionCountRepository;
 
     @Override
     @Transactional
     public List<UniversityReviewReactionDetails> decrement(
-            int reviewId, ReactionType reactionType) {
-        List<UniversityReviewReactionCount> allCountsForReview =
-                getAllCountsForReview(reviewId);
-        UniversityReviewReactionCount countForType = getCountOfReactionType(
-                    allCountsForReview, reactionType, reviewId);
+            int reviewId,
+            ReactionType reactionType
+    ) {
+        List<UniversityReviewReactionCount> allCountsForReview = getAllCountsForReview(reviewId);
+        UniversityReviewReactionCount countForType = getCountOfReactionType(allCountsForReview, reactionType, reviewId);
         decrementCountValue(countForType);
         return mapToReactionDetails(allCountsForReview);
     }
@@ -35,11 +34,11 @@ public class UniversityReviewReactionCountServiceImpl implements
     @Override
     @Transactional
     public List<UniversityReviewReactionDetails> increment(
-            int reviewId, ReactionType reactionType) {
-        List<UniversityReviewReactionCount> allCountsForReview =
-                getAllCountsForReview(reviewId);
-        UniversityReviewReactionCount countForType = getCountOfReactionType(
-                allCountsForReview, reactionType, reviewId);
+            int reviewId,
+            ReactionType reactionType
+    ) {
+        List<UniversityReviewReactionCount> allCountsForReview = getAllCountsForReview(reviewId);
+        UniversityReviewReactionCount countForType = getCountOfReactionType(allCountsForReview, reactionType, reviewId);
         incrementCountValue(countForType);
         return mapToReactionDetails(allCountsForReview);
     }
@@ -47,14 +46,21 @@ public class UniversityReviewReactionCountServiceImpl implements
     @Override
     @Transactional
     public List<UniversityReviewReactionDetails> replace(
-            int reviewId, ReactionType oldReactionType,
-            ReactionType newReactionType) {
-        List<UniversityReviewReactionCount> allCountsForReview =
-                getAllCountsForReview(reviewId);
+            int reviewId,
+            ReactionType oldReactionType,
+            ReactionType newReactionType
+    ) {
+        List<UniversityReviewReactionCount> allCountsForReview = getAllCountsForReview(reviewId);
         UniversityReviewReactionCount countForOldType = getCountOfReactionType(
-                allCountsForReview, oldReactionType, reviewId);
+                allCountsForReview,
+                oldReactionType,
+                reviewId
+        );
         UniversityReviewReactionCount countForNewType = getCountOfReactionType(
-                allCountsForReview, newReactionType, reviewId);
+                allCountsForReview,
+                newReactionType,
+                reviewId
+        );
         decrementCountValue(countForOldType);
         incrementCountValue(countForNewType);
         return mapToReactionDetails(allCountsForReview);
@@ -72,8 +78,7 @@ public class UniversityReviewReactionCountServiceImpl implements
             count.setCount(defaultCountValue);
             countsForReview.add(count);
         }
-        List<UniversityReviewReactionCount> savedCounts =
-                reactionCountRepository.saveAll(countsForReview);
+        List<UniversityReviewReactionCount> savedCounts = reactionCountRepository.saveAll(countsForReview);
         return mapToReactionDetails(savedCounts);
     }
 
@@ -89,25 +94,24 @@ public class UniversityReviewReactionCountServiceImpl implements
 
     private UniversityReviewReactionCount getCountOfReactionType(
             List<UniversityReviewReactionCount> allCountsForReview,
-            ReactionType reactionType, int reviewId) {
-        return allCountsForReview
-                .stream()
+            ReactionType reactionType,
+            int reviewId
+    ) {
+        return allCountsForReview.stream()
                 .filter(c -> c.getType() == reactionType)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException(
-                        "University review reaction where review id " + reviewId +
-                                " and reaction type " + reactionType +
-                                " was not found. There is probably some issue in logic" +
+                        "University review reaction where review id " + reviewId + " and reaction type " +
+                                reactionType + " was not found. There is probably some issue in logic" +
                                 " check if review of id" + reviewId + " exists. If yes" +
                                 " all counts for this review should also exist."));
     }
 
     private List<UniversityReviewReactionDetails> mapToReactionDetails(
-            List<UniversityReviewReactionCount> allCountsForReview) {
-        return allCountsForReview
-                .stream()
-                .map(c -> new UniversityReviewReactionDetails(
-                        c.getType(), c.getCount()))
+            List<UniversityReviewReactionCount> allCountsForReview
+    ) {
+        return allCountsForReview.stream()
+                .map(c -> new UniversityReviewReactionDetails(c.getType(), c.getCount()))
                 .toList();
     }
 
