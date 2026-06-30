@@ -40,7 +40,7 @@ public interface UniversityReviewReportApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<UniversityReviewReportDetails> create(
-            @PathVariable Integer reviewId,
+            @PathVariable("reviewId") Integer reviewId,
             @RequestBody @Valid CreateUniversityReviewReportRequest request,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 

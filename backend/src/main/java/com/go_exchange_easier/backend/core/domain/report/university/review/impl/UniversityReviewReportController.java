@@ -17,12 +17,12 @@ public class UniversityReviewReportController implements UniversityReviewReportA
     private final UniversityReviewReportService universityReviewReportService;
 
     public ResponseEntity<UniversityReviewReportDetails> create(
-            Integer reportId,
+            Integer reviewId,
             CreateUniversityReviewReportRequest request,
             AuthenticatedUser authenticatedUser
     ) {
         UniversityReviewReportDetails report = universityReviewReportService.create(
-                reportId,
+                reviewId,
                 authenticatedUser.getId(),
                 request
         );

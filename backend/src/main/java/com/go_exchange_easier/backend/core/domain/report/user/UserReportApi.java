@@ -38,7 +38,7 @@ public interface UserReportApi {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<UserReportDetails> create(
-            @PathVariable Integer reportedUserId,
+            @PathVariable("reportedUserId") Integer reportedUserId,
             @RequestBody @Valid CreateUserReportRequest request,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     );
