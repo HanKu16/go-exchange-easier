@@ -88,16 +88,33 @@ const ActionButtons = (props: ActionButtonsProps) => {
   const navigate = useNavigate();
   const { showAlert } = useSnackbar();
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
+  const maxDescriptionLength = 1000;
 
   const handleReportAction = async (description: string | null) => {
-    const result = await sendCreateUserReportRequest(Number(props.userId), { description });
-    if (result.isSuccess) {
-      showAlert("Reported successfully.", "success");
-      return true;
-    }
-    showAlert("Failed to submit the report.", "error");
-    return false;
-  };
+      const result = await sendCreateUserReportRequest(Number(props.userId), { 
+        description 
+      });
+
+      if (result.isSuccess) {
+        showAlert("Reported successfully.", "success");
+        return true;
+      }
+
+
+      const isSizeError = result.error.fieldErrors?.some(
+        (fieldError) => fieldError.code === "SIZE" || fieldError.field === "description"
+      );
+
+      if (isSizeError) {
+        showAlert(`Report description can not be longer than ${maxDescriptionLength} characters.`, "error");
+      } else if (result.error.status === "SERVICE_UNAVAILABLE") {
+        showAlert("Could not submit the report. Service unavailable.", "error");
+      } else {
+        showAlert("Failed to submit the report. Please try again later.", "error");
+      }
+
+      return false;
+    };
 
 
   const handleFollow = async () => {
@@ -186,7 +203,7 @@ const ActionButtons = (props: ActionButtonsProps) => {
         onConfirm={handleReportAction}
         title="Report this user"
         descriptionText="Leave a short description if you want to add context."
-        maxReportDescriptionSize={1000}
+        maxReportDescriptionSize={maxDescriptionLength}
       />
     </>
   )
