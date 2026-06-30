@@ -24,7 +24,7 @@ public class ChatExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(MissingRoomParticipantException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.ResourceNotFound.name(),
+                ApiErrorResponseCode.RESOURCE_NOT_FOUND.name(),
                 e.getMessage()
         );
         ApiErrorResponse response = new ApiErrorResponse(

@@ -6,4 +6,4 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record CoreAvatar(
         String originalUrl,
         String thumbnailUrl
-) {}
+) { }

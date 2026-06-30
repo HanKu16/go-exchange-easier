@@ -5,6 +5,7 @@ import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponseCode;
 import com.go_exchange_easier.backend.common.dto.error.FieldErrorDetail;
 import com.go_exchange_easier.backend.common.dto.error.GlobalErrorDetail;
 import com.go_exchange_easier.backend.common.exception.*;
+import com.go_exchange_easier.backend.common.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.exception.JDBCConnectionException;
@@ -51,7 +52,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(IllegalOperationException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.IllegalOperation.name(), e.getMessage());
+                ApiErrorResponseCode.ILLEGAL_OPERATION.name(), e.getMessage());
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.CONFLICT,
                 "Attempt to make illegal operation.", List.of(), List.of(globalError));
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
@@ -61,7 +62,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(ReferencedResourceNotFoundException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(ApiErrorResponseCode
-                .ReferencedResourceNotFound.name(), e.getMessage());
+                .REFERENCED_RESOURCE_NOT_FOUND.name(), e.getMessage());
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY,
                 "The request could not be processed due to a referenced resource " +
                         "not found.", List.of(), List.of(globalError));
@@ -72,7 +73,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(ResourceAlreadyExistsException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.ResourceAlreadyExists.name(),
+                ApiErrorResponseCode.RESOURCE_ALREADY_EXISTS.name(),
                 e.getMessage());
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.CONFLICT,
                 "Resource already exists, so it can not be created again.",
@@ -84,7 +85,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(ResourceNotFoundException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(ApiErrorResponseCode
-                .ResourceNotFound.name(), e.getMessage());
+                .RESOURCE_NOT_FOUND.name(), e.getMessage());
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.NOT_FOUND,
                 "The requested resource was not found.", List.of(), List.of(globalError));
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -121,7 +122,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleAccessExceptions(Exception e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(ApiErrorResponseCode
-                .PermissionDenied.name(), "");
+                .PERMISSION_DENIED.name(), "");
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.FORBIDDEN,
                 "Access denied.", List.of(), List.of(globalError));
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
@@ -157,7 +158,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(HttpMessageNotReadableException e) {
         logger.error(e.getMessage(), e);
         List<GlobalErrorDetail> globalErrorDetails = List.of(new GlobalErrorDetail(
-                ApiErrorResponseCode.InvalidRequestBody.name(),
+                ApiErrorResponseCode.INVALID_REQUEST_BODY.name(),
                 "Invalid request or body format."));
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
                 HttpStatus.BAD_REQUEST, "There was something wrong with " +
@@ -169,7 +170,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handle(MissingRequestHeaderException e) {
         logger.error(e.getMessage(), e);
         List<GlobalErrorDetail> globalErrorDetails = List.of(new GlobalErrorDetail(
-                ApiErrorResponseCode.MissingRequestHeader.name(), e.getMessage()));
+                ApiErrorResponseCode.MISSING_REQUEST_HEADER.name(), e.getMessage()));
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
                 HttpStatus.BAD_REQUEST, "There is missing header in your request.",
                 List.of(), globalErrorDetails);
@@ -181,7 +182,7 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail error = new GlobalErrorDetail(
-                ApiErrorResponseCode.InvalidParameterType.name(),
+                ApiErrorResponseCode.INVALID_PARAMETER_TYPE.name(),
                 "Type mismatch error.");
         return new ResponseEntity<>(new ApiErrorResponse(
                 HttpStatus.BAD_REQUEST, "Type mismatch error.",
@@ -193,7 +194,7 @@ public class GlobalExceptionHandler {
             HttpRequestMethodNotSupportedException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail error = new GlobalErrorDetail(
-                ApiErrorResponseCode.MethodNotSupported.name(), e.getMessage());
+                ApiErrorResponseCode.METHOD_NOT_SUPPORTED.name(), e.getMessage());
         return new ResponseEntity<>(new ApiErrorResponse(
                 HttpStatus.METHOD_NOT_ALLOWED, "HTTP method not supported.",
                 List.of(), List.of(error)), HttpStatus.METHOD_NOT_ALLOWED);
@@ -207,7 +208,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleAuthenticationException(Exception e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(ApiErrorResponseCode
-                .InvalidToken.name(), "Failed to authenticate user.");
+                .INVALID_TOKEN.name(), "Failed to authenticate user.");
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.UNAUTHORIZED,
                 "Authentication failed.", List.of(), List.of(globalError));
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
@@ -218,7 +219,7 @@ public class GlobalExceptionHandler {
         return e.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> new FieldErrorDetail(
                         fieldError.getField(),
-                        fieldError.getCode(),
+                        fieldError.getCode() != null ? StringUtils.pascalToScreamingSnakeCase(fieldError.getCode()) : null,
                         fieldError.getDefaultMessage()
                 ))
                 .toList();
@@ -228,7 +229,7 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException e) {
         return e.getBindingResult().getGlobalErrors().stream()
                 .map(globalError -> new GlobalErrorDetail(
-                        globalError.getCode(),
+                        globalError.getCode() != null ? StringUtils.pascalToScreamingSnakeCase(globalError.getCode()) : null,
                         globalError.getDefaultMessage()
                 ))
                 .toList();

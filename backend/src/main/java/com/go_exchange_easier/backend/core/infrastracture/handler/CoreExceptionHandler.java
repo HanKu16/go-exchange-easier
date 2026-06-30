@@ -25,7 +25,7 @@ public class CoreExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(DeviceMismatchException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(),
+                ApiErrorResponseCode.AUTHENTICATION_FAILED.name(),
                 "Token came for device that he was not bound to."
         );
         ApiErrorResponse response = new ApiErrorResponse(
@@ -41,7 +41,7 @@ public class CoreExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(MailAlreadyExistsException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.MailAlreadyTaken.name(),
+                ApiErrorResponseCode.MAIL_ALREADY_TAKEN.name(),
                 "This mail is already taken and can not be used."
         );
         ApiErrorResponse response = new ApiErrorResponse(
@@ -57,7 +57,7 @@ public class CoreExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(TokenExpiredException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(),
+                ApiErrorResponseCode.AUTHENTICATION_FAILED.name(),
                 "Token expired."
         );
         ApiErrorResponse response = new ApiErrorResponse(
@@ -73,7 +73,7 @@ public class CoreExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(TokenNotFoundException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(),
+                ApiErrorResponseCode.AUTHENTICATION_FAILED.name(),
                 "Token was not found."
         );
         ApiErrorResponse response = new ApiErrorResponse(
@@ -89,7 +89,7 @@ public class CoreExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(TokenRevokedException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.AuthenticationFailed.name(),
+                ApiErrorResponseCode.AUTHENTICATION_FAILED.name(),
                 "Token is revoked."
         );
         ApiErrorResponse response = new ApiErrorResponse(
@@ -105,7 +105,7 @@ public class CoreExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handle(UsernameAlreadyExistsException e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.LoginAlreadyTaken.name(),
+                ApiErrorResponseCode.LOGIN_ALREADY_TAKEN.name(),
                 "Login is already taken and can not be used again."
         );
         ApiErrorResponse response = new ApiErrorResponse(
@@ -133,7 +133,7 @@ public class CoreExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleAuthenticationException(Exception e) {
         logger.error(e.getMessage(), e);
         GlobalErrorDetail globalError = new GlobalErrorDetail(
-                ApiErrorResponseCode.InvalidToken.name(),
+                ApiErrorResponseCode.INVALID_TOKEN.name(),
                 "Failed to authenticate user."
         );
         ApiErrorResponse response = new ApiErrorResponse(

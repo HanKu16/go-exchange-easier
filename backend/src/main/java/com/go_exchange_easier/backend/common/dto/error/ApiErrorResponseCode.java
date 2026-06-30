@@ -1,18 +1,24 @@
 package com.go_exchange_easier.backend.common.dto.error;
 
 public enum ApiErrorResponseCode {
-    ResourceNotFound,
-    ReferencedResourceNotFound,
-    PermissionDenied,
-    AuthenticationFailed,
-    InvalidToken,
-    LoginAlreadyTaken,
-    MailAlreadyTaken,
-    InvalidRequestBody,
-    ResourceAlreadyExists,
-    InternalError,
-    IllegalOperation,
-    MissingRequestHeader,
-    InvalidParameterType,
-    MethodNotSupported
+    RESOURCE_NOT_FOUND,
+    REFERENCED_RESOURCE_NOT_FOUND,
+    PERMISSION_DENIED,
+    AUTHENTICATION_FAILED,
+    INVALID_TOKEN,
+    LOGIN_ALREADY_TAKEN,
+    MAIL_ALREADY_TAKEN,
+    INVALID_REQUEST_BODY,
+    RESOURCE_ALREADY_EXISTS,
+    INTERNAL_ERROR,
+    ILLEGAL_OPERATION,
+    MISSING_REQUEST_HEADER,
+    INVALID_PARAMETER_TYPE,
+    METHOD_NOT_SUPPORTED,
+//  below codes that comes from validation of requests body
+    SIZE,
+    VALID_DATE_RANGE,
+    NOT_BLANK,
+    NOT_NULL,
+    EMAIL
 }
