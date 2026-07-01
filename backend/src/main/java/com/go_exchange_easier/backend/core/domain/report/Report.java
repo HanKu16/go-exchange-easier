@@ -33,6 +33,14 @@ public abstract class Report {
     @Enumerated(EnumType.STRING)
     private ReportStatus status;
 
+    @Column(name = "reason")
+    @Enumerated(EnumType.STRING)
+    private ReportReason reason;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private ReportType type;
+
     @Column(name = "reporter_id")
     private int reporterId;
 

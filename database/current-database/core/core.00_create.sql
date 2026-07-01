@@ -128,6 +128,8 @@ CREATE TABLE core.reports (
   created_at TIMESTAMPTZ NOT NULL,
   description TEXT,
   status TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  type TEXT NOT NULL,
   reporter_id INTEGER NOT NULL
 );
 

@@ -124,6 +124,8 @@ TABLE core.reports {
   created_at TIMESTAMPTZ [not null]
   description TEXT
   status TEXT [not null]
+  reason TEXT [not null]
+  type TEXT [not null]
   reporter_id INTEGER [ref: > core.users.user_id, not null]
 }
 
