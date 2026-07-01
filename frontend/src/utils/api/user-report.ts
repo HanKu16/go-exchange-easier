@@ -2,13 +2,13 @@ import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
 import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
 import { sendRequest } from "../send-request";
 import type { CreateUserReport } from "../../dtos/report/user/CreateUserReport";
-import type { UserReportDetails } from "../../dtos/report/user/UserReportDetails";
+import type { UserReportSummary } from "../../dtos/report/user/UserReportDetails";
 
 
 export const sendCreateUserReportRequest = async (
   reportedUserId: number,
   body: CreateUserReport,
-): Promise<ResponseSuccessResult<UserReportDetails> | ResponseFailureResult> => {
+): Promise<ResponseSuccessResult<UserReportSummary> | ResponseFailureResult> => {
   const uri: string = `/api/reports/users/${reportedUserId}`;
   const request: RequestInit = {
     method: "POST",

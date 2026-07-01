@@ -1,11 +1,6 @@
-import type { ReportStatus } from "../../ReportStatus";
-
-export type UniversityReviewReportDetails = {
+export type UniversityReviewReportSumary = {
     id: string;
     createdAt: string;
     description: string | null;
-    status: ReportStatus;
-    reporterId: number;
-    context: Record<string, unknown>;
-    reportedReviewId: number;
+    reason: string;
 }
