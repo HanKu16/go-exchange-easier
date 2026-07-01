@@ -7,7 +7,7 @@ import com.go_exchange_easier.backend.core.domain.report.university.review.Unive
 import com.go_exchange_easier.backend.core.domain.report.university.review.UniversityReviewReportRepository;
 import com.go_exchange_easier.backend.core.domain.report.university.review.UniversityReviewReportService;
 import com.go_exchange_easier.backend.core.domain.report.university.review.dto.CreateUniversityReviewReportRequest;
-import com.go_exchange_easier.backend.core.domain.report.university.review.dto.UniversityReviewReportDetails;
+import com.go_exchange_easier.backend.core.domain.report.university.review.dto.UniversityReviewReportSummary;
 import com.go_exchange_easier.backend.core.domain.university.review.UniversityReviewService;
 import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewSnapshot;
 import java.time.OffsetDateTime;
@@ -27,7 +27,7 @@ public class UniversityReviewReportServiceImpl implements UniversityReviewReport
 
     @Override
     @Transactional
-    public UniversityReviewReportDetails create(
+    public UniversityReviewReportSummary create(
             int reviewId,
             int reporterId,
             CreateUniversityReviewReportRequest request
@@ -44,7 +44,7 @@ public class UniversityReviewReportServiceImpl implements UniversityReviewReport
         report.setContext(context);
         report.setReportedReviewId(reviewId);
         UniversityReviewReport savedReport = universityReviewReportRepository.save(report);
-        return UniversityReviewReportDetails.fromEntity(savedReport);
+        return UniversityReviewReportSummary.fromEntity(savedReport);
     }
 
 }

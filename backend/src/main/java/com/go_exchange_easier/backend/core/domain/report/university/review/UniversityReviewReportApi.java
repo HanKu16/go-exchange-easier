@@ -3,7 +3,7 @@ package com.go_exchange_easier.backend.core.domain.report.university.review;
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.report.university.review.dto.CreateUniversityReviewReportRequest;
-import com.go_exchange_easier.backend.core.domain.report.university.review.dto.UniversityReviewReportDetails;
+import com.go_exchange_easier.backend.core.domain.report.university.review.dto.UniversityReviewReportSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,7 +39,7 @@ public interface UniversityReviewReportApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<UniversityReviewReportDetails> create(
+    ResponseEntity<UniversityReviewReportSummary> create(
             @PathVariable("reviewId") Integer reviewId,
             @RequestBody @Valid CreateUniversityReviewReportRequest request,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);

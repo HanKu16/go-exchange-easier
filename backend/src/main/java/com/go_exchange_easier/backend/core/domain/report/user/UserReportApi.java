@@ -3,7 +3,7 @@ package com.go_exchange_easier.backend.core.domain.report.user;
 import com.go_exchange_easier.backend.common.dto.error.ApiErrorResponse;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.report.user.dto.CreateUserReportRequest;
-import com.go_exchange_easier.backend.core.domain.report.user.dto.UserReportDetails;
+import com.go_exchange_easier.backend.core.domain.report.user.dto.UserReportSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +37,7 @@ public interface UserReportApi {
                     description = "Reported user was not found",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class)))
     })
-    ResponseEntity<UserReportDetails> create(
+    ResponseEntity<UserReportSummary> create(
             @PathVariable("reportedUserId") Integer reportedUserId,
             @RequestBody @Valid CreateUserReportRequest request,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser

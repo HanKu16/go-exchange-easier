@@ -4,7 +4,7 @@ import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.report.university.review.UniversityReviewReportApi;
 import com.go_exchange_easier.backend.core.domain.report.university.review.UniversityReviewReportService;
 import com.go_exchange_easier.backend.core.domain.report.university.review.dto.CreateUniversityReviewReportRequest;
-import com.go_exchange_easier.backend.core.domain.report.university.review.dto.UniversityReviewReportDetails;
+import com.go_exchange_easier.backend.core.domain.report.university.review.dto.UniversityReviewReportSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +16,12 @@ public class UniversityReviewReportController implements UniversityReviewReportA
 
     private final UniversityReviewReportService universityReviewReportService;
 
-    public ResponseEntity<UniversityReviewReportDetails> create(
+    public ResponseEntity<UniversityReviewReportSummary> create(
             Integer reviewId,
             CreateUniversityReviewReportRequest request,
             AuthenticatedUser authenticatedUser
     ) {
-        UniversityReviewReportDetails report = universityReviewReportService.create(
+        UniversityReviewReportSummary report = universityReviewReportService.create(
                 reviewId,
                 authenticatedUser.getId(),
                 request

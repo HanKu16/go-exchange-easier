@@ -7,7 +7,7 @@ import com.go_exchange_easier.backend.core.domain.report.user.UserReport;
 import com.go_exchange_easier.backend.core.domain.report.user.UserReportRepository;
 import com.go_exchange_easier.backend.core.domain.report.user.UserReportService;
 import com.go_exchange_easier.backend.core.domain.report.user.dto.CreateUserReportRequest;
-import com.go_exchange_easier.backend.core.domain.report.user.dto.UserReportDetails;
+import com.go_exchange_easier.backend.core.domain.report.user.dto.UserReportSummary;
 import com.go_exchange_easier.backend.core.domain.user.UserPublicProfileProvider;
 import com.go_exchange_easier.backend.core.domain.user.dto.UserPublicProfile;
 import java.time.OffsetDateTime;
@@ -27,7 +27,7 @@ public class UserReportServiceImpl implements UserReportService {
 
     @Override
     @Transactional
-    public UserReportDetails create(
+    public UserReportSummary create(
             int reportedUserId,
             int reporterId,
             CreateUserReportRequest request
@@ -44,7 +44,7 @@ public class UserReportServiceImpl implements UserReportService {
         Map<String, Object> context = reportContextFactory.createFromProfile(profile);
         report.setContext(context);
         UserReport savedReport = userReportRepository.save(report);
-        return UserReportDetails.fromEntity(savedReport);
+        return UserReportSummary.fromEntity(savedReport);
     }
 
 }
