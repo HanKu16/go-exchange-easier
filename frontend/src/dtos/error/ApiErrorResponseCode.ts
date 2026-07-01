@@ -14,6 +14,7 @@ export type ApiErrorResponseCode =
   | "MISSING_REQUEST_HEADER"
   | "INVALID_PARAMETER_TYPE"
   | "METHOD_NOT_SUPPORTED"
+  | "ILLEGAL_ARGUMENT"
   | "SIZE"
   | "VALID_DATE_RANGE"
   | "SIZE"

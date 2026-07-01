@@ -59,13 +59,11 @@ export const ReportDialog = ({
     };
 
     if (open) {
-      fetchDictionary();
-    } else {
       setReportDescription("");
       setSelectedReason("");
-      setDictionaryFetchStatus("idle");
-    }
-  }, [open]); 
+      fetchDictionary();
+    } 
+  }, [open]);
 
   const handleConfirm = async () => {
     setIsReporting(true);
@@ -91,76 +89,72 @@ export const ReportDialog = ({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" disableScrollLock PaperProps={{ sx: { borderRadius: 4 } }}>
       <DialogTitle sx={{ fontWeight: 800, color: "#04315f" }}>{title}</DialogTitle>
       
-      {open && (
-        <>
-          <DialogContent sx={{ pt: 1 }}>
-            <DialogContentText sx={{ color: "#04315f", mb: 2 }}>{descriptionText}</DialogContentText>
-            {dictionaryFetchStatus === "loading" && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-                <CircularProgress sx={{ color: "#04315f" }} />
-              </Box>
-            )}
-            {dictionaryFetchStatus === "success" && (
-              <>
-                <TextField
-                  select
-                  fullWidth
-                  label="Reason"
-                  required
-                  value={selectedReason}
-                  disabled={isReporting}
-                  onChange={(e) => setSelectedReason(e.target.value)}
-                  sx={{ mb: 2, ...textFieldStyles }}
-                >
-                  {reasons.map((reason) => (
-                    <MenuItem key={reason.value} value={reason.value}>
-                      {reason.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  fullWidth 
-                  label="Description" 
-                  placeholder="Optional details..." 
-                  multiline 
-                  minRows={4}
-                  value={reportDescription} 
-                  disabled={isReporting}
-                  error={reportDescription.length > maxReportDescriptionSize}
-                  helperText={`${reportDescription.length}/${maxReportDescriptionSize} characters`}
-                  onChange={(e) => setReportDescription(e.target.value)}
-                  sx={{ mt: 0.5, ...textFieldStyles }}
-                />
-              </>
-            )}
-          </DialogContent>
-          <DialogActions sx={{ p: 3, gap: 1.5 }}>
-            <Button 
-              fullWidth 
-              onClick={onClose} 
-              variant="outlined" 
-              disabled={isReporting} 
-              sx={{ borderRadius: "12px", py: 1, borderColor: "#04315f", color: "#04315f" }}
+      <DialogContent sx={{ pt: 1 }}>
+        <DialogContentText sx={{ color: "#04315f", mb: 2 }}>{descriptionText}</DialogContentText>
+        {dictionaryFetchStatus === "loading" && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+            <CircularProgress sx={{ color: "#04315f" }} />
+          </Box>
+        )}
+        {dictionaryFetchStatus === "success" && (
+          <>
+            <TextField
+              select
+              fullWidth
+              label="Reason"
+              required
+              value={selectedReason}
+              disabled={isReporting}
+              onChange={(e) => setSelectedReason(e.target.value)}
+              sx={{ mb: 2, ...textFieldStyles }}
             >
-              Cancel
-            </Button>
-            <Button 
+              {reasons.map((reason) => (
+                <MenuItem key={reason.value} value={reason.value}>
+                  {reason.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
               fullWidth 
-              onClick={handleConfirm} 
-              variant="contained" 
-              disableElevation 
-              disabled={isReporting || !selectedReason || reportDescription.length > maxReportDescriptionSize || dictionaryFetchStatus !== "success"} 
-              sx={{ borderRadius: "12px", py: 1, fontWeight: 700, backgroundColor: "#04315f" }}
-            >
-              {isReporting ? (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <CircularProgress color="inherit" size={18} /> Reporting...
-                </Box>
-              ) : "Report"}
-            </Button>
-          </DialogActions>
-        </>
-      )}
+              label="Description" 
+              placeholder="Optional details..." 
+              multiline 
+              minRows={4}
+              value={reportDescription} 
+              disabled={isReporting}
+              error={reportDescription.length > maxReportDescriptionSize}
+              helperText={`${reportDescription.length}/${maxReportDescriptionSize} characters`}
+              onChange={(e) => setReportDescription(e.target.value)}
+              sx={{ mt: 0.5, ...textFieldStyles }}
+            />
+          </>
+        )}
+      </DialogContent>
+      <DialogActions sx={{ p: 3, gap: 1.5 }}>
+        <Button 
+          fullWidth 
+          onClick={onClose} 
+          variant="outlined" 
+          disabled={isReporting} 
+          sx={{ borderRadius: "12px", py: 1, borderColor: "#04315f", color: "#04315f" }}
+        >
+          Cancel
+        </Button>
+        <Button 
+          fullWidth 
+          onClick={handleConfirm} 
+          variant="contained" 
+          disableElevation 
+          disabled={isReporting || !selectedReason || reportDescription.length > maxReportDescriptionSize || dictionaryFetchStatus !== "success"} 
+          sx={{ borderRadius: "12px", py: 1, fontWeight: 700, backgroundColor: "#04315f" }}
+        >
+          {isReporting ? (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <CircularProgress color="inherit" size={18} /> Reporting...
+            </Box>
+          ) : "Report"}
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };

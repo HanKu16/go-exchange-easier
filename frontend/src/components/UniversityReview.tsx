@@ -183,7 +183,7 @@ const UniversityReview = (props: UniversityReviewProps) => {
             <IconButton aria-label="add to favorites">
               <Rating name="read-only" value={props.starRating} readOnly />
             </IconButton>
-            {(props.authorId != signedInUser.id ) &&<Tooltip title="Report review" arrow>
+            {(props.authorId != signedInUser.id ) && <Tooltip title="Report review" arrow>
               <IconButton
                 aria-label="report review"
                 size="small"
