@@ -20,8 +20,8 @@ public record UserReportDetails(
         ReportStatus status,
         Integer reporterId,
         Map<String, Object> context,
-        Integer reportedUserId) implements Serializable
-{
+        Integer reportedUserId
+) implements Serializable {
 
     public static UserReportDetails fromEntity(UserReport report) {
         return new UserReportDetails(

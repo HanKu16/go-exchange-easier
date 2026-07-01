@@ -19,7 +19,6 @@ export const FollowButton = ({
   <BaseActionButton 
     {...props} 
     variant="contained"
-    // endIcon={isFollowed ? <PersonRemove /> : <PersonAdd />}
         endIcon={isFollowed ? <BookmarkIcon /> : <BookmarkIcon />}
   >
     {isFollowed ? "UNSAVE" : "SAVE"}
