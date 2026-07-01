@@ -20,9 +20,6 @@ public record CreateChatReportRequest(
         @Schema(example = "123")
         Integer reportedUserId,
 
-        @Schema(example = "550e8400-e29b-41d4-a716-446655440000")
-        UUID reportedMessageId,
-
         @NotNull(message = "Room id cannot be null.")
         @Schema(example = "550e8400-e29b-41d4-a716-446655440000")
         UUID roomId
