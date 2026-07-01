@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.core.domain.report.user.impl;
 
 import com.go_exchange_easier.backend.core.domain.report.ReportContextFactory;
 import com.go_exchange_easier.backend.core.domain.report.ReportStatus;
+import com.go_exchange_easier.backend.core.domain.report.ReportType;
 import com.go_exchange_easier.backend.core.domain.report.user.UserReport;
 import com.go_exchange_easier.backend.core.domain.report.user.UserReportRepository;
 import com.go_exchange_easier.backend.core.domain.report.user.UserReportService;
@@ -35,6 +36,8 @@ public class UserReportServiceImpl implements UserReportService {
         report.setCreatedAt(OffsetDateTime.now());
         report.setDescription(request.description());
         report.setStatus(ReportStatus.NEW);
+        report.setReason(request.reason());
+        report.setType(ReportType.USER);
         report.setReporterId(reporterId);
         report.setReportedUserId(reportedUserId);
         UserPublicProfile profile = userPublicProfileProvider.getProfile(reportedUserId);

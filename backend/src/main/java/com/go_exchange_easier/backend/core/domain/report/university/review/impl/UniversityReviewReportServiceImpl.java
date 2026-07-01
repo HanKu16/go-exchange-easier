@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.core.domain.report.university.review.impl
 
 import com.go_exchange_easier.backend.core.domain.report.ReportContextFactory;
 import com.go_exchange_easier.backend.core.domain.report.ReportStatus;
+import com.go_exchange_easier.backend.core.domain.report.ReportType;
 import com.go_exchange_easier.backend.core.domain.report.university.review.UniversityReviewReport;
 import com.go_exchange_easier.backend.core.domain.report.university.review.UniversityReviewReportRepository;
 import com.go_exchange_easier.backend.core.domain.report.university.review.UniversityReviewReportService;
@@ -35,6 +36,8 @@ public class UniversityReviewReportServiceImpl implements UniversityReviewReport
         report.setCreatedAt(OffsetDateTime.now());
         report.setDescription(request.description());
         report.setStatus(ReportStatus.NEW);
+        report.setReason(request.reason());
+        report.setType(ReportType.UNIVERSITY_REVIEW);
         report.setReporterId(reporterId);
         UniversityReviewSnapshot reviewSnapshot = universityReviewService.getSnapshotById(reviewId);
         Map<String, Object> context = reportContextFactory.createFromReviewSnapshot(reviewSnapshot);
