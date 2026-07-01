@@ -1,15 +1,5 @@
 CREATE SCHEMA IF NOT EXISTS core ;
 
-CREATE TYPE core.role AS ENUM (
-  'ROLE_USER',
-  'ROLE_ADMIN'
-);
-
-CREATE TYPE core.reaction_type AS ENUM (
-  'LIKE',
-  'DISLIKE'
-);
-
 CREATE TABLE core.countries (
   country_id SMALLSERIAL PRIMARY KEY,
   english_name TEXT UNIQUE NOT NULL,
@@ -72,7 +62,7 @@ CREATE TABLE core.users (
 
 CREATE TABLE core.user_roles (
   user_id INTEGER,
-  role core.ROLE,
+  role TEXT,
   PRIMARY KEY (user_id, role)
 );
 
@@ -88,14 +78,14 @@ CREATE TABLE core.university_reviews (
 
 CREATE TABLE core.university_review_reactions (
   university_review_reaction_id BIGSERIAL PRIMARY KEY,
-  reaction_type core.REACTION_TYPE NOT NULL,
+  reaction_type TEXT NOT NULL,
   university_review_id INTEGER NOT NULL,
   author_id INTEGER NOT NULL
 );
 
 CREATE TABLE core.university_reviews_reaction_counts (
   university_review_id INTEGER,
-  reaction_type core.REACTION_TYPE,
+  reaction_type TEXT,
   count SMALLINT NOT NULL,
   PRIMARY KEY (university_review_id, reaction_type)
 );

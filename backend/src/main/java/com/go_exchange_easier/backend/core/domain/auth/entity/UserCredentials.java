@@ -8,8 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(name = "user_credentials", schema = "core")
@@ -36,11 +34,10 @@ public class UserCredentials {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "role", columnDefinition = "role")
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", schema = "core", joinColumns = @JoinColumn(name = "user_id"))
-    @JdbcType(PostgreSQLEnumJdbcType.class)
     private Set<Role> roles = new HashSet<>();
 
 }

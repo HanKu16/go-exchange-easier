@@ -6,8 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.data.domain.Persistable;
 
 @Entity
@@ -26,10 +24,9 @@ public class UniversityReviewReactionCount implements Persistable<UniversityRevi
     private UniversityReview review;
 
     @Id
+    @Column(name = "reaction_type")
     @EqualsAndHashCode.Include
-    @Column(name = "reaction_type", columnDefinition = "reaction_type")
     @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
     private ReactionType type;
 
     @Column(name = "count")
