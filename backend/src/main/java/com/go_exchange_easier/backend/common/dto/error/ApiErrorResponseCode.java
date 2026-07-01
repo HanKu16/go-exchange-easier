@@ -15,6 +15,7 @@ public enum ApiErrorResponseCode {
     MISSING_REQUEST_HEADER,
     INVALID_PARAMETER_TYPE,
     METHOD_NOT_SUPPORTED,
+    ILLEGAL_ARGUMENT,
 //  below codes that comes from validation of requests body
     SIZE,
     VALID_DATE_RANGE,

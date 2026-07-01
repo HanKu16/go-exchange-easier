@@ -214,6 +214,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handle(IllegalArgumentException e) {
+        logger.error(e.getMessage(), e);
+        GlobalErrorDetail globalError = new GlobalErrorDetail(
+                ApiErrorResponseCode.ILLEGAL_ARGUMENT.name(),
+                e.getMessage()
+        );
+        ApiErrorResponse response = new ApiErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "The provided request contains invalid arguments or state.",
+                List.of(),
+                List.of(globalError)
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     private List<FieldErrorDetail> getFieldErrorDetails(
             MethodArgumentNotValidException e) {
         return e.getBindingResult().getFieldErrors().stream()
