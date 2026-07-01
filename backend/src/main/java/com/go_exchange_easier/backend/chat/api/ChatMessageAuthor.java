@@ -1,0 +1,9 @@
+package com.go_exchange_easier.backend.chat.api;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(requiredProperties = {"id", "nick"})
+public record ChatMessageAuthor(
+        Integer id,
+        String nick
+) { }
