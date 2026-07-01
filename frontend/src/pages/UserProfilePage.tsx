@@ -94,10 +94,9 @@ const ActionButtons = (props: ActionButtonsProps) => {
       });
 
       if (result.isSuccess) {
-        showAlert("Reported successfully.", "success");
+        showAlert("User reported successfully.", "success");
         return true;
       }
-
 
       const isSizeError = result.error.fieldErrors?.some(
         (fieldError) => fieldError.code === "SIZE" || fieldError.field === "description"
