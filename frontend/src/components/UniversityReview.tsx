@@ -142,8 +142,9 @@ const UniversityReview = (props: UniversityReviewProps) => {
   };
 
 
-  const handleReportConfirm = async (description: string | null): Promise<boolean> => {
+  const handleReportConfirm = async (reason: string, description: string | null): Promise<boolean> => {
     const result = await sendCreateUniversityReviewReportRequest(props.id, {
+      reason: reason,
       description: description
     });
 

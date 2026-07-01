@@ -87,8 +87,9 @@ const ActionButtons = (props: ActionButtonsProps) => {
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
   const maxDescriptionLength = 1000;
 
-  const handleReportAction = async (description: string | null) => {
+  const handleReportAction = async (reason: string, description: string | null) => {
       const result = await sendCreateUserReportRequest(Number(props.userId), { 
+        reason,
         description 
       });
 
