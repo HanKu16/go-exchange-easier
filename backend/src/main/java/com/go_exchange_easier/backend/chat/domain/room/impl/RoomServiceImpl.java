@@ -93,10 +93,10 @@ public class RoomServiceImpl implements RoomService {
         CoreUser targetUser = coreFacade.getUserById(request.targetUserId());
         return new RoomSummary(
                 roomId,
-                               targetUser.nick(),
-                               targetUser.id(),
-                               targetUser.avatar() != null ? targetUser.avatar()
-                                       .thumbnailUrl() : null
+                targetUser.nick(),
+                targetUser.id(),
+                targetUser.avatar() != null ? targetUser.avatar()
+                        .thumbnailUrl() : null
         );
     }
 
