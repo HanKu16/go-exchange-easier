@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Typography,
   Avatar,
   Card,
@@ -9,11 +8,7 @@ import {
   Paper,
   Tab,
   Tabs,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
-import { PersonAdd } from "@mui/icons-material";
-import { PersonRemove } from "@mui/icons-material";
 import { deepPurple } from "@mui/material/colors";
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
@@ -36,6 +31,7 @@ import { useSignedInUser } from "../context/SignedInUserContext";
 import { useApplicationState } from "../context/ApplicationStateContext";
 import NoContent from "../components/NoContent";
 import basicAvatar from "../assets/basic-avatar.png";
+import { FollowButton } from "../components/Buttons";
 
 type FollowBoxProps = {
   id: number;
@@ -84,8 +80,6 @@ const FollowEntitiesOptions = (props: FollowEntitiesOptionsProps) => (
 );
 
 const FollowBox = (props: FollowBoxProps) => {
-  const theme = useTheme();
-  const isTinyScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
   const [isFollowed, setIsFollowed] = useState<boolean>(props.isFollowed);
   const { showAlert } = useSnackbar();
@@ -201,25 +195,10 @@ const FollowBox = (props: FollowBoxProps) => {
             </Typography>
           </Box>
         </Box>
-        <Button
-          variant="contained"
-          size={isTinyScreen ? "small" : "medium"}
-          endIcon={props.isFollowed ? <PersonRemove /> : <PersonAdd />}
-          sx={{
-            borderRadius: 20,
-            textTransform: "none",
-            whiteSpace: "nowrap",
-            minWidth: "auto",
-            px: { xs: 2, sm: 3 },
-            fontSize: { xs: "0.8rem", sm: "0.9rem" },
-            boxShadow: "none",
-            flexShrink: 0,
-            marginLeft: 1,
-          }}
+        <FollowButton
+          isFollowed={isFollowed}
           onClick={handleButtonClick}
-        >
-          {isFollowed ? "Unsave" : "Save"}
-        </Button>
+        />
       </Stack>
     </Card>
   );

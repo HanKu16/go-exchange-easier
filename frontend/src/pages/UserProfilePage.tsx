@@ -5,10 +5,6 @@ import PublicIcon from "@mui/icons-material/Public";
 import Navbar from "../components/Navbar";
 import { useTheme, useMediaQuery } from "@mui/material";
 import Button from "@mui/material/Button";
-import PersonAdd from "@mui/icons-material/PersonAdd";
-import PersonRemove from "@mui/icons-material/PersonRemove";
-import ReportIcon from "@mui/icons-material/Report";
-import SendIcon from "@mui/icons-material/Send";
 import Stack from "@mui/material/Stack";
 import UniversityReview, {
   type UniversityReviewProps,
@@ -41,6 +37,7 @@ import { useSignedInUser } from "../context/SignedInUserContext";
 import { useApplicationState } from "../context/ApplicationStateContext";
 import { sendCreateUserReportRequest } from "../utils/api/user-report";
 import { ReportDialog } from "../components/ReportDialog";
+import { FollowButton, ChatButton, ReportButton } from "../components/Buttons";
 
 const AddExchangeButton = () => {
   const navigate = useNavigate();
@@ -142,60 +139,25 @@ const ActionButtons = (props: ActionButtonsProps) => {
   return (
     <>
       <Stack direction="row" spacing={2} sx={{ marginTop: 3 }}>
-        {props.isFollowed ? (
-          <Button
-            variant="contained"
-            disableElevation
-            endIcon={<PersonRemove />}
-            onClick={() => handleUnfollow()}
-            sx={{ borderRadius: "12px", fontWeight: 700 }}
-          >
-            UNSAVE
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            disableElevation
-            endIcon={<PersonAdd />}
-            onClick={() => handleFollow()}
-            sx={{ borderRadius: "12px", fontWeight: 700 }}
-          >
-            SAVE
-          </Button>
-        )}
-      <Button
-        variant="contained"
-        disableElevation
-        endIcon={<SendIcon />}
-        onClick={() => {
-          if (props.userId) {
-            navigate(`/chat`, { state: { targetUserId: props.userId } });
-          }
-        }}
-        sx={{ 
-          borderRadius: "12px", 
-          fontWeight: 700,
-          backgroundColor: "#04315f",
-          "&:hover": {
-            backgroundColor: "#064080",
-          }
-        }}
-      >
-        CHAT
-      </Button>
-      <Button
-        variant="contained"
-        disableElevation
-        color="inherit"
-        endIcon={<ReportIcon />}
-        onClick={() => setIsReportDialogOpen(true)}
-        sx={{ 
-          borderRadius: "12px", 
-          fontWeight: 700,
-        }}
-      >
-        REPORT
-      </Button>
+        <FollowButton 
+        isFollowed={props.isFollowed} 
+        onClick={props.isFollowed ? handleUnfollow : handleFollow} 
+      />
+      
+      <ChatButton 
+        onClick={() => props.userId && navigate(`/chat`, { state: { targetUserId: props.userId } })} 
+      />
+      
+      <ReportButton onClick={() => setIsReportDialogOpen(true)} />
+
+      <ReportDialog 
+        open={isReportDialogOpen}
+        onClose={() => setIsReportDialogOpen(false)}
+        onConfirm={handleReportAction}
+        title="Report this user"
+        descriptionText="Leave a short description if you want to add context."
+        maxReportDescriptionSize={maxDescriptionLength}
+      />
     </Stack>
     <ReportDialog 
         open={isReportDialogOpen}

@@ -6,7 +6,6 @@ import LanguageIcon from "@mui/icons-material/Language";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import PlaceIcon from "@mui/icons-material/Place";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
 import {
   sendGetReviewsCountRequest,
   sendGetUniversityProfileRequest,
@@ -38,67 +37,7 @@ import LoadingContent from "../components/LoadingContent";
 import ContentLoadError from "../components/ContentLoadError";
 import { useSignedInUser } from "../context/SignedInUserContext";
 import { useApplicationState } from "../context/ApplicationStateContext";
-
-type FollowButtonProps = {
-  universityId: number | string | undefined;
-  isFollowed: boolean;
-  setIsFollowed: (value: boolean) => void;
-};
-
-const FollowButton = (props: FollowButtonProps) => {
-  const { showAlert } = useSnackbar();
-
-  const handleFollow = async () => {
-    if (props.universityId) {
-      props.setIsFollowed(true);
-      const result = await sendFollowUniversityRequest(props.universityId);
-      if (!result.isSuccess) {
-        props.setIsFollowed(false);
-        showAlert("An error occured. Try save university later.", "error");
-      }
-    }
-  };
-  const handleUnfollow = async () => {
-    if (props.universityId) {
-      props.setIsFollowed(false);
-      const result = await sendUnfollowUniversityRequest(props.universityId);
-      if (!result.isSuccess) {
-        props.setIsFollowed(true);
-        showAlert("An error occured. Try unsave university later.", "error");
-      }
-    }
-  };
-
-  return (
-    <Container
-      sx={{
-        display: "flex",
-        justifyContent: { lg: "center" },
-        marginTop: { xs: 2, lg: 4 },
-      }}
-    >
-      {props.isFollowed ? (
-        <Button
-          variant="outlined"
-          size="medium"
-          endIcon={<BookmarkIcon />}
-          onClick={() => handleUnfollow()}
-        >
-          UNSAVE
-        </Button>
-      ) : (
-        <Button
-          variant="contained"
-          size="medium"
-          endIcon={<BookmarkIcon />}
-          onClick={() => handleFollow()}
-        >
-          SAVE
-        </Button>
-      )}
-    </Container>
-  );
-};
+import { FollowButton } from "../components/Buttons";
 
 type GoToSumbitReviewButtonProps = {
   handleClick: () => void;
@@ -322,6 +261,28 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
   const theme = useTheme();
   const isLgScreen = useMediaQuery(theme.breakpoints.up("lg"));
   const [isFollowed, setIsFollowed] = useState<boolean>(props.isFollowed);
+  const { showAlert } = useSnackbar();
+
+  const handleFollow = async () => {
+    if (props.university.id) {
+      setIsFollowed(true);
+      const result = await sendFollowUniversityRequest(props.university.id);
+      if (!result.isSuccess) {
+        setIsFollowed(false);
+        showAlert("An error occured. Try save university later.", "error");
+      }
+    }
+  };
+  const handleUnfollow = async () => {
+    if (props.university.id) {
+      setIsFollowed(false);
+      const result = await sendUnfollowUniversityRequest(props.university.id);
+      if (!result.isSuccess) {
+        setIsFollowed(true);
+        showAlert("An error occured. Try unsave university later.", "error");
+      }
+    }
+  };
 
   return (
     <>
@@ -406,11 +367,18 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
                 </Link>
               </Box>
             )}
-            <FollowButton
-              universityId={props.university.id}
-              isFollowed={isFollowed}
-              setIsFollowed={setIsFollowed}
-            />
+            <Container
+              sx={{
+                display: "flex",
+                justifyContent: { lg: "center" },
+                marginTop: { xs: 2, lg: 4 },
+              }}
+            >
+              <FollowButton
+                isFollowed={isFollowed}
+                onClick={isFollowed ? handleUnfollow : handleFollow}
+              />
+            </Container>
           </Container>
         </Container>
       ) : (
@@ -485,11 +453,18 @@ const UniversityDataPanel = (props: UniversityDataPanelProps) => {
                   </Box>
                 )}
               </Box>
-              <FollowButton
-                universityId={props.university.id}
-                isFollowed={isFollowed}
-                setIsFollowed={setIsFollowed}
-              />
+              <Container
+                sx={{
+                  display: "flex",
+                  justifyContent: { lg: "center" },
+                  marginTop: { xs: 2, lg: 4 },
+                }}
+              > 
+                <FollowButton
+                  isFollowed={isFollowed}
+                  onClick={isFollowed ? handleUnfollow : handleFollow}
+                />
+              </Container>
             </Container>
           </Container>
         </Box>
