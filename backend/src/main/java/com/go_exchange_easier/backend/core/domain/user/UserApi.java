@@ -104,6 +104,9 @@ public interface UserApi {
                     responseCode = "200",
                     description = "University was successfully assigned to user"),
             @ApiResponse(
+                    responseCode = "204",
+                    description = "University was successfully unassigned from user"),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Validation failed - invalid request body",
                     content = @Content(mediaType = "application/json",
@@ -136,6 +139,9 @@ public interface UserApi {
                     responseCode = "200",
                     description = "Status associated with user was successfully updated"),
             @ApiResponse(
+                    responseCode = "204",
+                    description = "Status was successfully unassigned from user"),
+            @ApiResponse(
                     responseCode = "400",
                     description = "Validation failed - invalid request body",
                     content = @Content(mediaType = "application/json",
@@ -167,6 +173,9 @@ public interface UserApi {
             @ApiResponse(
                     responseCode = "200",
                     description = "Country was successfully assigned to user"),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Country was successfully unassigned from user"),
             @ApiResponse(
                     responseCode = "400",
                     description = "Validation failed - invalid request body",

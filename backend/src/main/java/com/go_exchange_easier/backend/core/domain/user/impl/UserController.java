@@ -79,8 +79,10 @@ public class UserController implements UserApi {
             AssignHomeUniversityRequest request,
             AuthenticatedUser authenticatedUser
     ) {
-        UniversitySummary university = userUpdateService.assignHomeUniversity(authenticatedUser.getId(), request);
-        return ResponseEntity.ok(university);
+        return userUpdateService.assignHomeUniversity(authenticatedUser.getId(), request)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent()
+                        .build());
     }
 
     @Override
@@ -88,8 +90,10 @@ public class UserController implements UserApi {
             UpdateUserStatusRequest request,
             AuthenticatedUser authenticatedUser
     ) {
-        UserStatusSummary status = userUpdateService.updateStatus(authenticatedUser.getId(), request);
-        return ResponseEntity.ok(status);
+        return userUpdateService.updateStatus(authenticatedUser.getId(), request)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent()
+                        .build());
     }
 
     @Override
@@ -97,8 +101,10 @@ public class UserController implements UserApi {
             AssignCountryOfOriginRequest request,
             AuthenticatedUser authenticatedUser
     ) {
-        CountrySummary country = userUpdateService.assignCountryOfOrigin(authenticatedUser.getId(), request);
-        return ResponseEntity.ok(country);
+        return userUpdateService.assignCountryOfOrigin(authenticatedUser.getId(), request)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent()
+                        .build());
     }
 
     @Override

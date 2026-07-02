@@ -9,6 +9,7 @@ import com.go_exchange_easier.backend.core.domain.user.dto.AssignCountryOfOrigin
 import com.go_exchange_easier.backend.core.domain.user.dto.AssignHomeUniversityRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UpdateUserStatusRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
+import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserUpdateService {
@@ -18,17 +19,17 @@ public interface UserUpdateService {
             UpdateUserDescriptionRequest request
     );
 
-    UniversitySummary assignHomeUniversity(
+    Optional<UniversitySummary> assignHomeUniversity(
             int userId,
             AssignHomeUniversityRequest request
     );
 
-    UserStatusSummary updateStatus(
+    Optional<UserStatusSummary> updateStatus(
             int userId,
             UpdateUserStatusRequest request
     );
 
-    CountrySummary assignCountryOfOrigin(
+    Optional<CountrySummary> assignCountryOfOrigin(
             int userId,
             AssignCountryOfOriginRequest request
     );

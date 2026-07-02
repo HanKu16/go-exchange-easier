@@ -24,6 +24,7 @@ import com.go_exchange_easier.backend.core.domain.user.status.UserStatus;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusRepository;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -60,24 +61,36 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Override
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
-    public UniversitySummary assignHomeUniversity(
+    public Optional<UniversitySummary> assignHomeUniversity(
             int userId,
             AssignHomeUniversityRequest request
     ) {
-        University university = universityRepository.findById(request.universityId())
-                .orElseThrow(() -> new ReferencedResourceNotFoundException(
-                        "University of id " + request.universityId() + " does not exist."));
-        int rowsUpdated = userRepository.updateHomeUniversity(userId, university.getId());
-        if (rowsUpdated == 0) {
-            throw new ResourceNotFoundException("User of id " + userId + " does not exist.");
+        if (request.universityId() != null) {
+            University university = universityRepository.findById(request.universityId())
+                    .orElseThrow(() -> new ReferencedResourceNotFoundException(
+                            "University of id " + request.universityId() + " was not found."));
+            int rowsUpdated = userRepository.updateHomeUniversity(userId, university.getId());
+            if (rowsUpdated == 0) {
+                throw new ResourceNotFoundException("User of id " + userId + " was not found.");
+            }
+            return Optional.of(new UniversitySummary(
+                    university.getId(),
+                    university.getOriginalName(),
+                    university.getEnglishName()
+            ));
         }
-        return new UniversitySummary(university.getId(), university.getOriginalName(), university.getEnglishName());
+        int rowsUpdated = userRepository.updateHomeUniversity(userId, null);
+        if (rowsUpdated == 0) {
+            throw new ResourceNotFoundException("User of id " + userId + " was not found.");
+        }
+        return Optional.empty();
+
     }
 
     @Override
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
-    public UserStatusSummary updateStatus(
+    public Optional<UserStatusSummary > updateStatus(
             int userId,
             UpdateUserStatusRequest request
     ) {
@@ -89,19 +102,19 @@ public class UserUpdateServiceImpl implements UserUpdateService {
             if (rowsUpdated == 0) {
                 throw new ResourceNotFoundException("User of id " + userId + " was not found.");
             }
-            return new UserStatusSummary(status.getId(), status.getName());
+            return Optional.of(new UserStatusSummary(status.getId(), status.getName()));
         }
         int rowsUpdated = userRepository.updateStatus(userId, null);
         if (rowsUpdated == 0) {
             throw new ResourceNotFoundException("User of id " + userId + " was not found.");
         }
-        return new UserStatusSummary(null, null);
+        return Optional.empty();
     }
 
     @Override
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
-    public CountrySummary assignCountryOfOrigin(
+    public Optional<CountrySummary> assignCountryOfOrigin(
             int userId,
             AssignCountryOfOriginRequest request
     ) {
@@ -113,13 +126,13 @@ public class UserUpdateServiceImpl implements UserUpdateService {
             if (rowsUpdated == 0) {
                 throw new ResourceNotFoundException("User of id " + userId + " was not found.");
             }
-            return new CountrySummary(country.getId(), country.getEnglishName());
+            return Optional.of(new CountrySummary(country.getId(), country.getEnglishName()));
         } else {
             int rowsUpdated = userRepository.assignCountryOfOrigin(userId, null);
             if (rowsUpdated == 0) {
                 throw new ResourceNotFoundException("User of id " + userId + " was not found.");
             }
-            return new CountrySummary(null, null);
+            return Optional.empty();
         }
     }
 

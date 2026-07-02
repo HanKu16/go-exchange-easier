@@ -42,7 +42,7 @@ public interface UserRepository extends
     @Query("UPDATE User u SET u.homeUniversity.id = :homeUniversityId " +
             "WHERE u.id = :userId")
     int updateHomeUniversity(@Param("userId") int userId,
-            @Param("homeUniversityId") short homeUniversityId);
+            @Param("homeUniversityId") Short homeUniversityId);
 
     @Modifying
     @Query("UPDATE User u SET u.countryOfOrigin.id = :countryId " +
