@@ -19,6 +19,7 @@ import com.go_exchange_easier.backend.core.domain.user.description.UserDescripti
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionRepository;
 import com.go_exchange_easier.backend.core.domain.user.dto.AssignCountryOfOriginRequest;
 import com.go_exchange_easier.backend.core.domain.user.dto.AssignHomeUniversityRequest;
+import com.go_exchange_easier.backend.core.domain.user.dto.UpdateNickRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UpdateUserStatusRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatus;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusRepository;
@@ -75,8 +76,8 @@ public class UserUpdateServiceImpl implements UserUpdateService {
             }
             return Optional.of(new UniversitySummary(
                     university.getId(),
-                    university.getOriginalName(),
-                    university.getEnglishName()
+                                                     university.getOriginalName(),
+                                                     university.getEnglishName()
             ));
         }
         int rowsUpdated = userRepository.updateHomeUniversity(userId, null);
@@ -90,7 +91,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Override
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
-    public Optional<UserStatusSummary > updateStatus(
+    public Optional<UserStatusSummary> updateStatus(
             int userId,
             UpdateUserStatusRequest request
     ) {
@@ -166,6 +167,19 @@ public class UserUpdateServiceImpl implements UserUpdateService {
             user.setAvatarKey(null);
         }
         return new AvatarUrlSummary(null, null);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
+    public void updateNick(
+            int userId,
+            UpdateNickRequest request
+    ) {
+        int rowsUpdated = userRepository.updateNick(userId, request.nick());
+        if (rowsUpdated == 0) {
+            throw new ResourceNotFoundException("User of id " + userId + " was not found.");
+        }
     }
 
 }

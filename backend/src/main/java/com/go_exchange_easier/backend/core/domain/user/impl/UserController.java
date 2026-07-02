@@ -148,4 +148,14 @@ public class UserController implements UserApi {
         return ResponseEntity.ok(avatarUrl);
     }
 
+    @Override
+    public ResponseEntity<Void> updateNick(
+            UpdateNickRequest request,
+            AuthenticatedUser authenticatedUser
+    ) {
+        userUpdateService.updateNick(authenticatedUser.getId(), request);
+        return ResponseEntity.noContent()
+                .build();
+    }
+
 }

@@ -1,10 +1,10 @@
 package com.go_exchange_easier.backend.core.domain.user;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface UserRepository extends
@@ -60,5 +60,10 @@ public interface UserRepository extends
             type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT u FROM User u WHERE u.id = :userId")
     Optional<User> findWithFollowedUniversities(@Param("userId") int userId);
+
+    @Modifying
+    @Query("UPDATE User u SET u.nick= :nick " +
+            "WHERE u.id = :userId")
+    int updateNick(@Param("userId") int userId, @Param("nick") String nick);
 
 }

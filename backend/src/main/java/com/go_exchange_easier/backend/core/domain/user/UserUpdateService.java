@@ -7,6 +7,7 @@ import com.go_exchange_easier.backend.core.domain.user.description.UpdateUserDes
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionDetails;
 import com.go_exchange_easier.backend.core.domain.user.dto.AssignCountryOfOriginRequest;
 import com.go_exchange_easier.backend.core.domain.user.dto.AssignHomeUniversityRequest;
+import com.go_exchange_easier.backend.core.domain.user.dto.UpdateNickRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UpdateUserStatusRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
 import java.util.Optional;
@@ -40,5 +41,7 @@ public interface UserUpdateService {
     );
 
     AvatarUrlSummary deleteAvatar(int userId);
+
+    void updateNick(int userId, UpdateNickRequest request);
 
 }

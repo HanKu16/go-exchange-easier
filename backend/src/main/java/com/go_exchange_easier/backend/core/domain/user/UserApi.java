@@ -283,4 +283,25 @@ public interface UserApi {
     ResponseEntity<AvatarUrlSummary> deleteAvatar(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
+    @PatchMapping("/nick")
+    @Operation(summary = "Update user nick")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Nick was successfully updated"),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed - invalid request body",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User of given id was not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))),
+    })
+    ResponseEntity<Void> updateNick(
+            @RequestBody @Valid UpdateNickRequest request,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
+
 }
