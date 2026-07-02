@@ -19,5 +19,5 @@ public record RoomPreview(
         @Nullable
         MessageSummary lastMessage
 
-) implements Serializable {}
+) implements Serializable { }
 

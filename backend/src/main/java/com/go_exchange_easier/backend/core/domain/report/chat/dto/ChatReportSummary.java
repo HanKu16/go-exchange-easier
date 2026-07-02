@@ -4,6 +4,7 @@ import com.go_exchange_easier.backend.core.domain.report.ReportReason;
 import com.go_exchange_easier.backend.core.domain.report.chat.ChatReport;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public record ChatReportSummary(
         String description,
 
         ReportReason reason
-) {
+) implements Serializable {
 
     public static ChatReportSummary fromEntity(ChatReport report) {
         return new ChatReportSummary(

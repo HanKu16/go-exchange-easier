@@ -1,6 +1,7 @@
 package com.go_exchange_easier.backend.chat.api;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -10,4 +11,4 @@ public record ChatMessage(
         Instant createdAt,
         String textContent,
         ChatMessageAuthor author
-) { }
+) implements Serializable { }

@@ -12,4 +12,4 @@ public record UniversitySummary(
         @Nullable
         String englishName
 
-) implements Serializable {}
+) implements Serializable { }

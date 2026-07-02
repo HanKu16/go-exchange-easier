@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.chat.domain.room.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
 
 public record CreateRoomRequest(
 
@@ -9,4 +10,4 @@ public record CreateRoomRequest(
         @Schema(example = "17")
         Integer targetUserId
 
-) { }
+) implements Serializable { }

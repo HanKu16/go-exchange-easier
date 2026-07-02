@@ -1,19 +1,18 @@
 package com.go_exchange_easier.backend.common.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serializable;
 import java.util.List;
 
 @Schema(requiredProperties = {"content", "pageNumber",
         "pageSize", "totalElements", "totalPages"})
 public record SimplePage<T>(
-
         List<T> content,
         Integer pageNumber,
         Integer pageSize,
         Long totalElements,
         Integer totalPages
-
-) {
+) implements Serializable {
 
     public static <T> SimplePage<T> of(List<T> content,
             Integer pageNumber, Integer pageSize, Long totalElements) {
