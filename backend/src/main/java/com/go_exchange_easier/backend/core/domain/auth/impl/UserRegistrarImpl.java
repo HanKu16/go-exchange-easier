@@ -65,6 +65,7 @@ public class UserRegistrarImpl implements UserRegistrar {
         User user = new User();
         user.setNick(request.nick() != null ? request.nick() : request.login());
         user.setCreatedAt(OffsetDateTime.now());
+        user.setBlocked(false);
         return user;
     }
 

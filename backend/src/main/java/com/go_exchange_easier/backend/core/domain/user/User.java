@@ -44,6 +44,9 @@ public class User {
     @Column(name = "deleted_at")
     private OffsetDateTime deletedAt;
 
+    @Column(name = "is_blocked")
+    private boolean isBlocked;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_status_id")
     private UserStatus status;
