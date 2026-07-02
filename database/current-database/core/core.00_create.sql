@@ -55,6 +55,7 @@ CREATE TABLE core.users (
   avatar_key TEXT,
   created_at TIMESTAMPTZ NOT NULL,
   deleted_at TIMESTAMPTZ,
+  is_blocked BOOLEAN NOT NULL,
   user_status_id SMALLINT,
   home_university_id SMALLINT,
   country_of_origin_id SMALLINT
@@ -152,6 +153,24 @@ CREATE TABLE core.chat_reports (
   room_id UUID NOT NULL
 );
 
+CREATE TABLE core.report_resolutions (
+  report_resolution_id UUID PRIMARY KEY,
+  explanation TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  admin_id INTEGER NOT NULL,
+  report_id UUID UNIQUE
+);
+
+CREATE TABLE core.user_bans (
+  user_ban_id UUID PRIMARY KEY,
+  explanation_for_user TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  expires_at TIMESTAMPTZ,
+  is_active BOOLEAN NOT NULL,
+  banned_user_id INTEGER NOT NULL,
+  report_resolution_id UUID
+);
+
 ALTER TABLE core.cities ADD FOREIGN KEY (country_id) REFERENCES core.countries (country_id);
 
 ALTER TABLE core.universities ADD FOREIGN KEY (city_id) REFERENCES core.cities (city_id);
@@ -209,6 +228,14 @@ ALTER TABLE core.university_review_reports ADD FOREIGN KEY (reported_review_id) 
 ALTER TABLE core.chat_reports ADD FOREIGN KEY (report_id) REFERENCES core.reports (report_id);
 
 ALTER TABLE core.chat_reports ADD FOREIGN KEY (reported_user_id) REFERENCES core.users (user_id);
+
+ALTER TABLE core.report_resolutions ADD FOREIGN KEY (admin_id) REFERENCES core.users (user_id);
+
+ALTER TABLE core.report_resolutions ADD FOREIGN KEY (report_id) REFERENCES core.reports (report_id);
+
+ALTER TABLE core.user_bans ADD FOREIGN KEY (banned_user_id) REFERENCES core.users (user_id);
+
+ALTER TABLE core.user_bans ADD FOREIGN KEY (report_resolution_id) REFERENCES core.report_resolutions (report_resolution_id);;
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 

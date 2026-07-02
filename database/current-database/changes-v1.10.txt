@@ -1,3 +1,4 @@
-1. Add tables 'core.reports', 'core.user_reports', 'core.chat_reports' and 'core.university_review_reports'.
+1. Add tables 'core.reports', 'core.user_reports', 'core.chat_reports', 'core.university_review_reports', 'core.report_resolutions', 'core.user_bans'.
 2. Replace 'role' and 'reacton_type' enums with TEXT type.
 3. Replace all VARCHAR types with TEXT type.
+4. Add column 'is_blocked' to 'core.users' table.

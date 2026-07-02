@@ -53,6 +53,7 @@ TABLE core.users {
   avatar_key TEXT
   created_at TIMESTAMPTZ [not null]
   deleted_at TIMESTAMPTZ
+  is_blocked BOOLEAN [not null]
   user_status_id SMALLINT [ref: > core.user_statuses.user_status_id]
   home_university_id SMALLINT [ref: > core.universities.university_id]
   country_of_origin_id SMALLINT [ref: > core.countries.country_id]
@@ -147,4 +148,23 @@ TABLE core.chat_reports {
   reported_user_id INTEGER [ref: > core.users.user_id, not null]
   room_id UUID [not null]
 }
+
+TABLE core.report_resolutions {
+  report_resolution_id UUID [pk]
+  explanation TEXT [not null]
+  created_at TIMESTAMPTZ [not null]
+  admin_id INTEGER [ref: > core.users.user_id, not null]
+  report_id UUID [ref: - core.reports.report_id, unique]
+}
+
+TABLE core.user_bans {
+  user_ban_id UUID [pk]
+  explanation_for_user TEXT [not null]
+  created_at TIMESTAMPTZ [not null]
+  expires_at TIMESTAMPTZ
+  is_active BOOLEAN [not null]
+  banned_user_id INTEGER [ref: > core.users.user_id, not null]
+  report_resolution_id UUID [ref: > core.report_resolutions.report_resolution_id]
+}
+
 
