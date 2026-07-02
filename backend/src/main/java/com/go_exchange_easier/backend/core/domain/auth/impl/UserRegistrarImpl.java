@@ -10,7 +10,7 @@ import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationSummary;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescription;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionRepository;
 import com.go_exchange_easier.backend.core.domain.user.notification.NotificationSettings;
-import com.go_exchange_easier.backend.core.domain.user.notification.UserNotificationRepository;
+import com.go_exchange_easier.backend.core.domain.user.notification.NotificationSettingsRepository;
 import com.go_exchange_easier.backend.core.domain.auth.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.core.domain.auth.exception.UsernameAlreadyExistsException;
 import com.go_exchange_easier.backend.core.domain.user.User;
@@ -25,9 +25,9 @@ import java.time.OffsetDateTime;
 @Transactional(readOnly = true)
 public class UserRegistrarImpl implements UserRegistrar {
 
+    private final NotificationSettingsRepository notificationSettingsRepository;
     private final UserCredentialsRepository userCredentialsRepository;
     private final UserDescriptionRepository userDescriptionRepository;
-    private final UserNotificationRepository userNotificationRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -41,7 +41,7 @@ public class UserRegistrarImpl implements UserRegistrar {
                     request.login() + " already exists.");
         }
         if (request.mail() != null) {
-            boolean doesUserOfGivenMailExists = userNotificationRepository
+            boolean doesUserOfGivenMailExists = notificationSettingsRepository
                     .existsByMail(request.mail());
             if (doesUserOfGivenMailExists) {
                 throw new MailAlreadyExistsException("User of mail " +
@@ -56,7 +56,7 @@ public class UserRegistrarImpl implements UserRegistrar {
         UserDescription description = buildDescription(user);
         UserDescription savedDescription = userDescriptionRepository.save(description);
         NotificationSettings notification = buildNotification(request, user);
-        NotificationSettings savedNotification = userNotificationRepository.save(notification);
+        NotificationSettings savedNotification = notificationSettingsRepository.save(notification);
         return new RegistrationSummary(savedUser.getId(), credentials.getUsername(),
                 savedUser.getNick(), savedUser.getCreatedAt());
     }

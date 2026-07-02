@@ -21,5 +21,6 @@ public enum ApiErrorResponseCode {
     VALID_DATE_RANGE,
     NOT_BLANK,
     NOT_NULL,
-    EMAIL
+    EMAIL,
+    PATTERN
 }

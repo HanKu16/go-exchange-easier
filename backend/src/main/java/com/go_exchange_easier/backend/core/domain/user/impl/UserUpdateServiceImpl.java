@@ -76,8 +76,8 @@ public class UserUpdateServiceImpl implements UserUpdateService {
             }
             return Optional.of(new UniversitySummary(
                     university.getId(),
-                                                     university.getOriginalName(),
-                                                     university.getEnglishName()
+                    university.getOriginalName(),
+                    university.getEnglishName()
             ));
         }
         int rowsUpdated = userRepository.updateHomeUniversity(userId, null);

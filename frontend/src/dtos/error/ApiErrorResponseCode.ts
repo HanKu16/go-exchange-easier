@@ -22,3 +22,4 @@ export type ApiErrorResponseCode =
   | "NOT_BLANK"
   | "NOT_NULL"
   | "EMAIL"
+  | "PATTERN"
