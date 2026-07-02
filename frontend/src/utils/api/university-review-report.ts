@@ -2,7 +2,7 @@ import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
 import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
 import { sendRequest } from "../send-request";
 import type { CreateUniversityReviewReportRequest } from "../../dtos/report/university/review/CreateUniversityReviewReport";
-import type { UniversityReviewReportSumary } from "../../dtos/report/university/review/UniversityReviewReportDetails";
+import type { UniversityReviewReportSumary } from "../../dtos/report/university/review/UniversityReviewReportSummary";
 
 export const sendCreateUniversityReviewReportRequest = async (
   reviewId: number,

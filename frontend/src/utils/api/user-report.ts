@@ -2,7 +2,7 @@ import type { ResponseSuccessResult } from "../../types/ResonseSuccessResult";
 import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
 import { sendRequest } from "../send-request";
 import type { CreateUserReport } from "../../dtos/report/user/CreateUserReport";
-import type { UserReportSummary } from "../../dtos/report/user/UserReportDetails";
+import type { UserReportSummary } from "../../dtos/report/user/UserReportSummary";
 
 
 export const sendCreateUserReportRequest = async (
