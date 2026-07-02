@@ -21,6 +21,7 @@ import { useSignedInUser } from "../context/SignedInUserContext";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ChangeAvatarPanel from "../panels/ManageAvatarPanel";
 import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
+import UpdateUserNickPanel from "../panels/UpdateNickPanel";
 
 type SectionName = "Profile" | "Informations" | "Exchanges";
 
@@ -31,7 +32,8 @@ type SubsectionName =
   | "Description"
   | "Add exchange"
   | "Manage exchanges"
-  | "Photo";
+  | "Photo"
+  | "Nick";
 
 type Section = {
   name: SectionName;
@@ -50,7 +52,7 @@ const SectionsList = (props: SectionListProps) => {
   const sections: Section[] = [
     {
       name: "Profile",
-      subsections: ["Photo", "Description"],
+      subsections: ["Photo", "Nick", "Description"],
       icon: <AccountCircleIcon />,
     },
     {
@@ -202,6 +204,8 @@ const EditUserPage = () => {
       return <ManageExchangesPanel userId={signedInUser.id} />;
     } else if (selectedSubsectionPanel === "Photo") {
       return <ChangeAvatarPanel />;
+    } else if (selectedSubsectionPanel === "Nick") {
+      return <UpdateUserNickPanel />;
     }
     return <></>;
   };

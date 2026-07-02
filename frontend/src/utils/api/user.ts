@@ -17,6 +17,7 @@ import type { UserWithAvatarSummary } from "../../dtos/user/UserWithAvatarSummar
 import type { UserStatusSummary } from "../../dtos/user/status/UserStatusSummary";
 import type { CountrySummary } from "../../dtos/location/CountrySummary";
 import type { UniversitySummary } from "../../dtos/university/UniversitySummary";
+import type { UpdateNickRequest } from "../../dtos/user/UpdateNickRequest";
 
 export const sendGetUserProfileRequest = async (
   userId: number | string,
@@ -165,4 +166,17 @@ export const sendDeleteAvatarRequest = async (): Promise<
     method: "DELETE",
   };
   return await sendRequest<AvatarUrlSummary>(uri, request);
+};
+
+export const sendUpdateNickRequest = async (
+  body: UpdateNickRequest,
+): Promise<
+  ResponseSuccessResult<void> | ResponseFailureResult
+> => {
+  const uri: string = `/api/users/nick`;
+  const request: RequestInit = {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  };
+  return await sendRequest<void>(uri, request);
 };
