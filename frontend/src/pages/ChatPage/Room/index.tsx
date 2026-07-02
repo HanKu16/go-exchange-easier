@@ -57,6 +57,7 @@ const Room = () => {
         name={room.name}
         avatarUrl={room.imageUrl}
         link={`/users/${room.targetUserId}`}
+        targetUserId={room.targetUserId}
       />
       <MessagesContainer />
       <MessageInput />

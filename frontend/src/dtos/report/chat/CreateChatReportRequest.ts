@@ -1,5 +1,5 @@
 export type CreateChatReportRequest = {
-    description?: string;
+    description: string | null;
     reason: string;
     reportedUserId: number;
     roomId: string;

@@ -1,4 +1,4 @@
-import { Button, type ButtonProps  } from "@mui/material";
+import { Button, IconButton, Tooltip, type ButtonProps  } from "@mui/material";
 import ReportIcon from "@mui/icons-material/Report";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import SendIcon from "@mui/icons-material/Send";
@@ -47,4 +47,30 @@ export const ReportButton = (props: ButtonProps) => (
     REPORT
   </BaseActionButton>
 );
+
+export type MiniatureButtonProps = ButtonProps & {
+  setIsReportDialogOpen: (isOpen: boolean) => void;
+}
+
+export const MiniatureReportButton = (props: MiniatureButtonProps) => (
+     <Tooltip title="Report review" arrow>
+        <IconButton
+          aria-label="report review"
+          size="small"
+          onClick={() => props.setIsReportDialogOpen(true)}
+          sx={{
+            bgcolor: "rgba(0, 0, 0, 0.04)",
+            color: "text.secondary",
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              bgcolor: "warning.lighter",
+              color: "warning.main",
+              transform: "scale(1.1)",
+            },
+          }}
+        >
+          <ReportIcon sx={{ fontSize: 18 }} />
+        </IconButton>
+     </Tooltip>
+)
 

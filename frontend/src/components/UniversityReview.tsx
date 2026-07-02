@@ -27,8 +27,8 @@ import { useConfirmation } from "../context/ConfirmationDialogContext";
 import { useNavigate } from "react-router-dom";
 import { sendCreateUniversityReviewReportRequest } from "../utils/api/university-review-report";
 import { useSignedInUser } from "../context/SignedInUserContext";
-import ReportIcon from "@mui/icons-material/Report";
 import { ReportDialog } from "./ReportDialog";
+import { MiniatureReportButton } from "./Buttons";
 
 const reactionOrder = {
   LIKE: 1,
@@ -90,7 +90,7 @@ const UniversityReview = (props: UniversityReviewProps) => {
   const { showConfirmation } = useConfirmation();
   const navigate = useNavigate();
   const { signedInUser } = useSignedInUser();
-  const maxReportDescriptionLegth = 5000;
+  const maxReportDescriptionLegth = 1000;
 
   const handleReactionChange = async (activeReaction: ReactionType) => {
     if (!canChangeReaction) {
@@ -183,26 +183,7 @@ const UniversityReview = (props: UniversityReviewProps) => {
             <IconButton aria-label="add to favorites">
               <Rating name="read-only" value={props.starRating} readOnly />
             </IconButton>
-            {(props.authorId != signedInUser.id ) && <Tooltip title="Report review" arrow>
-              <IconButton
-                aria-label="report review"
-                size="small"
-                onClick={() => setIsReportDialogOpen(true)}
-                sx={{
-                  bgcolor: "rgba(0, 0, 0, 0.04)",
-                  color: "text.secondary",
-                  transition: "all 0.2s ease-in-out",
-                  "&:hover": {
-                    bgcolor: "warning.lighter",
-                    color: "warning.main",
-                    transform: "scale(1.1)",
-                  },
-                }}
-              >
-                <ReportIcon sx={{ fontSize: 18 }} />
-              </IconButton>
-            </Tooltip>
-            }
+            {(props.authorId != signedInUser.id ) && (<MiniatureReportButton setIsReportDialogOpen={setIsReportDialogOpen}/>)}
             {(props.authorId == signedInUser.id) && (
               <DeleteCircleButton
                 onDelete={() => {

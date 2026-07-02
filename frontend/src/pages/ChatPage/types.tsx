@@ -14,6 +14,7 @@ export type HeaderProps = {
   name: string;
   avatarUrl?: string;
   link: string;
+  targetUserId: number;
 };
 
 export type MessageBoxProps = {

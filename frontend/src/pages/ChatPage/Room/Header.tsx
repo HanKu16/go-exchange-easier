@@ -12,11 +12,46 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+import { MiniatureReportButton } from "../../../components/Buttons";
+import { useState } from "react";
+import { ReportDialog } from "../../../components/ReportDialog";
+import { useSnackbar } from "../../../context/SnackBarContext";
+import { sendCreateChatReportRequest } from "../../../utils/api/chat-report";
 
 const Header = (props: HeaderProps) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
+  const { showAlert } = useSnackbar();
+  const maxReportDescriptionLegth = 1000;
+
+  const handleReportConfirm = async (reason: string, description: string | null): Promise<boolean> => {
+      const result = await sendCreateChatReportRequest({
+        reason: reason,
+        description: description,
+        reportedUserId: props.targetUserId,
+        roomId: props.id,
+      });
+  
+      if (result.isSuccess) {
+        showAlert("Chat reported successfully.", "success");
+        return true; 
+      }
+  
+      const isSizeError = result.error.fieldErrors?.some(
+        (fieldError) => fieldError.code === "SIZE"
+      );
+      
+      const errorMessage = isSizeError
+        ? `Report description can not be longer than ${maxReportDescriptionLegth} characters.`
+        : result.error.status === "SERVICE_UNAVAILABLE"
+          ? "Could not submit the report. The service is unavailable."
+          : "Failed to submit the report. Please try again later.";
+          
+      showAlert(errorMessage, "error");
+      return false;
+    };
 
   return (
     <Card
@@ -83,6 +118,17 @@ const Header = (props: HeaderProps) => {
             {props.name}
           </Typography>
         </Box>
+        <Box sx={{ ml: 2, display: "flex", alignItems: "center", flexShrink: 0 }}>
+          <MiniatureReportButton setIsReportDialogOpen={setIsReportDialogOpen} />
+        </Box>
+      <ReportDialog 
+        open={isReportDialogOpen}
+        onClose={() => setIsReportDialogOpen(false)}
+        onConfirm={handleReportConfirm}
+        title="Report chat"
+        descriptionText="Leave a short description if you want to add context."
+        maxReportDescriptionSize={maxReportDescriptionLegth}
+      />
       </CardContent>
     </Card>
   );
