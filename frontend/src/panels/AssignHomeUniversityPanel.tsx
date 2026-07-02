@@ -97,6 +97,23 @@ const AssignHomeUniversityPanel = () => {
     }
   };
 
+  const handleUnassignUniversity = async () => {
+    showAlert("Waiting for server response.", "info");
+    const result = await sendAssignHomeUniversityRequest({
+      universityId: null,
+    });
+    if (result.isSuccess) {
+      showAlert("University assignment was successfully cleared.", "success");
+      setSelectedUniversityId(null);
+      setShowConfirmButton(false);
+    } else {
+      showAlert(
+        "Clearing university assignment failed. Please try again later.",
+        "error",
+      );
+    }
+  };
+
   const getInteractionElement = (universityId: number): ReactElement => {
     if (selectedUniversityId === universityId && showConfirmButton) {
       return (
@@ -187,6 +204,7 @@ const AssignHomeUniversityPanel = () => {
               sx={{
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
+                alignItems: { xs: "stretch", md: "center" }, 
               }}
             >
               <FormControl
@@ -238,6 +256,28 @@ const AssignHomeUniversityPanel = () => {
                   </MenuItem>
                 </Select>
               </FormControl>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexGrow: 1,
+                  justifyContent: { xs: "center", sm: "flex-start", md: "flex-end" }, 
+                  mx: 2,
+                  mb: { xs: 2, md: 0 },
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={handleUnassignUniversity}
+                  sx={{ 
+                    borderRadius: "12px", 
+                    textTransform: "none",
+                    width: { xs: "100%", sm: "auto" }
+                  }}
+                >
+                  Clear assigned university
+                </Button>
+              </Box>
             </Box>
             {getUniversitiesContent()}
           </>

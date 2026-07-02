@@ -59,7 +59,7 @@ export const sendUpdateDescriptionRequest = async (
 export const sendAssignHomeUniversityRequest = async (
   body: AssignHomeUniversityRequest,
 ): Promise<
-  ResponseSuccessResult<UniversitySummary> | ResponseFailureResult
+  ResponseSuccessResult<UniversitySummary| null>| ResponseFailureResult
 > => {
   const uri: string = `/api/users/home-university`;
   const request: RequestInit = {
@@ -72,7 +72,7 @@ export const sendAssignHomeUniversityRequest = async (
 export const sendUpdateStatusRequest = async (
   body: UpdateUserStatusRequest,
 ): Promise<
-  ResponseSuccessResult<UserStatusSummary> | ResponseFailureResult
+  ResponseSuccessResult<UserStatusSummary| null> | ResponseFailureResult
 > => {
   const uri: string = `/api/users/status`;
   const request: RequestInit = {
@@ -84,7 +84,7 @@ export const sendUpdateStatusRequest = async (
 
 export const sendAssignCountryOfOriginRequest = async (
   body: AssignCountryOfOriginRequest,
-): Promise<ResponseSuccessResult<CountrySummary> | ResponseFailureResult> => {
+): Promise<ResponseSuccessResult<CountrySummary | null> | ResponseFailureResult> => {
   const uri: string = `/api/users/country-of-origin`;
   const request: RequestInit = {
     method: "PATCH",

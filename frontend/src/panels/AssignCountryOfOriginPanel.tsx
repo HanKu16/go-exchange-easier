@@ -31,7 +31,6 @@ const AssignCountryOfOriginPanel = () => {
         name: c.englishName,
         flagUrl: c.flagUrl,
       }));
-      allCountries.push({ id: 0, name: "no country" });
       setCountries(allCountries);
       setCountriesFetchStatus("success");
     } else {
@@ -48,16 +47,29 @@ const AssignCountryOfOriginPanel = () => {
 
   const handleCountryAssignment = async () => {
     setShowConfirmButton(false);
-    const countryId = selectedCountryId !== 0 ? selectedCountryId : null;
     showAlert("Waiting for server response.", "info");
     const result = await sendAssignCountryOfOriginRequest({
-      countryId: countryId,
+      countryId: selectedCountryId,
     });
     if (result.isSuccess) {
       showAlert("Country was assigned to user successfully.", "success");
     } else {
       showAlert("Failed to assign country. Please try again later.", "error");
       setShowConfirmButton(true);
+    }
+  };
+
+  const handleUnassignCountry = async () => {
+    showAlert("Waiting for server response.", "info");
+    const result = await sendAssignCountryOfOriginRequest({
+      countryId: null,
+    });
+    if (result.isSuccess) {
+      showAlert("Country assignment was successfully cleared.", "success");
+      setSelectedCountryId(null);
+      setShowConfirmButton(false);
+    } else {
+      showAlert("Clearing country assignment failed. Please try again later.", "error");
     }
   };
 
@@ -89,35 +101,60 @@ const AssignCountryOfOriginPanel = () => {
     switch (countriesFetchStatus) {
       case "success":
         return (
-          <FormControl>
-            <RadioGroup
-              name="countries-buttons-group"
-              value={selectedCountryId}
-              onChange={(event) => {
-                setSelectedCountryId(Number(event.target.value));
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start", 
+                ml: 2,
+                mr: 2,
+                mt: 2,
+                mb: 1,
               }}
             >
-              {countries.map((c) => (
-                <FormControlLabel
-                  key={c.id}
-                  value={c.id}
-                  control={<Radio sx={{ '&.Mui-checked': { color: '#182c44' } }} />}
-                  label={
-                    <>
-                      {c.name}
-                      {c.flagUrl ? (
-                        <img
-                          src={c.flagUrl}
-                          style={{ height: "0.8rem", marginLeft: 3 }}
-                        />
-                      ) : null}
-                      {getInteractionElement(c.id)}
-                    </>
-                  }
-                />
-              ))}
-            </RadioGroup>
-          </FormControl>
+              <Button
+                variant="outlined"
+                color="error" 
+                onClick={handleUnassignCountry}
+                sx={{
+                  borderRadius: "12px",
+                  textTransform: "none",
+                  width: { xs: "100%", sm: "auto" } 
+                }}
+              >
+                Clear assigned country
+              </Button>
+            </Box>
+            <FormControl sx={{ ml: 2, mt: 0 }}>
+              <RadioGroup
+                name="countries-buttons-group"
+                value={selectedCountryId}
+                onChange={(event) => {
+                  setSelectedCountryId(Number(event.target.value));
+                }}
+              >
+                {countries.map((c) => (
+                  <FormControlLabel
+                    key={c.id}
+                    value={c.id}
+                    control={<Radio sx={{ '&.Mui-checked': { color: '#182c44' } }} />}
+                    label={
+                      <>
+                        {c.name}
+                        {c.flagUrl ? (
+                          <img
+                            src={c.flagUrl}
+                            style={{ height: "0.8rem", marginLeft: 3 }}
+                          />
+                        ) : null}
+                        {getInteractionElement(c.id)}
+                      </>
+                    }
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </>
         );
       case "loading":
         return <LoadingContent title="Loading countries" />;
@@ -139,7 +176,7 @@ const AssignCountryOfOriginPanel = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <PanelHeader label="Assign country of origin to yourself" />
       {getContent()}
     </Box>

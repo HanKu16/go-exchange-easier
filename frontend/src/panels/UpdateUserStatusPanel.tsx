@@ -25,7 +25,6 @@ const UpdateUserStatusPanel = () => {
     const result = await sendGetUserStatusesRequest();
     if (result.isSuccess) {
       const allStatuses = result.data.content;
-      allStatuses.push({ id: 0, name: "UNKNOWN" });
       setStatuses(allStatuses);
       setStatuesFetchStatus("success");
     } else {
@@ -51,13 +50,24 @@ const UpdateUserStatusPanel = () => {
   const handleStatusUpdate = async () => {
     setShowConfirmButton(false);
     showAlert("Waiting for server response.", "info");
-    const statusId = selectedStatusId !== 0 ? selectedStatusId : null;
-    const result = await sendUpdateStatusRequest({ statusId: statusId });
+    const result = await sendUpdateStatusRequest({ statusId: selectedStatusId });
     if (result.isSuccess) {
       showAlert("Status was updated successfully.", "success");
     } else {
       showAlert("Failed to update status. Please try again later.", "error");
       setShowConfirmButton(true);
+    }
+  };
+
+  const handleClearStatus = async () => {
+    showAlert("Waiting for server response.", "info");
+    const result = await sendUpdateStatusRequest({ statusId: null }); // Wysyłamy nulla
+    if (result.isSuccess) {
+      showAlert("Status was cleared successfully.", "success");
+      setSelectedStatusId(null);
+      setShowConfirmButton(false);
+    } else {
+      showAlert("Failed to clear status. Please try again later.", "error");
     }
   };
 
@@ -81,29 +91,55 @@ const UpdateUserStatusPanel = () => {
     switch (statuesFetchStatus) {
       case "success":
         return (
-          <FormControl>
-            <RadioGroup
-              name="statuses-buttons-group"
-              value={selectedStatusId}
-              onChange={(event) => {
-                setSelectedStatusId(Number(event.target.value));
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start",
+                ml: 2,
+                mr: 2,
+                mt: 2,
+                mb: 1,
               }}
             >
-              {statuses.map((s) => (
-                <FormControlLabel
-                  key={s.id}
-                  value={s.id}
-                  control={<Radio sx={{ '&.Mui-checked': { color: '#182c44' } }} />}
-                  label={
-                    <>
-                      {s.name}
-                      {getInteractionElement(s.id)}
-                    </>
-                  }
-                />
-              ))}
-            </RadioGroup>
-          </FormControl>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleClearStatus}
+                sx={{
+                  borderRadius: "12px",
+                  textTransform: "none",
+                  width: { xs: "100%", sm: "auto" }
+                }}
+              >
+                Clear assigned status
+              </Button>
+            </Box>
+
+            <FormControl sx={{ ml: 2, mt: 0 }}>
+              <RadioGroup
+                name="statuses-buttons-group"
+                value={selectedStatusId}
+                onChange={(event) => {
+                  setSelectedStatusId(Number(event.target.value));
+                }}
+              >
+                {statuses.map((s) => (
+                  <FormControlLabel
+                    key={s.id}
+                    value={s.id}
+                    control={<Radio sx={{ '&.Mui-checked': { color: '#182c44' } }} />}
+                    label={
+                      <>
+                        {s.name}
+                        {getInteractionElement(s.id)}
+                      </>
+                    }
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </>
         );
       case "loading":
         return <LoadingContent title="Loading statuses" />;
