@@ -4,4 +4,4 @@
 4. Add column 'is_blocked' to 'core.users' table.
 5. Rename table 'core.user_credentials' to 'core.principals'.
 6. Rename table 'core.user_roles' to 'core.principal_roles'.
-7. Change type of 'user_id' in table 'core.users' and associated to UUID from INTEGER.
+7. Change type of 'user_id' in table 'core.users' and associated columns to UUID from INTEGER.

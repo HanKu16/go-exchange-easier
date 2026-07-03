@@ -8,7 +8,7 @@ CREATE TABLE chat.rooms (
 
 CREATE TABLE chat.user_in_rooms (
   room_id UUID,
-  user_id INTEGER,
+  user_id UUID,
   last_read_at TIMESTAMPTZ,
   joined_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (room_id, user_id)
@@ -20,7 +20,7 @@ CREATE TABLE chat.messages (
   created_at TIMESTAMPTZ NOT NULL,
   deleted_at TIMESTAMPTZ,
   room_id UUID NOT NULL,
-  author_id INTEGER NOT NULL
+  author_id UUID NOT NULL
 );
 
 ALTER TABLE chat.user_in_rooms ADD FOREIGN KEY (room_id) REFERENCES chat.rooms (room_id);

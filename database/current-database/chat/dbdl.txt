@@ -6,7 +6,7 @@ TABLE chat.rooms {
 
 TABLE chat.user_in_rooms {
   room_id UUID [pk, ref: > chat.rooms.room_id]
-  user_id INTEGER [pk]
+  user_id UUID [pk]
   last_read_at TIMESTAMPTZ
   joined_at TIMESTAMPTZ [not null]
 }
@@ -17,5 +17,5 @@ TABLE chat.messages {
   created_at TIMESTAMPTZ [not null]
   deleted_at TIMESTAMPTZ 
   room_id UUID [ref: > chat.rooms.room_id, not null]
-  author_id INTEGER [not null]
+  author_id UUID [not null]
 }
