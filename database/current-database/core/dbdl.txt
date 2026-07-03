@@ -29,26 +29,26 @@ TABLE core.user_statuses {
   name TEXT [not null]
 }
 
-TABLE core.user_credentials {
-  user_id INTEGER [pk, ref: - core.users.user_id]
+TABLE core.principals {
+  principal_id UUID [pk]
   username TEXT [unique, not null]
   password TEXT [not null]
 }
 
 TABLE core.user_descriptions {
-  user_id INTEGER [pk, ref: - core.users.user_id]
+  user_id UUID [pk, ref: - core.users.user_id]
   text_content TEXT [not null]
   updated_at TIMESTAMPTZ 
 }
 
 TABLE core.notification_settings {
-  user_id INTEGER [pk, ref: - core.users.user_id]
+  user_id UUID  [pk, ref: - core.users.user_id]
   mail TEXT [unique]
   is_mail_notification_enabled BOOLEAN [not null]
 }
 
 TABLE core.users {
-  user_id SERIAL [pk]
+  user_id UUID [pk, ref: - core.principals.principal_id]
   nick TEXT [not null]
   avatar_key TEXT
   created_at TIMESTAMPTZ [not null]
@@ -59,8 +59,8 @@ TABLE core.users {
   country_of_origin_id SMALLINT [ref: > core.countries.country_id]
 }
 
-TABLE core.user_roles {
-  user_id INTEGER [pk, ref: > core.user_credentials.user_id]
+TABLE core.principal_roles {
+  principal_id UUID [pk, ref: > core.principals.principal_id]
   role TEXT [pk]
 }
 
@@ -70,7 +70,7 @@ TABLE core.university_reviews {
   star_rating SMALLINT [not null]
   created_at TIMESTAMPTZ [not null]
   deleted_at TIMESTAMPTZ 
-  author_id INTEGER [ref: > core.users.user_id, not null]
+  author_id UUID [ref: > core.users.user_id, not null]
   university_id SMALLINT [ref: > core.universities
   .university_id, not null]
 }
@@ -79,7 +79,7 @@ TABLE core.university_review_reactions {
   university_review_reaction_id BIGSERIAL [pk]
   reaction_type TEXT [not null]
   university_review_id INTEGER [ref: > core.university_reviews.university_review_id, not null]
-  author_id INTEGER [ref: > core.users.user_id, not null]
+  author_id UUID [ref: > core.users.user_id, not null]
 }
 
 TABLE core.university_reviews_reaction_counts {
@@ -89,12 +89,12 @@ TABLE core.university_reviews_reaction_counts {
 }
 
 TABLE core.user_follows {
-  follower_id INTEGER [pk, ref: > core.users.user_id, not null]
-  followee_id INTEGER [pk, ref: > core.users.user_id, not null]
+  follower_id UUID [pk, ref: > core.users.user_id, not null]
+  followee_id UUID [pk, ref: > core.users.user_id, not null]
 }
 
 TABLE core.university_follows {
-  follower_id INTEGER [pk, ref: > core.users.user_id, not null]
+  follower_id UUID [pk, ref: > core.users.user_id, not null]
   university_id SMALLINT [pk, ref: > core.universities
   .university_id, not null]
 }
@@ -103,7 +103,7 @@ TABLE core.exchanges {
   exchange_id SERIAL [pk]
   started_at DATE [not null]
   end_at DATE [not null]
-  user_id INTEGER [ref: > core.users.user_id, not null]
+  user_id UUID [ref: > core.users.user_id, not null]
   field_of_study_id SMALLINT [ref: > core.fields_of_study.field_of_study_id, not null]
   university_id SMALLINT [ref: > core.universities.university_id, not null]
 }
@@ -117,7 +117,7 @@ TABLE core.refresh_tokens {
   device_id UUID [not null]
   device_name TEXT
   ip_address TEXT
-  user_id INTEGER [ref: > core.users.user_id, not null]
+  user_id UUID [ref: > core.users.user_id, not null]
 }
 
 TABLE core.reports {
@@ -127,13 +127,13 @@ TABLE core.reports {
   status TEXT [not null]
   reason TEXT [not null]
   type TEXT [not null]
-  reporter_id INTEGER [ref: > core.users.user_id, not null]
+  reporter_id UUID [ref: > core.users.user_id, not null]
 }
 
 TABLE core.user_reports {
   report_id UUID [pk, ref: - core.reports.report_id]
   context JSONB [not null]
-  reported_user_id INTEGER [ref: > core.users.user_id, not null]
+  reported_user_id UUID [ref: > core.users.user_id, not null]
 }
 
 TABLE core.university_review_reports {
@@ -145,26 +145,6 @@ TABLE core.university_review_reports {
 TABLE core.chat_reports {
   report_id UUID [pk, ref: - core.reports.report_id]
   context JSONB [not null]
-  reported_user_id INTEGER [ref: > core.users.user_id, not null]
+  reported_user_id UUID [ref: > core.users.user_id, not null]
   room_id UUID [not null]
 }
-
-TABLE core.report_resolutions {
-  report_resolution_id UUID [pk]
-  explanation TEXT [not null]
-  created_at TIMESTAMPTZ [not null]
-  admin_id INTEGER [ref: > core.users.user_id, not null]
-  report_id UUID [ref: - core.reports.report_id, unique]
-}
-
-TABLE core.user_bans {
-  user_ban_id UUID [pk]
-  explanation_for_user TEXT [not null]
-  created_at TIMESTAMPTZ [not null]
-  expires_at TIMESTAMPTZ
-  is_active BOOLEAN [not null]
-  banned_user_id INTEGER [ref: > core.users.user_id, not null]
-  report_resolution_id UUID [ref: > core.report_resolutions.report_resolution_id]
-}
-
-

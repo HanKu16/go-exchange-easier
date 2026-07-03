@@ -1,4 +1,4 @@
-CREATE SCHEMA IF NOT EXISTS core ;
+CREATE SCHEMA IF NOT EXISTS core;
 
 CREATE TABLE core.countries (
   country_id SMALLSERIAL PRIMARY KEY,
@@ -31,26 +31,26 @@ CREATE TABLE core.user_statuses (
   name TEXT NOT NULL
 );
 
-CREATE TABLE core.user_credentials (
-  user_id INTEGER PRIMARY KEY,
+CREATE TABLE core.principals (
+  principal_id UUID PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL
 );
 
 CREATE TABLE core.user_descriptions (
-  user_id INTEGER PRIMARY KEY,
+  user_id UUID PRIMARY KEY,
   text_content TEXT NOT NULL,
   updated_at TIMESTAMPTZ
 );
 
 CREATE TABLE core.notification_settings (
-  user_id INTEGER PRIMARY KEY,
+  user_id UUID PRIMARY KEY,
   mail TEXT UNIQUE,
   is_mail_notification_enabled BOOLEAN NOT NULL
 );
 
 CREATE TABLE core.users (
-  user_id SERIAL PRIMARY KEY,
+  user_id UUID PRIMARY KEY,
   nick TEXT NOT NULL,
   avatar_key TEXT,
   created_at TIMESTAMPTZ NOT NULL,
@@ -61,10 +61,10 @@ CREATE TABLE core.users (
   country_of_origin_id SMALLINT
 );
 
-CREATE TABLE core.user_roles (
-  user_id INTEGER,
+CREATE TABLE core.principal_roles (
+  principal_id UUID,
   role TEXT,
-  PRIMARY KEY (user_id, role)
+  PRIMARY KEY (principal_id, role)
 );
 
 CREATE TABLE core.university_reviews (
@@ -73,7 +73,7 @@ CREATE TABLE core.university_reviews (
   star_rating SMALLINT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL,
   deleted_at TIMESTAMPTZ,
-  author_id INTEGER NOT NULL,
+  author_id UUID NOT NULL,
   university_id SMALLINT NOT NULL
 );
 
@@ -81,7 +81,7 @@ CREATE TABLE core.university_review_reactions (
   university_review_reaction_id BIGSERIAL PRIMARY KEY,
   reaction_type TEXT NOT NULL,
   university_review_id INTEGER NOT NULL,
-  author_id INTEGER NOT NULL
+  author_id UUID NOT NULL
 );
 
 CREATE TABLE core.university_reviews_reaction_counts (
@@ -92,13 +92,13 @@ CREATE TABLE core.university_reviews_reaction_counts (
 );
 
 CREATE TABLE core.user_follows (
-  follower_id INTEGER NOT NULL,
-  followee_id INTEGER NOT NULL,
+  follower_id UUID NOT NULL,
+  followee_id UUID NOT NULL,
   PRIMARY KEY (follower_id, followee_id)
 );
 
 CREATE TABLE core.university_follows (
-  follower_id INTEGER NOT NULL,
+  follower_id UUID NOT NULL,
   university_id SMALLINT NOT NULL,
   PRIMARY KEY (follower_id, university_id)
 );
@@ -107,7 +107,7 @@ CREATE TABLE core.exchanges (
   exchange_id SERIAL PRIMARY KEY,
   started_at DATE NOT NULL,
   end_at DATE NOT NULL,
-  user_id INTEGER NOT NULL,
+  user_id UUID NOT NULL,
   field_of_study_id SMALLINT NOT NULL,
   university_id SMALLINT NOT NULL
 );
@@ -121,7 +121,7 @@ CREATE TABLE core.refresh_tokens (
   device_id UUID NOT NULL,
   device_name TEXT,
   ip_address TEXT,
-  user_id INTEGER NOT NULL
+  user_id UUID NOT NULL
 );
 
 CREATE TABLE core.reports (
@@ -131,13 +131,13 @@ CREATE TABLE core.reports (
   status TEXT NOT NULL,
   reason TEXT NOT NULL,
   type TEXT NOT NULL,
-  reporter_id INTEGER NOT NULL
+  reporter_id UUID NOT NULL
 );
 
 CREATE TABLE core.user_reports (
   report_id UUID PRIMARY KEY,
   context JSONB NOT NULL,
-  reported_user_id INTEGER NOT NULL
+  reported_user_id UUID NOT NULL
 );
 
 CREATE TABLE core.university_review_reports (
@@ -149,37 +149,19 @@ CREATE TABLE core.university_review_reports (
 CREATE TABLE core.chat_reports (
   report_id UUID PRIMARY KEY,
   context JSONB NOT NULL,
-  reported_user_id INTEGER NOT NULL,
+  reported_user_id UUID NOT NULL,
   room_id UUID NOT NULL
-);
-
-CREATE TABLE core.report_resolutions (
-  report_resolution_id UUID PRIMARY KEY,
-  explanation TEXT NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL,
-  admin_id INTEGER NOT NULL,
-  report_id UUID UNIQUE
-);
-
-CREATE TABLE core.user_bans (
-  user_ban_id UUID PRIMARY KEY,
-  explanation_for_user TEXT NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL,
-  expires_at TIMESTAMPTZ,
-  is_active BOOLEAN NOT NULL,
-  banned_user_id INTEGER NOT NULL,
-  report_resolution_id UUID
 );
 
 ALTER TABLE core.cities ADD FOREIGN KEY (country_id) REFERENCES core.countries (country_id);
 
 ALTER TABLE core.universities ADD FOREIGN KEY (city_id) REFERENCES core.cities (city_id);
 
-ALTER TABLE core.user_credentials ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
-
 ALTER TABLE core.user_descriptions ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
 
 ALTER TABLE core.notification_settings ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
+
+ALTER TABLE core.users ADD FOREIGN KEY (user_id) REFERENCES core.principals (principal_id);
 
 ALTER TABLE core.users ADD FOREIGN KEY (user_status_id) REFERENCES core.user_statuses (user_status_id);
 
@@ -187,7 +169,7 @@ ALTER TABLE core.users ADD FOREIGN KEY (home_university_id) REFERENCES core.univ
 
 ALTER TABLE core.users ADD FOREIGN KEY (country_of_origin_id) REFERENCES core.countries (country_id);
 
-ALTER TABLE core.user_roles ADD FOREIGN KEY (user_id) REFERENCES core.user_credentials (user_id);
+ALTER TABLE core.principal_roles ADD FOREIGN KEY (principal_id) REFERENCES core.principals (principal_id);
 
 ALTER TABLE core.university_reviews ADD FOREIGN KEY (author_id) REFERENCES core.users (user_id);
 
@@ -229,14 +211,6 @@ ALTER TABLE core.chat_reports ADD FOREIGN KEY (report_id) REFERENCES core.report
 
 ALTER TABLE core.chat_reports ADD FOREIGN KEY (reported_user_id) REFERENCES core.users (user_id);
 
-ALTER TABLE core.report_resolutions ADD FOREIGN KEY (admin_id) REFERENCES core.users (user_id);
-
-ALTER TABLE core.report_resolutions ADD FOREIGN KEY (report_id) REFERENCES core.reports (report_id);
-
-ALTER TABLE core.user_bans ADD FOREIGN KEY (banned_user_id) REFERENCES core.users (user_id);
-
-ALTER TABLE core.user_bans ADD FOREIGN KEY (report_resolution_id) REFERENCES core.report_resolutions (report_resolution_id);;
-
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 CREATE INDEX cities_country_id_idx ON core.cities (country_id);
@@ -253,7 +227,7 @@ CREATE INDEX users_nick_idx ON core.users (nick);
 
 CREATE INDEX notif_sett_mail_idx ON core.notification_settings (mail);
 
-CREATE INDEX user_creds_username_idx ON core.user_credentials (username);
+CREATE INDEX princip_username_idx ON core.principals (username);
 
 CREATE INDEX uni_reviews_author_id_idx ON core.university_reviews (author_id);
 

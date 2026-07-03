@@ -1,4 +1,8 @@
-1. Add tables 'core.reports', 'core.user_reports', 'core.chat_reports', 'core.university_review_reports', 'core.report_resolutions', 'core.user_bans'.
-2. Replace 'role' and 'reacton_type' enums with TEXT type.
+1. Add tables 'core.reports', 'core.user_reports', 'core.chat_reports', 'core.university_review_reports'.
+2. Replace 'role' and 'reaction_type' enums with TEXT type.
 3. Replace all VARCHAR types with TEXT type.
 4. Add column 'is_blocked' to 'core.users' table.
+5. Rename table 'core.user_credentials' to 'core.principals'.
+6. Rename table 'core.user_roles' to 'core.principal_roles'.
+7. Change type of 'user_id' in table 'core.users' and associated to UUID from INTEGER.
+8. Change direction of FK in tables 'core.users' and 'core.principals' (ealier 'core.user_credentials'), now 'core.users' points to 'core.principals'.
