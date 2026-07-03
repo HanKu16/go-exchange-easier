@@ -1,60 +1,49 @@
-INSERT INTO core.cities(english_name, country_id) 
-VALUES
+INSERT INTO core.cities(english_name, country_id)  VALUES
 	('Tirana', 1),
 	('Durrës', 1),
 	('Vlorë', 1),
 	('Shkodër', 1),
-	
 	('Vienna', 2),
 	('Graz', 2),
 	('Linz', 2),
 	('Salzburg', 2),
 	('Innsbruck', 2),
-	
 	('Brussels', 3),
 	('Antwerp', 3),
 	('Ghent', 3),
 	('Bruges', 3),
 	('Liège', 3),
-	
 	('Sarajevo', 4),
 	('Banja Luka', 4),
 	('Mostar', 4),
 	('Tuzla', 4),
-	
 	('Sofia', 5),
 	('Plovdiv', 5),
 	('Varna', 5),
 	('Burgas', 5),
 	('Ruse', 5),
-	
 	('Zagreb', 6),
 	('Split', 6),
 	('Dubrovnik', 6),
 	('Rijeka', 6),
 	('Zadar', 6),
-	
 	('Prague', 7),
 	('Brno', 7),
 	('Ostrava', 7),
 	('Pilsen', 7),
 	('Liberec', 7),
-	
 	('Copenhagen', 8),
 	('Aarhus', 8),
 	('Odense', 8),
 	('Aalborg', 8),
-	
 	('Tallinn', 9),
 	('Tartu', 9),
 	('Narva', 9),
-	
 	('Helsinki', 10),
 	('Espoo', 10),
 	('Tampere', 10),
 	('Vantaa', 10),
 	('Turku', 10),
-	
 	('Paris', 11),
 	('Marseille', 11),
 	('Lyon', 11),
@@ -97,7 +86,6 @@ VALUES
 	('Colmar', 11),
 	('Dunkerque', 11),
 	('Nîmes', 11),
-	
 	('Berlin', 12),
 	('Hamburg', 12),
 	('Munich', 12),
@@ -142,29 +130,24 @@ VALUES
 	('Jena', 12),
 	('Trier', 12),
 	('Würzburg', 12),
-	
 	('Athens', 13),
 	('Thessaloniki', 13),
 	('Patras', 13),
 	('Heraklion', 13),
 	('Larissa', 13),
-	
 	('Budapest', 14),
 	('Debrecen', 14),
 	('Szeged', 14),
 	('Miskolc', 14),
 	('Pécs', 14),
-	
 	('Reykjavik', 15),
 	('Kópavogur', 15),
 	('Hafnarfjörður', 15),
-	
 	('Dublin', 16),
 	('Cork', 16),
 	('Limerick', 16),
 	('Galway', 16),
 	('Waterford', 16),
-	
 	('Rome', 17),
 	('Milan', 17),
 	('Naples', 17),
@@ -194,16 +177,13 @@ VALUES
 	('Vicenza', 17),
 	('Bolzano', 17),
 	('Udine', 17),
-	
 	('Riga', 18),
 	('Daugavpils', 18),
 	('Liepāja', 18),
-	
 	('Vilnius', 19),
 	('Kaunas', 19),
 	('Klaipėda', 19),
 	('Šiauliai', 19),
-	
 	('Amsterdam', 21),
 	('Rotterdam', 21),
 	('The Hague', 21),
@@ -219,17 +199,14 @@ VALUES
 	('Apeldoorn', 21),
 	('Enschede', 21),
 	('Leiden', 21),
-	
 	('Skopje', 22),
 	('Bitola', 22),
 	('Kumanovo', 22),
-	
 	('Oslo', 23),
 	('Bergen', 23),
 	('Trondheim', 23),
 	('Stavanger', 23),
 	('Kristiansand', 23),
-	
 	('Warsaw', 24),
 	('Kraków', 24),
 	('Łódź', 24),
@@ -276,19 +253,16 @@ VALUES
 	('Gniezno', 24),
 	('Leszno', 24),
 	('Ostrów Wielkopolski', 24),
-	
 	('Lisbon', 25),
 	('Porto', 25),
 	('Funchal', 25),
 	('Braga', 25),
 	('Coimbra', 25),
-	
 	('Bucharest', 26),
 	('Cluj-Napoca', 26),
 	('Timișoara', 26),
 	('Iași', 26),
 	('Constanța', 26),
-	
 	('Moscow', 27),
 	('Saint Petersburg', 27),
 	('Novosibirsk', 27),
@@ -304,21 +278,17 @@ VALUES
 	('Perm', 27),
 	('Volgograd', 27),
 	('Voronezh', 27),
-	
 	('Belgrade', 28),
 	('Novi Sad', 28),
 	('Niš', 28),
 	('Kragujevac', 28),
-	
 	('Bratislava', 29),
 	('Košice', 29),
 	('Prešov', 29),
 	('Žilina', 29),
-	
 	('Ljubljana', 30),
 	('Maribor', 30),
 	('Celje', 30),
-	
 	('Madrid', 31),
 	('Barcelona', 31),
 	('Valencia', 31),
@@ -351,19 +321,16 @@ VALUES
 	('Segovia', 31),
 	('Almería', 31),
 	('Elche', 31),
-	
 	('Stockholm', 32),
 	('Gothenburg', 32),
 	('Malmö', 32),
 	('Uppsala', 32),
 	('Linköping', 32),
-	
 	('Bern', 33),
 	('Zurich', 33),
 	('Geneva', 33),
 	('Basel', 33),
 	('Lausanne', 33),
-	
 	('Istanbul', 34),
 	('Ankara', 34),
 	('İzmir', 34),
@@ -379,7 +346,6 @@ VALUES
 	('Denizli', 34),
 	('Trabzon', 34),
 	('Şanlıurfa', 34),
-	
 	('Kyiv', 35),
 	('Kharkiv', 35),
 	('Odesa', 35),
@@ -388,7 +354,6 @@ VALUES
 	('Zaporizhzhia', 35),
 	('Kryvyi Rih', 35),
 	('Mykolaiv', 35),
-	
 	('London', 36),
 	('Birmingham', 36),
 	('Manchester', 36),

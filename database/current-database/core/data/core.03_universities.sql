@@ -4,7 +4,6 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('Agricultural University of Tirana', 'Universiteti Bujqësor i Tiranës', 'https://www.ubt.edu.al', NULL, 1),
 	('Aleksandër Moisiu University of Durrës', 'Universiteti Aleksandër Moisiu Durrës', 'https://www.uamd.edu.al', NULL, 2),
 	('Ismail Qemali University of Vlorë', 'Universiteti Ismail Qemali i Vlorës', 'https://www.univlora.edu.al', NULL, 3),
-
 	('University of Vienna', 'Universität Wien', 'https://www.univie.ac.at', NULL, 5),
 	('Vienna University of Technology', 'Technische Universität Wien', 'https://www.tuwien.ac.at', NULL, 5),
 	('Medical University of Vienna', 'Medizinische Universität Wien', 'https://www.meduniwien.ac.at', NULL, 5),
@@ -14,52 +13,43 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('Johannes Kepler University Linz', 'Johannes Kepler Universität Linz', 'https://www.jku.at', NULL, 7),
 	('University of Salzburg', 'Paris Lodron Universität Salzburg', 'https://www.uni-salzburg.at', NULL, 8),
 	('University of Innsbruck', 'Leopold-Franzens-Universität Innsbruck', 'https://www.uibk.ac.at', NULL, 9),
-
 	('Université Libre de Bruxelles', 'Université Libre de Bruxelles', 'https://www.ulb.be', NULL, 10),
 	('Vrije Universiteit Brussel', 'Vrije Universiteit Brussel', 'https://www.vub.be', NULL, 10),
 	('KU Leuven (Brussels Campus)', 'KU Leuven (Campus Brussel)', 'https://www.kuleuven.be/campus/brussel', NULL, 10),
 	('University of Antwerp', 'Universiteit Antwerpen', 'https://www.uantwerpen.be', NULL, 11),
 	('Ghent University', 'Universiteit Gent', 'https://www.ugent.be', NULL, 12),
 	('University of Liège', 'Université de Liège', 'https://www.uliege.be', NULL, 14),
-
 	('University of Sarajevo', 'Univerzitet u Sarajevu', 'https://www.unsa.ba', NULL, 15),
 	('University of Banja Luka', 'Univerzitet u Banjoj Luci', 'https://www.unibl.org', NULL, 16),
 	('University of Mostar', 'Sveučilište u Mostaru', 'https://www.sum.ba', NULL, 17),
 	('University of Tuzla', 'Univerzitet u Tuzli', 'https://www.untz.ba', NULL, 18),
-
 	('Sofia University "St. Kliment Ohridski"', 'Софийски университет „Св. Климент Охридски“', 'https://www.uni-sofia.bg', NULL, 19),
 	('Technical University of Sofia', 'Технически университет – София', 'https://www.tu-sofia.bg', NULL, 19),
 	('University of National and World Economy', 'Университет за национално и световно стопанство', 'https://unwe.bg', NULL, 19),
 	('Plovdiv University "Paisii Hilendarski"', 'Пловдивски университет „Паисий Хилендарски“', 'https://uni-plovdiv.bg', NULL, 20),
 	('Medical University of Varna', 'Медицински университет – Варна', 'https://www.mu-varna.bg', NULL, 21),
-
 	('University of Zagreb', 'Sveučilište u Zagrebu', 'https://www.unizg.hr', NULL, 24),
 	('University of Split', 'Sveučilište u Splitu', 'https://www.unist.hr', NULL, 25),
 	('University of Dubrovnik', 'Sveučilište u Dubrovniku', 'https://www.unidu.hr', NULL, 26),
 	('University of Rijeka', 'Sveučilište u Rijeci', 'https://www.uniri.hr', NULL, 27),
-
 	('Charles University', 'Univerzita Karlova', 'https://cuni.cz', NULL, 29),
 	('Czech Technical University in Prague', 'České vysoké učení technické v Praze', 'https://www.cvut.cz', NULL, 29),
 	('Masaryk University', 'Masarykova univerzita', 'https://www.muni.cz', NULL, 30),
 	('Brno University of Technology', 'Vysoké učení technické v Brně', 'https://www.vutbr.cz', NULL, 30),
 	('VŠB - Technical University of Ostrava', 'Vysoká škola báňská – Technická univerzita Ostrava', 'https://www.vsb.cz', NULL, 31),
 	('University of West Bohemia', 'Západočeská univerzita v Plzni', 'https://www.zcu.cz', NULL, 32),
-
 	('University of Copenhagen', 'Københavns Universitet', 'https://www.ku.dk', NULL, 34),
 	('Technical University of Denmark', 'Danmarks Tekniske Universitet', 'https://www.dtu.dk', NULL, 34),
 	('Copenhagen Business School', 'Copenhagen Business School', 'https://www.cbs.dk', NULL, 34),
 	('Aarhus University', 'Aarhus Universitet', 'https://international.au.dk', NULL, 35),
 	('University of Southern Denmark', 'Syddansk Universitet', 'https://www.sdu.dk', NULL, 36),
-
 	('University of Tartu', 'Tartu Ülikool', 'https://www.ut.ee', NULL, 39),
 	('Tallinn University of Technology', 'Tallinna Tehnikaülikool', 'https://taltech.ee', NULL, 38),
 	('Tallinn University', 'Tallinna Ülikool', 'https://www.tlu.ee', NULL, 38),
-
 	('University of Helsinki', 'Helsingin yliopisto', 'https://www.helsinki.fi', NULL, 41),
 	('Aalto University', 'Aalto-yliopisto', 'https://www.aalto.fi', NULL, 42),
 	('Tampere University', 'Tampereen yliopisto', 'https://www.tuni.fi', NULL, 43),
 	('University of Turku', 'Turun yliopisto', 'https://www.utu.fi', NULL, 45),
-
 	('Sorbonne University', 'Sorbonne Université', 'https://www.sorbonne-universite.fr', NULL, 46),
 	('Paris Sciences et Lettres University (PSL)', 'Université Paris Sciences et Lettres (PSL)', 'https://psl.eu', NULL, 46),
 	('Université Paris Cité', 'Université Paris Cité', 'https://u-paris.fr', NULL, 46),
@@ -81,7 +71,6 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('University of Clermont Auvergne', 'Université Clermont Auvergne', 'https://www.uca.fr', NULL, 65),
 	('University of Lorraine (Nancy)', 'Université de Lorraine', 'https://www.univ-lorraine.fr', NULL, 76),
 	('University of Nimes', 'Université de Nîmes', 'https://www.unimes.fr', NULL, 87),
-
 	('Humboldt University of Berlin', 'Humboldt-Universität zu Berlin', 'https://www.hu-berlin.de', NULL, 88),
 	('Free University of Berlin', 'Freie Universität Berlin', 'https://www.fu-berlin.de', NULL, 88),
 	('Technical University of Berlin', 'Technische Universität Berlin', 'https://www.tu.berlin', NULL, 88),
@@ -111,26 +100,21 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('University of Würzburg', 'Julius-Maximilians-Universität Würzburg', 'https://www.uni-wuerzburg.de', NULL, 131),
 	('University of Trier', 'Universität Trier', 'https://www.uni-trier.de', NULL, 130),
 	('University of Rostock', 'Universität Rostock', 'https://www.uni-rostock.de', NULL, 123),
-
 	('National and Kapodistrian University of Athens', 'Εθνικόν και Καποδιστριακόν Πανεπιστήμιον Αθηνών', 'https://en.uoa.gr', NULL, 132),
 	('Aristotle University of Thessaloniki', 'Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης', 'https://www.auth.gr', NULL, 133),
 	('University of Patras', 'Πανεπιστήμιο Πατρών', 'https://www.upatras.gr', NULL, 134),
 	('University of Crete (Heraklion)', 'Πανεπιστήμιο Κρήτης', 'https://www.uoc.gr', NULL, 135),
-
 	('Eötvös Loránd University', 'Eötvös Loránd Tudományegyetem', 'https://www.elte.hu', NULL, 137),
 	('Budapest University of Technology and Economics', 'Budapesti Műszaki és Gazdaságtudományi Egyetem', 'https://www.bme.hu', NULL, 137),
 	('University of Debrecen', 'Debreceni Egyetem', 'https://unideb.hu', NULL, 138),
 	('University of Szeged', 'Szegedi Tudományegyetem', 'https://u-szeged.hu', NULL, 139),
 	('University of Pécs', 'Pécsi Tudományegyetem', 'https://international.pte.hu', NULL, 141),
-
 	('University of Iceland', 'Háskóli Íslands', 'https://english.hi.is', NULL, 142),
 	('Reykjavik University', 'Háskólinn í Reykjavík', 'https://en.ru.is', NULL, 142),
-
 	('Trinity College Dublin', 'Coláiste na Tríonóide, Baile Átha Cliath', 'https://www.tcd.ie', NULL, 145),
 	('University College Dublin', 'An Coláiste Ollscoile, Baile Átha Cliath', 'https://www.ucd.ie', NULL, 145),
 	('National University of Ireland Galway', 'Ollscoil na hÉireann, Gaillimh', 'https://www.nuigalway.ie', NULL, 148),
 	('University College Cork', 'Coláiste na hOllscoile Corcaigh', 'https://www.ucc.ie', NULL, 146),
-
 	('Sapienza University of Rome', 'Sapienza Università di Roma', 'https://www.uniroma1.it', NULL, 150),
 	('University of Milan', 'Università degli Studi di Milano', 'https://www.unimi.it', NULL, 151),
 	('Polytechnic University of Milan', 'Politecnico di Milano', 'https://www.polimi.it', NULL, 151),
@@ -145,15 +129,12 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('University of Pisa (near Livorno)', 'Università di Pisa', 'https://www.unipi.it', NULL, 168),
 	('University of Catania', 'Università degli Studi di Catania', 'https://www.unict.it', NULL, 159),
 	('University of Palermo', 'Università degli Studi di Palermo', 'https://www.unipa.it', NULL, 154),
-
 	('University of Latvia', 'Latvijas Universitāte', 'https://www.lu.lv', NULL, 179),
 	('Riga Technical University', 'Rīgas Tehniskā universitāte', 'https://rtu.lv', NULL, 179),
 	('Daugavpils University', 'Daugavpils Universitāte', 'https://du.lv', NULL, 180),
-
 	('Vilnius University', 'Vilniaus universitetas', 'https://www.vu.lt', NULL, 182),
 	('Kaunas University of Technology', 'Kauno technologijos universitetas', 'https://en.ktu.edu', NULL, 183),
 	('Vytautas Magnus University', 'Vytauto Didžiojo universitetas', 'https://www.vdu.lt', NULL, 183),
-
 	('University of Amsterdam', 'Universiteit van Amsterdam', 'https://www.uva.nl', NULL, 186),
 	('Vrije Universiteit Amsterdam', 'Vrije Universiteit Amsterdam', 'https://www.vu.nl', NULL, 186),
 	('Delft University of Technology', 'Technische Universiteit Delft', 'https://www.tudelft.nl', NULL, 187),
@@ -162,14 +143,11 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('Utrecht University', 'Universiteit Utrecht', 'https://www.uu.nl', NULL, 189),
 	('Eindhoven University of Technology', 'Technische Universiteit Eindhoven', 'https://www.tue.nl', NULL, 190),
 	('University of Groningen', 'Rijksuniversiteit Groningen', 'https://www.rug.nl', NULL, 191),
-
 	('Ss. Cyril and Methodius University of Skopje', 'Универзитет „Св. Кирил и Методиј“ во Скопје', 'https://www.ukim.edu.mk', NULL, 201),
 	('University "St. Kliment Ohridski" - Bitola', 'Универзитет „Св. Климент Охридски“ – Битола', 'https://www.uklo.edu.mk', NULL, 202),
-
 	('University of Oslo', 'Universitetet i Oslo', 'https://www.uio.no', NULL, 204),
 	('University of Bergen', 'Universitetet i Bergen', 'https://www.uib.no', NULL, 205),
 	('Norwegian University of Science and Technology (NTNU)', 'Norges teknisk-naturvitenskapelige universitet (NTNU)', 'https://www.ntnu.edu', NULL, 206),
-
 	('University of Warsaw', 'Uniwersytet Warszawski', 'https://www.uw.edu.pl', NULL, 209),
 	('Warsaw University of Technology', 'Politechnika Warszawska', 'https://www.pw.edu.pl', NULL, 209),
 	('Warsaw School of Economics (SGH)', 'Szkoła Główna Handlowa w Warszawie', 'https://www.sgh.waw.pl', NULL, 209),
@@ -189,17 +167,14 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('Maria Curie-Skłodowska University in Lublin', 'Uniwersytet Marii Curie-Skłodowskiej w Lublinie', 'https://www.umcs.pl', NULL, 217),
 	('Rzeszow University of Technology', 'Politechnika Rzeszowska im. Ignacego Łukasiewicza', 'https://w.prz.edu.pl', NULL, 226),
 	('Technical University of Kielce', 'Politechnika Świętokrzyska', 'https://tu.kielce.pl/', NULL, 225),
-
 	('University of Lisbon', 'Universidade de Lisboa', 'https://www.ulisboa.pt', NULL, 255),
 	('University of Porto', 'Universidade do Porto', 'https://sigarra.up.pt', NULL, 256),
 	('University of Coimbra', 'Universidade de Coimbra', 'https://www.uc.pt', NULL, 259),
-
 	('University of Bucharest', 'Universitatea din București', 'https://unibuc.ro', NULL, 260),
 	('Politehnica University of Bucharest', 'Universitatea Politehnica din București', 'https://upb.ro', NULL, 260),
 	('Babes-Bolyai University', 'Universitatea Babeș-Bolyai', 'https://www.ubbcluj.ro', NULL, 261),
 	('West University of Timișoara', 'Universitatea de Vest din Timișoara', 'https://www.uvt.ro', NULL, 262),
 	('Alexandru Ioan Cuza University of Iași', 'Universitatea „Alexandru Ioan Cuza” din Iași', 'https://www.uaic.ro', NULL, 263),
-
 	('Lomonosov Moscow State University', 'Московский государственный университет имени М.В. Ломоносова', 'https://www.msu.ru', NULL, 265),
 	('Saint Petersburg State University', 'Санкт-Петербургский государственный университет', 'https://english.spbu.ru', NULL, 266),
 	('Novosibirsk State University', 'Новосибирский государственный университет', 'https://english.nsu.ru', NULL, 267),
@@ -207,18 +182,14 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('Kazan Federal University', 'Казанский (Приволжский) федеральный университет', 'https://kpfu.ru', NULL, 269),
 	('Lobachevsky State University of Nizhny Novgorod', 'Национальный исследовательский Нижегородский государственный университет им. Н.И. Лобачевского', 'https://www.unn.ru', NULL, 270),
 	('Southern Federal University (Rostov-on-Don)', 'Южный федеральный университет', 'https://sfedu.ru', NULL, 274),
-
 	('University of Belgrade', 'Универзитет у Београду', 'https://www.bg.ac.rs', NULL, 280),
 	('University of Novi Sad', 'Универзитет у Новом Саду', 'https://www.uns.ac.rs', NULL, 281),
 	('University of Niš', 'Универзитет у Нишу', 'https://www.ni.ac.rs', NULL, 282),
-
 	('Comenius University in Bratislava', 'Univerzita Komenského v Bratislave', 'https://uniba.sk', NULL, 284),
 	('Slovak University of Technology in Bratislava', 'Slovenská technická univerzita v Bratislave', 'https://www.stuba.sk', NULL, 284),
 	('Technical University of Košice', 'Technická univerzita v Košiciach', 'https://www.tuke.sk', NULL, 285),
-
 	('University of Ljubljana', 'Univerza v Ljubljani', 'https://www.uni-lj.si', NULL, 288),
 	('University of Maribor', 'Univerza v Mariboru', 'https://www.um.si', NULL, 289),
-
 	('Complutense University of Madrid', 'Universidad Complutense de Madrid', 'https://www.ucm.es', NULL, 291),
 	('Autonomous University of Madrid', 'Universidad Autónoma de Madrid', 'https://www.uam.es', NULL, 291),
 	('University of Barcelona', 'Universitat de Barcelona', 'https://www.ub.edu', NULL, 292),
@@ -232,18 +203,15 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('University of Granada', 'Universidad de Granada', 'https://www.ugr.es', NULL, 305),
 	('University of Santiago de Compostela', 'Universidade de Santiago de Compostela', 'https://www.usc.es', NULL, 315),
 	('University of Salamanca', 'Universidad de Salamanca', 'https://www.usal.es', NULL, 312),
-
 	('Stockholm University', 'Stockholms universitet', 'https://www.su.se', NULL, 323),
 	('Uppsala University', 'Uppsala universitet', 'https://www.uu.se', NULL, 326),
 	('Lund University', 'Lunds universitet', 'https://www.lunduniversity.lu.se', NULL, 325),
 	('University of Gothenburg', 'Göteborgs universitet', 'https://www.gu.se', NULL, 324),
-
 	('University of Zurich', 'Universität Zürich', 'https://www.uzh.ch', NULL, 329),
 	('ETH Zurich', 'Eidgenössische Technische Hochschule Zürich', 'https://ethz.ch', NULL, 329),
 	('University of Geneva', 'Université de Genève', 'https://www.unige.ch', NULL, 330),
 	('EPFL (Lausanne)', 'École Polytechnique Fédérale de Lausanne', 'https://www.epfl.ch', NULL, 332),
 	('University of Bern', 'Universität Bern', 'https://www.unibe.ch', NULL, 328),
-
 	('Istanbul University', 'İstanbul Üniversitesi', 'https://istanbul.edu.tr', NULL, 333),
 	('Middle East Technical University', 'Orta Doğu Teknik Üniversitesi', 'https://www.metu.edu.tr', NULL, 334),
 	('Hacettepe University', 'Hacettepe Üniversitesi', 'https://www.hacettepe.edu.tr', NULL, 334),
@@ -251,13 +219,11 @@ INSERT INTO core.universities(english_name, original_name, link_to_website, dele
 	('Dokuz Eylül University', 'Dokuz Eylül Üniversitesi', 'https://www.deu.edu.tr', NULL, 335),
 	('Uludağ University', 'Uludağ Üniversitesi', 'https://uludag.edu.tr', NULL, 336),
 	('Akdeniz University', 'Akdeniz Üniversitesi', 'https://www.akdeniz.edu.tr', NULL, 337),
-
 	('Taras Shevchenko National University of Kyiv', 'Київський національний університет імені Тараса Шевченка', 'https://knu.ua', NULL, 348),
 	('National Technical University of Ukraine "Igor Sikorsky Kyiv Polytechnic Institute"', 'Національний технічний університет України «Київський політехнічний інститут імені Ігоря Сікорського»', 'https://kpi.ua', NULL, 348),
 	('V.N. Karazin Kharkiv National University', 'Харківський національний університет імені В. Н. Каразіна', 'https://www.univer.kharkov.ua', NULL, 349),
 	('Odesa I.I. Mechnikov National University', 'Одеський національний університет імені І. І. Мечникова', 'https://onu.edu.ua', NULL, 350),
 	('Ivan Franko National University of Lviv', 'Львівський національний університет імені Івана Франка', 'https://lnu.edu.ua', NULL, 352),
-
 	('University College London (UCL)', 'University College London (UCL)', 'https://www.ucl.ac.uk', NULL, 356),
 	('King''s College London', 'Kings College London', 'https://www.kcl.ac.uk', NULL, 356),
 	('London School of Economics (LSE)', 'London School of Economics and Political Science (LSE)', 'https://www.lse.ac.uk', NULL, 356),

@@ -1,5 +1,4 @@
-INSERT INTO core.countries(english_name, flag_key)
-VALUES
+INSERT INTO core.countries(english_name, flag_key) VALUES
 	('Albania', 'Albania.png'),
 	('Austria', 'Austria.png'),
 	('Belgium', 'Belgium.png'),
