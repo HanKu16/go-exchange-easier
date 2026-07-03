@@ -5,4 +5,3 @@
 5. Rename table 'core.user_credentials' to 'core.principals'.
 6. Rename table 'core.user_roles' to 'core.principal_roles'.
 7. Change type of 'user_id' in table 'core.users' and associated to UUID from INTEGER.
-8. Change direction of FK in tables 'core.users' and 'core.principals' (ealier 'core.user_credentials'), now 'core.users' points to 'core.principals'.

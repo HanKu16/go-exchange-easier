@@ -161,7 +161,7 @@ ALTER TABLE core.user_descriptions ADD FOREIGN KEY (user_id) REFERENCES core.use
 
 ALTER TABLE core.notification_settings ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
 
-ALTER TABLE core.users ADD FOREIGN KEY (user_id) REFERENCES core.principals (principal_id);
+ALTER TABLE core.principals ADD FOREIGN KEY (principal_id) REFERENCES core.users (user_id);
 
 ALTER TABLE core.users ADD FOREIGN KEY (user_status_id) REFERENCES core.user_statuses (user_status_id);
 

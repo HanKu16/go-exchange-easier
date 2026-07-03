@@ -30,7 +30,7 @@ TABLE core.user_statuses {
 }
 
 TABLE core.principals {
-  principal_id UUID [pk]
+  principal_id UUID [pk, ref: - core.users.user_id]
   username TEXT [unique, not null]
   password TEXT [not null]
 }
@@ -48,7 +48,7 @@ TABLE core.notification_settings {
 }
 
 TABLE core.users {
-  user_id UUID [pk, ref: - core.principals.principal_id]
+  user_id UUID [pk]
   nick TEXT [not null]
   avatar_key TEXT
   created_at TIMESTAMPTZ [not null]
@@ -148,3 +148,4 @@ TABLE core.chat_reports {
   reported_user_id UUID [ref: > core.users.user_id, not null]
   room_id UUID [not null]
 }
+
