@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.core.domain.follow.user.impl;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollowApi;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollowService;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,7 @@ public class UserFollowController implements UserFollowApi {
 
     @Override
     public ResponseEntity<Void> create(
-            Integer followeeId,
+            UUID followeeId,
             AuthenticatedUser authenticatedUser
     ) {
         userFollowService.follow(authenticatedUser.getId(), followeeId);
@@ -25,7 +26,7 @@ public class UserFollowController implements UserFollowApi {
 
     @Override
     public ResponseEntity<Void> delete(
-            Integer followeeId,
+            UUID followeeId,
             AuthenticatedUser authenticatedUser
     ) {
         userFollowService.unfollow(authenticatedUser.getId(), followeeId);

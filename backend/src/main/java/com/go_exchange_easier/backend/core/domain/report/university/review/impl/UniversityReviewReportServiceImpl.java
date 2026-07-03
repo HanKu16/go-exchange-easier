@@ -12,6 +12,7 @@ import com.go_exchange_easier.backend.core.domain.university.review.UniversityRe
 import com.go_exchange_easier.backend.core.domain.university.review.dto.UniversityReviewSnapshot;
 import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class UniversityReviewReportServiceImpl implements UniversityReviewReport
     @Transactional
     public UniversityReviewReportSummary create(
             int reviewId,
-            int reporterId,
+            UUID reporterId,
             CreateUniversityReviewReportRequest request
     ) {
         UniversityReviewReport report = new UniversityReviewReport();

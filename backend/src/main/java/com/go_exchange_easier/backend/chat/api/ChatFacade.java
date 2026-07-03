@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable;
 
 public interface ChatFacade {
 
-    boolean isUserMemberOfRoom(int userId, UUID roomId);
+    boolean isUserMemberOfRoom(UUID userId, UUID roomId);
 
     SimplePage<ChatMessage> getPageOfMessages(
-            int userId,
+            UUID userId,
             UUID roomId,
             Pageable pageable
     );

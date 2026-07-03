@@ -4,9 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(requiredProperties = {"field", "code", "message"})
 public record FieldErrorDetail(
-
         String field,
         String code,
         String message
-
 ) { }

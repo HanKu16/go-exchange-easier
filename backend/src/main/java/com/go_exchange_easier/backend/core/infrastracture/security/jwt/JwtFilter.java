@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -75,7 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
         if ((accessToken != null) && jwtTokenValidator.validate(accessToken)) {
-            int userId = jwtClaimsExtractor.extractUserId(accessToken);
+            UUID userId = jwtClaimsExtractor.extractUserId(accessToken);
             String username = jwtClaimsExtractor.extractUsername(accessToken);
             Set<Role> roles = jwtClaimsExtractor.extractRoles(accessToken)
                     .stream()

@@ -14,6 +14,7 @@ import com.go_exchange_easier.backend.core.domain.report.chat.dto.ChatReportSumm
 import com.go_exchange_easier.backend.core.domain.report.chat.dto.CreateChatReportRequest;
 import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,7 @@ public class ChatReportServiceImpl implements ChatReportService {
     @Override
     @Transactional
     public ChatReportSummary create(
-            int reporterId,
+            UUID reporterId,
             CreateChatReportRequest request
     ) {
         boolean isUserMemberOfRoom = chatFacade.isUserMemberOfRoom(reporterId, request.roomId());

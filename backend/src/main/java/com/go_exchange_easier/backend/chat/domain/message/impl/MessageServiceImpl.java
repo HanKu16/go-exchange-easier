@@ -37,7 +37,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public SimplePage<MessageDetails> getPage(
             UUID roomId,
-            int userId,
+            UUID userId,
             Pageable pageable
     ) {
         if (!roomService.isUserMemberOfRoom(roomId, userId)) {
@@ -45,8 +45,8 @@ public class MessageServiceImpl implements MessageService {
                     "Authenticated user is not member of room that he is trying to access.");
         }
         Page<Message> pageOfMessages = messageRepository.findByRoomId(roomId, pageable);
-        Set<Integer> usersIds = extractUsersIds(pageOfMessages);
-        Map<Integer, CoreUser> authors = coreFacade.getUsersByIds(usersIds);
+        Set<UUID> usersIds = extractUsersIds(pageOfMessages);
+        Map<UUID, CoreUser> authors = coreFacade.getUsersByIds(usersIds);
         List<MessageDetails> messages = new ArrayList<>(pageOfMessages.getSize());
         for (Message message : pageOfMessages.getContent()) {
             CoreUser author = authors.get(message.getAuthorId());
@@ -108,7 +108,7 @@ public class MessageServiceImpl implements MessageService {
     public void delete(
             UUID messageId,
             UUID roomId,
-            int userId
+            UUID userId
     ) {
         Message message = messageRepository.findWithRoomById(messageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Message of id " + messageId + " was not found."));
@@ -124,7 +124,7 @@ public class MessageServiceImpl implements MessageService {
         roomService.updateLastMessage(roomId, latestMessage.orElse(null));
     }
 
-    private Set<Integer> extractUsersIds(Page<Message> pageOfMessages) {
+    private Set<UUID> extractUsersIds(Page<Message> pageOfMessages) {
         return pageOfMessages.getContent()
                 .stream()
                 .map(Message::getAuthorId)

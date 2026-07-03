@@ -13,7 +13,7 @@ public interface UserInRoomRepository extends JpaRepository<UserInRoom, UserInRo
 
     boolean existsByRoomIdAndUserId(
             UUID roomId,
-            int userId
+            UUID userId
     );
 
     @Query("""
@@ -21,9 +21,9 @@ public interface UserInRoomRepository extends JpaRepository<UserInRoom, UserInRo
                 WHERE r.room.id = :roomId
                 AND r.userId != :userId
             """)
-    int findOtherMemberId(
+    UUID findOtherMemberId(
             @Param("roomId") UUID roomId,
-            @Param("userId") int userId
+            @Param("userId") UUID userId
     );
 
 }

@@ -11,37 +11,38 @@ import com.go_exchange_easier.backend.core.domain.user.dto.UpdateNickRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UpdateUserStatusRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserUpdateService {
 
     UserDescriptionDetails updateDescription(
-            int userId,
+            UUID userId,
             UpdateUserDescriptionRequest request
     );
 
     Optional<UniversitySummary> assignHomeUniversity(
-            int userId,
+            UUID userId,
             AssignHomeUniversityRequest request
     );
 
     Optional<UserStatusSummary> updateStatus(
-            int userId,
+            UUID userId,
             UpdateUserStatusRequest request
     );
 
     Optional<CountrySummary> assignCountryOfOrigin(
-            int userId,
+            UUID userId,
             AssignCountryOfOriginRequest request
     );
 
     AvatarUrlSummary addAvatar(
-            int userId,
+            UUID userId,
             MultipartFile file
     );
 
-    AvatarUrlSummary deleteAvatar(int userId);
+    AvatarUrlSummary deleteAvatar(UUID userId);
 
-    void updateNick(int userId, UpdateNickRequest request);
+    void updateNick(UUID userId, UpdateNickRequest request);
 
 }

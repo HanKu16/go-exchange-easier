@@ -1,13 +1,12 @@
 package com.go_exchange_easier.backend.chat.domain.room.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.UUID;
 
 public record CreateRoomRequest(
 
         @NotNull(message = "Target user id can not be null.")
-        @Schema(example = "17")
-        Integer targetUserId
+        UUID targetUserId
 
 ) implements Serializable { }

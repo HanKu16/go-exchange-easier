@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.core.domain.user.notification;
 
 import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class NotificationSettings {
     @Id
     @Column(name = "user_id")
     @EqualsAndHashCode.Include
-    private Integer id;
+    private UUID id;
 
     @Column(name = "mail")
     private String mail;

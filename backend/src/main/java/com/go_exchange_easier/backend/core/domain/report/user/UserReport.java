@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import java.util.Map;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,6 @@ public class UserReport extends Report {
     private Map<String, Object> context;
 
     @Column(name = "reported_user_id")
-    private int reportedUserId;
+    private UUID reportedUserId;
 
 }

@@ -7,7 +7,7 @@ import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.auth.dto.LoginRequest;
 import com.go_exchange_easier.backend.core.domain.auth.dto.TokenBundle;
 import com.go_exchange_easier.backend.core.domain.auth.entity.RefreshToken;
-import com.go_exchange_easier.backend.core.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.core.domain.auth.entity.Principal;
 import com.go_exchange_easier.backend.core.domain.auth.exception.*;
 import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.core.infrastracture.security.config.JwtConfig;
@@ -84,18 +84,18 @@ public class AuthServiceImpl implements AuthService {
         if (user.getDeletedAt() != null) {
             throw new UserAccountRevokedException("User account is revoked.");
         }
-        UserCredentials credentials = credentialsRepository.findById(user.getId())
+        Principal principal = credentialsRepository.findById(user.getId())
                 .orElseThrow(() -> new IllegalStateException(
-                        "User exists but does not have associated credentials record."));
+                        "User exists but does not have associated principal record."));
         String newAccessToken = jwtTokenGenerator.generateAccessToken(
-                credentials.getUser()
+                principal.getUser()
                         .getId(),
-                credentials.getUsername(),
-                credentials.getUser()
+                principal.getUsername(),
+                principal.getUser()
                         .getNick(),
-                credentials.getUser()
+                principal.getUser()
                         .getAvatarKey(),
-                credentials.getRoles()
+                principal.getRoles()
         );
         String newRawRefreshToken = jwtTokenGenerator.generateRefreshToken();
         RefreshToken newToken = createNewRefreshToken(user, newRawRefreshToken, servletRequest);

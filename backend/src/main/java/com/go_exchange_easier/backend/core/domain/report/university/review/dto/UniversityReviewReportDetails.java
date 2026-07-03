@@ -22,7 +22,7 @@ public record UniversityReviewReportDetails(
         ReportStatus status,
         ReportReason reason,
         ReportType type,
-        Integer reporterId,
+        UUID reporterId,
         Map<String, Object> context,
         Integer reportedReviewId
 ) implements Serializable {

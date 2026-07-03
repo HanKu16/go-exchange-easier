@@ -1,5 +1,6 @@
 package com.go_exchange_easier.backend.core.domain.follow.university;
 
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,10 +11,10 @@ import org.springframework.stereotype.Repository;
 public interface UniversityFollowRepository extends JpaRepository<UniversityFollow, UniversityFollowId> {
 
     @Modifying
-    @Query("DELETE UniversityFollow f WHERE f.follower.id = :followerId " + "AND f.university.id = :universityId")
+    @Query("DELETE UniversityFollow f WHERE f.follower.id = :followerId AND f.university.id = :universityId")
     int deleteByUniversityIdAndFollowerId(
             @Param("universityId") short universityId,
-            @Param("followerId") int followerId
+            @Param("followerId") UUID followerId
     );
 
     @Modifying
@@ -21,14 +22,14 @@ public interface UniversityFollowRepository extends JpaRepository<UniversityFoll
             "VALUES (:followerId, :universityId)", nativeQuery = true)
     int insertByNativeQuery(
             @Param("universityId") short universityId,
-            @Param("followerId") int followerId
+            @Param("followerId") UUID followerId
     );
 
     @Query(value = "SELECT COUNT(*) FROM core.university_follows " +
             "WHERE university_id = :universityId AND follower_id = :followerId", nativeQuery = true)
     int countByUniversityIdAndFollowerIdNativeQuery(
             @Param("universityId") short universityId,
-            @Param("followerId") int followerId
+            @Param("followerId") UUID followerId
     );
 
 }

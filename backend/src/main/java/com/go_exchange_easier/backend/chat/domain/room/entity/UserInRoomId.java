@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.chat.domain.room.entity;
 
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.UUID;
 import lombok.*;
 
 @Embeddable
@@ -13,6 +14,6 @@ import lombok.*;
 public class UserInRoomId implements Serializable {
 
     private Room room;
-    private int userId;
+    private UUID userId;
 
 }

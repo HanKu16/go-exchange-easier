@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
@@ -22,22 +23,14 @@ public class JwtClaimsExtractor {
 
     private final SecretKey signingKey;
 
-    public int extractUserId(String token) {
-        return extractClaim(
-                token, claims -> {
-                    Object id = claims.get("userId");
-                    if (id instanceof Integer) {
-                        return (Integer) id;
-                    }
-                    if (id instanceof Long) {
-                        return ((Long) id).intValue();
-                    }
-                    if (id instanceof String) {
-                        return Integer.parseInt((String) id);
-                    }
-                    throw new MissingJwtClaimException("There is " + "no claim 'userId' in the token.");
-                }
-        );
+    public UUID extractUserId(String token) {
+        return extractClaim(token, claims -> {
+            Object id = claims.get("userId");
+            if (id == null) {
+                throw new MissingJwtClaimException("There is no claim 'userId' in the token.");
+            }
+            return UUID.fromString(id.toString());
+        });
     }
 
     public String extractUsername(String token) {

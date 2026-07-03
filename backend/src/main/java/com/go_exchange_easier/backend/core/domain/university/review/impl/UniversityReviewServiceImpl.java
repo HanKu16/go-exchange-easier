@@ -32,6 +32,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,8 +59,8 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
 
     @Override
     public List<UniversityReviewDetails> getByAuthorId(
-            int authorId,
-            int currentUserId
+            UUID authorId,
+            UUID currentUserId
     ) {
         List<Object[]> rows = universityReviewRepository.findByAuthorId(authorId, currentUserId);
         List<UniversityReviewDetails> reviews = new ArrayList<>();
@@ -67,7 +68,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         boolean wasAttemptToSetAvatar = false;
         for (Object[] row : rows) {
             Integer id = (Integer) row[0];
-            Integer authorIdRow = (Integer) row[1];
+            UUID authorIdRow = (UUID) row[1];
             String authorNick = (String) row[2];
             Short universityId = (Short) row[3];
             String universityEnglishName = (String) row[4];
@@ -114,7 +115,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     @Override
     public List<UniversityReviewDetails> getByUniversityId(
             int universityId,
-            int currentUserId,
+            UUID currentUserId,
             int page,
             int size
     ) {
@@ -123,7 +124,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
         List<UniversityReviewDetails> reviews = new ArrayList<>();
         for (Object[] row : rows) {
             Integer id = (Integer) row[0];
-            Integer authorId = (Integer) row[1];
+            UUID authorId = (UUID) row[1];
             String authorNick = (String) row[2];
             Short universityIdFromDb = (Short) row[3];
             String universityEnglishName = (String) row[4];
@@ -168,7 +169,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     @Override
     @Transactional
     public UniversityReviewDetails create(
-            int userId,
+            UUID userId,
             CreateUniversityReviewRequest request
     ) {
         User user = userRepository.findById(userId)
@@ -206,7 +207,7 @@ public class UniversityReviewServiceImpl implements UniversityReviewService {
     @Transactional
     public void delete(
             int reviewId,
-            int userId
+            UUID userId
     ) {
         UniversityReview review = universityReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException(

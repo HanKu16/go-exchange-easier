@@ -6,9 +6,7 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"id", "englishName"})
 public record CountryDetails(
-
         Short id,
-
         String englishName,
 
         @Nullable

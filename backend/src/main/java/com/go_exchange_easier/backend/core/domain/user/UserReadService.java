@@ -8,14 +8,15 @@ import com.go_exchange_easier.backend.core.domain.user.dto.UserWithAvatarSummary
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserReadService {
 
     UserProfile getProfile(
-            int userId,
-            int currentUserId
+            UUID userId,
+            UUID currentUserId
     );
 
     Page<UserDetails> getPage(
@@ -23,14 +24,14 @@ public interface UserReadService {
             Pageable pageable
     );
 
-    List<UserWithAvatarSummary> getFollowees(int userId);
+    List<UserWithAvatarSummary> getFollowees(UUID userId);
 
-    List<UniversityDetails> getFollowedUniversities(int userId);
+    List<UniversityDetails> getFollowedUniversities(UUID userId);
 
-    UserWithAvatarSummary getMe(int userId);
+    UserWithAvatarSummary getMe(UUID userId);
 
-    CoreUser getUser(int userId);
+    CoreUser getUser(UUID userId);
 
-    Map<Integer, CoreUser> getUsers(Set<Integer> userIds);
+    Map<UUID, CoreUser> getUsers(Set<UUID> userIds);
 
 }

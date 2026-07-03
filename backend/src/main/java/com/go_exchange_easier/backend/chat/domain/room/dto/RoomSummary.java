@@ -7,10 +7,9 @@ import java.util.UUID;
 
 @Schema(requiredProperties = {"id", "name", "targetUserId"})
 public record RoomSummary(
-
         UUID id,
         String name,
-        Integer targetUserId,
+        UUID targetUserId,
 
         @Nullable
         String imageUrl

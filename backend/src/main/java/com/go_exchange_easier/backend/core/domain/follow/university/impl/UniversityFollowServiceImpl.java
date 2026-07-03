@@ -5,6 +5,7 @@ import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException
 import com.go_exchange_easier.backend.core.domain.follow.university.UniversityFollowRepository;
 import com.go_exchange_easier.backend.core.domain.follow.university.UniversityFollowService;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
     @Override
     @Transactional
     public void follow(
-            Integer userId,
+            UUID userId,
             Short universityId
     ) {
         if (!universityRepository.existsById(universityId)) {
@@ -37,7 +38,7 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
     @Override
     @Transactional
     public void unfollow(
-            Integer userId,
+            UUID userId,
             Short universityId
     ) {
         int rowsDeleted = universityFollowRepository.deleteByUniversityIdAndFollowerId(universityId, userId);
@@ -51,7 +52,7 @@ public class UniversityFollowServiceImpl implements UniversityFollowService {
     @Override
     public boolean doesFollowExist(
             short universityId,
-            int userId
+            UUID userId
     ) {
         return universityFollowRepository.countByUniversityIdAndFollowerIdNativeQuery(universityId, userId) > 0;
     }

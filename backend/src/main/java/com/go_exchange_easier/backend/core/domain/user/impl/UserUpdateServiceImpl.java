@@ -26,6 +26,7 @@ import com.go_exchange_easier.backend.core.domain.user.status.UserStatusReposito
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
 import java.time.OffsetDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public UserDescriptionDetails updateDescription(
-            int userId,
+            UUID userId,
             UpdateUserDescriptionRequest request
     ) {
         OffsetDateTime updatedAt = OffsetDateTime.now();
@@ -63,7 +64,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public Optional<UniversitySummary> assignHomeUniversity(
-            int userId,
+            UUID userId,
             AssignHomeUniversityRequest request
     ) {
         if (request.universityId() != null) {
@@ -76,8 +77,8 @@ public class UserUpdateServiceImpl implements UserUpdateService {
             }
             return Optional.of(new UniversitySummary(
                     university.getId(),
-                    university.getOriginalName(),
-                    university.getEnglishName()
+                                                     university.getOriginalName(),
+                                                     university.getEnglishName()
             ));
         }
         int rowsUpdated = userRepository.updateHomeUniversity(userId, null);
@@ -92,7 +93,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public Optional<UserStatusSummary> updateStatus(
-            int userId,
+            UUID userId,
             UpdateUserStatusRequest request
     ) {
         if (request.statusId() != null) {
@@ -116,7 +117,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public Optional<CountrySummary> assignCountryOfOrigin(
-            int userId,
+            UUID userId,
             AssignCountryOfOriginRequest request
     ) {
         if (request.countryId() != null) {
@@ -141,7 +142,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public AvatarUrlSummary addAvatar(
-            int userId,
+            UUID userId,
             MultipartFile file
     ) {
         User user = userRepository.findById(userId)
@@ -158,7 +159,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Override
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
-    public AvatarUrlSummary deleteAvatar(int userId) {
+    public AvatarUrlSummary deleteAvatar(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User of id " + userId + " was not found."));
         String existingAvatarKey = user.getAvatarKey();
@@ -173,7 +174,7 @@ public class UserUpdateServiceImpl implements UserUpdateService {
     @Transactional
     @CacheEvict(value = "user-public-profiles", key = "'user:' + #userId")
     public void updateNick(
-            int userId,
+            UUID userId,
             UpdateNickRequest request
     ) {
         int rowsUpdated = userRepository.updateNick(userId, request.nick());

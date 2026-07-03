@@ -6,10 +6,11 @@ import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Schema(requiredProperties = {"userId", "nick", "description"})
 public record UserPublicProfile(
-        Integer userId,
+        UUID userId,
         String nick,
 
         @Nullable

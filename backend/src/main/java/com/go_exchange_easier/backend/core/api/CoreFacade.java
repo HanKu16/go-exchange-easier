@@ -2,12 +2,13 @@ package com.go_exchange_easier.backend.core.api;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public interface CoreFacade {
 
-    CoreUser getUserById(int userId);
+    CoreUser getUserById(UUID userId);
 
-    Map<Integer, CoreUser> getUsersByIds(Set<Integer> userIds);
+    Map<UUID, CoreUser> getUsersByIds(Set<UUID> userIds);
 
     CoreAvatar getAvatar(String avatarKey);
 

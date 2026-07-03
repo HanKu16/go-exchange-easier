@@ -5,6 +5,7 @@ import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
 import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarUrlSummary;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,12 @@ public class CoreFacadeImpl implements CoreFacade {
     private final AvatarService avatarService;
 
     @Override
-    public CoreUser getUserById(int userId) {
+    public CoreUser getUserById(UUID userId) {
         return userReadService.getUser(userId);
     }
 
     @Override
-    public Map<Integer, CoreUser> getUsersByIds(Set<Integer> userIds) {
+    public Map<UUID, CoreUser> getUsersByIds(Set<UUID> userIds) {
         return userReadService.getUsers(userIds);
     }
 

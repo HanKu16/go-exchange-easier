@@ -23,7 +23,7 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public AvatarKeys add(
-            int userId,
+            UUID userId,
             MultipartFile file
     ) {
         int thumbSize = 64;
@@ -75,7 +75,7 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     private AvatarKeys generateKeys(
-            int userId,
+            UUID userId,
             String extension
     ) {
         UUID uuid = UUID.randomUUID();

@@ -38,8 +38,8 @@ public class UserReadServiceImpl implements UserReadService {
 
     @Override
     public UserProfile getProfile(
-            int userId,
-            int currentUserId
+            UUID userId,
+            UUID currentUserId
     ) {
         UserPublicProfile publicProfile = publicProfileProvider.getProfile(userId);
         boolean isFollowed = userFollowService.doesFollowExist(currentUserId, userId);
@@ -71,7 +71,7 @@ public class UserReadServiceImpl implements UserReadService {
     }
 
     @Override
-    public List<UserWithAvatarSummary> getFollowees(int userId) {
+    public List<UserWithAvatarSummary> getFollowees(UUID userId) {
         User user = userRepository.findWithFollowees(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User of id " + userId + " was not found."));
         return user.getUserFollowsSent()
@@ -87,7 +87,7 @@ public class UserReadServiceImpl implements UserReadService {
     }
 
     @Override
-    public List<UniversityDetails> getFollowedUniversities(int userId) {
+    public List<UniversityDetails> getFollowedUniversities(UUID userId) {
         User user = userRepository.findWithFollowedUniversities(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User of id " + userId + " was not found."));
         return user.getUniversityFollowsSent()
@@ -97,7 +97,7 @@ public class UserReadServiceImpl implements UserReadService {
     }
 
     @Override
-    public UserWithAvatarSummary getMe(int userId) {
+    public UserWithAvatarSummary getMe(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User of id " + userId + " was not found."));
         String avatarUrl = user.getAvatarKey() != null ? avatarService.getUrl(user.getAvatarKey())
@@ -106,7 +106,7 @@ public class UserReadServiceImpl implements UserReadService {
     }
 
     @Override
-    public CoreUser getUser(int userId) {
+    public CoreUser getUser(UUID userId) {
         String thumbnailUrl = null;
         String originalUrl = null;
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -123,15 +123,15 @@ public class UserReadServiceImpl implements UserReadService {
     }
 
     @Override
-    public Map<Integer, CoreUser> getUsers(Set<Integer> userIds) {
+    public Map<UUID, CoreUser> getUsers(Set<UUID> userIds) {
         if (userIds.isEmpty()) {
             return Collections.emptyMap();
         }
         List<User> entities = userRepository.findAllById(userIds);
-        Map<Integer, User> entitiesMap = entities.stream()
+        Map<UUID, User> entitiesMap = entities.stream()
                 .collect(Collectors.toMap(User::getId, Function.identity()));
-        Map<Integer, CoreUser> result = new HashMap<>();
-        for (Integer id : userIds) {
+        Map<UUID, CoreUser> result = new HashMap<>();
+        for (UUID id : userIds) {
             User user = entitiesMap.get(id);
             if (user == null) {
                 result.put(id, CoreUser.UNKNOWN);

@@ -10,7 +10,7 @@ import java.util.UUID;
 public record RoomPreview(
         UUID id,
         String name,
-        Integer targetUserId,
+        UUID targetUserId,
         boolean hasAnyUnreadMessages,
 
         @Nullable

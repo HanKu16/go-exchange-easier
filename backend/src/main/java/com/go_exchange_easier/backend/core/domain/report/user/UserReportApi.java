@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +39,7 @@ public interface UserReportApi {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<UserReportSummary> create(
-            @PathVariable("reportedUserId") Integer reportedUserId,
+            @PathVariable("reportedUserId") UUID reportedUserId,
             @RequestBody @Valid CreateUserReportRequest request,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     );

@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.core.domain.follow.university;
 
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.UUID;
 import lombok.*;
 
 @Embeddable
@@ -12,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 public class UniversityFollowId implements Serializable {
 
-    private Integer follower;
+    private UUID follower;
     private Short university;
 
 }

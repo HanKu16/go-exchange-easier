@@ -1,6 +1,7 @@
 package com.go_exchange_easier.backend.core.domain.exchange.dto;
 
 import java.time.LocalDate;
+import java.util.UUID;
 import org.springframework.web.bind.annotation.RequestParam;
 
 public record ExchangeFilters(
@@ -24,6 +25,6 @@ public record ExchangeFilters(
         LocalDate endDate,
 
         @RequestParam(value = "userId", required = false)
-        Integer userId
+        UUID userId
 
 ) { }

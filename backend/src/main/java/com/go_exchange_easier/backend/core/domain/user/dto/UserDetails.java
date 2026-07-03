@@ -5,10 +5,11 @@ import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetai
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Schema(requiredProperties = {"id", "nick"})
 public record UserDetails(
-        Integer id,
+        UUID id,
         String nick,
 
         @Nullable

@@ -17,8 +17,8 @@ public record CreateChatReportRequest(
         ReportReason reason,
 
         @NotNull(message = "Reported user id cannot be null.")
-        @Schema(example = "123")
-        Integer reportedUserId,
+        @Schema(example = "550e8400-e29b-41d4-a716-446655440000")
+        UUID reportedUserId,
 
         @NotNull(message = "Room id cannot be null.")
         @Schema(example = "550e8400-e29b-41d4-a716-446655440000")

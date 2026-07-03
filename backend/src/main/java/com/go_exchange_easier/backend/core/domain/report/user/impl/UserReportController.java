@@ -5,6 +5,7 @@ import com.go_exchange_easier.backend.core.domain.report.user.UserReportApi;
 import com.go_exchange_easier.backend.core.domain.report.user.UserReportService;
 import com.go_exchange_easier.backend.core.domain.report.user.dto.CreateUserReportRequest;
 import com.go_exchange_easier.backend.core.domain.report.user.dto.UserReportSummary;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class UserReportController implements UserReportApi {
     private final UserReportService userReportService;
 
     public ResponseEntity<UserReportSummary> create(
-            Integer reportedUserId,
+            UUID reportedUserId,
             CreateUserReportRequest request,
             AuthenticatedUser authenticatedUser
     ) {

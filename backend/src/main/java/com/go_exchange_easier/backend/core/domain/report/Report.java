@@ -42,6 +42,6 @@ public abstract class Report {
     private ReportType type;
 
     @Column(name = "reporter_id")
-    private int reporterId;
+    private UUID reporterId;
 
 }

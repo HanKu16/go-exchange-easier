@@ -5,8 +5,6 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"original", "thumbnail"})
 public record AvatarUrlSummary(
-
         String original,
         String thumbnail
-
 ) implements Serializable { }

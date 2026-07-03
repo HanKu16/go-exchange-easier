@@ -26,7 +26,7 @@ public class ChatReport extends Report {
     private Map<String, Object> context;
 
     @Column(name = "reported_user_id")
-    private int reportedUserId;
+    private UUID reportedUserId;
 
     @Column(name = "room_id")
     private UUID roomId;

@@ -39,7 +39,7 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
                 AND r.lastMessage IS NOT NULL
             """)
     Page<RoomProjection> findRoomsProjectionByUserId(
-            @Param("userId") int userId,
+            @Param("userId") UUID userId,
             Pageable pageable
     );
 
@@ -53,8 +53,8 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
                 AND u2.userId = :targetUserId
             """)
     Optional<Room> findPrivateRoomWithUsers(
-            @Param("userId") int userId,
-            @Param("targetUserId") int targetUserId
+            @Param("userId") UUID userId,
+            @Param("targetUserId") UUID targetUserId
     );
 
     @EntityGraph(attributePaths = {"users"})

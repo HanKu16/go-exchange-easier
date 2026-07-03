@@ -6,6 +6,7 @@ import com.go_exchange_easier.backend.core.domain.university.dto.UniversityDetai
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityFilters;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityProfile;
 import com.go_exchange_easier.backend.core.domain.university.dto.UniversityPublicProfile;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public UniversityProfile getProfile(
             short universityId,
-            int currentUserId
+            UUID currentUserId
     ) {
         UniversityPublicProfile publicProfile = publicProfileProvider.getProfile(universityId);
         boolean isFollowed = universityFollowService.doesFollowExist(universityId, currentUserId);

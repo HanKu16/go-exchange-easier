@@ -5,10 +5,10 @@ import java.util.UUID;
 
 public record RoomProjection (
         UUID id,
-        int targetUserId,
+        UUID targetUserId,
         UUID lastMessageId,
         OffsetDateTime lastMessageCreatedAt,
         String lastMessageTextContent,
-        int lastMessageAuthorId,
+        UUID lastMessageAuthorId,
         OffsetDateTime lastReadAt
 ) { }

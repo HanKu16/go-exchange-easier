@@ -16,6 +16,7 @@ import com.go_exchange_easier.backend.core.domain.university.University;
 import com.go_exchange_easier.backend.core.domain.university.UniversityRepository;
 import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +48,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Override
     @Transactional
     public ExchangeDetails create(
-            int userId,
+            UUID userId,
             CreateExchangeRequest request
     ) {
         User userProxy = userRepository.getReferenceById(userId);
@@ -66,7 +67,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Transactional
     public void delete(
             int exchangeId,
-            int userId
+            UUID userId
     ) {
         Exchange exchange = exchangeRepository.findById(exchangeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Exchange of id " + exchangeId + " was not found."));
@@ -74,7 +75,7 @@ public class ExchangeServiceImpl implements ExchangeService {
                 .getId()
                 .equals(userId)) {
             throw new NotOwnerOfResourceException(
-                    "Authenticated user is not " + "entitled to delete exchange of id " + exchange + ".");
+                    "Authenticated user is not entitled to delete exchange of id " + exchange + ".");
         }
         exchangeRepository.deleteById(exchangeId);
     }

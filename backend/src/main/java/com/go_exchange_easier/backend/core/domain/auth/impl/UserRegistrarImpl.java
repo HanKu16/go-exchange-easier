@@ -4,7 +4,7 @@ import com.go_exchange_easier.backend.core.domain.auth.UserCredentialsRepository
 import com.go_exchange_easier.backend.core.domain.auth.UserRegistrar;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;
 import com.go_exchange_easier.backend.core.domain.auth.entity.Role;
-import com.go_exchange_easier.backend.core.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.core.domain.auth.entity.Principal;
 import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationRequest;
 import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationSummary;
 import com.go_exchange_easier.backend.core.domain.user.description.UserDescription;
@@ -50,9 +50,9 @@ public class UserRegistrarImpl implements UserRegistrar {
         }
         User user = buildUser(request);
         User savedUser = userRepository.save(user);
-        UserCredentials credentials = buildCredentials(request, user);
+        Principal credentials = buildCredentials(request, user);
         credentials.getRoles().add(Role.ROLE_USER);
-        UserCredentials savedCredentials = userCredentialsRepository.save(credentials);
+        Principal savedCredentials = userCredentialsRepository.save(credentials);
         UserDescription description = buildDescription(user);
         UserDescription savedDescription = userDescriptionRepository.save(description);
         NotificationSettings notification = buildNotification(request, user);
@@ -69,9 +69,9 @@ public class UserRegistrarImpl implements UserRegistrar {
         return user;
     }
 
-    private UserCredentials buildCredentials(RegistrationRequest request, User user) {
+    private Principal buildCredentials(RegistrationRequest request, User user) {
         String encodedPassword = passwordEncoder.encode(request.password());
-        UserCredentials credentials = new UserCredentials();
+        Principal credentials = new Principal();
         credentials.setUsername(request.login());
         credentials.setPassword(encodedPassword);
         credentials.setUser(user);

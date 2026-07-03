@@ -11,6 +11,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import java.time.LocalDate;
+import java.util.UUID;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ExchangeSpecification {
@@ -76,7 +77,7 @@ public class ExchangeSpecification {
         };
     }
 
-    public static Specification<Exchange> hasUserId(int userId) {
+    public static Specification<Exchange> hasUserId(UUID userId) {
         return (root, query, cb) -> {
             Join<Exchange, User> userJoin = root.join("user");
             return cb.equal(userJoin.get("id"), userId);

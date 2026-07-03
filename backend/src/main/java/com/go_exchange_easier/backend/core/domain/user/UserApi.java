@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -46,7 +47,7 @@ public interface UserApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<UserProfile> getProfile(
-            @PathVariable("userId") Integer userId,
+            @PathVariable("userId") UUID userId,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @GetMapping
@@ -68,7 +69,7 @@ public interface UserApi {
                     description = "Reviews were successfully returned"),
     })
     ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
-            @PathVariable("userId") Integer userId,
+            @PathVariable("userId") UUID userId,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser);
 
     @PatchMapping("/description")
@@ -210,7 +211,7 @@ public interface UserApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<Listing<UserWithAvatarSummary>> getFollowees(
-            @PathVariable Integer userId);
+            @PathVariable UUID userId);
 
     @GetMapping("/{userId}/followed-universities")
     @Operation(summary = "Get followed universities")
@@ -225,7 +226,7 @@ public interface UserApi {
                             schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     ResponseEntity<Listing<UniversityDetails>> getFollowedUniversities(
-            @PathVariable Integer userId);
+            @PathVariable UUID userId);
 
     @GetMapping("/me")
     @Operation(summary = "Get user basic info")

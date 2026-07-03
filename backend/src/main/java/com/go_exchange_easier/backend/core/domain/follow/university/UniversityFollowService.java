@@ -1,20 +1,22 @@
 package com.go_exchange_easier.backend.core.domain.follow.university;
 
+import java.util.UUID;
+
 public interface UniversityFollowService {
 
     void follow(
-            Integer userId,
+            UUID userId,
             Short universityId
     );
 
     void unfollow(
-            Integer userId,
+            UUID userId,
             Short universityId
     );
 
     boolean doesFollowExist(
             short universityId,
-            int userId
+            UUID userId
     );
 
 }

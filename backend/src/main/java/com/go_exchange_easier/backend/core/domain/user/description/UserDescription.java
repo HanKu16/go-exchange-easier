@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.core.domain.user.description;
 import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class UserDescription {
     @Id
     @Column(name = "user_id")
     @EqualsAndHashCode.Include
-    private Integer id;
+    private UUID id;
 
     @Column(name = "text_content")
     private String textContent;

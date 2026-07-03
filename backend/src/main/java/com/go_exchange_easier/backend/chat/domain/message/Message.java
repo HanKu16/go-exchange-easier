@@ -35,7 +35,7 @@ public class Message {
     private OffsetDateTime deletedAt;
 
     @Column(name = "author_id")
-    private int authorId;
+    private UUID authorId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")

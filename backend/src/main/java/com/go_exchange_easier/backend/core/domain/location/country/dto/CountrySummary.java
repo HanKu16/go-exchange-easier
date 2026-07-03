@@ -5,8 +5,6 @@ import java.io.Serializable;
 
 @Schema(requiredProperties = {"id", "englishName"})
 public record CountrySummary(
-
         Short id,
         String englishName
-
 ) implements Serializable { }

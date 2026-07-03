@@ -11,24 +11,24 @@ import java.util.UUID;
 public interface RoomService {
 
     SimplePage<RoomPreview> getUserRooms(
-            int userId,
+            UUID userId,
             int page,
             int size
     );
 
     RoomSummary getOrCreate(
-            int userId,
+            UUID userId,
             CreateRoomRequest request
     );
 
     RoomSummary getById(
             UUID roomId,
-            int signedInUserId
+            UUID signedInUserId
     );
 
     boolean isUserMemberOfRoom(
             UUID roomId,
-            int userId
+            UUID userId
     );
 
     Room getReference(UUID roomId);
@@ -40,7 +40,7 @@ public interface RoomService {
 
     void updateLastReadAt(
             UUID roomId,
-            int userId
+            UUID userId
     );
 
 }

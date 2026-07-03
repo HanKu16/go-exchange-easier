@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.chat.domain.room.entity;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class UserInRoom implements Persistable<UserInRoomId> {
     @Id
     @Column(name = "user_id")
     @EqualsAndHashCode.Include
-    private int userId;
+    private UUID userId;
 
     @Column(name = "last_read_at")
     private OffsetDateTime lastReadAt;

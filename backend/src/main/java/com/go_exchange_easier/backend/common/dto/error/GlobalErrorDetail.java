@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(requiredProperties = {"code", "message"})
 public record GlobalErrorDetail(
-
         String code,
         String message
-
 ) { }

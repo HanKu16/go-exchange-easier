@@ -19,14 +19,14 @@ public class ChatFacadeImpl implements ChatFacade {
 
     @Override
     public boolean isUserMemberOfRoom(
-            int userId,
+            UUID userId,
             UUID roomId
     ) {
         return roomService.isUserMemberOfRoom(roomId, userId);
     }
 
     public SimplePage<ChatMessage> getPageOfMessages(
-            int userId,
+            UUID userId,
             UUID roomId,
             Pageable pageable
     ) {

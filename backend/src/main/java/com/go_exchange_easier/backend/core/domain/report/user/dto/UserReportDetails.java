@@ -22,9 +22,9 @@ public record UserReportDetails(
         ReportStatus status,
         ReportReason reason,
         ReportType type,
-        Integer reporterId,
+        UUID reporterId,
         Map<String, Object> context,
-        Integer reportedUserId
+        UUID reportedUserId
 ) implements Serializable {
 
     public static UserReportDetails fromEntity(UserReport report) {

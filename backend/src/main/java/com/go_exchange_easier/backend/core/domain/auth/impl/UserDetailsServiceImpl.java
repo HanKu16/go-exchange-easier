@@ -2,7 +2,8 @@ package com.go_exchange_easier.backend.core.domain.auth.impl;
 
 import com.go_exchange_easier.backend.core.domain.auth.UserCredentialsRepository;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
-import com.go_exchange_easier.backend.core.domain.auth.entity.UserCredentials;
+import com.go_exchange_easier.backend.core.domain.auth.entity.Principal;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,23 +20,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserCredentials credentials = userCredentialsRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "User of username " + username + " was not found."));
-        int userId = credentials.getUser()
+        Principal principal = userCredentialsRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User of username " + username + " was not found."));
+        UUID principalId = principal.getUser()
                 .getId();
-        boolean enabled = credentials.getUser()
+        boolean enabled = principal.getUser()
                 .getDeletedAt() == null;
         return new AuthenticatedUser(
-                userId,
-                credentials.getUsername(),
-                credentials.getPassword(),
+                principalId,
+                principal.getUsername(),
+                principal.getPassword(),
                 enabled,
-                credentials.getUser()
+                principal.getUser()
                         .getNick(),
-                credentials.getUser()
+                principal.getUser()
                         .getAvatarKey(),
-                credentials.getRoles()
+                principal.getRoles()
         );
     }
 

@@ -10,6 +10,7 @@ import com.go_exchange_easier.backend.core.domain.user.avatar.AvatarService;
 import com.go_exchange_easier.backend.core.domain.user.dto.UserPublicProfile;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,13 @@ public class UserPublicProfileProviderImpl implements UserPublicProfileProvider 
 
     @Override
     @Cacheable(value = "user-public-profiles", key = "'user:' + #userId")
-    public UserPublicProfile getProfile(int userId) {
+    public UserPublicProfile getProfile(UUID userId) {
         List<Object[]> rows = userRepository.findProfileById(userId);
         if (rows.isEmpty()) {
             throw new ResourceNotFoundException("User of id " + userId + " was not found");
         }
         Object[] row = rows.getFirst();
-        Integer id = (Integer) row[0];
+        UUID id = (UUID) row[0];
         String nick = (String) row[1];
         String description = (String) row[2];
         Short universityId = (Short) row[3];

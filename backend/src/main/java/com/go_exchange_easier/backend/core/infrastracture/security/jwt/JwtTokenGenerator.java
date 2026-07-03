@@ -23,7 +23,13 @@ public class JwtTokenGenerator {
 
     private final JwtConfig jwtConfig;
 
-    public String generateAccessToken(int userId, String username, String nick, String avatarKey, Set<Role> roles) {
+    public String generateAccessToken(
+            UUID userId,
+            String username,
+            String nick,
+            String avatarKey,
+            Set<Role> roles
+    ) {
         Map<String, Object> claims = getClaims(userId, username, nick, avatarKey, roles);
         TokenLifetime tokenLifetime = getAccessTokenLifetime();
         return Jwts.builder()
@@ -42,7 +48,13 @@ public class JwtTokenGenerator {
                 .toString();
     }
 
-    private Map<String, Object> getClaims(int userId, String username, String nick, String avatarKey, Set<Role> roles) {
+    private Map<String, Object> getClaims(
+            UUID userId,
+            String username,
+            String nick,
+            String avatarKey,
+            Set<Role> roles
+    ) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("username", username);

@@ -6,6 +6,7 @@ import com.go_exchange_easier.backend.common.exception.ResourceNotFoundException
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollowRepository;
 import com.go_exchange_easier.backend.core.domain.follow.user.UserFollowService;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +22,8 @@ public class UserFollowServiceImpl implements UserFollowService {
     @Override
     @Transactional
     public void follow(
-            int followerId,
-            int followeeId
+            UUID followerId,
+            UUID followeeId
     ) {
         if (followerId == followeeId) {
             throw new IllegalOperationException("User can not follow himself.");
@@ -41,8 +42,8 @@ public class UserFollowServiceImpl implements UserFollowService {
     @Override
     @Transactional
     public void unfollow(
-            int followerId,
-            int followeeId
+            UUID followerId,
+            UUID followeeId
     ) {
         int rowsDeleted = userFollowRepository.deleteByFollowerIdAndFolloweeId(followerId, followeeId);
         if (rowsDeleted == 0) {
@@ -54,8 +55,8 @@ public class UserFollowServiceImpl implements UserFollowService {
 
     @Override
     public boolean doesFollowExist(
-            int followerId,
-            int followeeId
+            UUID followerId,
+            UUID followeeId
     ) {
         return userFollowRepository.countByFollowerIdAndFolloweeId(followerId, followeeId) > 0;
     }

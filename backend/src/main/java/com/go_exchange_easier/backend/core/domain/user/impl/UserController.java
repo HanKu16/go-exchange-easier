@@ -17,6 +17,7 @@ import com.go_exchange_easier.backend.core.domain.user.dto.*;
 import com.go_exchange_easier.backend.core.domain.user.status.UpdateUserStatusRequest;
 import com.go_exchange_easier.backend.core.domain.user.status.UserStatusSummary;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,7 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<UserProfile> getProfile(
-            Integer userId,
+            UUID userId,
             AuthenticatedUser authenticatedUser
     ) {
         UserProfile response = userReadService.getProfile(userId, authenticatedUser.getId());
@@ -55,7 +56,7 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<Listing<UniversityReviewDetails>> getReviews(
-            Integer userId,
+            UUID userId,
             AuthenticatedUser authenticatedUser
     ) {
         List<UniversityReviewDetails> reviews = universityReviewService.getByAuthorId(
@@ -109,7 +110,7 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<Listing<UserWithAvatarSummary>> getFollowees(
-            Integer userId
+            UUID userId
     ) {
         List<UserWithAvatarSummary> followees = userReadService.getFollowees(userId);
         return ResponseEntity.ok(Listing.of(followees));
@@ -117,7 +118,7 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<Listing<UniversityDetails>> getFollowedUniversities(
-            Integer userId
+            UUID userId
     ) {
         List<UniversityDetails> universities = userReadService.getFollowedUniversities(userId);
         return ResponseEntity.ok(Listing.of(universities));

@@ -2,13 +2,14 @@ package com.go_exchange_easier.backend.core.domain.user;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends
-        JpaRepository<User, Integer>,
+        JpaRepository<User, UUID>,
         JpaSpecificationExecutor<User> {
 
     @Query(value = "SELECT " +
@@ -31,39 +32,39 @@ public interface UserRepository extends
             "LEFT JOIN core.user_statuses ust ON ust.user_status_id = us.user_status_id " +
             "WHERE us.user_id = :userId AND us.deleted_at IS NULL " +
             "LIMIT 1", nativeQuery = true)
-     List<Object[]> findProfileById(@Param("userId") int userId);
+     List<Object[]> findProfileById(@Param("userId") UUID userId);
 
     @Modifying
     @Query("UPDATE User u SET u.status.id = :statusId " +
             "WHERE u.id = :userId")
-    int updateStatus(@Param("userId") int userId, @Param("statusId") Short statusId);
+    int updateStatus(@Param("userId") UUID userId, @Param("statusId") Short statusId);
 
     @Modifying
     @Query("UPDATE User u SET u.homeUniversity.id = :homeUniversityId " +
             "WHERE u.id = :userId")
-    int updateHomeUniversity(@Param("userId") int userId,
+    int updateHomeUniversity(@Param("userId") UUID userId,
             @Param("homeUniversityId") Short homeUniversityId);
 
     @Modifying
     @Query("UPDATE User u SET u.countryOfOrigin.id = :countryId " +
             "WHERE u.id = :userId")
-    int assignCountryOfOrigin(@Param("userId") int userId,
+    int assignCountryOfOrigin(@Param("userId") UUID userId,
             @Param("countryId") Short countryOfOriginId);
 
     @EntityGraph(attributePaths = {"userFollowsSent", "userFollowsSent.followee"},
             type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT u FROM User u WHERE u.id = :userId")
-    Optional<User> findWithFollowees(@Param("userId") int userId);
+    Optional<User> findWithFollowees(@Param("userId") UUID userId);
 
     @EntityGraph(attributePaths = {"universityFollowsSent",
             "universityFollowsSent.university"},
             type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT u FROM User u WHERE u.id = :userId")
-    Optional<User> findWithFollowedUniversities(@Param("userId") int userId);
+    Optional<User> findWithFollowedUniversities(@Param("userId") UUID userId);
 
     @Modifying
     @Query("UPDATE User u SET u.nick= :nick " +
             "WHERE u.id = :userId")
-    int updateNick(@Param("userId") int userId, @Param("nick") String nick);
+    int updateNick(@Param("userId") UUID userId, @Param("nick") String nick);
 
 }

@@ -41,14 +41,14 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public SimplePage<RoomPreview> getUserRooms(
-            int userId,
+            UUID userId,
             int page,
             int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
         Page<RoomProjection> pageOfRooms = roomRepository.findRoomsProjectionByUserId(userId, pageable);
-        Set<Integer> usersIds = extractUsersIds(pageOfRooms);
-        Map<Integer, CoreUser> users = coreFacade.getUsersByIds(usersIds);
+        Set<UUID> usersIds = extractUsersIds(pageOfRooms);
+        Map<UUID, CoreUser> users = coreFacade.getUsersByIds(usersIds);
         List<RoomPreview> roomsPreviews = new ArrayList<>(size);
         for (RoomProjection room : pageOfRooms.getContent()) {
             CoreUser targetUser = users.get(room.targetUserId());
@@ -78,7 +78,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional
     public RoomSummary getOrCreate(
-            int userId,
+            UUID userId,
             CreateRoomRequest request
     ) {
         Optional<Room> optionalRoom = roomRepository.findPrivateRoomWithUsers(userId, request.targetUserId());
@@ -104,14 +104,14 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     public RoomSummary getById(
             UUID roomId,
-            int signedInUserId
+            UUID signedInUserId
     ) {
         Room room = roomRepository.findPrivateRoomWithUsersById(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Room of id " + roomId + " was not found."));
         if (!isUserMemberOfRoom(signedInUserId, room.getUsers())) {
             throw new ResourceNotFoundException("Room of id " + roomId + " was not found.");
         }
-        int targetUserId = getTargetUserId(signedInUserId, room.getUsers());
+        UUID targetUserId = getTargetUserId(signedInUserId, room.getUsers());
         CoreUser targetUser = coreFacade.getUserById(targetUserId);
         return new RoomSummary(
                 roomId,
@@ -125,7 +125,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public boolean isUserMemberOfRoom(
             UUID roomId,
-            int userId
+            UUID userId
     ) {
         return userInRoomRepository.existsByRoomIdAndUserId(roomId, userId);
     }
@@ -151,7 +151,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     public void updateLastReadAt(
             UUID roomId,
-            int userId
+            UUID userId
     ) {
         Room roomReference = roomRepository.getReferenceById(roomId);
         UserInRoom userInRoom = userInRoomRepository.findById(new UserInRoomId(roomReference, userId))
@@ -160,8 +160,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private Room createRoom(
-            int userId,
-            int targetUserId
+            UUID userId,
+            UUID targetUserId
     ) {
         Room newRoom = new Room();
         OffsetDateTime now = OffsetDateTime.now();
@@ -180,15 +180,15 @@ public class RoomServiceImpl implements RoomService {
     }
 
     private boolean isUserMemberOfRoom(
-            int userId,
+            UUID userId,
             Set<UserInRoom> usersInRoom
     ) {
         return usersInRoom.stream()
                 .anyMatch(u -> u.getUserId() == userId);
     }
 
-    private int getTargetUserId(
-            int signedInUserId,
+    private UUID getTargetUserId(
+            UUID signedInUserId,
             Set<UserInRoom> usersInRoom
     ) {
         return usersInRoom.stream()
@@ -199,12 +199,12 @@ public class RoomServiceImpl implements RoomService {
                         "Chat room supposed to have another user but has not."));
     }
 
-    private Set<Integer> extractUsersIds(Page<RoomProjection> pageOfRooms) {
-        Set<Integer> targetUsersIds = pageOfRooms.getContent()
+    private Set<UUID> extractUsersIds(Page<RoomProjection> pageOfRooms) {
+        Set<UUID> targetUsersIds = pageOfRooms.getContent()
                 .stream()
                 .map(RoomProjection::targetUserId)
                 .collect(Collectors.toSet());
-        Set<Integer> messagesAuthorsIds = pageOfRooms.getContent()
+        Set<UUID> messagesAuthorsIds = pageOfRooms.getContent()
                 .stream()
                 .map(RoomProjection::lastMessageAuthorId)
                 .collect(Collectors.toSet());

@@ -12,6 +12,7 @@ import com.go_exchange_easier.backend.core.domain.user.UserPublicProfileProvider
 import com.go_exchange_easier.backend.core.domain.user.dto.UserPublicProfile;
 import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,8 @@ public class UserReportServiceImpl implements UserReportService {
     @Override
     @Transactional
     public UserReportSummary create(
-            int reportedUserId,
-            int reporterId,
+            UUID reportedUserId,
+            UUID reporterId,
             CreateUserReportRequest request
     ) {
         UserReport report = new UserReport();

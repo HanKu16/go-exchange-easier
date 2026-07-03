@@ -4,23 +4,24 @@ import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user_credentials", schema = "core")
+@Table(name = "principals", schema = "core")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class UserCredentials {
+public class Principal {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "principal_id")
     @EqualsAndHashCode.Include
-    private Integer id;
+    private UUID id;
 
     @Column(name = "username")
     @EqualsAndHashCode.Include
@@ -31,13 +32,13 @@ public class UserCredentials {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "principal_id")
     private User user;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", schema = "core", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "principal_roles", schema = "core", joinColumns = @JoinColumn(name = "principal_id"))
     private Set<Role> roles = new HashSet<>();
 
 }

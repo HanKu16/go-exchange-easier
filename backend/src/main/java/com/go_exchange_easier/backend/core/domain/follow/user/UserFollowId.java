@@ -2,6 +2,7 @@ package com.go_exchange_easier.backend.core.domain.follow.user;
 
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.UUID;
 import lombok.*;
 
 @Embeddable
@@ -12,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 public class UserFollowId implements Serializable {
 
-    private Integer follower;
-    private Integer followee;
+    private UUID follower;
+    private UUID followee;
 
 }

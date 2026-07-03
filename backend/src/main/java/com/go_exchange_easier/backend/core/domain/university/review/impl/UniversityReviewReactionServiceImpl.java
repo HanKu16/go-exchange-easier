@@ -14,6 +14,7 @@ import com.go_exchange_easier.backend.core.domain.user.User;
 import com.go_exchange_easier.backend.core.domain.user.UserRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ public class UniversityReviewReactionServiceImpl implements UniversityReviewReac
     @Override
     @Transactional
     public List<UniversityReviewReactionDetails> add(
-            int userId,
+            UUID userId,
             int reviewId,
             AddUniversityReviewReactionRequest request
     ) {
@@ -58,7 +59,7 @@ public class UniversityReviewReactionServiceImpl implements UniversityReviewReac
     @Override
     @Transactional
     public List<UniversityReviewReactionDetails> delete(
-            int userId,
+            UUID userId,
             int reviewId
     ) {
         UniversityReviewReaction reaction = reactionRepository.findByAuthorIdAndReviewId(userId, reviewId)
@@ -73,7 +74,7 @@ public class UniversityReviewReactionServiceImpl implements UniversityReviewReac
     private UniversityReviewReaction buildReaction(
             ReactionType reactionType,
             int reviewId,
-            int userId
+            UUID userId
     ) {
         UniversityReview review = universityReviewRepository.getReferenceById(reviewId);
         User user = userRepository.getReferenceById(userId);

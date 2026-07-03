@@ -4,6 +4,7 @@ import com.go_exchange_easier.backend.core.domain.university.review.dto.Universi
 import com.go_exchange_easier.backend.core.domain.university.review.entity.UniversityReview;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -59,8 +60,8 @@ public interface UniversityReviewRepository extends
             AND un.deleted_at IS NULL AND ur.deleted_at IS NULL
             ORDER BY ur.created_at DESC
         """, nativeQuery = true)
-    List<Object[]> findByAuthorId(@Param("authorId") int authorId,
-            @Param("currentUserId") int currentUserId);
+    List<Object[]> findByAuthorId(@Param("authorId") UUID authorId,
+            @Param("currentUserId") UUID currentUserId);
 
     @Query(value = """
             SELECT
@@ -113,7 +114,7 @@ public interface UniversityReviewRepository extends
             OFFSET :offset;
         """, nativeQuery = true)
     List<Object[]> findByUniversityId(@Param("universityId") int universityId,
-            @Param("currentUserId") int currentUserId, @Param("limit") int limit,
+            @Param("currentUserId") UUID currentUserId, @Param("limit") int limit,
             @Param("offset") int offset);
 
     @Query(value = """

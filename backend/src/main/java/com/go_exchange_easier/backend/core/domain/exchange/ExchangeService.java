@@ -3,6 +3,7 @@ package com.go_exchange_easier.backend.core.domain.exchange;
 import com.go_exchange_easier.backend.core.domain.exchange.dto.CreateExchangeRequest;
 import com.go_exchange_easier.backend.core.domain.exchange.dto.ExchangeDetails;
 import com.go_exchange_easier.backend.core.domain.exchange.dto.ExchangeFilters;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,13 +15,13 @@ public interface ExchangeService {
     );
 
     ExchangeDetails create(
-            int userId,
+            UUID userId,
             CreateExchangeRequest request
     );
 
     void delete(
             int exchangeId,
-            int userId
+            UUID userId
     );
 
 }

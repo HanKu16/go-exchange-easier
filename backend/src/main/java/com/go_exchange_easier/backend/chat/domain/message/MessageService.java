@@ -11,7 +11,7 @@ public interface MessageService {
 
     SimplePage<MessageDetails> getPage(
             UUID roomId,
-            int userId,
+            UUID userId,
             Pageable pageable
     );
 
@@ -24,7 +24,7 @@ public interface MessageService {
     void delete(
             UUID messageId,
             UUID roomId,
-            int signedInUserId
+            UUID signedInUserId
     );
 
 }
