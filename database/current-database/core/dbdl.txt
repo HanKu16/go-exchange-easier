@@ -33,6 +33,7 @@ TABLE core.principals {
   principal_id UUID [pk]
   username TEXT [unique, not null]
   password TEXT [not null]
+  mail TEXT [unique]
 }
 
 TABLE core.user_descriptions {
@@ -43,7 +44,6 @@ TABLE core.user_descriptions {
 
 TABLE core.notification_settings {
   user_id UUID  [pk, ref: - core.users.user_id]
-  mail TEXT [unique]
   is_mail_notification_enabled BOOLEAN [not null]
 }
 

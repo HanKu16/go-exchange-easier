@@ -34,7 +34,8 @@ CREATE TABLE core.user_statuses (
 CREATE TABLE core.principals (
   principal_id UUID PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL
+  password TEXT NOT NULL,
+  mail TEXT UNIQUE
 );
 
 CREATE TABLE core.user_descriptions (
@@ -45,7 +46,6 @@ CREATE TABLE core.user_descriptions (
 
 CREATE TABLE core.notification_settings (
   user_id UUID PRIMARY KEY,
-  mail TEXT UNIQUE,
   is_mail_notification_enabled BOOLEAN NOT NULL
 );
 
@@ -225,7 +225,7 @@ USING GIN (lower(english_name) gin_trgm_ops);
 
 CREATE INDEX users_nick_idx ON core.users (nick);
 
-CREATE INDEX notif_sett_mail_idx ON core.notification_settings (mail);
+CREATE INDEX princip_sett_mail_idx ON core.principals (mail);
 
 CREATE INDEX princip_username_idx ON core.principals (username);
 

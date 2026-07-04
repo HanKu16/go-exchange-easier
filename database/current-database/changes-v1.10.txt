@@ -7,3 +7,4 @@
 7. Change type of 'user_id' in table 'core.users' and associated columns to UUID from INTEGER.
 8. Change direction on FK from 'core.principals.principal_id' -> 'core.users.user_id' to 'core.users.user_id' -> 'core.principals.principal_id'.
 9. Change column name from 'core.refresh_tokens.user_id' to 'core.refresh_tokens.principal_id' and table to point to from 'core.refresh_tokens.user_id' to 'core.principals.principal_id'.
+10. Remove column 'mail' from 'core.notification_settings' to 'core.principals'.
