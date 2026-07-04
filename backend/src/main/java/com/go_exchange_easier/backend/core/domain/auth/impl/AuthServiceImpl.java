@@ -2,14 +2,16 @@ package com.go_exchange_easier.backend.core.domain.auth.impl;
 
 import com.go_exchange_easier.backend.core.domain.auth.AuthService;
 import com.go_exchange_easier.backend.core.domain.auth.RefreshTokenRepository;
-import com.go_exchange_easier.backend.core.domain.auth.UserCredentialsRepository;
+import com.go_exchange_easier.backend.core.domain.auth.PrincipalRepository;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.auth.dto.LoginRequest;
 import com.go_exchange_easier.backend.core.domain.auth.dto.TokenBundle;
 import com.go_exchange_easier.backend.core.domain.auth.entity.RefreshToken;
 import com.go_exchange_easier.backend.core.domain.auth.entity.Principal;
 import com.go_exchange_easier.backend.core.domain.auth.exception.*;
+import com.go_exchange_easier.backend.core.domain.user.BasicUserProvider;
 import com.go_exchange_easier.backend.core.domain.user.User;
+import com.go_exchange_easier.backend.core.domain.user.dto.BasicUser;
 import com.go_exchange_easier.backend.core.infrastracture.security.config.JwtConfig;
 import com.go_exchange_easier.backend.core.infrastracture.security.jwt.JwtTokenGenerator;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
 
-    private final UserCredentialsRepository credentialsRepository;
+    private final PrincipalRepository credentialsRepository;
+    private final BasicUserProvider basicUserProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenGenerator jwtTokenGenerator;
@@ -55,9 +58,7 @@ public class AuthServiceImpl implements AuthService {
                     authenticatedUser.getRoles()
             );
             String refreshToken = jwtTokenGenerator.generateRefreshToken();
-            User user = new User();
-            user.setId(authenticatedUser.getId());
-            refreshTokenRepository.save(createNewRefreshToken(user, refreshToken, servletRequest));
+            refreshTokenRepository.save(createNewRefreshToken(authenticatedUser.getId(), refreshToken, servletRequest));
             return new TokenBundle(accessToken, refreshToken);
         }
         throw new InvalidPrincipalTypeException("Principal was expected to be of type AuthenticatedUser but was not.");
@@ -80,25 +81,23 @@ public class AuthServiceImpl implements AuthService {
             throw new TokenExpiredException("Token " + refreshToken + " expired.");
         }
         validateDeviceMatch(oldToken, servletRequest);
-        User user = oldToken.getUser();
-        if (user.getDeletedAt() != null) {
-            throw new UserAccountRevokedException("User account is revoked.");
-        }
-        Principal principal = credentialsRepository.findById(user.getId())
+        UUID userId = oldToken.getPrincipalId();
+        Principal principal = credentialsRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException(
                         "User exists but does not have associated principal record."));
+        BasicUser user = basicUserProvider.getById(userId);
+        if (user.deletedAt() != null || user.isBlocked()) {
+            throw new UserAccountRevokedException("User account is revoked.");
+        }
         String newAccessToken = jwtTokenGenerator.generateAccessToken(
-                principal.getUser()
-                        .getId(),
+                userId,
                 principal.getUsername(),
-                principal.getUser()
-                        .getNick(),
-                principal.getUser()
-                        .getAvatarKey(),
+                user.nick(),
+                user.avatarKey(),
                 principal.getRoles()
         );
         String newRawRefreshToken = jwtTokenGenerator.generateRefreshToken();
-        RefreshToken newToken = createNewRefreshToken(user, newRawRefreshToken, servletRequest);
+        RefreshToken newToken = createNewRefreshToken(userId, newRawRefreshToken, servletRequest);
         oldToken.setRevoked(true);
         refreshTokenRepository.saveAll(List.of(oldToken, newToken));
         return new TokenBundle(newAccessToken, newRawRefreshToken);
@@ -116,7 +115,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private RefreshToken createNewRefreshToken(
-            User user,
+            UUID principalId,
             String rawRefreshToken,
             HttpServletRequest servletRequest
     ) {
@@ -129,7 +128,7 @@ public class AuthServiceImpl implements AuthService {
         refreshToken.setDeviceId(UUID.fromString(servletRequest.getHeader("X-Device-Id")));
         refreshToken.setDeviceName(servletRequest.getHeader("X-Device-Name"));
         refreshToken.setIpAddress(getClientIp(servletRequest));
-        refreshToken.setUser(user);
+        refreshToken.setPrincipalId(principalId);
         return refreshToken;
     }
 

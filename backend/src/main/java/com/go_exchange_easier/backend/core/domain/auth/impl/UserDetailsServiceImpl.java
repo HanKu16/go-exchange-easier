@@ -1,8 +1,10 @@
 package com.go_exchange_easier.backend.core.domain.auth.impl;
 
-import com.go_exchange_easier.backend.core.domain.auth.UserCredentialsRepository;
+import com.go_exchange_easier.backend.core.domain.auth.PrincipalRepository;
 import com.go_exchange_easier.backend.core.domain.auth.dto.AuthenticatedUser;
 import com.go_exchange_easier.backend.core.domain.auth.entity.Principal;
+import com.go_exchange_easier.backend.core.domain.user.BasicUserProvider;
+import com.go_exchange_easier.backend.core.domain.user.dto.BasicUser;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,25 +18,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserCredentialsRepository userCredentialsRepository;
+    private final PrincipalRepository principalRepository;
+    private final BasicUserProvider basicUserProvider;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Principal principal = userCredentialsRepository.findByUsername(username)
+        Principal principal = principalRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User of username " + username + " was not found."));
-        UUID principalId = principal.getUser()
-                .getId();
-        boolean enabled = principal.getUser()
-                .getDeletedAt() == null;
+        UUID principalId = principal.getId();
+        BasicUser user = basicUserProvider.getById(principalId);
+        boolean enabled = user.deletedAt() == null && !user.isBlocked();
         return new AuthenticatedUser(
                 principalId,
                 principal.getUsername(),
                 principal.getPassword(),
                 enabled,
-                principal.getUser()
-                        .getNick(),
-                principal.getUser()
-                        .getAvatarKey(),
+                user.nick(),
+                user.avatarKey(),
                 principal.getRoles()
         );
     }

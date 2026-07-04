@@ -1,24 +1,21 @@
 package com.go_exchange_easier.backend.core.domain.auth.impl;
 
-import com.go_exchange_easier.backend.core.domain.auth.UserCredentialsRepository;
+import com.go_exchange_easier.backend.core.domain.auth.PrincipalRepository;
 import com.go_exchange_easier.backend.core.domain.auth.UserRegistrar;
-import com.go_exchange_easier.backend.core.domain.user.UserRepository;
-import com.go_exchange_easier.backend.core.domain.auth.entity.Role;
-import com.go_exchange_easier.backend.core.domain.auth.entity.Principal;
 import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationRequest;
 import com.go_exchange_easier.backend.core.domain.auth.dto.RegistrationSummary;
-import com.go_exchange_easier.backend.core.domain.user.description.UserDescription;
-import com.go_exchange_easier.backend.core.domain.user.description.UserDescriptionRepository;
-import com.go_exchange_easier.backend.core.domain.user.notification.NotificationSettings;
-import com.go_exchange_easier.backend.core.domain.user.notification.NotificationSettingsRepository;
+import com.go_exchange_easier.backend.core.domain.auth.entity.Principal;
+import com.go_exchange_easier.backend.core.domain.auth.entity.Role;
+import com.go_exchange_easier.backend.core.domain.auth.event.UserRegisteredEvent;
 import com.go_exchange_easier.backend.core.domain.auth.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.core.domain.auth.exception.UsernameAlreadyExistsException;
-import com.go_exchange_easier.backend.core.domain.user.User;
-import org.springframework.transaction.annotation.Transactional;
+import com.go_exchange_easier.backend.core.domain.user.notification.NotificationSettingsRepository;
+import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.time.OffsetDateTime;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,75 +23,43 @@ import java.time.OffsetDateTime;
 public class UserRegistrarImpl implements UserRegistrar {
 
     private final NotificationSettingsRepository notificationSettingsRepository;
-    private final UserCredentialsRepository userCredentialsRepository;
-    private final UserDescriptionRepository userDescriptionRepository;
-    private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
+    private final PrincipalRepository principalRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public RegistrationSummary register(RegistrationRequest request) {
-        boolean doesUserOfGivenUsernameExists = userCredentialsRepository
-                .existsByUsername(request.login());
+        boolean doesUserOfGivenUsernameExists = principalRepository.existsByUsername(request.login());
         if (doesUserOfGivenUsernameExists) {
-            throw new UsernameAlreadyExistsException("User of login " +
-                    request.login() + " already exists.");
+            throw new UsernameAlreadyExistsException("User of login " + request.login() + " already exists.");
         }
         if (request.mail() != null) {
-            boolean doesUserOfGivenMailExists = notificationSettingsRepository
-                    .existsByMail(request.mail());
+            boolean doesUserOfGivenMailExists = notificationSettingsRepository.existsByMail(request.mail());
             if (doesUserOfGivenMailExists) {
-                throw new MailAlreadyExistsException("User of mail " +
-                        request.mail() + " already exists.");
+                throw new MailAlreadyExistsException("User of mail " + request.mail() + " already exists.");
             }
         }
-        User user = buildUser(request);
-        User savedUser = userRepository.save(user);
-        Principal credentials = buildCredentials(request, user);
-        credentials.getRoles().add(Role.ROLE_USER);
-        Principal savedCredentials = userCredentialsRepository.save(credentials);
-        UserDescription description = buildDescription(user);
-        UserDescription savedDescription = userDescriptionRepository.save(description);
-        NotificationSettings notification = buildNotification(request, user);
-        NotificationSettings savedNotification = notificationSettingsRepository.save(notification);
-        return new RegistrationSummary(savedUser.getId(), credentials.getUsername(),
-                savedUser.getNick(), savedUser.getCreatedAt());
+        Principal principal = buildPrincipal(request);
+        Principal savedPrincipal = principalRepository.save(principal);
+        String nick = request.nick() == null ? request.login() : request.nick();
+        eventPublisher.publishEvent(new UserRegisteredEvent(
+                savedPrincipal.getId(),
+                nick,
+                request.mail(),
+                OffsetDateTime.now()
+        ));
+        return new RegistrationSummary(savedPrincipal.getId(), principal.getUsername(), nick, OffsetDateTime.now());
     }
 
-    private User buildUser(RegistrationRequest request) {
-        User user = new User();
-        user.setNick(request.nick() != null ? request.nick() : request.login());
-        user.setCreatedAt(OffsetDateTime.now());
-        user.setBlocked(false);
-        return user;
-    }
-
-    private Principal buildCredentials(RegistrationRequest request, User user) {
+    private Principal buildPrincipal(RegistrationRequest request) {
         String encodedPassword = passwordEncoder.encode(request.password());
-        Principal credentials = new Principal();
-        credentials.setUsername(request.login());
-        credentials.setPassword(encodedPassword);
-        credentials.setUser(user);
-        return credentials;
-    }
-
-    private UserDescription buildDescription(User user) {
-        UserDescription description = new UserDescription();
-        description.setTextContent("");
-        description.setUser(user);
-        return description;
-    }
-
-    private NotificationSettings buildNotification(RegistrationRequest request, User user) {
-        NotificationSettings notification = new NotificationSettings();
-        String mail = (request.mail() == null || request.mail().isBlank()) ?
-                null : request.mail();
-        System.out.println(mail);
-        boolean isMailNotificationEnabled = mail != null;
-        notification.setMail(mail);
-        notification.setMailNotificationEnabled(isMailNotificationEnabled);
-        notification.setUser(user);
-        return notification;
+        Principal principal = new Principal();
+        principal.setUsername(request.login());
+        principal.setPassword(encodedPassword);
+        principal.getRoles()
+                .add(Role.ROLE_USER);
+        return principal;
     }
 
 }
