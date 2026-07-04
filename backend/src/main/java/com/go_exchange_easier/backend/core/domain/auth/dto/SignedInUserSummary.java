@@ -7,7 +7,6 @@ import java.util.UUID;
 
 @Schema(requiredProperties = {"userId"})
 public record SignedInUserSummary(
-
         UUID userId,
 
         @Nullable
