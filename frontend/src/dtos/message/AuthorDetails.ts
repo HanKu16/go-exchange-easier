@@ -1,5 +1,5 @@
 export type AuthorDetails = {
-  id: number;
+  id: string;
   nick: string;
   avatarUrl?: string;
 };

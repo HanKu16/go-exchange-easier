@@ -25,7 +25,6 @@ import NoContent from "../components/NoContent";
 import AddIcon from "@mui/icons-material/Add";
 import type { ExchangesProps } from "../components/Exchanges";
 import Exchanges from "../components/Exchanges";
-import { isInteger } from "../utils/number-utils";
 import NotFoundPage from "./NotFoundPage";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import type { DataFetchStatus } from "../types/DataFetchStatus";
@@ -76,7 +75,7 @@ const AddExchangeButton = () => {
 };
 
 type ActionButtonsProps = {
-  userId: string | number;
+  userId: string;
   isFollowed: boolean;
   setIsFollowed: (value: boolean) => void;
 };
@@ -88,7 +87,7 @@ const ActionButtons = (props: ActionButtonsProps) => {
   const maxDescriptionLength = 1000;
 
   const handleReportAction = async (reason: string, description: string | null) => {
-      const result = await sendCreateUserReportRequest(Number(props.userId), { 
+      const result = await sendCreateUserReportRequest(props.userId, { 
         reason,
         description 
       });
@@ -172,7 +171,7 @@ const ActionButtons = (props: ActionButtonsProps) => {
 };
 
 type UserDataPanelProps = {
-  userId: number | string;
+  userId: string;
   nick: string;
   avatarUrl?: string;
   countryName?: string;
@@ -439,7 +438,7 @@ const UserDataPanel = (props: UserDataPanelProps) => {
 };
 
 type FeedPanelProps = {
-  userId: string | number;
+  userId: string;
   isOwnProfile: boolean;
 };
 
@@ -499,7 +498,7 @@ const FeedPanel = (props: FeedPanelProps) => {
       null,
       null,
       null,
-      Number(props.userId),
+      props.userId,
     );
     if (result.isSuccess) {
       const props: ExchangesProps = {
@@ -689,7 +688,7 @@ const UserProfilePage = () => {
     useState<UserDataPanelProps>();
   const { appState, setAppState } = useApplicationState();
 
-  if (!userId || !isInteger(userId)) {
+  if (!userId) {
     return (
       <NotFoundPage
         icon={PersonOffIcon}

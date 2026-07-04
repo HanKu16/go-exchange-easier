@@ -13,7 +13,7 @@ import { useTheme, useMediaQuery } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 type SearchResultTableRow = {
-  id: number;
+  id: number | string;
   data: {
     toShow: React.ReactNode;
     route?: string;

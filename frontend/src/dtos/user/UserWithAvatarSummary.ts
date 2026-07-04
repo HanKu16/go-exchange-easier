@@ -1,5 +1,5 @@
 export type UserWithAvatarSummary = {
-  id: number;
+  id: string;
   nick: string;
   avatarUrl?: string;
 };

@@ -3,7 +3,7 @@ import type { ResponseFailureResult } from "../../types/ResponseFailureResult";
 import { sendRequest } from "../send-request";
 
 export const sendFollowUserRequest = async (
-  followeeId: number | string,
+  followeeId: string,
 ): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
   const uri: string = `/api/users/${followeeId}/follow`;
   const request: RequestInit = {
@@ -13,7 +13,7 @@ export const sendFollowUserRequest = async (
 };
 
 export const sendUnfollowUserRequest = async (
-  followeeId: number | string,
+  followeeId: string,
 ): Promise<ResponseSuccessResult<void> | ResponseFailureResult> => {
   const uri: string = `/api/users/${followeeId}/follow`;
   const request: RequestInit = {

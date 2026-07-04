@@ -1,4 +1,4 @@
 export type SignedInUserSummary = {
-  userId: number;
+  userId: string;
   avatarUrl?: string;
 };

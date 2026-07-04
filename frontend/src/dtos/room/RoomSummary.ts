@@ -1,6 +1,6 @@
 export type RoomSummary = {
   id: string;
   name: string;
-  targetUserId: number;
+  targetUserId: string;
   imageUrl?: string;
 };

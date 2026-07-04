@@ -20,7 +20,7 @@ import type { UniversitySummary } from "../../dtos/university/UniversitySummary"
 import type { UpdateNickRequest } from "../../dtos/user/UpdateNickRequest";
 
 export const sendGetUserProfileRequest = async (
-  userId: number | string,
+  userId: string,
 ): Promise<
   ResponseSuccessResult<UserProfileDetails> | ResponseFailureResult
 > => {
@@ -32,7 +32,7 @@ export const sendGetUserProfileRequest = async (
 };
 
 export const sendGetUserReviewsRequest = async (
-  userId: number | string,
+  userId: string,
 ): Promise<
   | ResponseSuccessResult<Listing<UniversityReviewDetails>>
   | ResponseFailureResult
@@ -114,7 +114,7 @@ export const sendGetUsersRequest = async (
 };
 
 export const sendGetFolloweesRequest = async (
-  userId: number,
+  userId: string,
 ): Promise<
   ResponseSuccessResult<Listing<UserWithAvatarSummary>> | ResponseFailureResult
 > => {
@@ -126,7 +126,7 @@ export const sendGetFolloweesRequest = async (
 };
 
 export const sendGetFollowedUniversitiesRequest = async (
-  userId: number,
+  userId: string,
 ): Promise<
   ResponseSuccessResult<Listing<UniversityDetails>> | ResponseFailureResult
 > => {

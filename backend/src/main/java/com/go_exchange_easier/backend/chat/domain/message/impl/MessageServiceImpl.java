@@ -112,7 +112,7 @@ public class MessageServiceImpl implements MessageService {
     ) {
         Message message = messageRepository.findWithRoomById(messageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Message of id " + messageId + " was not found."));
-        if (message.getAuthorId() != userId || !message.getRoom()
+        if (!userId.equals(message.getAuthorId()) || !message.getRoom()
                 .getId()
                 .equals(roomId)) {
             throw new ResourceNotFoundException("Message of id " + messageId + " was not found.");

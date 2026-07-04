@@ -6,7 +6,7 @@ import type { UserReportSummary } from "../../dtos/report/user/UserReportSummary
 
 
 export const sendCreateUserReportRequest = async (
-  reportedUserId: number,
+  reportedUserId: string,
   body: CreateUserReport,
 ): Promise<ResponseSuccessResult<UserReportSummary> | ResponseFailureResult> => {
   const uri: string = `/api/reports/users/${reportedUserId}`;

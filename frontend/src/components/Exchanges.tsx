@@ -31,7 +31,7 @@ export type ExchangesProps = {
       };
     };
     user: {
-      id: number;
+      id: string;
       nick: string;
     };
   }[];

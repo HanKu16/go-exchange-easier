@@ -1,4 +1,4 @@
 export type UserSummary = {
-  id: number;
+  id: string;
   nick: string;
 };

@@ -1,3 +1,3 @@
 export type CreateRoomRequest = {
-  targetUserId: number;
+  targetUserId: string;
 };

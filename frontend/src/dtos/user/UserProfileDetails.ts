@@ -3,7 +3,7 @@ import type { UniversitySummary } from "../university/UniversitySummary";
 import type { UserStatusSummary } from "./status/UserStatusSummary";
 
 export type UserProfileDetails = {
-  userId: number;
+  userId: string;
   nick: string;
   avatarUrl?: string;
   description: string;

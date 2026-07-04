@@ -78,7 +78,7 @@ export type UniversityReviewProps = {
   starRating: number;
   textContent: string;
   reactions: ReactionDetails[];
-  authorId: number;
+  authorId: string;
   route?: string;
   removeFromPage?: () => void;
 };

@@ -8,7 +8,7 @@ import {
 import { sendGetMeRequest } from "../utils/api/user";
 
 type SignedInUser = {
-  id: number;
+  id: string;
   avatarUrl?: string;
   isSignedIn: boolean | undefined;
 };
@@ -25,7 +25,7 @@ const SignedInUserContext = createContext<SignedInUserContextType | undefined>(
 
 export const SignedInUserProvider = ({ children }: { children: ReactNode }) => {
   const [signedInUser, setSignedInUser] = useState<SignedInUser>({
-    id: 0,
+    id: "",
     avatarUrl: undefined,
     isSignedIn: undefined,
   });
@@ -46,13 +46,13 @@ export const SignedInUserProvider = ({ children }: { children: ReactNode }) => {
           } else {
             if (result.error.status === "SERVICE_UNAVAILABLE") {
               setSignedInUser({
-                id: 0,
+                id: "",
                 isSignedIn: undefined,
                 avatarUrl: undefined,
               });
             } else {
               setSignedInUser({
-                id: 0,
+                id: "",
                 isSignedIn: false,
                 avatarUrl: undefined,
               });
@@ -61,7 +61,7 @@ export const SignedInUserProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         if (isMounted) {
-          setSignedInUser({ id: 0, isSignedIn: false });
+          setSignedInUser({ id: "", isSignedIn: false });
         }
       } finally {
         if (isMounted) {
@@ -77,7 +77,7 @@ export const SignedInUserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const handleForceLogout = () => {
-      setSignedInUser({ id: 0, avatarUrl: undefined, isSignedIn: false });
+      setSignedInUser({ id: "", avatarUrl: undefined, isSignedIn: false });
     };
 
     window.addEventListener("auth:logout", handleForceLogout);

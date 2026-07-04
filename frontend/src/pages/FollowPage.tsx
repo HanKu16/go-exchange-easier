@@ -34,13 +34,13 @@ import basicAvatar from "../assets/basic-avatar.png";
 import { FollowButton } from "../components/Buttons";
 
 type FollowBoxProps = {
-  id: number;
+  id: number | string;
   name: string;
   route: string;
   isFollowed: boolean;
   avatarUrl?: string;
   followEntity: FollowEntity;
-  handleChange: (id: number) => void;
+  handleChange: (id: number | string) => void;
 };
 
 type FollowEntity = "user" | "university";
@@ -90,9 +90,9 @@ const FollowBox = (props: FollowBoxProps) => {
     let isSuccess;
     if (props.followEntity === "user") {
       if (isFollowed) {
-        isSuccess = (await sendUnfollowUserRequest(props.id)).isSuccess;
+        isSuccess = (await sendUnfollowUserRequest(String(props.id))).isSuccess;
       } else {
-        isSuccess = (await sendFollowUserRequest(props.id)).isSuccess;
+        isSuccess = (await sendFollowUserRequest(String(props.id))).isSuccess;
       }
     } else if (props.followEntity === "university") {
       if (isFollowed) {
@@ -205,7 +205,7 @@ const FollowBox = (props: FollowBoxProps) => {
 };
 
 type UserFollow = {
-  id: number;
+  id: string;
   nick: string;
   avatarUrl?: string;
   isFollowed: boolean;
@@ -237,6 +237,7 @@ const FollowPage = () => {
 
   const getFollowees = async () => {
     const result = await sendGetFolloweesRequest(signedInUser.id);
+    console.log(result);
     if (result.isSuccess) {
       setUserFollows(
         result.data.content.map((u) => ({
@@ -326,7 +327,7 @@ const FollowPage = () => {
               avatarUrl={u.avatarUrl}
               isFollowed={u.isFollowed}
               followEntity="user"
-              handleChange={(id: number) => {
+              handleChange={(id) => {
                 setUserFollows((prevFollows) =>
                   prevFollows.map((f) =>
                     f.id === id ? { ...f, isFollowed: !f.isFollowed } : f,
@@ -349,7 +350,7 @@ const FollowPage = () => {
               isFollowed={u.isFollowed}
               followEntity="university"
               avatarUrl={u.country.flagUrl}
-              handleChange={(id: number) => {
+              handleChange={(id) => {
                 setUniversityFollows((prevFollows) =>
                   prevFollows.map((f) =>
                     f.id === id ? { ...f, isFollowed: !f.isFollowed } : f,

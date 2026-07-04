@@ -54,7 +54,7 @@ type ActionExchangeTableProps = {
 };
 
 type ManageExchangesPanelProps = {
-  userId: number | string;
+  userId: string;
 };
 
 const ActionExchangeTableProps = (props: ActionExchangeTableProps) => {
@@ -247,7 +247,7 @@ const ManageExchangesPanel = (props: ManageExchangesPanelProps) => {
       null,
       null,
       null,
-      Number(props.userId),
+      props.userId,
     );
     if (result.isSuccess) {
       const props: ActionExchangeTableProps = {

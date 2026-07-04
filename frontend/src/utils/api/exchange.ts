@@ -15,7 +15,7 @@ export const sendGetExchangesRequest = async (
   fieldOfStudyId: number | undefined | null,
   startDate: string | undefined | null,
   endDate: string | undefined | null,
-  userId: number | undefined | null,
+  userId: string | undefined | null,
 ): Promise<
   ResponseSuccessResult<PageResponse<ExchangeDetails>> | ResponseFailureResult
 > => {

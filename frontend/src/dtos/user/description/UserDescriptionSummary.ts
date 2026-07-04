@@ -1,5 +1,5 @@
 export type UserDescriptionSummary = {
-  userId: number;
+  userId: string;
   description: string;
   updatedAt: string;
 };

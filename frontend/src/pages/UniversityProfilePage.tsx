@@ -239,7 +239,7 @@ const ReviewInput = (props: ReviewInputProps) => {
 };
 
 type UniversityDataPanelProps = {
-  userId: number | string;
+  userId: string;
   university: {
     id: number | string;
     nativeName: string;

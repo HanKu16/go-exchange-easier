@@ -1,5 +1,5 @@
 export interface RegistrationSummary {
-  userId: number;
+  userId: string;
   login: string;
   nick: string;
   createdAt: string;
