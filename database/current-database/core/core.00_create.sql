@@ -121,7 +121,7 @@ CREATE TABLE core.refresh_tokens (
   device_id UUID NOT NULL,
   device_name TEXT,
   ip_address TEXT,
-  user_id UUID NOT NULL
+  principal_id UUID NOT NULL
 );
 
 CREATE TABLE core.reports (
@@ -161,7 +161,7 @@ ALTER TABLE core.user_descriptions ADD FOREIGN KEY (user_id) REFERENCES core.use
 
 ALTER TABLE core.notification_settings ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
 
-ALTER TABLE core.principals ADD FOREIGN KEY (principal_id) REFERENCES core.users (user_id);
+ALTER TABLE core.users ADD FOREIGN KEY (user_id) REFERENCES core.principals (principal_id);
 
 ALTER TABLE core.users ADD FOREIGN KEY (user_status_id) REFERENCES core.user_statuses (user_status_id);
 
@@ -195,7 +195,7 @@ ALTER TABLE core.exchanges ADD FOREIGN KEY (field_of_study_id) REFERENCES core.f
 
 ALTER TABLE core.exchanges ADD FOREIGN KEY (university_id) REFERENCES core.universities (university_id);
 
-ALTER TABLE core.refresh_tokens ADD FOREIGN KEY (user_id) REFERENCES core.users (user_id);
+ALTER TABLE core.refresh_tokens ADD FOREIGN KEY (principal_id) REFERENCES core.principals (principal_id);
 
 ALTER TABLE core.reports ADD FOREIGN KEY (reporter_id) REFERENCES core.users (user_id);
 

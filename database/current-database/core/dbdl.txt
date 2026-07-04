@@ -30,7 +30,7 @@ TABLE core.user_statuses {
 }
 
 TABLE core.principals {
-  principal_id UUID [pk, ref: - core.users.user_id]
+  principal_id UUID [pk]
   username TEXT [unique, not null]
   password TEXT [not null]
 }
@@ -48,7 +48,7 @@ TABLE core.notification_settings {
 }
 
 TABLE core.users {
-  user_id UUID [pk]
+  user_id UUID [pk, ref: - core.principals.principal_id]
   nick TEXT [not null]
   avatar_key TEXT
   created_at TIMESTAMPTZ [not null]
@@ -117,7 +117,7 @@ TABLE core.refresh_tokens {
   device_id UUID [not null]
   device_name TEXT
   ip_address TEXT
-  user_id UUID [ref: > core.users.user_id, not null]
+  principal_id UUID [ref: > core.principals.principal_id, not null]
 }
 
 TABLE core.reports {
@@ -148,4 +148,3 @@ TABLE core.chat_reports {
   reported_user_id UUID [ref: > core.users.user_id, not null]
   room_id UUID [not null]
 }
-
