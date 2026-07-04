@@ -1,12 +1,12 @@
 package com.go_exchange_easier.backend.core.domain.user.notification;
 
-import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "notification_settings", schema = "core")
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class NotificationSettings {
+public class NotificationSettings implements Persistable<UUID> {
 
     @Id
     @Column(name = "user_id")
@@ -27,9 +27,18 @@ public class NotificationSettings {
     @Column(name = "is_mail_notification_enabled")
     private boolean isMailNotificationEnabled;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        isNew = false;
+    }
 
 }

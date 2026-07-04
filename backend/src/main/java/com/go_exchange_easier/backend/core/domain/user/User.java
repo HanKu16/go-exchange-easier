@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "users", schema = "core")
@@ -25,11 +26,10 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @SQLRestriction("deleted_at IS NULL")
-public class User {
+public class User implements Persistable<UUID> {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.UUID)
     @EqualsAndHashCode.Include
     private UUID id;
 
@@ -74,5 +74,19 @@ public class User {
 
     @OneToMany(mappedBy = "follower")
     private Set<UniversityFollow> universityFollowsSent = new HashSet<>();
+
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        isNew = false;
+    }
 
 }

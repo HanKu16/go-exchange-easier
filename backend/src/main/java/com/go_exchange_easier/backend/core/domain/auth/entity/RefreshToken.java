@@ -1,6 +1,5 @@
 package com.go_exchange_easier.backend.core.domain.auth.entity;
 
-import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -44,9 +43,8 @@ public class RefreshToken {
     @Column(name="ip_address")
     private String ipAddress;
 
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    @Column(name="principal_id")
+    private UUID principalId;
 
 }
 

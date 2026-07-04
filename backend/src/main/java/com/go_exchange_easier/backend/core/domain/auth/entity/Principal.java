@@ -1,6 +1,5 @@
 package com.go_exchange_easier.backend.core.domain.auth.entity;
 
-import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +19,7 @@ public class Principal {
 
     @Id
     @Column(name = "principal_id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @EqualsAndHashCode.Include
     private UUID id;
 
@@ -29,11 +29,6 @@ public class Principal {
 
     @Column(name = "password")
     private String password;
-
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "principal_id")
-    private User user;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)

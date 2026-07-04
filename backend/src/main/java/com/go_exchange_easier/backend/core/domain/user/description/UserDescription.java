@@ -1,6 +1,5 @@
 package com.go_exchange_easier.backend.core.domain.user.description;
 
-import com.go_exchange_easier.backend.core.domain.user.User;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -8,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "user_descriptions", schema = "core")
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class UserDescription {
+public class UserDescription implements Persistable<UUID> {
 
     @Id
     @Column(name = "user_id")
@@ -28,9 +28,18 @@ public class UserDescription {
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        isNew = false;
+    }
 
 }
