@@ -30,6 +30,9 @@ public class Principal {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "mail")
+    private String mail;
+
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)

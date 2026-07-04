@@ -19,7 +19,7 @@ public class UserRegisteredListener {
     @EventListener
     public void handleUserRegisteredEvent(UserRegisteredEvent event) {
         userInitializer.initialize(event.userId(), event.nick(), event.createdAt());
-        notificationsSettingsInitializer.initialize(event.userId(), event.mail());
+        notificationsSettingsInitializer.initialize(event.userId());
         userDescriptionInitializer.initialize(event.userId());
     }
 

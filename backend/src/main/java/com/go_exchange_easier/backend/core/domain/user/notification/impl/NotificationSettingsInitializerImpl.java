@@ -3,7 +3,6 @@ package com.go_exchange_easier.backend.core.domain.user.notification.impl;
 import com.go_exchange_easier.backend.core.domain.user.notification.NotificationSettings;
 import com.go_exchange_easier.backend.core.domain.user.notification.NotificationSettingsRepository;
 import com.go_exchange_easier.backend.core.domain.user.notification.NotificationsSettingsInitializer;
-import org.springframework.lang.Nullable;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,13 +17,11 @@ public class NotificationSettingsInitializerImpl implements NotificationsSetting
     @Override
     @Transactional
     public void initialize(
-            UUID id,
-            @Nullable String mail
+            UUID id
     ) {
         NotificationSettings notificationSettings = new NotificationSettings();
         notificationSettings.setId(id);
-        notificationSettings.setMail(mail);
-        notificationSettings.setMailNotificationEnabled(mail != null);
+        notificationSettings.setMailNotificationEnabled(true);
         notificationSettingsRepository.save(notificationSettings);
     }
 

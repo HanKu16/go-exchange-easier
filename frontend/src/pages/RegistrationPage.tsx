@@ -170,7 +170,7 @@ export const RegistrationPage = () => {
     } else if (globalErrorsCodes.includes("LOGIN_ALREADY_TAKEN")) {
       setErrorMessage("Login is already taken.");
     } else if (globalErrorsCodes.includes("MAIL_ALREADY_TAKEN")) {
-      setErrorMessage("Account associated with given name already exists.");
+      setErrorMessage("Account associated with given mail already exists.");
     } else if (
       globalErrorsCodes.includes("INTERNAL_ERROR") ||
       error.status === "INTERNAL_SERVER_ERROR"

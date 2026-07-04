@@ -9,7 +9,6 @@ import com.go_exchange_easier.backend.core.domain.auth.entity.Role;
 import com.go_exchange_easier.backend.core.domain.auth.event.UserRegisteredEvent;
 import com.go_exchange_easier.backend.core.domain.auth.exception.MailAlreadyExistsException;
 import com.go_exchange_easier.backend.core.domain.auth.exception.UsernameAlreadyExistsException;
-import com.go_exchange_easier.backend.core.domain.user.notification.NotificationSettingsRepository;
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserRegistrarImpl implements UserRegistrar {
 
-    private final NotificationSettingsRepository notificationSettingsRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final PrincipalRepository principalRepository;
     private final PasswordEncoder passwordEncoder;
@@ -35,7 +33,7 @@ public class UserRegistrarImpl implements UserRegistrar {
             throw new UsernameAlreadyExistsException("User of login " + request.login() + " already exists.");
         }
         if (request.mail() != null) {
-            boolean doesUserOfGivenMailExists = notificationSettingsRepository.existsByMail(request.mail());
+            boolean doesUserOfGivenMailExists = principalRepository.existsByMail(request.mail());
             if (doesUserOfGivenMailExists) {
                 throw new MailAlreadyExistsException("User of mail " + request.mail() + " already exists.");
             }
@@ -43,13 +41,14 @@ public class UserRegistrarImpl implements UserRegistrar {
         Principal principal = buildPrincipal(request);
         Principal savedPrincipal = principalRepository.save(principal);
         String nick = request.nick() == null ? request.login() : request.nick();
+        OffsetDateTime createdAt = OffsetDateTime.now();
         eventPublisher.publishEvent(new UserRegisteredEvent(
                 savedPrincipal.getId(),
                 nick,
                 request.mail(),
-                OffsetDateTime.now()
+                createdAt
         ));
-        return new RegistrationSummary(savedPrincipal.getId(), principal.getUsername(), nick, OffsetDateTime.now());
+        return new RegistrationSummary(savedPrincipal.getId(), principal.getUsername(), nick, createdAt);
     }
 
     private Principal buildPrincipal(RegistrationRequest request) {

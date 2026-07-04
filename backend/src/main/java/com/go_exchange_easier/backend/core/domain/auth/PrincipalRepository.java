@@ -15,4 +15,6 @@ public interface PrincipalRepository extends JpaRepository<Principal, UUID> {
 
     boolean existsByUsername(String username);
 
+    boolean existsByMail(String mail);
+
 }

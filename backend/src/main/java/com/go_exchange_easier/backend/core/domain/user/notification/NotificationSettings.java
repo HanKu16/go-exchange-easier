@@ -21,9 +21,6 @@ public class NotificationSettings implements Persistable<UUID> {
     @EqualsAndHashCode.Include
     private UUID id;
 
-    @Column(name = "mail")
-    private String mail;
-
     @Column(name = "is_mail_notification_enabled")
     private boolean isMailNotificationEnabled;
 
