@@ -25,7 +25,7 @@ public class UserFollowServiceImpl implements UserFollowService {
             UUID followerId,
             UUID followeeId
     ) {
-        if (followerId == followeeId) {
+        if (followerId.equals(followeeId)) {
             throw new IllegalOperationException("User can not follow himself.");
         }
         if (!userRepository.existsById(followeeId)) {
